@@ -6,6 +6,7 @@ public class Client {
 
     public static void main(String[] args) {
         try {
+            //Kommentar
             Socket client = new Socket("localhost", 25565);
             DataOutputStream output = new DataOutputStream(client.getOutputStream());
             output.writeUTF("Diese Nachricht kommt von Fabis PC");
