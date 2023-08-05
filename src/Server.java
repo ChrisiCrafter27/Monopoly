@@ -1,7 +1,5 @@
 import java.io.*;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.net.SocketException;
+import java.net.*;
 
 public class Server {
     private ServerSocket server;
@@ -18,6 +16,15 @@ public class Server {
     public void start() {
         while (true) {
             try {
+                String hs=null;
+                try
+                {
+                    System.out.println(InetAddress.getLocalHost().getHostAddress());
+                } catch (UnknownHostException e)
+                {
+                    e.printStackTrace();
+                }
+
                 System.out.println(server.getLocalSocketAddress());
                 System.out.println("Waiting for client at port " + server.getLocalPort());
                 Socket client = server.accept();
@@ -26,7 +33,7 @@ public class Server {
                 System.out.println(client.getRemoteSocketAddress());
                 System.out.println(client.getLocalAddress());
                 DataOutputStream output = new DataOutputStream(client.getOutputStream());
-                output.writeUTF("Diese Nachricht kommt von Chrisis PC");
+                output.writeUTF("Diese Nachricht kommt vom Server");
                 client.close();
             } catch (Exception e) {
                 e.printStackTrace();
