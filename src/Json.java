@@ -45,6 +45,10 @@ public class Json {
         return toObject(toJson(Files.readString(file.toPath())), clazz);
     }
 
+    public static <T> T toObject(String value, Class<T> clazz) throws JsonProcessingException {
+        return objectMapper.treeToValue(toJson(value), clazz);
+    }
+
     public static void saveToFile(JsonNode node, String directory, String fileName) throws IOException {
         new File(directory).mkdirs();
         FileWriter writer = new FileWriter(directory + "/" +  fileName);
