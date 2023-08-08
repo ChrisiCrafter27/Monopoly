@@ -5,8 +5,8 @@ import java.net.*;
 import java.util.HashMap;
 
 public class Server {
-    private final ServerSocket server;
-    private final HashMap<Integer, Socket> clients = new HashMap<>();
+    public final ServerSocket server;
+    public final HashMap<Integer, Socket> clients = new HashMap<>();
 
     private final Thread connectionThread = new Thread() {
         @Override
@@ -84,7 +84,11 @@ public class Server {
                     DataOutputStream output = new DataOutputStream(client.getOutputStream());
                     Object[] array = new Object[1];
                     array[0] = message.getMessage()[0];
-                    output.writeUTF(Json.toString(new Message(array, MessageType.PING), false));
+                    output.writeUTF(Json.toString(new Message(array, MessageType.PING_BACK), false));
+                    break;
+                case PING_BACK:
+                    long delay = System.currentTimeMillis() - (long) message.getMessage()[0];
+                    System.out.println("[Server]: Ping to " + client.getInetAddress().getHostAddress() + " is " + delay + "ms");
                     break;
                 case DISCONNECT:
                     if(!clients.containsValue(client)) throw new RuntimeException();

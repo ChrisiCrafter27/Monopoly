@@ -38,21 +38,28 @@ public class Client {
         Message message;
         try {
             message = Json.toObject(value, Message.class);
-        } catch (JsonProcessingException e) {
+            switch (message.getMessageType()) {
+                case PRINTLN:
+                    System.out.println(message.getMessage()[0]);
+                    break;
+                case PING:
+                    DataOutputStream output = new DataOutputStream(client.getOutputStream());
+                    Object[] array = new Object[1];
+                    array[0] = message.getMessage()[0];
+                    output.writeUTF(Json.toString(new Message(array, MessageType.PING_BACK), false));
+                    break;
+                case PING_BACK:
+                    long delay = System.currentTimeMillis() - (long) message.getMessage()[0];
+                    System.out.println("[Server]: Your ping is " + delay + "ms");
+                    break;
+                case NULL:
+                    break;
+                default:
+                    throw new RuntimeException();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
             throw new RuntimeException(e);
-        }
-        switch (message.getMessageType()) {
-            case PRINTLN:
-                System.out.println(message.getMessage()[0]);
-                break;
-            case PING:
-                long delay = System.currentTimeMillis() - (long) message.getMessage()[0];
-                System.out.println("[Server]: Your ping: " + delay + "ms");
-                break;
-            case NULL:
-                break;
-            default:
-                throw new RuntimeException();
         }
     }
 
