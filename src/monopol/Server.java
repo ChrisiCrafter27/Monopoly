@@ -1,14 +1,12 @@
-package ourgames;
+package monopol;
 
 import java.io.*;
 import java.net.*;
-import java.util.Arrays;
 import java.util.HashMap;
 
 public class Server {
-    //PRIVATE MACHEN NACH TEST!!!
-    public final ServerSocket server;
-    private final HashMap<Integer, Socket> clients = new HashMap<Integer, Socket>();
+    private final ServerSocket server;
+    private final HashMap<Integer, Socket> clients = new HashMap<>();
 
     private final Thread connectionThread = new Thread() {
         @Override

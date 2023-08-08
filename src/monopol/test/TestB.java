@@ -1,10 +1,10 @@
-package ourgames.test;
+package monopol.test;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import ourgames.Json;
-import ourgames.Message;
-import ourgames.MessageType;
-import ourgames.Server;
+import monopol.Json;
+import monopol.Message;
+import monopol.MessageType;
+import monopol.Server;
 
 public class TestB {
     public static void main(String[] args) {

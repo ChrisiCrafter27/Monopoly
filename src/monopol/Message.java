@@ -1,4 +1,4 @@
-package ourgames;
+package monopol;
 
 import java.io.DataOutputStream;
 import java.io.IOException;

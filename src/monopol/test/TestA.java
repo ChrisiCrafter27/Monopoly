@@ -1,6 +1,6 @@
-package ourgames.test;
+package monopol.test;
 
-import ourgames.Server;
+import monopol.Server;
 
 public class TestA {
     public static Server server;

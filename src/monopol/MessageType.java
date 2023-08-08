@@ -1,4 +1,4 @@
-package ourgames;
+package monopol;
 
 public enum MessageType {
     PRINTLN,

@@ -1,6 +1,6 @@
-package ourgames.test;
+package monopol.test;
 
-import ourgames.*;
+import monopol.*;
 
 import java.io.IOException;
 import java.net.Socket;
