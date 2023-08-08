@@ -1,6 +1,6 @@
 package monopol.test;
 
-import monopol.Server;
+import monopol.server.Server;
 
 public class TestA {
     public static Server server;

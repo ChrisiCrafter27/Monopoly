@@ -1,4 +1,4 @@
-package monopol;
+package monopol.utils;
 
 import java.io.DataOutputStream;
 import java.io.IOException;

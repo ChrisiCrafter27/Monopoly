@@ -1,4 +1,8 @@
-package monopol;
+package monopol.server;
+
+import monopol.utils.Json;
+import monopol.utils.Message;
+import monopol.utils.MessageType;
 
 import java.io.*;
 import java.net.*;

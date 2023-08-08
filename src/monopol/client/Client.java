@@ -1,6 +1,8 @@
-package monopol;
+package monopol.client;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import monopol.utils.Json;
+import monopol.utils.Message;
+import monopol.utils.MessageType;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
