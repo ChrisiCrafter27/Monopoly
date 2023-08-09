@@ -3,7 +3,6 @@ package monopol.test;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.net.URL;
 
 public class Benutzeroberflaeche_Test {
 
