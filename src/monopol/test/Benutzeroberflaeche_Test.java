@@ -3,6 +3,7 @@ package monopol.test;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.net.URL;
 
 public class Benutzeroberflaeche_Test {
 
@@ -27,10 +28,10 @@ public class Benutzeroberflaeche_Test {
         ImageIcon imageIcon = new ImageIcon(pfad);
         Image normalImage = imageIcon.getImage();
         int breite = 250;
-        int Hoehe = 60;
-        Image skaliertesImage = normalImage.getScaledInstance(breite, Hoehe, Image.SCALE_SMOOTH);
+        int hoehe = 60;
+        Image skaliertesImage = normalImage.getScaledInstance(breite, hoehe, Image.SCALE_SMOOTH);
         JLabel imageLabel2 = new JLabel(new ImageIcon(skaliertesImage));
-        imageLabel2.setBounds(300, 10, breite, Hoehe);
+        imageLabel2.setBounds(300, 10, breite, hoehe);
         frame.add(imageLabel2);
         frame.setLayout(null);
     }
@@ -52,6 +53,9 @@ public class Benutzeroberflaeche_Test {
         });
         knopf.setBounds(300, 400,200,80);
         frame.add(knopf);
+    }
+    public void hi(){
+        System.out.println("hi");
     }
 }
 
