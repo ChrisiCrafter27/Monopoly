@@ -8,6 +8,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.net.SocketException;
 
 public class Client {
     private final Socket client;
@@ -19,10 +20,7 @@ public class Client {
                     DataInputStream input = new DataInputStream(client.getInputStream());
                     String data = input.readUTF();
                     messageReceived(data);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    throw new RuntimeException();
-                }
+                } catch (IOException e) {}
             }
         }
     };
@@ -54,6 +52,10 @@ public class Client {
                     long delay = System.currentTimeMillis() - (long) message.getMessage()[0];
                     System.out.println("[Server]: Your ping is " + delay + "ms");
                     break;
+                case TERMINATE:
+                    clientThread.interrupt();
+                    client.close();
+                    System.out.println("[Server]: [ERROR]: Connection terminated!");
                 case NULL:
                     break;
                 default:
@@ -79,7 +81,8 @@ public class Client {
     public static void main(String[] args) {
         Client c = new Client();
         try {
-            Message.sendPing(c.client);
+            //Message.sendPing(c.client);
+            //c.close();
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);

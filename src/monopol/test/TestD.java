@@ -8,7 +8,7 @@ import java.io.IOException;
 public class TestD {
     public static void main(String[] args) {
         Server server = new Server(25565);
-        server.start();
+        server.open();
         Thread thread = new Thread() {
             @Override
             public void run() {
