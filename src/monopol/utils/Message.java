@@ -46,4 +46,11 @@ public class Message {
         Message message = new Message(array, MessageType.PING);
         output.writeUTF(Json.toString(message, false));
     }
+
+    public static void sendTypeOnly(MessageType messageType, Socket client) throws IOException {
+        DataOutputStream output = new DataOutputStream(client.getOutputStream());
+        Object[] array = new Object[0];
+        Message message = new Message(array, messageType);
+        output.writeUTF(Json.toString(message, false));
+    }
 }
