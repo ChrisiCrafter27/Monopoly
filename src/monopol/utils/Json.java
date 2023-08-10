@@ -12,6 +12,7 @@ public class Json {
     private static ObjectMapper getObjectMapper() {
         ObjectMapper mapper = new ObjectMapper();
         mapper = mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        mapper = mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
         return mapper;
     }
 

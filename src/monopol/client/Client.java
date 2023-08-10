@@ -101,8 +101,8 @@ public class Client {
         try {
             //Message.sendPing(c.client);
             //c.close();
+            c.clientThread.interrupt();
         } catch (Exception e) {
-            e.printStackTrace();
             throw new RuntimeException(e);
         }
     }
