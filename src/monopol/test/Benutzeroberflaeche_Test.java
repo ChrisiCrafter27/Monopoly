@@ -86,16 +86,16 @@ public class Benutzeroberflaeche_Test {
         frame.add(slider);
     }
     private static void walking(JFrame frame) {
-        final int xpos = 200;
+        final int xpos = 500;
         final int ypos = 400;
-        int xzielpos = 500;
+        int xzielpos = 200;
         int yzielpos = 400;
+        int hoehe = 122;
+        int breite = 122;
 
         String pfad = "images/walk1.png";
         ImageIcon imageIcon = new ImageIcon(pfad);
         Image normalImage = imageIcon.getImage();
-        int breite = 122;
-        int hoehe = 122;
         Image skaliertesImage = normalImage.getScaledInstance(breite, hoehe, Image.SCALE_SMOOTH);
         JLabel imageLabel2 = new JLabel(new ImageIcon(skaliertesImage));
         imageLabel2.setBounds(xpos, ypos, breite, hoehe);
@@ -107,7 +107,9 @@ public class Benutzeroberflaeche_Test {
             int yposs = ypos;
             int animation = 0;
             int pfadzaehler = 0;
+            int pfadzaehler2 = 7;
             String animationpfad;
+            boolean drehen = false;
             public void actionPerformed(ActionEvent e) {
 
             if(xposs < xzielpos){
@@ -119,6 +121,10 @@ public class Benutzeroberflaeche_Test {
             if(yposs > yzielpos){
                 yposs--;
             }
+            if(xposs > xzielpos){
+                xposs--;
+                drehen = true;
+            }
             imageLabel2.setBounds(xposs, yposs, 122, 122);
             if (xposs == xzielpos && yposs == yzielpos) {
                 ((Timer) e.getSource()).stop();
@@ -127,23 +133,27 @@ public class Benutzeroberflaeche_Test {
             animation++;
             if(animation >= value2  ){
                 pfadzaehler++;
-                animationpfad = "images/walk"+pfadzaehler+".png";
+                pfadzaehler2--;
+                if(!drehen){
+                    animationpfad = "images/walk"+pfadzaehler+".png";
+                }
+                if(drehen){
+                    animationpfad = "images/walk"+pfadzaehler2+".png";
+                }
                 ImageIcon imageIcon = new ImageIcon(animationpfad);
                 imageLabel2.setIcon(imageIcon);
                 if (pfadzaehler >=6){
                     pfadzaehler = 0;
                 }
+                if (pfadzaehler2<= 1){
+                    pfadzaehler2 = 7;
+                }
                 animation = 0;
             }
-
-
         }
     });
     timer.start();
     }
-
-
-
 }
 
 
