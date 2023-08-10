@@ -10,9 +10,9 @@ import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class Server {
+    public static final int CLIENT_TIMEOUT = 10000;
     public final ServerSocket server;
     public final HashMap<Integer, Socket> clients = new HashMap<>();
     public final HashMap<Socket, Boolean> pingCheck = new HashMap<>();
@@ -75,10 +75,10 @@ public class Server {
                     pingCheck.replace(client, false);
                 });
                 for (Socket client : kick) {
-                    kick(client);
+                    kick(client, DisconnectReason.CONNECTION_LOST);
                 }
                 try {
-                    sleep(10000);
+                    sleep(Server.CLIENT_TIMEOUT);
                 } catch (InterruptedException e) {}
             }
         }
@@ -108,9 +108,19 @@ public class Server {
 
     public void close() {
         acceptNewClients = false;
+        List<Socket> list = new ArrayList<>();
+        clients.forEach((id, client) -> {
+            list.add(client);
+        });
+        for (Socket client : list) {
+            try {
+                Message.send(new Message(DisconnectReason.SERVER_CLOSED, MessageType.DISCONNECT), client);
+            } catch (IOException ignored) {}
+            kick(client, DisconnectReason.SERVER_CLOSED);
+        }
     }
 
-    public void kick(Socket client) {
+    public void kick(Socket client, DisconnectReason reason) {
         if(!clients.containsValue(client)) throw new RuntimeException();
         final int[] idArray = new int[1];
         clients.forEach((k, v) -> {
@@ -120,7 +130,7 @@ public class Server {
         });
         int id = idArray[0];
         try {
-            Message.sendTypeOnly(MessageType.TERMINATE, client);
+            Message.send(new Message(reason, MessageType.DISCONNECT), client);
             for(int i = id; i < clients.size(); i++) {
                 clients.replace(i, clients.get(i + 1));
             }
@@ -150,7 +160,7 @@ public class Server {
                     System.out.println("[Server]: Ping to " + client.getInetAddress().getHostAddress() + " is " + delay + "ms");
                     break;
                 case DISCONNECT:
-                    kick(client);
+                    kick(client, DisconnectReason.CLIENT_CLOSED);
                     break;
                 case NULL:
                     break;
@@ -161,10 +171,6 @@ public class Server {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
-    }
-
-    public boolean serverActive() {
-        return !requestThread.isInterrupted() && requestThread.isAlive() && !connectionThread.isInterrupted() && connectionThread.isAlive(); //FALSCH
     }
 
     public static void main(String[] args) {

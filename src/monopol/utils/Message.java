@@ -1,5 +1,7 @@
 package monopol.utils;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
@@ -15,6 +17,12 @@ public class Message {
         this.messageType = messageType;
     }
 
+    public Message(Object object, MessageType messageType) {
+        objects = new Object[1];
+        objects[0] = object;
+        this.messageType = messageType;
+    }
+
     public Object[] getMessage() {
         return objects;
     }
@@ -23,7 +31,7 @@ public class Message {
         return messageType;
     }
 
-    public static void sendString(Object value, MessageType messageType, Socket client) throws IOException {
+    public static void sendString(String value, MessageType messageType, Socket client) throws IOException {
         DataOutputStream output = new DataOutputStream(client.getOutputStream());
         Object[] array = new Object[1];
         array[0] = value;
@@ -31,11 +39,8 @@ public class Message {
         output.writeUTF(Json.toString(message, false));
     }
 
-    public static void sendString(String value, MessageType messageType, Socket client) throws IOException {
+    public static void send(Message message, Socket client) throws IOException {
         DataOutputStream output = new DataOutputStream(client.getOutputStream());
-        Object[] array = new Object[1];
-        array[0] = value;
-        Message message = new Message(array, messageType);
         output.writeUTF(Json.toString(message, false));
     }
 
