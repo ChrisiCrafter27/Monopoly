@@ -3,15 +3,20 @@ package monopol.test;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.net.URL;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+
+
 
 public class Benutzeroberflaeche_Test {
 
+    static int value2 = 5;
     public static void main(String[] args) {
         JFrame frame = frame();
         bild(frame);
         Text(frame);
         Knopf(frame);
+        Regler(frame);
         frame.setVisible(true);
     }
 
@@ -23,7 +28,7 @@ public class Benutzeroberflaeche_Test {
 
     private static void bild(JFrame frame) {
 
-        String pfad = "Bilder/Monopoly.png";
+        String pfad = "images/Monopoly.png";
 
         ImageIcon imageIcon = new ImageIcon(pfad);
         Image normalImage = imageIcon.getImage();
@@ -49,14 +54,96 @@ public class Benutzeroberflaeche_Test {
         knopf.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 JOptionPane.showMessageDialog(null, "YAY!");
+                walking(frame);
             }
         });
-        knopf.setBounds(300, 400,200,80);
+        knopf.setBounds(300, 200,200,80);
         frame.add(knopf);
     }
-    public void hi(){
-        System.out.println("hi");
+
+    private static void Regler(JFrame frame){
+        JSlider slider = new JSlider(JSlider.HORIZONTAL, 0, 100, 50);
+        slider.setMajorTickSpacing(20);
+        slider.setMinorTickSpacing(5);
+        slider.setPaintTicks(true);
+        slider.setPaintLabels(true);
+        slider.setBounds(100, 300, 400, 50);
+
+        String text = "hi";
+        JLabel label = new JLabel(text);
+        label.setFont(new Font("Arial", Font.PLAIN, 16));
+        label.setBounds(100, 250, 300, 50);
+        frame.add(label);
+        slider.addChangeListener(new ChangeListener() {
+            public void stateChanged(ChangeEvent e) {
+                int value = slider.getValue();
+                System.out.println("abstand zwischen animation_frames: " + value+ "%");
+                String labeltext = String.valueOf(value);
+                label.setText(labeltext);
+                value2 = value / 10;
+            }
+        });
+        frame.add(slider);
     }
+    private static void walking(JFrame frame) {
+        final int xpos = 200;
+        final int ypos = 400;
+        int xzielpos = 500;
+        int yzielpos = 400;
+
+        String pfad = "images/walk1.png";
+        ImageIcon imageIcon = new ImageIcon(pfad);
+        Image normalImage = imageIcon.getImage();
+        int breite = 122;
+        int hoehe = 122;
+        Image skaliertesImage = normalImage.getScaledInstance(breite, hoehe, Image.SCALE_SMOOTH);
+        JLabel imageLabel2 = new JLabel(new ImageIcon(skaliertesImage));
+        imageLabel2.setBounds(xpos, ypos, breite, hoehe);
+        frame.add(imageLabel2);
+        frame.setLayout(null);
+
+        Timer timer = new Timer(20, new ActionListener() {
+            int xposs = xpos;
+            int yposs = ypos;
+            int animation = 0;
+            int pfadzaehler = 0;
+            String animationpfad;
+            public void actionPerformed(ActionEvent e) {
+
+            if(xposs < xzielpos){
+                xposs++;
+            }
+            if(yposs < yzielpos){
+                yposs++;
+            }
+            if(yposs > yzielpos){
+                yposs--;
+            }
+            imageLabel2.setBounds(xposs, yposs, 122, 122);
+            if (xposs == xzielpos && yposs == yzielpos) {
+                ((Timer) e.getSource()).stop();
+                frame.remove(imageLabel2);
+            }
+            animation++;
+            if(animation >= value2  ){
+                pfadzaehler++;
+                animationpfad = "images/walk"+pfadzaehler+".png";
+                ImageIcon imageIcon = new ImageIcon(animationpfad);
+                imageLabel2.setIcon(imageIcon);
+                if (pfadzaehler >=6){
+                    pfadzaehler = 0;
+                }
+                animation = 0;
+            }
+
+
+        }
+    });
+    timer.start();
+    }
+
+
+
 }
 
 
