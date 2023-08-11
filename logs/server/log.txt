@@ -1,5 +1,0 @@
-[10.08.2023] [22:22:24] [FINE] [Server] Everything fine
-[10.08.2023] [22:22:24] [CONFIG] [Server] Here is some config
-[10.08.2023] [22:22:24] [INFO] [Server] This is an information
-[10.08.2023] [22:22:24] [WARNING] [Server] Oh no, there is a problem
-[10.08.2023] [22:22:24] [ERROR] [Server] This probably causes a crash

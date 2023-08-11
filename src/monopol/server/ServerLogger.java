@@ -6,7 +6,7 @@ public class ServerLogger extends CustomLogger {
     public static final ServerLogger INSTANCE = new ServerLogger();
 
     protected ServerLogger() {
-        super("logs/server/log.txt");
+        super("logs/server_log.txt");
     }
 
     @Override

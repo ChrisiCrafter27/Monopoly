@@ -2,6 +2,7 @@ package monopol.utils;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.logging.FileHandler;
 import java.util.logging.Formatter;
@@ -15,7 +16,8 @@ public abstract class CustomLogger {
     protected CustomLogger(String logPath) {
         LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
         LOGGER.setLevel(Level.ALL);
-        FileHandler fileHandler = null;
+        LOGGER.setUseParentHandlers(false);
+        FileHandler fileHandler;
         try {
             fileHandler = new FileHandler(logPath);
         } catch (IOException e) {
@@ -27,7 +29,7 @@ public abstract class CustomLogger {
                 String result = "";
 
                 //Date
-                SimpleDateFormat df = new SimpleDateFormat("[dd.MM.yyyy] [HH:mm:ss]");
+                SimpleDateFormat df = new SimpleDateFormat("[dd-MM-yyyy HH:mm:ss]");
                 Date date = new Date(record.getMillis());
                 result += df.format(date);
 
@@ -35,13 +37,13 @@ public abstract class CustomLogger {
                 if(record.getLevel().intValue() <= Level.FINE.intValue()) {
                     result = result + " [FINE] [" + getType() + "] " + this.formatMessage(record);
                 } else if (record.getLevel().intValue() == Level.CONFIG.intValue()) {
-                    result = result + " [CONFIG] [" + getType() + "] " + this.formatMessage(record);
+                    result = result + " [CONF] [" + getType() + "] " + this.formatMessage(record);
                 } else if(record.getLevel().intValue() == Level.INFO.intValue()) {
                     result = result + " [INFO] [" + getType() + "] " + this.formatMessage(record);
                 } else if(record.getLevel().intValue() == Level.WARNING.intValue()) {
-                    result = result + " [WARNING] [" + getType() + "] " + this.formatMessage(record);
+                    result = result + " [WARN] [" + getType() + "] " + this.formatMessage(record);
                 } else if (record.getLevel().intValue() >= Level.SEVERE.intValue()) {
-                    result = result + " [ERROR] [" + getType() + "] " + this.formatMessage(record);
+                    result = result + " [FAIL] [" + getType() + "] " + this.formatMessage(record);
                 }
 
                 result += "\r\n";
