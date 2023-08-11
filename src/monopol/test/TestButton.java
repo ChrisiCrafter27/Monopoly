@@ -17,9 +17,7 @@ public class TestButton {
         this.normal = normal;
         this.presst = presst;
         clicked(normal,presst,frame);
-
     }
-
     public void clicked(String normal,String presst, JFrame frame){
         ImageIcon normal_Icon = new ImageIcon(normal);
         Image normal_Image = normal_Icon.getImage();
@@ -30,13 +28,22 @@ public class TestButton {
             normal_Label.setBounds(x, y, 122, 200);
             frame.add(normal_Label);
         }
-
         normal_Label.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
-                System.out.println("lol");
-                normal_Label.setIcon(new ImageIcon(presst));
-                frame.repaint();
+                if (!clicked){
+                    normal_Label.setIcon(new ImageIcon(presst));
+                    frame.repaint();
+                    clicked=true;
+                }
+                else {
+                    normal_Label.setIcon(new ImageIcon(normal));
+                    frame.repaint();
+                    clicked=false;
+                }
             }
         });
+    }
+    public boolean getclicked(){
+        return clicked;
     }
 }
