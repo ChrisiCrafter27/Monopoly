@@ -1,6 +1,6 @@
 package monopol.test;
 
-import monopol.server.ServerLogger;
+import monopol.log.ServerLogger;
 import monopol.rules.Events;
 
 import java.rmi.NotBoundException;

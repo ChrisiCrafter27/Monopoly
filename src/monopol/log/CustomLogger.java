@@ -1,4 +1,4 @@
-package monopol.utils;
+package monopol.log;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;

@@ -1,5 +1,6 @@
 package monopol.server;
 
+import monopol.log.ServerLogger;
 import monopol.rules.BuildRule;
 import monopol.rules.OwnedCardsOfColorGroup;
 import monopol.rules.StandardEvents;

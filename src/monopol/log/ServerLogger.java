@@ -1,8 +1,4 @@
-package monopol.server;
-
-import monopol.utils.CustomLogger;
-
-import java.util.logging.Level;
+package monopol.log;
 
 public class ServerLogger extends CustomLogger {
     public static final ServerLogger INSTANCE = new ServerLogger();
