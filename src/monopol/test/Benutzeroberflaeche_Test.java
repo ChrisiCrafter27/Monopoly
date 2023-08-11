@@ -15,6 +15,7 @@ public class Benutzeroberflaeche_Test {
     static int value2 = 5;
     public static void main(String[] args) {
         JFrame frame = frame();
+        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         TestButton button = new TestButton(frame, 500 , 300,"images/Monopoly.png", "images/walk1.png" );
         bild(frame);
         Text(frame);
