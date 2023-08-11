@@ -13,9 +13,4 @@ public class ServerLogger extends CustomLogger {
     public CustomLogger getInstance() {
         return ServerLogger.INSTANCE;
     }
-
-    @Override
-    protected String getType() {
-        return "Server";
-    }
 }

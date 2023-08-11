@@ -2,7 +2,6 @@ package monopol.utils;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.logging.FileHandler;
 import java.util.logging.Formatter;
@@ -35,15 +34,15 @@ public abstract class CustomLogger {
 
                 //Type
                 if(record.getLevel().intValue() <= Level.FINE.intValue()) {
-                    result = result + " [FINE] [" + getType() + "] " + this.formatMessage(record);
+                    result = result + " [FINE] " + this.formatMessage(record);
                 } else if (record.getLevel().intValue() == Level.CONFIG.intValue()) {
-                    result = result + " [CONF] [" + getType() + "] " + this.formatMessage(record);
+                    result = result + " [CONF] " + this.formatMessage(record);
                 } else if(record.getLevel().intValue() == Level.INFO.intValue()) {
-                    result = result + " [INFO] [" + getType() + "] " + this.formatMessage(record);
+                    result = result + " [INFO] " + this.formatMessage(record);
                 } else if(record.getLevel().intValue() == Level.WARNING.intValue()) {
-                    result = result + " [WARN] [" + getType() + "] " + this.formatMessage(record);
+                    result = result + " [WARN] " + this.formatMessage(record);
                 } else if (record.getLevel().intValue() >= Level.SEVERE.intValue()) {
-                    result = result + " [FAIL] [" + getType() + "] " + this.formatMessage(record);
+                    result = result + " [FAIL] " + this.formatMessage(record);
                 }
 
                 result += "\r\n";
@@ -58,5 +57,4 @@ public abstract class CustomLogger {
     }
 
     public abstract CustomLogger getInstance();
-    protected abstract String getType();
 }
