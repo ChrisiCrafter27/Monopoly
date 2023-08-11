@@ -1,5 +1,6 @@
 package monopol.client;
 
+import monopol.server.DisconnectReason;
 import monopol.utils.Json;
 import monopol.utils.Message;
 import monopol.utils.MessageType;
@@ -21,6 +22,11 @@ public class Client {
                     String data = input.readUTF();
                     messageReceived(data);
                 } catch (IOException e) {}
+            }
+            try {
+                client.close();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
         }
     };
@@ -52,10 +58,24 @@ public class Client {
                     long delay = System.currentTimeMillis() - (long) message.getMessage()[0];
                     System.out.println("[Server]: Your ping is " + delay + "ms");
                     break;
-                case TERMINATE:
+                case DISCONNECT:
                     clientThread.interrupt();
-                    client.close();
-                    System.out.println("[Server]: [ERROR]: Connection terminated!");
+                    switch ((DisconnectReason) message.getMessage()[0]) {
+                        case CONNECTION_LOST:
+                            System.out.println("[Server]: Connection lost: Timed out.");
+                            break;
+                        case SERVER_CLOSED:
+                            System.out.println("[Server]: Connection lost: Server closed.");
+                            break;
+                        case CLIENT_CLOSED:
+                            System.out.println("[Server]: Connection lost.");
+                            break;
+                        case KICKED:
+                            System.out.println("[Server]: Connection lost: Kicked by host.");
+                            break;
+                        default:
+                            System.out.println("[Server]: Connection lost: No further information.");
+                    }
                 case NULL:
                     break;
                 default:
@@ -69,10 +89,8 @@ public class Client {
 
     public void close() {
         try {
-            DataOutputStream out = new DataOutputStream(client.getOutputStream());
-            out.writeUTF(Json.toString(new Message(new Object[0], MessageType.DISCONNECT), false));
+            Message.send(new Message(DisconnectReason.CLIENT_CLOSED, MessageType.DISCONNECT), client);
             clientThread.interrupt();
-            client.close();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -83,8 +101,8 @@ public class Client {
         try {
             //Message.sendPing(c.client);
             //c.close();
+            c.clientThread.interrupt();
         } catch (Exception e) {
-            e.printStackTrace();
             throw new RuntimeException(e);
         }
     }
