@@ -8,15 +8,22 @@ import javax.swing.event.ChangeListener;
 
 
 
+
 public class Benutzeroberflaeche_Test {
+
 
     static int value2 = 5;
     public static void main(String[] args) {
         JFrame frame = frame();
+        TestButton button = new TestButton(frame, 500 , 300,"images/Monopoly.png", "images/Monopoly.png" );
         bild(frame);
         Text(frame);
         Knopf(frame);
         Regler(frame);
+
+
+
+
         frame.setVisible(true);
     }
 
@@ -51,11 +58,9 @@ public class Benutzeroberflaeche_Test {
 
     private static void Knopf(JFrame frame){
         JButton knopf = new JButton("Klick mich!");
-        knopf.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(null, "YAY!");
-                walking(frame);
-            }
+        knopf.addActionListener(e -> {
+            JOptionPane.showMessageDialog(null, "YAY!");
+            walking(frame);
         });
         knopf.setBounds(300, 200,200,80);
         frame.add(knopf);
@@ -86,9 +91,9 @@ public class Benutzeroberflaeche_Test {
         frame.add(slider);
     }
     private static void walking(JFrame frame) {
-        final int xpos = 500;
+        final int xpos = 200;
         final int ypos = 400;
-        int xzielpos = 200;
+        int xzielpos = 500;
         int yzielpos = 400;
         int hoehe = 122;
         int breite = 122;
@@ -109,48 +114,74 @@ public class Benutzeroberflaeche_Test {
             int pfadzaehler = 0;
             int pfadzaehler2 = 7;
             String animationpfad;
+            boolean animationpfad2 = false;
             boolean drehen = false;
             public void actionPerformed(ActionEvent e) {
 
-            if(xposs < xzielpos){
-                xposs++;
-            }
-            if(yposs < yzielpos){
-                yposs++;
-            }
-            if(yposs > yzielpos){
-                yposs--;
-            }
-            if(xposs > xzielpos){
-                xposs--;
-                drehen = true;
-            }
-            imageLabel2.setBounds(xposs, yposs, 122, 122);
-            if (xposs == xzielpos && yposs == yzielpos) {
-                ((Timer) e.getSource()).stop();
-                frame.remove(imageLabel2);
-            }
-            animation++;
-            if(animation >= value2  ){
-                pfadzaehler++;
-                pfadzaehler2--;
-                if(!drehen){
-                    animationpfad = "images/walk"+pfadzaehler+".png";
+                if (xposs < xzielpos) {
+                    xposs++;
                 }
-                if(drehen){
-                    animationpfad = "images/walk"+pfadzaehler2+".png";
+                if (yposs < yzielpos) {
+                    yposs++;
                 }
-                ImageIcon imageIcon = new ImageIcon(animationpfad);
-                imageLabel2.setIcon(imageIcon);
-                if (pfadzaehler >=6){
-                    pfadzaehler = 0;
+                if (yposs > yzielpos) {
+                    yposs--;
                 }
-                if (pfadzaehler2<= 1){
-                    pfadzaehler2 = 7;
+                if (xposs > xzielpos) {
+                    xposs--;
+                    drehen = true;
                 }
-                animation = 0;
+                imageLabel2.setBounds(xposs, yposs, 122, 122);
+                if (xposs == xzielpos && yposs == yzielpos) {
+                    ((Timer) e.getSource()).stop();
+                    frame.remove(imageLabel2);
+                }
+                animation++;
+                if (animation >= value2) {
+                    if (!drehen && !animationpfad2) {
+                        pfadzaehler++;
+                        animationpfad = "images/walk" + pfadzaehler + ".png";
+                        ImageIcon imageIcon = new ImageIcon(animationpfad);
+                        imageLabel2.setIcon(imageIcon);
+                    }
+                    if (!drehen && animationpfad2) {
+                        pfadzaehler2--;
+                        animationpfad = "images/walk" + pfadzaehler2 + ".png";
+                        ImageIcon imageIcon = new ImageIcon(animationpfad);
+                        imageLabel2.setIcon(imageIcon);
+                    }
+                    if (drehen && !animationpfad2) {
+                        pfadzaehler++;
+                        animationpfad = "images/walk" + pfadzaehler + ".png";
+                        drehen = true;
+                        ImageIcon imageIcon = new ImageIcon(animationpfad);
+                        imageLabel2.setIcon(imageIcon);
+                    }
+                    if (drehen && animationpfad2) {
+                        pfadzaehler2--;
+                        animationpfad = "images/walk" + pfadzaehler2 + ".png";
+                        drehen = true;
+                        ImageIcon imageIcon = new ImageIcon(animationpfad);
+                        imageLabel2.setIcon(imageIcon);
+                    }
+
+                    if (pfadzaehler >= 6) {
+                        pfadzaehler = 1;
+                        animationpfad2 = true;
+                    }
+                    if (pfadzaehler2 <= 1) {
+                        pfadzaehler2 = 6;
+                        animationpfad2 = false;
+                    }
+                    animation = 0;
+                }
             }
-        }
+
+
+
+
+
+
     });
     timer.start();
     }
