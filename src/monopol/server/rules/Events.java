@@ -24,7 +24,7 @@ public abstract class Events extends UnicastRemoteObject implements EventsInterf
     public final OwnedCardsOfColorGroup CARDS_REQUIRED_FOR_HOTEL;
     public final OwnedCardsOfColorGroup CARDS_REQUIRED_FOR_SKYSCRAPER;
 
-    protected Events(boolean limitBusTickets, int maxBusTickets, boolean limitBuildings, boolean tempoDice, boolean megaBuildings, boolean tripleTeleport, int startMoney, int losMoney, boolean doubleLosMoney, boolean freeParking, boolean gainRentInPrison, boolean buildEquable, BuildRule buildRule, OwnedCardsOfColorGroup cardsRequiredForOneHouse, OwnedCardsOfColorGroup cardsRequiredForTwoHouses, OwnedCardsOfColorGroup cardsRequiredForThreeHousEs, OwnedCardsOfColorGroup cardsRequiredForFourHouses, OwnedCardsOfColorGroup cardsRequiredForHotel, OwnedCardsOfColorGroup cardsRequiredForSkyscraper) throws RemoteException {
+    protected Events(boolean limitBusTickets, int maxBusTickets, boolean limitBuildings, boolean tempoDice, boolean megaBuildings, boolean tripleTeleport, int startMoney, int losMoney, boolean doubleLosMoney, boolean freeParking, boolean gainRentInPrison, boolean buildEquable, BuildRule buildRule, OwnedCardsOfColorGroup cardsRequiredForOneHouse, OwnedCardsOfColorGroup cardsRequiredForTwoHouses, OwnedCardsOfColorGroup cardsRequiredForThreeHouses, OwnedCardsOfColorGroup cardsRequiredForFourHouses, OwnedCardsOfColorGroup cardsRequiredForHotel, OwnedCardsOfColorGroup cardsRequiredForSkyscraper) throws RemoteException {
         LIMIT_BUS_TICKETS = limitBusTickets;
         MAX_BUS_TICKETS = maxBusTickets;
         LIMIT_BUILDINGS = limitBuildings;
@@ -40,7 +40,7 @@ public abstract class Events extends UnicastRemoteObject implements EventsInterf
         BUILD_RULE = buildRule;
         CARDS_REQUIRED_FOR_ONE_HOUSE = cardsRequiredForOneHouse;
         CARDS_REQUIRED_FOR_TWO_HOUSES = cardsRequiredForTwoHouses;
-        CARDS_REQUIRED_FOR_THREE_HOUSES = cardsRequiredForThreeHousEs;
+        CARDS_REQUIRED_FOR_THREE_HOUSES = cardsRequiredForThreeHouses;
         CARDS_REQUIRED_FOR_FOUR_HOUSES = cardsRequiredForFourHouses;
         CARDS_REQUIRED_FOR_HOTEL = cardsRequiredForHotel;
         CARDS_REQUIRED_FOR_SKYSCRAPER = cardsRequiredForSkyscraper;
