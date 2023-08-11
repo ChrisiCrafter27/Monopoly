@@ -91,9 +91,9 @@ public class Server {
             requestThread.start();
             pingThread.start();
             //server.setSoTimeout(100000);
-            Events events = new Events();
-            Registry registry = LocateRegistry.createRegistry(1099);
-            registry.rebind("Events", events);
+            //Events events = new Events(limitBusTickets, maxBusTickets, limitBuildings, tempoDice, megaBuildings, tripleTeleport, startMoney, losMoney, doubleLosMoney, freeParking, gainRentInPrison, buildEquable, buildRule, cardsRequiredForOneHouse, cardsRequiredForTwoHouses, cardsRequiredForThreeHousEs, cardsRequiredForFourHouses, cardsRequiredForHotel, cardsRequiredForSkyscraper);
+            //Registry registry = LocateRegistry.createRegistry(1099);
+            //registry.rebind("Events", events);
         } catch (IOException e) {
             System.err.println("[Server]: [ERROR]: Failed to start server. That could be due to an occupied port. The server usually uses the port 25565");
             throw new RuntimeException();

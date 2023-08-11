@@ -16,7 +16,7 @@ import java.rmi.registry.Registry;
 
 public class Client {
     private final Socket client;
-    private final EventsInterface eventsInterface;
+    //private final EventsInterface eventsInterface;
 
     private final Thread clientThread = new Thread() {
         @Override
@@ -40,8 +40,8 @@ public class Client {
         try {
             client = new Socket(ip, port);
             clientThread.start();
-            Registry registry = LocateRegistry.getRegistry(ip, 1099);
-            eventsInterface = (EventsInterface) registry.lookup("Events");
+            //Registry registry = LocateRegistry.getRegistry(ip, 1099);
+            //eventsInterface = (EventsInterface) registry.lookup("Events");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -93,9 +93,9 @@ public class Client {
         }
     }
 
-    public EventsInterface triggerEvent() {
-        return eventsInterface;
-    }
+    //public EventsInterface triggerEvent() {
+        //return eventsInterface;
+    //}
 
     public static void main(String[] args) throws NotBoundException {
         Client c = new Client("localhost", 25565);
