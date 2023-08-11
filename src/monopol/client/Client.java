@@ -3,8 +3,8 @@ package monopol.client;
 import monopol.server.DisconnectReason;
 import monopol.server.rules.EventsInterface;
 import monopol.utils.Json;
-import monopol.utils.Message;
-import monopol.utils.MessageType;
+import monopol.utils.message.Message;
+import monopol.utils.message.MessageType;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -16,7 +16,7 @@ import java.rmi.registry.Registry;
 
 public class Client {
     private final Socket client;
-    //private final EventsInterface eventsInterface;
+    private final EventsInterface eventsInterface;
 
     private final Thread clientThread = new Thread() {
         @Override
@@ -26,7 +26,12 @@ public class Client {
                     DataInputStream input = new DataInputStream(client.getInputStream());
                     String data = input.readUTF();
                     messageReceived(data);
-                } catch (IOException ignored) {}
+                } catch (IOException e) {
+                    if(!interrupted()) {
+                        System.out.println("[Server]: Connection lost: No further information.");
+                        interrupt();
+                    }
+                }
             }
             try {
                 client.close();
@@ -40,8 +45,8 @@ public class Client {
         try {
             client = new Socket(ip, port);
             clientThread.start();
-            //Registry registry = LocateRegistry.getRegistry(ip, 1099);
-            //eventsInterface = (EventsInterface) registry.lookup("Events");
+            Registry registry = LocateRegistry.getRegistry(ip, 1099);
+            eventsInterface = (EventsInterface) registry.lookup("Events");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -67,10 +72,10 @@ public class Client {
                     break;
                 case DISCONNECT:
                     clientThread.interrupt();
-                    switch ((DisconnectReason) message.getMessage()[0]) {
+                    switch (DisconnectReason.valueOf((String) message.getMessage()[0])) {
                         case CONNECTION_LOST -> System.out.println("[Server]: Connection lost: Timed out.");
                         case SERVER_CLOSED -> System.out.println("[Server]: Connection lost: Server closed.");
-                        case CLIENT_CLOSED -> System.out.println("[Server]: Connection lost.");
+                        case CLIENT_CLOSED -> System.out.println("[Server]: Connection lost: Left game");
                         case KICKED -> System.out.println("[Server]: Connection lost: Kicked by host.");
                         default -> System.out.println("[Server]: Connection lost: No further information.");
                     }
@@ -79,7 +84,9 @@ public class Client {
                 default:
                     throw new RuntimeException();
             }
-        } catch (Exception e) {
+        } catch (IOException e) {
+            System.out.println("[Server]: Connection lost: No further information.");
+            clientThread.interrupt();
             throw new RuntimeException(e);
         }
     }
@@ -87,22 +94,19 @@ public class Client {
     public void close() {
         try {
             Message.send(new Message(DisconnectReason.CLIENT_CLOSED, MessageType.DISCONNECT), client);
-            clientThread.interrupt();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        } catch (IOException ignored) {}
+        clientThread.interrupt();
     }
 
-    //public EventsInterface triggerEvent() {
-        //return eventsInterface;
-    //}
+    public EventsInterface triggerEvent() {
+        return eventsInterface;
+    }
 
     public static void main(String[] args) throws NotBoundException {
         Client c = new Client("localhost", 25565);
         try {
-            Message.sendPing(c.client);
-            //c.close();
-            c.clientThread.interrupt();
+            //Message.sendPing(c.client);
+            c.triggerEvent().printSth("Print this");
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

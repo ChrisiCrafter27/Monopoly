@@ -1,9 +1,11 @@
 package monopol.server;
 
-import monopol.server.rules.Events;
+import monopol.server.rules.BuildRule;
+import monopol.server.rules.OwnedCardsOfColorGroup;
+import monopol.server.rules.StandardEvents;
 import monopol.utils.Json;
-import monopol.utils.Message;
-import monopol.utils.MessageType;
+import monopol.utils.message.Message;
+import monopol.utils.message.MessageType;
 
 import java.io.*;
 import java.net.*;
@@ -16,9 +18,11 @@ import java.util.List;
 
 public class Server {
     public static final int CLIENT_TIMEOUT = 10000;
+
     public final ServerSocket server;
     public final HashMap<Integer, Socket> clients = new HashMap<>();
     public final HashMap<Socket, Boolean> pingCheck = new HashMap<>();
+    public final ServerLogger logger = ServerLogger.INSTANCE;
     private boolean acceptNewClients = false;
 
     private final Thread connectionThread = new Thread() {
@@ -27,11 +31,16 @@ public class Server {
             while(!isInterrupted()) {
                 if(acceptNewClients) {
                     try {
-                        System.out.println("Waiting for client at port " + server.getLocalPort());
+                        logger.getLogger().info("[Server]: Waiting for new Client");
                         Socket newClient = server.accept();
                         if (clients.containsValue(newClient)) continue;
+                        logger.getLogger().info("[Server]: New Client accepted");
                         clients.put(clients.size() + 1, newClient);
                     } catch (Exception e) {
+                        logger.getLogger().severe("[Server]: Server crashed due to an Exception\r\n" + e.getMessage());
+                        connectionThread.interrupt();
+                        requestThread.interrupt();
+                        pingThread.interrupt();
                         throw new RuntimeException();
                     }
                 }
@@ -47,13 +56,10 @@ public class Server {
                     clients.forEach((id, client) -> {
                         try {
                             DataInputStream input = new DataInputStream(client.getInputStream());
-                            try {
-                                String data = input.readUTF();
-                                messageReceived(data, client);
-                            } catch (IOException ignored) {}
-                        } catch (IOException e) {
-                            throw new RuntimeException();
-                        }
+                            String data = input.readUTF();
+                            logger.getLogger().fine("[Server]: Message received");
+                            messageReceived(data, client);
+                        } catch (IOException ignored) {}
                     });
                 } catch (ConcurrentModificationException ignored) {}
                 try {
@@ -73,8 +79,12 @@ public class Server {
                     if(!pingCheck.containsKey(client)) pingCheck.put(client, true);
                     if(!pingCheck.get(client)) kick.add(client);
                     pingCheck.replace(client, false);
+                    try {
+                        Message.sendPing(client);
+                    } catch (IOException ignored) {}
                 });
                 for (Socket client : kick) {
+                    logger.getLogger().warning("[Server]: Client lost connection: timed out");
                     kick(client, DisconnectReason.CONNECTION_LOST);
                 }
                 try {
@@ -85,26 +95,36 @@ public class Server {
     };
 
     public Server(int port) {
+        logger.getLogger().info("[Server]: Staring server...");
         try {
             server = new ServerSocket(port);
             connectionThread.start();
             requestThread.start();
             pingThread.start();
             //server.setSoTimeout(100000);
-            //Events events = new Events(limitBusTickets, maxBusTickets, limitBuildings, tempoDice, megaBuildings, tripleTeleport, startMoney, losMoney, doubleLosMoney, freeParking, gainRentInPrison, buildEquable, buildRule, cardsRequiredForOneHouse, cardsRequiredForTwoHouses, cardsRequiredForThreeHousEs, cardsRequiredForFourHouses, cardsRequiredForHotel, cardsRequiredForSkyscraper);
-            //Registry registry = LocateRegistry.createRegistry(1099);
-            //registry.rebind("Events", events);
+            StandardEvents events = new StandardEvents(false, -1, false, true, true, true, 1500, 200, true, true, true, true, true, BuildRule.ON_COLOR_GROUP, OwnedCardsOfColorGroup.ONE, OwnedCardsOfColorGroup.ONE, OwnedCardsOfColorGroup.ONE, OwnedCardsOfColorGroup.ONE, OwnedCardsOfColorGroup.ALL_BUT_ONE, OwnedCardsOfColorGroup.ALL);
+            Registry registry = LocateRegistry.createRegistry(1099);
+            registry.rebind("Events", events);
+            logger.getLogger().info("[Server]: Server online!");
         } catch (IOException e) {
-            System.err.println("[Server]: [ERROR]: Failed to start server. That could be due to an occupied port. The server usually uses the port 25565");
+            logger.getLogger().severe("[Server]: Failed to start server. That could be due to an occupied port. The server usually uses the port 25565\r\n" + e.getMessage());
+            connectionThread.interrupt();
+            requestThread.interrupt();
+            pingThread.interrupt();
             throw new RuntimeException();
         }
     }
 
-    public String open() {
+    public void open() {
         acceptNewClients = true;
+        logger.getLogger().info("[Server]: Listening for new clients...");
         try {
-            return InetAddress.getLocalHost().getHostAddress();
+            logger.getLogger().info("[Server]: IP-Address: " + InetAddress.getLocalHost().getHostAddress());
         } catch (UnknownHostException e) {
+            logger.getLogger().severe("[Server]: Server crashed due to an Exception\r\n" + e.getMessage());
+            connectionThread.interrupt();
+            requestThread.interrupt();
+            pingThread.interrupt();
             throw new RuntimeException(e);
         }
     }
@@ -121,6 +141,7 @@ public class Server {
             } catch (IOException ignored) {}
             kick(client, DisconnectReason.SERVER_CLOSED);
         }
+        logger.getLogger().warning("[Server]: Server closed...");
     }
 
     public void kick(Socket client, DisconnectReason reason) {
@@ -134,13 +155,12 @@ public class Server {
         int id = idArray[0];
         try {
             Message.send(new Message(reason, MessageType.DISCONNECT), client);
-            for(int i = id; i < clients.size(); i++) {
-                clients.replace(i, clients.get(i + 1));
-            }
-            clients.remove(clients.size());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        } catch (IOException ignored) {}
+        for(int i = id; i < clients.size(); i++) {
+            clients.replace(i, clients.get(i + 1));
         }
+        clients.remove(clients.size());
+        logger.getLogger().warning("[Server]: Kicked client");
     }
 
     private void messageReceived(String value, Socket client) {
@@ -157,8 +177,10 @@ public class Server {
                 }
                 case PING_BACK -> {
                     long delay = System.currentTimeMillis() - (long) message.getMessage()[0];
-                    if (pingCheck.containsKey(client)) pingCheck.replace(client, true);
-                    System.out.println("[Server]: Ping to " + client.getInetAddress().getHostAddress() + " is " + delay + "ms");
+                    if (pingCheck.containsKey(client)) {
+                        pingCheck.replace(client, true);
+                    }
+                    logger.getLogger().fine("[Server]: Ping to " + client.getInetAddress().getHostAddress() + " is " + delay + "ms");
                 }
                 case DISCONNECT -> kick(client, DisconnectReason.CLIENT_CLOSED);
                 case NULL -> {
@@ -166,12 +188,23 @@ public class Server {
                 default -> throw new RuntimeException();
             }
         } catch (Exception e) {
+            logger.getLogger().severe("[Server]: Server crashed due to an Exception\r\n" + e.getMessage());
+            connectionThread.interrupt();
+            requestThread.interrupt();
+            pingThread.interrupt();
             throw new RuntimeException(e);
         }
     }
 
     public static void main(String[] args) {
         Server server = new Server(25565);
-        System.out.println("Server IP: " + server.open());
+        server.open();
+
+        new Thread() {
+            @Override
+            public void run() {
+
+            }
+        }.start();
     }
 }

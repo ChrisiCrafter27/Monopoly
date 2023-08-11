@@ -16,7 +16,7 @@ public class TestF {
     }
 
     public void esWurdeGeradeAufDenKaufButtonGedrückt() {
-        eventObject.onPurchaseCard();
+        //eventObject.onPurchaseCard();
     }
 
     public static void main(String[] args) throws NotBoundException, RemoteException {

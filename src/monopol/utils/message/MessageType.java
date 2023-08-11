@@ -1,4 +1,4 @@
-package monopol.utils;
+package monopol.utils.message;
 
 public enum MessageType {
     PRINTLN,

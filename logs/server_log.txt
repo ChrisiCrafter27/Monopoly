@@ -1,5 +1,17 @@
-[11-08-2023 14:45:33] [FINE] Everything fine
-[11-08-2023 14:45:33] [CONF] Here is some config
-[11-08-2023 14:45:33] [INFO] This is an information
-[11-08-2023 14:45:33] [WARN] Oh no, there is a problem
-[11-08-2023 14:45:33] [FAIL] This probably causes a crash
+[11-08-2023 20:54:57] [INFO] [Server]: Staring server...
+[11-08-2023 20:54:57] [INFO] [Server]: Server online!
+[11-08-2023 20:54:57] [INFO] [Server]: Listening for new clients...
+[11-08-2023 20:54:57] [INFO] [Server]: Waiting for new Client
+[11-08-2023 20:54:57] [INFO] [Server]: IP-Address: 192.168.178.44
+[11-08-2023 20:54:58] [INFO] [Server]: New Client accepted
+[11-08-2023 20:54:58] [INFO] [Server]: Waiting for new Client
+[11-08-2023 20:55:07] [FINE] [Server]: Message received
+[11-08-2023 20:55:07] [FINE] [Server]: Ping to 127.0.0.1 is 322ms
+[11-08-2023 20:55:17] [FINE] [Server]: Message received
+[11-08-2023 20:55:17] [FINE] [Server]: Ping to 127.0.0.1 is 1ms
+[11-08-2023 20:55:27] [FINE] [Server]: Message received
+[11-08-2023 20:55:27] [FINE] [Server]: Ping to 127.0.0.1 is 1ms
+[11-08-2023 20:55:37] [FINE] [Server]: Message received
+[11-08-2023 20:55:37] [FINE] [Server]: Ping to 127.0.0.1 is 1ms
+[11-08-2023 20:55:57] [WARN] [Server]: Client lost connection: timed out
+[11-08-2023 20:55:57] [WARN] [Server]: Kicked client

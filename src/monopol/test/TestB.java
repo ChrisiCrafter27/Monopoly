@@ -2,8 +2,8 @@ package monopol.test;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import monopol.utils.Json;
-import monopol.utils.Message;
-import monopol.utils.MessageType;
+import monopol.utils.message.Message;
+import monopol.utils.message.MessageType;
 import monopol.server.Server;
 
 public class TestB {
