@@ -26,7 +26,7 @@ public class TestF {
         ServerLogger.INSTANCE.getLogger().warning("Oh no, there is a problem");
         ServerLogger.INSTANCE.getLogger().severe("This probably causes a crash");
 
-        TestF f = new TestF(new StandardEvents());
+        //TestF f = new TestF(new StandardEvents());
 
         //Client client = new Client("localhost", 25565);
         //client.triggerEvent().printSth("Print this!");

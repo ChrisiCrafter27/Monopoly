@@ -16,6 +16,7 @@ public abstract class Events extends UnicastRemoteObject implements EventsInterf
     public final boolean FREE_PARKING;
     public final boolean GAIN_RENT_IN_PRISON;
     public final boolean BUILD_EQUABLE;
+    public final boolean RE_ROLL_EVENT_CARDS_AFTER_USE;
     public final BuildRule BUILD_RULE;
     public final OwnedCardsOfColorGroup CARDS_REQUIRED_FOR_ONE_HOUSE;
     public final OwnedCardsOfColorGroup CARDS_REQUIRED_FOR_TWO_HOUSES;
@@ -24,7 +25,7 @@ public abstract class Events extends UnicastRemoteObject implements EventsInterf
     public final OwnedCardsOfColorGroup CARDS_REQUIRED_FOR_HOTEL;
     public final OwnedCardsOfColorGroup CARDS_REQUIRED_FOR_SKYSCRAPER;
 
-    protected Events(boolean limitBusTickets, int maxBusTickets, boolean limitBuildings, boolean tempoDice, boolean megaBuildings, boolean tripleTeleport, int startMoney, int losMoney, boolean doubleLosMoney, boolean freeParking, boolean gainRentInPrison, boolean buildEquable, BuildRule buildRule, OwnedCardsOfColorGroup cardsRequiredForOneHouse, OwnedCardsOfColorGroup cardsRequiredForTwoHouses, OwnedCardsOfColorGroup cardsRequiredForThreeHouses, OwnedCardsOfColorGroup cardsRequiredForFourHouses, OwnedCardsOfColorGroup cardsRequiredForHotel, OwnedCardsOfColorGroup cardsRequiredForSkyscraper) throws RemoteException {
+    protected Events(boolean limitBusTickets, int maxBusTickets, boolean limitBuildings, boolean tempoDice, boolean megaBuildings, boolean tripleTeleport, int startMoney, int losMoney, boolean doubleLosMoney, boolean freeParking, boolean gainRentInPrison, boolean buildEquable, boolean reRollEventCardsAfterUse, BuildRule buildRule, OwnedCardsOfColorGroup cardsRequiredForOneHouse, OwnedCardsOfColorGroup cardsRequiredForTwoHouses, OwnedCardsOfColorGroup cardsRequiredForThreeHouses, OwnedCardsOfColorGroup cardsRequiredForFourHouses, OwnedCardsOfColorGroup cardsRequiredForHotel, OwnedCardsOfColorGroup cardsRequiredForSkyscraper) throws RemoteException {
         LIMIT_BUS_TICKETS = limitBusTickets;
         MAX_BUS_TICKETS = maxBusTickets;
         LIMIT_BUILDINGS = limitBuildings;
@@ -37,6 +38,7 @@ public abstract class Events extends UnicastRemoteObject implements EventsInterf
         FREE_PARKING = freeParking;
         GAIN_RENT_IN_PRISON = gainRentInPrison;
         BUILD_EQUABLE = buildEquable;
+        RE_ROLL_EVENT_CARDS_AFTER_USE = reRollEventCardsAfterUse;
         BUILD_RULE = buildRule;
         CARDS_REQUIRED_FOR_ONE_HOUSE = cardsRequiredForOneHouse;
         CARDS_REQUIRED_FOR_TWO_HOUSES = cardsRequiredForTwoHouses;
@@ -63,7 +65,10 @@ public abstract class Events extends UnicastRemoteObject implements EventsInterf
     public abstract void onArrivedAtCommunityField();
     public abstract void onArrivedAtFreeParking();
     public abstract void onArrivedAtGoToPrisonField();
+    public abstract void onArrivedAtTaxField();
+    public abstract void onArrivedAtAdditionalTaxField();
     public abstract void onPassedLos();
     public abstract void onOfferTrade();
     public abstract void onAcceptTrade();
+    public abstract void onGoBankrupt();
 }
