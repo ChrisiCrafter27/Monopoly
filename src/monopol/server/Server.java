@@ -32,7 +32,6 @@ public class Server {
                         if (clients.containsValue(newClient)) continue;
                         clients.put(clients.size() + 1, newClient);
                     } catch (Exception e) {
-                        e.printStackTrace();
                         throw new RuntimeException();
                     }
                 }
@@ -51,17 +50,15 @@ public class Server {
                             try {
                                 String data = input.readUTF();
                                 messageReceived(data, client);
-                            } catch (IOException e) {
-                            }
+                            } catch (IOException ignored) {}
                         } catch (IOException e) {
-                            e.printStackTrace();
                             throw new RuntimeException();
                         }
                     });
-                } catch (ConcurrentModificationException e) {}
+                } catch (ConcurrentModificationException ignored) {}
                 try {
                     sleep(10);
-                } catch (InterruptedException e) {}
+                } catch (InterruptedException ignored) {}
             }
         }
     };
@@ -82,7 +79,7 @@ public class Server {
                 }
                 try {
                     sleep(Server.CLIENT_TIMEOUT);
-                } catch (InterruptedException e) {}
+                } catch (InterruptedException ignored) {}
             }
         }
     };
@@ -98,7 +95,6 @@ public class Server {
             Registry registry = LocateRegistry.createRegistry(1099);
             registry.rebind("Events", events);
         } catch (IOException e) {
-            e.printStackTrace();
             System.err.println("[Server]: [ERROR]: Failed to start server. That could be due to an occupied port. The server usually uses the port 25565");
             throw new RuntimeException();
         }
@@ -152,30 +148,24 @@ public class Server {
         try {
             message = Json.toObject(value, Message.class);
             switch (message.getMessageType()) {
-                case PRINTLN:
-                    System.out.println(message.getMessage()[0]);
-                    break;
-                case PING:
+                case PRINTLN -> System.out.println(message.getMessage()[0]);
+                case PING -> {
                     DataOutputStream output = new DataOutputStream(client.getOutputStream());
                     Object[] array = new Object[1];
                     array[0] = message.getMessage()[0];
                     output.writeUTF(Json.toString(new Message(array, MessageType.PING_BACK), false));
-                    break;
-                case PING_BACK:
+                }
+                case PING_BACK -> {
                     long delay = System.currentTimeMillis() - (long) message.getMessage()[0];
-                    if(pingCheck.containsKey(client)) pingCheck.replace(client, true);
+                    if (pingCheck.containsKey(client)) pingCheck.replace(client, true);
                     System.out.println("[Server]: Ping to " + client.getInetAddress().getHostAddress() + " is " + delay + "ms");
-                    break;
-                case DISCONNECT:
-                    kick(client, DisconnectReason.CLIENT_CLOSED);
-                    break;
-                case NULL:
-                    break;
-                default:
-                    throw new RuntimeException();
+                }
+                case DISCONNECT -> kick(client, DisconnectReason.CLIENT_CLOSED);
+                case NULL -> {
+                }
+                default -> throw new RuntimeException();
             }
         } catch (Exception e) {
-            e.printStackTrace();
             throw new RuntimeException(e);
         }
     }
