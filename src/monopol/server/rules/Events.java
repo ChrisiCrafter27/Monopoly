@@ -5,9 +5,7 @@ import java.rmi.server.UnicastRemoteObject;
 
 public class Events extends UnicastRemoteObject implements EventsInterface {
 
-    Events() throws RemoteException {
-
-    }
+    public Events() throws RemoteException {}
 
     @Override
     public void printSth(String value) {

@@ -1,11 +1,14 @@
 package monopol.server;
 
+import monopol.server.rules.Events;
 import monopol.utils.Json;
 import monopol.utils.Message;
 import monopol.utils.MessageType;
 
 import java.io.*;
 import java.net.*;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
 import java.util.HashMap;
@@ -91,7 +94,11 @@ public class Server {
             requestThread.start();
             pingThread.start();
             //server.setSoTimeout(100000);
+            Events events = new Events();
+            Registry registry = LocateRegistry.createRegistry(1099);
+            registry.rebind("Events", events);
         } catch (IOException e) {
+            e.printStackTrace();
             System.err.println("[Server]: [ERROR]: Failed to start server. That could be due to an occupied port. The server usually uses the port 25565");
             throw new RuntimeException();
         }

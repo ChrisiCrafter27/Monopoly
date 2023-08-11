@@ -1,0 +1,5 @@
+[11-08-2023 14:45:33] [FINE] Everything fine
+[11-08-2023 14:45:33] [CONF] Here is some config
+[11-08-2023 14:45:33] [INFO] This is an information
+[11-08-2023 14:45:33] [WARN] Oh no, there is a problem
+[11-08-2023 14:45:33] [FAIL] This probably causes a crash
