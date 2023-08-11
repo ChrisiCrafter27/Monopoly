@@ -8,50 +8,35 @@ public class TestButton {
     int y;
     String normal;
     String presst;
+    boolean clicked;
+    JLabel normal_Label;
     public TestButton(JFrame frame, int x, int y, String normal, String presst){
-
-
         this.frame = frame;
         this.x = x;
         this.y = y;
         this.normal = normal;
         this.presst = presst;
-        image(frame);
+        clicked(normal,presst,frame);
+
     }
 
-    public void image(JFrame frame){
+    public void clicked(String normal,String presst, JFrame frame){
         ImageIcon normal_Icon = new ImageIcon(normal);
         Image normal_Image = normal_Icon.getImage();
         Image normal_skaliert = normal_Image.getScaledInstance(122, 200, Image.SCALE_SMOOTH);
-        JLabel normal_Label = new JLabel(new ImageIcon(normal_skaliert));
-        normal_Label.setBounds(x, y, 122, 200);
-        frame.add(normal_Label);
 
-        ImageIcon presst_Icon = new ImageIcon(presst);
-        Image presst_Image = presst_Icon.getImage();
-        Image presst_skaliert = presst_Image.getScaledInstance(122, 200, Image.SCALE_SMOOTH);
-        JLabel presst_Label = new JLabel(new ImageIcon(presst_skaliert));
-        presst_Label.setBounds(x, y, 122, 200);
+        if (normal_Label == null) {
+            normal_Label = new JLabel(new ImageIcon(normal_skaliert));
+            normal_Label.setBounds(x, y, 122, 200);
+            frame.add(normal_Label);
+        }
 
-        clicked(normal_Label,presst_Label);
-    }
-
-    public void clicked(JLabel normal, JLabel presst){
-        normal.addMouseListener(new MouseAdapter() {
-            public void mouseClicked(MouseEvent e){
-                System.out.println("hi");
-                frame.add(presst);
-                frame.remove(normal);
+        normal_Label.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+                System.out.println("lol");
+                normal_Label.setIcon(new ImageIcon(presst));
+                frame.repaint();
             }
         });
-        presst.addMouseListener(new MouseAdapter(){
-            public void mouseClicked(MouseEvent e){
-                System.out.println("jo");
-                frame.add(normal);
-                frame.remove(presst);
-            }
-        });
-
     }
-
 }

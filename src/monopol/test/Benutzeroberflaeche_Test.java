@@ -15,7 +15,7 @@ public class Benutzeroberflaeche_Test {
     static int value2 = 5;
     public static void main(String[] args) {
         JFrame frame = frame();
-        TestButton button = new TestButton(frame, 500 , 300,"images/Monopoly.png", "images/Monopoly.png" );
+        TestButton button = new TestButton(frame, 500 , 300,"images/Monopoly.png", "images/walk1.png" );
         bild(frame);
         Text(frame);
         Knopf(frame);
@@ -176,12 +176,6 @@ public class Benutzeroberflaeche_Test {
                     animation = 0;
                 }
             }
-
-
-
-
-
-
     });
     timer.start();
     }

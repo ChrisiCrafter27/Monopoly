@@ -99,7 +99,7 @@ public class Client {
     public static void main(String[] args) {
         Client c = new Client();
         try {
-            //Message.sendPing(c.client);
+            Message.sendPing(c.client);
             //c.close();
             c.clientThread.interrupt();
         } catch (Exception e) {
