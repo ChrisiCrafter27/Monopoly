@@ -108,7 +108,7 @@ public class Server {
             registry.rebind("Events", events);
             logger.getLogger().info("[Server]: Server online!");
         } catch (IOException e) {
-            logger.getLogger().severe("[Server]: Failed to start server. That could be due to an occupied port. The server usually uses the port 25565\r\n" + e.getMessage());
+            logger.getLogger().severe("[Server]: Failed to start server\r\n" + e.getMessage());
             connectionThread.interrupt();
             requestThread.interrupt();
             pingThread.interrupt();
@@ -117,8 +117,6 @@ public class Server {
     }
 
     public void open() {
-        acceptNewClients = true;
-        logger.getLogger().info("[Server]: Listening for new clients...");
         try {
             logger.getLogger().info("[Server]: IP-Address: " + InetAddress.getLocalHost().getHostAddress());
         } catch (UnknownHostException e) {
@@ -128,6 +126,8 @@ public class Server {
             pingThread.interrupt();
             throw new RuntimeException(e);
         }
+        acceptNewClients = true;
+        logger.getLogger().info("[Server]: Listening for new clients...");
     }
 
     public void close() {
