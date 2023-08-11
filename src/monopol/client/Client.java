@@ -1,7 +1,6 @@
 package monopol.client;
 
 import monopol.server.DisconnectReason;
-import monopol.server.rules.Events;
 import monopol.server.rules.EventsInterface;
 import monopol.utils.Json;
 import monopol.utils.Message;
@@ -11,9 +10,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
-import java.net.SocketException;
 import java.rmi.NotBoundException;
-import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
@@ -29,7 +26,7 @@ public class Client {
                     DataInputStream input = new DataInputStream(client.getInputStream());
                     String data = input.readUTF();
                     messageReceived(data);
-                } catch (IOException e) {}
+                } catch (IOException ignored) {}
             }
             try {
                 client.close();
@@ -71,20 +68,11 @@ public class Client {
                 case DISCONNECT:
                     clientThread.interrupt();
                     switch ((DisconnectReason) message.getMessage()[0]) {
-                        case CONNECTION_LOST:
-                            System.out.println("[Server]: Connection lost: Timed out.");
-                            break;
-                        case SERVER_CLOSED:
-                            System.out.println("[Server]: Connection lost: Server closed.");
-                            break;
-                        case CLIENT_CLOSED:
-                            System.out.println("[Server]: Connection lost.");
-                            break;
-                        case KICKED:
-                            System.out.println("[Server]: Connection lost: Kicked by host.");
-                            break;
-                        default:
-                            System.out.println("[Server]: Connection lost: No further information.");
+                        case CONNECTION_LOST -> System.out.println("[Server]: Connection lost: Timed out.");
+                        case SERVER_CLOSED -> System.out.println("[Server]: Connection lost: Server closed.");
+                        case CLIENT_CLOSED -> System.out.println("[Server]: Connection lost.");
+                        case KICKED -> System.out.println("[Server]: Connection lost: Kicked by host.");
+                        default -> System.out.println("[Server]: Connection lost: No further information.");
                     }
                 case NULL:
                     break;
@@ -92,7 +80,6 @@ public class Client {
                     throw new RuntimeException();
             }
         } catch (Exception e) {
-            e.printStackTrace();
             throw new RuntimeException(e);
         }
     }
