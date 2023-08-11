@@ -1,4 +1,4 @@
-package monopol.utils.message;
+package monopol.message;
 
 import monopol.utils.Json;
 

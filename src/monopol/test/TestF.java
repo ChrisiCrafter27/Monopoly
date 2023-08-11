@@ -1,9 +1,7 @@
 package monopol.test;
 
-import monopol.client.Client;
 import monopol.server.ServerLogger;
-import monopol.server.rules.Events;
-import monopol.server.rules.StandardEvents;
+import monopol.rules.Events;
 
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;

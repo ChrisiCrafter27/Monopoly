@@ -1,6 +1,6 @@
 package monopol.test;
 
-import monopol.utils.message.Message;
+import monopol.message.Message;
 import monopol.server.Server;
 
 import java.io.IOException;

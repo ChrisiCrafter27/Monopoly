@@ -1,11 +1,11 @@
 package monopol.server;
 
-import monopol.server.rules.BuildRule;
-import monopol.server.rules.OwnedCardsOfColorGroup;
-import monopol.server.rules.StandardEvents;
+import monopol.rules.BuildRule;
+import monopol.rules.OwnedCardsOfColorGroup;
+import monopol.rules.StandardEvents;
 import monopol.utils.Json;
-import monopol.utils.message.Message;
-import monopol.utils.message.MessageType;
+import monopol.message.Message;
+import monopol.message.MessageType;
 
 import java.io.*;
 import java.net.*;

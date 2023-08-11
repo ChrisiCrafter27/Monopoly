@@ -1,10 +1,10 @@
 package monopol.client;
 
 import monopol.server.DisconnectReason;
-import monopol.server.rules.EventsInterface;
+import monopol.rules.EventsInterface;
 import monopol.utils.Json;
-import monopol.utils.message.Message;
-import monopol.utils.message.MessageType;
+import monopol.message.Message;
+import monopol.message.MessageType;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;

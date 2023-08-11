@@ -1,4 +1,4 @@
-package monopol.server.rules;
+package monopol.rules;
 
 import java.rmi.RemoteException;
 
