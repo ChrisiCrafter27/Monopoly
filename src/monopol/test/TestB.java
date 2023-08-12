@@ -6,8 +6,10 @@ import monopol.message.Message;
 import monopol.message.MessageType;
 import monopol.server.Server;
 
+import java.io.IOException;
+
 public class TestB {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         try {
             Object[] array = new Object[1];
             array[0] = new Server(25565);

@@ -1,5 +1,7 @@
 package monopol.core;
 
+import monopol.screen.GameWindow;
+
 public class Monopoly {
     public static final Monopoly INSTANCE = new Monopoly();
 
@@ -10,6 +12,7 @@ public class Monopoly {
         Thread menuThread = new Thread() {
             @Override
             public void run() {
+                GameWindow window = new GameWindow();
                 while(!interrupted()) {
                     //Check for buttons
                     //Manage inputs, checkboxes, etc.
@@ -21,5 +24,9 @@ public class Monopoly {
             }
         };
         menuThread.start();
+    }
+
+    public void setState(GameState gameState) {
+        state = gameState;
     }
 }

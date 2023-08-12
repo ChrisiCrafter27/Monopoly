@@ -95,25 +95,23 @@ public class Server {
         }
     };
 
-    public Server(int port) {
+    public Server(int port) throws IOException{
         logger.getLogger().info("[Server]: Staring server...");
-        try {
-            server = new ServerSocket(port);
-            connectionThread.start();
-            requestThread.start();
-            pingThread.start();
-            //server.setSoTimeout(100000);
-            StandardEvents events = new StandardEvents(false, -1, false, true, true, true, 1500, 200, true, true, true, true, true, BuildRule.ON_COLOR_GROUP, OwnedCardsOfColorGroup.ONE, OwnedCardsOfColorGroup.ONE, OwnedCardsOfColorGroup.ONE, OwnedCardsOfColorGroup.ONE, OwnedCardsOfColorGroup.ALL_BUT_ONE, OwnedCardsOfColorGroup.ALL);
-            Registry registry = LocateRegistry.createRegistry(1099);
-            registry.rebind("Events", events);
-            logger.getLogger().info("[Server]: Server online!");
-        } catch (IOException e) {
-            logger.getLogger().severe("[Server]: Failed to start server\r\n" + e.getMessage());
-            connectionThread.interrupt();
-            requestThread.interrupt();
-            pingThread.interrupt();
-            throw new RuntimeException();
-        }
+        server = new ServerSocket(port);
+        connectionThread.start();
+        requestThread.start();
+        pingThread.start();
+        //server.setSoTimeout(100000);
+        StandardEvents events = new StandardEvents(false, -1, false, true, true, true, 1500, 200, true, true, true, true, true, BuildRule.ON_COLOR_GROUP, OwnedCardsOfColorGroup.ONE, OwnedCardsOfColorGroup.ONE, OwnedCardsOfColorGroup.ONE, OwnedCardsOfColorGroup.ONE, OwnedCardsOfColorGroup.ALL_BUT_ONE, OwnedCardsOfColorGroup.ALL);
+        Registry registry = LocateRegistry.createRegistry(1099);
+        registry.rebind("Events", events);
+        /*
+        logger.getLogger().info("[Server]: Server online!");
+        logger.getLogger().severe("[Server]: Failed to start server\r\n" + e.getMessage());
+        connectionThread.interrupt();
+        requestThread.interrupt();
+        pingThread.interrupt();
+        */
     }
 
     public void open() {
@@ -197,7 +195,7 @@ public class Server {
         }
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException{
         Server server = new Server(25565);
         server.open();
 
