@@ -121,9 +121,4 @@ public class StandardEvents extends Events{
     public void onGoBankrupt() {
 
     }
-
-    @Override
-    public void printSth(String value) {
-
-    }
 }

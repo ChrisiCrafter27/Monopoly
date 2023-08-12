@@ -47,28 +47,4 @@ public abstract class Events extends UnicastRemoteObject implements EventsInterf
         CARDS_REQUIRED_FOR_HOTEL = cardsRequiredForHotel;
         CARDS_REQUIRED_FOR_SKYSCRAPER = cardsRequiredForSkyscraper;
     }
-
-    public abstract void onGameStart() throws RemoteException;
-    public abstract void onNextRound() throws RemoteException;
-    public abstract void onPrisonerRound() throws RemoteException;
-    public abstract void onDiceRoll() throws RemoteException;
-    public abstract void onTryMortgage() throws RemoteException;
-    public abstract void onPurchaseBuilding() throws RemoteException;
-    public abstract void onSellBuilding() throws RemoteException;
-    public abstract void onPurchaseCard() throws RemoteException;
-    public abstract void onArrivedAtLos() throws RemoteException;
-    public abstract void onArrivedAtAuction() throws RemoteException;
-    public abstract void onArrivedAtBusPass() throws RemoteException;
-    public abstract void onArrivedAtBirthday() throws RemoteException;
-    public abstract void onArrivedAtStreetOrFacility() throws RemoteException;
-    public abstract void onArrivedAtEventField() throws RemoteException;
-    public abstract void onArrivedAtCommunityField() throws RemoteException;
-    public abstract void onArrivedAtFreeParking() throws RemoteException;
-    public abstract void onArrivedAtGoToPrisonField() throws RemoteException;
-    public abstract void onArrivedAtTaxField() throws RemoteException;
-    public abstract void onArrivedAtAdditionalTaxField() throws RemoteException;
-    public abstract void onPassedLos() throws RemoteException;
-    public abstract void onOfferTrade() throws RemoteException;
-    public abstract void onAcceptTrade() throws RemoteException;
-    public abstract void onGoBankrupt() throws RemoteException;
 }
