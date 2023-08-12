@@ -12,7 +12,7 @@ public class TestB {
     public static void main(String[] args) throws IOException {
         try {
             Object[] array = new Object[1];
-            array[0] = new Server(25565);
+            //array[0] = new Server(25565);
             System.out.println(Json.toString(array, true));
             System.out.println("--------------------------------------------------");
             System.out.println(Json.toString(new Message(array, MessageType.NULL), true));

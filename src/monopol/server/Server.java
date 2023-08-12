@@ -10,21 +10,22 @@ import monopol.message.MessageType;
 
 import java.io.*;
 import java.net.*;
+import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.util.ArrayList;
-import java.util.ConcurrentModificationException;
-import java.util.HashMap;
-import java.util.List;
+import java.rmi.server.UnicastRemoteObject;
+import java.util.*;
 
-public class Server {
+public class Server extends UnicastRemoteObject implements ServerInterface {
     public static final int CLIENT_TIMEOUT = 10000;
 
     public final ServerSocket server;
     public final HashMap<Integer, Socket> clients = new HashMap<>();
     public final HashMap<Socket, Boolean> pingCheck = new HashMap<>();
+    public final HashMap<ServerPlayer, Socket> serverPlayers = new HashMap<>();
     public final ServerLogger logger = ServerLogger.INSTANCE;
     private boolean acceptNewClients = false;
+    public ServerSettings serverSettings;
 
     private final Thread connectionThread = new Thread() {
         @Override
@@ -37,6 +38,7 @@ public class Server {
                         if (clients.containsValue(newClient)) continue;
                         logger.getLogger().info("[Server]: New Client accepted");
                         clients.put(clients.size() + 1, newClient);
+                        serverPlayers.put(new ServerPlayer("Player " + (serverPlayers.size() + 1)), newClient);
                     } catch (Exception e) {
                         logger.getLogger().severe("[Server]: Server crashed due to an Exception\r\n" + e.getMessage());
                         connectionThread.interrupt();
@@ -95,16 +97,21 @@ public class Server {
         }
     };
 
-    public Server(int port) throws IOException{
+    public Server(int port, ServerSettings serverSettings) throws IOException{
         logger.getLogger().info("[Server]: Staring server...");
         server = new ServerSocket(port);
+
         connectionThread.start();
         requestThread.start();
         pingThread.start();
-        //server.setSoTimeout(100000);
+
         StandardEvents events = new StandardEvents(false, -1, false, true, true, true, 1500, 200, true, true, true, true, true, BuildRule.ON_COLOR_GROUP, OwnedCardsOfColorGroup.ONE, OwnedCardsOfColorGroup.ONE, OwnedCardsOfColorGroup.ONE, OwnedCardsOfColorGroup.ONE, OwnedCardsOfColorGroup.ALL_BUT_ONE, OwnedCardsOfColorGroup.ALL);
-        Registry registry = LocateRegistry.createRegistry(1099);
-        registry.rebind("Events", events);
+        Registry registry1 = LocateRegistry.createRegistry(1099);
+        registry1.rebind("Events", events);
+        Registry registry2 = LocateRegistry.createRegistry(1199);
+        registry2.rebind("Server", this);
+
+        this.serverSettings = serverSettings;
         /*
         logger.getLogger().info("[Server]: Server online!");
         logger.getLogger().severe("[Server]: Failed to start server\r\n" + e.getMessage());
@@ -112,6 +119,20 @@ public class Server {
         requestThread.interrupt();
         pingThread.interrupt();
         */
+
+        Thread thread = new Thread() {
+            @Override
+            public void run() {
+                boolean drin = false;
+                while(true) {
+                    if(serverPlayers.size() == 1 && serverPlayers.values().toArray()[0] != null) {
+                        drin = true;
+                        //System.out.println("JETZT DRIN");
+                    }
+                }
+            }
+        };
+        thread.start();
     }
 
     public void open() {
@@ -159,6 +180,12 @@ public class Server {
             clients.replace(i, clients.get(i + 1));
         }
         clients.remove(clients.size());
+        for(Map.Entry<ServerPlayer, Socket> entry : serverPlayers.entrySet()) {
+            if(entry.getValue() == client) {
+                serverPlayers.replace(entry.getKey(), null);
+                break;
+            }
+        }
         logger.getLogger().warning("[Server]: Kicked client");
     }
 
@@ -195,8 +222,25 @@ public class Server {
         }
     }
 
+    public ServerSettings getServerSettings() {
+        return serverSettings;
+    }
+
+    public ArrayList<ServerPlayer> getServerPlayers() {
+        ArrayList<ServerPlayer> list = new ArrayList<>(serverPlayers.keySet());
+        list.removeIf(serverPlayer -> serverPlayers.get(serverPlayer) == null);
+        return list;
+    }
+
+    @Override
+    public void kick(String name, DisconnectReason reason) throws RemoteException {
+        for (Map.Entry<ServerPlayer, Socket> entry : serverPlayers.entrySet()) {
+            if(entry.getKey().getName().equals(name)) kick(entry.getValue(), reason);
+        }
+    }
+
     public static void main(String[] args) throws IOException{
-        Server server = new Server(25565);
+        Server server = new Server(25565, new ServerSettings(false, true));
         server.open();
 
         new Thread() {

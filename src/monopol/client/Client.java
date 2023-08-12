@@ -2,6 +2,7 @@ package monopol.client;
 
 import monopol.server.DisconnectReason;
 import monopol.rules.EventsInterface;
+import monopol.server.ServerInterface;
 import monopol.utils.Json;
 import monopol.message.Message;
 import monopol.message.MessageType;
@@ -17,6 +18,7 @@ import java.rmi.registry.Registry;
 public class Client {
     private final Socket client;
     private final EventsInterface eventsInterface;
+    private final ServerInterface serverInterface;
 
     private final Thread clientThread = new Thread() {
         @Override
@@ -45,8 +47,10 @@ public class Client {
         try {
             client = new Socket(ip, port);
             clientThread.start();
-            Registry registry = LocateRegistry.getRegistry(ip, 1099);
-            eventsInterface = (EventsInterface) registry.lookup("Events");
+            Registry registry1 = LocateRegistry.getRegistry(ip, 1099);
+            eventsInterface = (EventsInterface) registry1.lookup("Events");
+            Registry registry2 = LocateRegistry.getRegistry(ip, 1199);
+            serverInterface = (ServerInterface) registry2.lookup("Server");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -100,6 +104,9 @@ public class Client {
 
     public EventsInterface triggerEvent() {
         return eventsInterface;
+    }
+    public ServerInterface serverMethod() {
+        return serverInterface;
     }
 
     public static void main(String[] args) throws NotBoundException {

@@ -2,12 +2,13 @@ package monopol.test;
 
 import monopol.message.Message;
 import monopol.server.Server;
+import monopol.server.ServerSettings;
 
 import java.io.IOException;
 
 public class TestD {
     public static void main(String[] args) throws IOException {
-        Server server = new Server(25565);
+        Server server = new Server(25565, new ServerSettings(true, true));
         server.open();
         Thread thread = new Thread() {
             @Override
