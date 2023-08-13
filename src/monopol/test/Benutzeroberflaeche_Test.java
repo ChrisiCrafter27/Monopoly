@@ -5,13 +5,7 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-
-
-
-
 public class Benutzeroberflaeche_Test {
-
-
     static int value2 = 5;
     public static void main(String[] args) {
         JFrame frame = frame();
@@ -21,10 +15,6 @@ public class Benutzeroberflaeche_Test {
         Text(frame);
         Knopf(frame);
         Regler(frame);
-
-
-
-
         frame.setVisible(true);
     }
 
@@ -33,7 +23,6 @@ public class Benutzeroberflaeche_Test {
         frame.setSize(800, 600);
         return frame;
     }
-
     private static void bild(JFrame frame) {
 
         String pfad = "images/Monopoly.png";
@@ -48,7 +37,6 @@ public class Benutzeroberflaeche_Test {
         frame.add(imageLabel2);
         frame.setLayout(null);
     }
-
     private static void Text(JFrame frame){
         String text = "Mein test Text!";
         JLabel label = new JLabel(text);
@@ -56,7 +44,6 @@ public class Benutzeroberflaeche_Test {
         label.setBounds(100, 200, 300, 50);
         frame.add(label);
     }
-
     private static void Knopf(JFrame frame){
         JButton knopf = new JButton("Klick mich!");
         knopf.addActionListener(e -> {
@@ -66,7 +53,6 @@ public class Benutzeroberflaeche_Test {
         knopf.setBounds(300, 200,200,80);
         frame.add(knopf);
     }
-
     private static void Regler(JFrame frame){
         JSlider slider = new JSlider(JSlider.HORIZONTAL, 0, 100, 50);
         slider.setMajorTickSpacing(20);
