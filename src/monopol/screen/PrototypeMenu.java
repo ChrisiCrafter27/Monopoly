@@ -73,6 +73,7 @@ public class PrototypeMenu {
             frame.setVisible(false);
             frame.dispose();
         });
+        frame.repaint();
     }
 
     public void prepareLobby(boolean host) {
@@ -100,6 +101,12 @@ public class PrototypeMenu {
 
                     if(keyHandler.isKeyPressed(10)) JOptionPane.showMessageDialog(null, "You pressed Enter!", "Enter pressed", JOptionPane.PLAIN_MESSAGE);
 
+                    if(client.closed()) {
+                        interrupt();
+                        prepareMenu();
+                        return;
+                    }
+
                     try {
                         frame.getContentPane().removeAll();
                         int y = 50;
@@ -108,11 +115,7 @@ public class PrototypeMenu {
                             addButton(frame, "kick", 600, y, 100, 25, actionEvent -> {
                                 try {
                                     client.serverMethod().kick(serverPlayer.getName(), DisconnectReason.KICKED);
-                                } catch (RemoteException e) {
-                                    client.close();
-                                    interrupt();
-                                    prepareMenu();
-                                }
+                                } catch (Exception ignored) {}
                             });
                             y += 50;
                         }
@@ -121,10 +124,11 @@ public class PrototypeMenu {
                         client.close();
                         interrupt();
                         prepareMenu();
+                        return;
                     }
                     frame.repaint();
                     try {
-                        sleep(1000);
+                        sleep(100);
                     } catch (InterruptedException ignored) {}
                 }
                 System.out.println("The game should now start!");
