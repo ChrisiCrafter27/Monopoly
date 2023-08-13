@@ -20,6 +20,7 @@ public class Client {
     private final EventsInterface eventsInterface;
     private final ServerInterface serverInterface;
     public DisconnectReason disconnectReason = null;
+    public String name = null;
 
     private final Thread clientThread = new Thread() {
         @Override
@@ -74,6 +75,9 @@ public class Client {
                 case PING_BACK:
                     long delay = System.currentTimeMillis() - (long) message.getMessage()[0];
                     System.out.println("[Server]: Your ping is " + delay + "ms");
+                    break;
+                case NAME:
+                    if(name == null) name = (String) message.getMessage()[0];
                     break;
                 case DISCONNECT:
                     disconnectReason = DisconnectReason.valueOf((String) message.getMessage()[0]);

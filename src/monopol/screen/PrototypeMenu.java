@@ -14,12 +14,15 @@ import javax.swing.*;
 import javax.xml.crypto.dsig.keyinfo.KeyValue;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 
 public class PrototypeMenu {
     private final JFrame frame = new JFrame("Monopoly - PrototypeWindow");
     private Client client;
     private final KeyHandler keyHandler = new KeyHandler();
+    private ArrayList<ServerPlayer> displayedServerPlayers = new ArrayList<>();
 
     public PrototypeMenu() {
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -33,6 +36,7 @@ public class PrototypeMenu {
 
     public void prepareMenu() {
         Monopoly.INSTANCE.setState(GameState.MAIN_MENU);
+        displayedServerPlayers = new ArrayList<>();
         frame.getContentPane().removeAll();
         frame.repaint();
 
@@ -72,6 +76,7 @@ public class PrototypeMenu {
         addButton(frame, "Close", 50, 250, 200, 50, actionEvent -> {
             frame.setVisible(false);
             frame.dispose();
+            System.exit(0);
         });
         frame.repaint();
     }
@@ -97,9 +102,20 @@ public class PrototypeMenu {
             @Override
             public void run() {
 
+                addText(frame, "Connecting to server...", frame.getWidth() / 2, frame.getHeight() / 2, 500, 25, true);
+                frame.repaint();
+
+                while(!isInterrupted() && client.name == null) {
+                    if(client.closed()) {
+                        interrupt();
+                        prepareMenu();
+                        return;
+                    }
+                }
+
                 while(!isInterrupted()) {
 
-                    if(keyHandler.isKeyPressed(10)) JOptionPane.showMessageDialog(null, "You pressed Enter!", "Enter pressed", JOptionPane.PLAIN_MESSAGE);
+                    if(keyHandler.isKeyPressed(KeyEvent.VK_W)) JOptionPane.showMessageDialog(null, "You pressed W!", "W pressed", JOptionPane.PLAIN_MESSAGE);
 
                     if(client.closed()) {
                         interrupt();
@@ -108,16 +124,45 @@ public class PrototypeMenu {
                     }
 
                     try {
-                        frame.getContentPane().removeAll();
-                        int y = 50;
-                        for (ServerPlayer serverPlayer : client.serverMethod().getServerPlayers()) {
-                            addText(frame, serverPlayer.getName(), 50, y, 500, 25);
-                            addButton(frame, "kick", 600, y, 100, 25, actionEvent -> {
-                                try {
-                                    client.serverMethod().kick(serverPlayer.getName(), DisconnectReason.KICKED);
-                                } catch (Exception ignored) {}
-                            });
-                            y += 50;
+                        boolean shouldUpdate = true;
+                        for(ServerPlayer serverPlayer1 : displayedServerPlayers) {
+                            String name = serverPlayer1.getName();
+                            boolean okay = false;
+                            for(ServerPlayer serverPlayer2 : client.serverMethod().getServerPlayers()) {
+                                if (serverPlayer2.getName().equals(name)) {
+                                    okay = true;
+                                    break;
+                                }
+                            }
+                            if(!okay) {
+                                shouldUpdate = true;
+                                break;
+                            } else shouldUpdate = false;
+                        }
+                        if(shouldUpdate) {
+                            frame.getContentPane().removeAll();
+                            int y = 50;
+                            for (ServerPlayer serverPlayer : client.serverMethod().getServerPlayers()) {
+                                addText(frame, serverPlayer.getName(), 50, y, 500, 25);
+                                if(!serverPlayer.getName().equals(client.name)) {
+                                    addButton(frame, "Kick", 600, y, 100, 25, actionEvent -> {
+                                        try {
+                                            client.serverMethod().kick(serverPlayer.getName(), DisconnectReason.KICKED);
+                                        } catch (Exception ignored) {
+                                        }
+                                    });
+                                } else {
+                                    addButton(frame, "Verlassen", 600, y, 100, 25, actionEvent -> {
+                                        try {
+                                            client.serverMethod().kick(serverPlayer.getName(), DisconnectReason.CLIENT_CLOSED);
+                                        } catch (Exception ignored) {
+                                        }
+                                    });
+                                }
+                                y += 50;
+                            }
+                            frame.repaint();
+                            displayedServerPlayers = client.serverMethod().getServerPlayers();
                         }
                     } catch (RemoteException e) {
                         System.err.println(e.getMessage());
@@ -126,7 +171,7 @@ public class PrototypeMenu {
                         prepareMenu();
                         return;
                     }
-                    frame.repaint();
+
                     try {
                         sleep(100);
                     } catch (InterruptedException ignored) {}
@@ -145,10 +190,18 @@ public class PrototypeMenu {
         frame.add(button);
     }
 
-    private static void addText(JFrame frame, String display, int x, int y, int width, int height) {
+    private static void addText(JFrame frame, String display, int x, int y, int width, int size, boolean centered) {
+        JLabel label;
+        if(centered) label = new JLabel(display, JLabel.CENTER); else label = new JLabel(display);
+        label.setFont(new Font("Arial", Font.PLAIN, size));
+        label.setBounds(x, y, width, size);
+        frame.add(label);
+    }
+
+    private static void addText(JFrame frame, String display, int x, int y, int width, int size) {
         JLabel label = new JLabel(display);
-        label.setFont(new Font("Arial", Font.PLAIN, 25));
-        label.setBounds(x, y, width, height);
+        label.setFont(new Font("Arial", Font.PLAIN, size));
+        label.setBounds(x, y, width, size);
         frame.add(label);
     }
 

@@ -29,4 +29,8 @@ public class Monopoly {
     public void setState(GameState gameState) {
         state = gameState;
     }
+
+    public GameState getState() {
+        return state;
+    }
 }

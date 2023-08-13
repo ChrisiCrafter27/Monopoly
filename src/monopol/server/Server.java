@@ -1,5 +1,7 @@
 package monopol.server;
 
+import monopol.core.GameState;
+import monopol.core.Monopoly;
 import monopol.log.ServerLogger;
 import monopol.rules.BuildRule;
 import monopol.rules.OwnedCardsOfColorGroup;
@@ -38,7 +40,9 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
                         if (clients.containsValue(newClient)) continue;
                         logger.getLogger().info("[Server]: New Client accepted");
                         clients.put(clients.size() + 1, newClient);
-                        serverPlayers.put(new ServerPlayer("Player " + (serverPlayers.size() + 1)), newClient);
+                        ServerPlayer serverPlayer = new ServerPlayer("Player " + (serverPlayers.size() + 1));
+                        serverPlayers.put(serverPlayer, newClient);
+                        Message.send(new Message(serverPlayer.getName(), MessageType.NAME), newClient);
                     } catch (Exception e) {
                         logger.getLogger().severe("[Server]: Server crashed due to an Exception\r\n" + e.getMessage());
                         connectionThread.interrupt();
@@ -183,6 +187,7 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
         for(Map.Entry<ServerPlayer, Socket> entry : serverPlayers.entrySet()) {
             if(entry.getValue() == client) {
                 serverPlayers.replace(entry.getKey(), null);
+                if(Monopoly.INSTANCE.getState() == GameState.LOBBY) serverPlayers.remove(entry.getKey());
                 break;
             }
         }
