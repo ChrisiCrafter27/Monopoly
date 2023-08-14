@@ -2,7 +2,14 @@ package monopol.core;
 
 import monopol.screen.GameWindow;
 
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+
 public class Monopoly {
+
     public static final Monopoly INSTANCE = new Monopoly();
 
     GameState state;
@@ -12,11 +19,16 @@ public class Monopoly {
         Thread menuThread = new Thread() {
             @Override
             public void run() {
-                GameWindow window = new GameWindow();
+                GameWindow Monopoly = new GameWindow();
+                JFrame frame = Monopoly.getframe();
+                Monopoly.Mainmenu();
+                frame.setVisible(true);
+
+
+
                 while(!interrupted()) {
-                    //Check for buttons
-                    //Manage inputs, checkboxes, etc.
-                    //finally interrupt this thread and start client- or server-thread
+
+
                     try {
                         sleep(10);
                     } catch (InterruptedException ignored) {}

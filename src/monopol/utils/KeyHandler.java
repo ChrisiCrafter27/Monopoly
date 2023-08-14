@@ -2,11 +2,13 @@ package monopol.utils;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.security.Key;
 import java.util.ArrayList;
 
 public class KeyHandler implements KeyListener {
 
-    private final ArrayList<Integer> pressedKeys = new ArrayList<>();
+    public ArrayList<Integer> pressedKeys = new ArrayList<>();
+
 
     @Override
     public void keyTyped(KeyEvent e) {
