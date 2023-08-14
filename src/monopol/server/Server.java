@@ -40,7 +40,7 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
                         if (clients.containsValue(newClient)) continue;
                         logger.getLogger().info("[Server]: New Client accepted");
                         clients.put(clients.size() + 1, newClient);
-                        ServerPlayer serverPlayer = new ServerPlayer("Player " + (serverPlayers.size() + 1));
+                        ServerPlayer serverPlayer = new ServerPlayer("Spieler " + (serverPlayers.size() + 1));
                         serverPlayers.put(serverPlayer, newClient);
                         Message.send(new Message(serverPlayer.getName(), MessageType.NAME), newClient);
                     } catch (Exception e) {
@@ -242,6 +242,21 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
         for (Map.Entry<ServerPlayer, Socket> entry : serverPlayers.entrySet()) {
             if(entry.getKey().getName().equals(name)) kick(entry.getValue(), reason);
         }
+    }
+
+    @Override
+    public boolean changeName(String oldName, String newName) {
+        if(newName.contains("Spieler")) return false;
+        for (Map.Entry<ServerPlayer, Socket> entry : serverPlayers.entrySet()) {
+            if(entry.getKey().getName().equals(newName)) return false;
+        }
+        for (Map.Entry<ServerPlayer, Socket> entry : serverPlayers.entrySet()) {
+            if(entry.getKey().getName().equals(oldName)) {
+                entry.getKey().setName(newName);
+                return true;
+            }
+        }
+        return false;
     }
 
     public static void main(String[] args) throws IOException{

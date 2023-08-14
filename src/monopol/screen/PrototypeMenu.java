@@ -158,6 +158,13 @@ public class PrototypeMenu {
                                         } catch (Exception ignored) {
                                         }
                                     });
+                                    addButton(frame, "Namen ändern", 750, y, 150, 25, actionEvent -> {
+                                        try {
+                                            String name = JOptionPane.showInputDialog(null, "Neuer Name:", "Namen ändern", JOptionPane.QUESTION_MESSAGE);
+                                            if(client.serverMethod().changeName(client.name, name)) client.name = name; else JOptionPane.showMessageDialog(null, "Dieser Name ist schon vergeben oder nicht erlaubt!", "Namen ändern", JOptionPane.WARNING_MESSAGE);
+                                        } catch (Exception ignored) {
+                                        }
+                                    });
                                 }
                                 y += 50;
                             }
