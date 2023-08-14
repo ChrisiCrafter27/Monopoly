@@ -1,12 +1,10 @@
-[13-08-2023 15:46:46] [INFO] [Server]: Staring server...
-[13-08-2023 15:46:46] [INFO] [Server]: IP-Address: 192.168.178.44
-[13-08-2023 15:46:46] [INFO] [Server]: Listening for new clients...
-[13-08-2023 15:46:46] [INFO] [Server]: Waiting for new Client
-[13-08-2023 15:46:46] [INFO] [Server]: New Client accepted
-[13-08-2023 15:46:46] [INFO] [Server]: Waiting for new Client
-[13-08-2023 15:46:48] [WARN] [Server]: Kicked client
-[13-08-2023 15:47:06] [INFO] [Server]: New Client accepted
-[13-08-2023 15:47:06] [INFO] [Server]: Waiting for new Client
-[13-08-2023 15:47:06] [FINE] [Server]: Message received
-[13-08-2023 15:47:06] [FINE] [Server]: Ping to 127.0.0.1 is 3ms
-[13-08-2023 15:47:15] [WARN] [Server]: Kicked client
+[13-08-2023 17:44:06] [INFO] [Server]: Staring server...
+[13-08-2023 17:44:06] [INFO] [Server]: IP-Address: 192.168.179.71
+[13-08-2023 17:44:06] [INFO] [Server]: Listening for new clients...
+[13-08-2023 17:44:06] [INFO] [Server]: Waiting for new Client
+[13-08-2023 17:44:06] [INFO] [Server]: New Client accepted
+[13-08-2023 17:44:07] [INFO] [Server]: Waiting for new Client
+[13-08-2023 17:44:10] [WARN] [Server]: Kicked client
+[13-08-2023 17:44:34] [INFO] [Server]: New Client accepted
+[13-08-2023 17:44:34] [INFO] [Server]: Waiting for new Client
+[13-08-2023 17:44:36] [WARN] [Server]: Kicked client

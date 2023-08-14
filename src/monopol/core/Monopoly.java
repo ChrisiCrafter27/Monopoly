@@ -26,12 +26,9 @@ public class Monopoly {
 
 
 
-
-
-
-
-
                 while(!interrupted()) {
+
+
                     try {
                         sleep(10);
                     } catch (InterruptedException ignored) {}

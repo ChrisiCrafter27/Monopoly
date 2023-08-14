@@ -83,11 +83,11 @@ public class Client {
                     disconnectReason = DisconnectReason.valueOf((String) message.getMessage()[0]);
                     clientThread.interrupt();
                     switch (DisconnectReason.valueOf((String) message.getMessage()[0])) {
-                        case CONNECTION_LOST -> System.out.println("[Server]: Connection lost: Timed out.");
-                        case SERVER_CLOSED -> System.out.println("[Server]: Connection lost: Server closed.");
-                        case CLIENT_CLOSED -> System.out.println("[Server]: Connection lost: Left game");
-                        case KICKED -> System.out.println("[Server]: Connection lost: Kicked by host.");
-                        default -> System.out.println("[Server]: Connection lost: No further information.");
+                        case CONNECTION_LOST -> System.out.println("[Client]: Connection lost: Timed out.");
+                        case SERVER_CLOSED -> System.out.println("[Client]: Connection lost: Server closed.");
+                        case CLIENT_CLOSED -> System.out.println("[Client]: Connection lost: Left game");
+                        case KICKED -> System.out.println("[Client]: Connection lost: Kicked by other player.");
+                        default -> System.out.println("[Client]: Connection lost: No further information.");
                     }
                 case NULL:
                     break;
@@ -108,6 +108,10 @@ public class Client {
         clientThread.interrupt();
     }
 
+    public boolean closed() {
+        return client.isClosed();
+    }
+
     public EventsInterface triggerEvent() {
         return eventsInterface;
     }
@@ -119,7 +123,6 @@ public class Client {
         Client c = new Client("localhost", 25565);
         try {
             //Message.sendPing(c.client);
-            c.triggerEvent().printSth("Print this");
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
