@@ -7,6 +7,7 @@ import monopol.utils.Json;
 import monopol.message.Message;
 import monopol.message.MessageType;
 
+import javax.swing.*;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -48,11 +49,16 @@ public class Client {
     public Client(String ip, int port) throws NotBoundException {
         try {
             client = new Socket(ip, port);
-            clientThread.start();
             Registry registry1 = LocateRegistry.getRegistry(ip, 1299);
             eventsInterface = (EventsInterface) registry1.lookup("Events");
             Registry registry2 = LocateRegistry.getRegistry(ip, 1199);
             serverInterface = (ServerInterface) registry2.lookup("Server");
+            if(serverMethod().stopped()) {
+                JOptionPane.showMessageDialog(null, "The target server is currently stopped!", "Connection failed", JOptionPane.WARNING_MESSAGE);
+                client.close();
+                return;
+            }
+            clientThread.start();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
