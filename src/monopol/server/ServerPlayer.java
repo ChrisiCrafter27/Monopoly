@@ -13,7 +13,7 @@ public class ServerPlayer implements Serializable {
         return name;
     }
 
-    public void setName() {
-
+    public void setName(String name) {
+        this.name = name;
     }
 }

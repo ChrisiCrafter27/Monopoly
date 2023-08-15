@@ -8,5 +8,6 @@ public enum DisconnectReason {
     CONNECTION_LOST,
     SERVER_FULL,
     GAME_RUNNING,
-    KICKED
+    KICKED,
+    UNKNOWN
 }

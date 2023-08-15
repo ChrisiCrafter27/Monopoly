@@ -112,7 +112,7 @@ public class Client {
         return client.isClosed();
     }
 
-    public EventsInterface triggerEvent() {
+    public EventsInterface eventMethod() {
         return eventsInterface;
     }
     public ServerInterface serverMethod() {

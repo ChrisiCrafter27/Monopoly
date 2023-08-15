@@ -20,9 +20,14 @@ import java.util.ArrayList;
 
 public class PrototypeMenu {
     private final JFrame frame = new JFrame("Monopoly - PrototypeWindow");
+    private final ArrayList<Client> clients = new ArrayList<>();
+    private final ArrayList<Client> clientsTemp = new ArrayList<>();
+    private boolean serverAcceptsNewClient;
     private Client client;
+    private Client clientTemp;
     private final KeyHandler keyHandler = new KeyHandler();
     private ArrayList<ServerPlayer> displayedServerPlayers = new ArrayList<>();
+    private String ip;
 
     public PrototypeMenu() {
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -41,26 +46,18 @@ public class PrototypeMenu {
         frame.repaint();
 
         addButton(frame, "Host game", 50, 50, 200, 50, actionEvent -> {
-            String name;
-            do {
-                name = JOptionPane.showInputDialog(null, "Please enter your name:", "Host game", JOptionPane.QUESTION_MESSAGE);
-                if(name == null) return;
-            } while(name.isEmpty());
+            boolean trust = JOptionPane.showConfirmDialog(null, "Vertraust du deinen Mitspielern?", "Host game", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION;
             try {
-                Server server = new Server(25565, new ServerSettings(false, true));
+                Server server = new Server(25565, new ServerSettings(trust, trust));
                 server.open();
                 client = new Client("localhost", 25565);
+                clients.add(client);
                 prepareLobby(true);
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(null, "Failed to start server. Make sure there are no other running server on your PC!", "Failed to start server", JOptionPane.WARNING_MESSAGE);
             }
         });
         addButton(frame, "Join game", 50, 150, 200, 50, actionEvent -> {
-            String name;
-            do {
-                name = JOptionPane.showInputDialog(null, "Please enter your name:", "Join game", JOptionPane.QUESTION_MESSAGE);
-                if(name == null) return;
-            } while(name.isEmpty());
             String ip;
             do {
                 ip = JOptionPane.showInputDialog(null, "Please enter the IP-Address:", "Join game", JOptionPane.QUESTION_MESSAGE);
@@ -68,6 +65,7 @@ public class PrototypeMenu {
             } while(ip.isEmpty());
             try {
                 client = new Client(ip, 25565);
+                clients.add(client);
                 prepareLobby(false);
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(null, "Server not found. Make sure the IP-Address is correct!", "Server not found", JOptionPane.WARNING_MESSAGE);
@@ -118,9 +116,14 @@ public class PrototypeMenu {
                     if(keyHandler.isKeyPressed(KeyEvent.VK_W)) JOptionPane.showMessageDialog(null, "You pressed W!", "W pressed", JOptionPane.PLAIN_MESSAGE);
 
                     if(client.closed()) {
-                        interrupt();
-                        prepareMenu();
-                        return;
+                        clients.remove(client);
+                        if(!clients.isEmpty()) {
+                            client = clients.get(0);
+                        } else {
+                            interrupt();
+                            prepareMenu();
+                            return;
+                        }
                     }
 
                     try {
@@ -139,30 +142,60 @@ public class PrototypeMenu {
                                 break;
                             } else shouldUpdate = false;
                         }
+                        if(!clientsTemp.containsAll(clients) || !clients.containsAll(clientsTemp)) shouldUpdate = true;
+                        clientsTemp.removeAll(clientsTemp);
+                        clientsTemp.addAll(clients);
+                        if(serverAcceptsNewClient != client.serverMethod().acceptsNewClient()) shouldUpdate = true;
+                        serverAcceptsNewClient = client.serverMethod().acceptsNewClient();
+                        if(clientTemp != client) shouldUpdate = true;
+                        clientTemp = client;
+
                         if(shouldUpdate) {
                             frame.getContentPane().removeAll();
-                            int y = 50;
+                            int y = 150;
                             for (ServerPlayer serverPlayer : client.serverMethod().getServerPlayers()) {
                                 addText(frame, serverPlayer.getName(), 50, y, 500, 25);
                                 if(!serverPlayer.getName().equals(client.name)) {
-                                    addButton(frame, "Kick", 600, y, 100, 25, actionEvent -> {
+                                    addButton(frame, "Kick", 600, y, 150, 25, actionEvent -> {
                                         try {
                                             client.serverMethod().kick(serverPlayer.getName(), DisconnectReason.KICKED);
                                         } catch (Exception ignored) {
                                         }
                                     });
                                 } else {
-                                    addButton(frame, "Verlassen", 600, y, 100, 25, actionEvent -> {
+                                    addButton(frame, "Namen ändern", 600, y, 150, 25, actionEvent -> {
                                         try {
-                                            client.serverMethod().kick(serverPlayer.getName(), DisconnectReason.CLIENT_CLOSED);
+                                            String name = JOptionPane.showInputDialog(null, "Neuer Name:", "Namen ändern", JOptionPane.QUESTION_MESSAGE);
+                                            if(client.serverMethod().changeName(client.name, name)) client.name = name; else JOptionPane.showMessageDialog(null, "Dieser Name ist schon vergeben oder nicht erlaubt!", "Namen ändern", JOptionPane.WARNING_MESSAGE);
                                         } catch (Exception ignored) {
                                         }
                                     });
                                 }
                                 y += 50;
                             }
-                            frame.repaint();
+                            addButton(frame, "Spieler hinzufügen", 50, frame.getHeight() - 100, 200, 50, actionEvent -> {
+                                try {
+                                    if(client.serverMethod().acceptsNewClient()) {
+                                        client = new Client(ip, 25565);
+                                        clients.add(clients.size(), client);
+                                    }
+                                } catch (Exception ignored) {}
+                            });
+                            addButton(frame, "Verlassen", frame.getWidth() - 250, frame.getHeight() - 100, 200, 50, actionEvent -> {
+                                try {
+                                    client.serverMethod().kick(client.name, DisconnectReason.CLIENT_CLOSED);
+                                } catch (Exception ignored) {
+                                }
+                            });
                             displayedServerPlayers = client.serverMethod().getServerPlayers();
+                            int step = frame.getWidth() / clients.size();
+                            for(int i = 0; i < clients.size(); i++) {
+                                int[] value = {i};
+                                addButton(frame, clients.get(i).name, i * step, 0, step, 50, actionEvent -> {
+                                    setClient(value[0]);
+                                });
+                            }
+                            frame.repaint();
                         }
                     } catch (RemoteException e) {
                         System.err.println(e.getMessage());
@@ -171,7 +204,6 @@ public class PrototypeMenu {
                         prepareMenu();
                         return;
                     }
-
                     try {
                         sleep(100);
                     } catch (InterruptedException ignored) {}
@@ -181,6 +213,10 @@ public class PrototypeMenu {
             }
         };
         lobbyThread.start();
+    }
+
+    private void setClient(int i) {
+        client = clients.get(i);
     }
 
     private static void addButton(JFrame frame, String display, int x, int y, int width, int height, ActionListener actionEvent){
