@@ -104,15 +104,11 @@ public class GameWindow {
     }
     public void Joingame(JLayeredPane panel){
 
-        JoinGame.setBounds(100, 100, 800, 600);
-        JoinGame.setFocusable(true);
-        JoinGame.requestFocus();
-
+        JoinGame.setBounds(0, 0, 800, 600);
         panel.add(JoinGame, JLayeredPane.POPUP_LAYER);
-
         System.out.println(panel.getBounds());
         setPannelBild("images/Host_Server_0_0.png", JoinGame);
-
+        JoinGame.setVisible(true);
     }
 
     public void hostgame(JLayeredPane panel){
@@ -207,6 +203,7 @@ public class GameWindow {
         Image image = imageIcon.getImage();
         //System.out.println("Bildgröße: " + image.getWidth(null) + "x" + image.getHeight(null));
         Image skaliertesImage = image.getScaledInstance(frame.getWidth(), frame.getHeight(), Image.SCALE_SMOOTH);
+        //System.out.println("skaliertesImage: " + skaliertesImage.getWidth(null) + "x" + skaliertesImage.getHeight(null));
         JLabel BILD = new JLabel(new ImageIcon(skaliertesImage));
         BILD.setBounds(0,0, frame.getWidth(), frame.getHeight());
         panel.add(BILD,JLayeredPane.DEFAULT_LAYER);
@@ -214,6 +211,8 @@ public class GameWindow {
         panel.revalidate();
     }
     public void setPannelBild(String Bild,JLayeredPane panel){
+
+
         System.out.println("Panel size: " + panel.getWidth() + "x" + panel.getHeight());
         System.out.println("Image path: " + Bild);
 
@@ -223,9 +222,12 @@ public class GameWindow {
         Image image = imageIcon.getImage();
         System.out.println("Image size: " + image.getWidth(null) + "x" + image.getHeight(null));
 
-        Image skaliertesImage = image.getScaledInstance(panel.getWidth(), panel.getHeight(), Image.SCALE_SMOOTH);
+        Image skaliertesImage = image.getScaledInstance(55, 20, Image.SCALE_SMOOTH);
+        System.out.println("panel size: " + panel.getWidth() + "x" + panel.getHeight());
+        System.out.println("skaliertesImage size: " + skaliertesImage.getWidth(null) + "x" + skaliertesImage.getHeight(null));
         JLabel BILD = new JLabel(new ImageIcon(skaliertesImage));
-        BILD.setBounds(0, 0, panel.getWidth(), panel.getHeight());
+        BILD.setBounds(panel.getX(), panel.getY(), panel.getWidth(), panel.getHeight());
+        System.out.println("bild bounds: " + BILD.getBounds());
         panel.add(BILD, JLayeredPane.DEFAULT_LAYER);
         panel.repaint();
         panel.revalidate();
