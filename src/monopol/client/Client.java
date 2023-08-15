@@ -20,6 +20,7 @@ public class Client {
     private final Socket client;
     private final EventsInterface eventsInterface;
     private final ServerInterface serverInterface;
+    public final boolean isHost;
     public DisconnectReason disconnectReason = null;
     public String name = null;
 
@@ -46,8 +47,9 @@ public class Client {
         }
     };
 
-    public Client(String ip, int port) throws NotBoundException {
+    public Client(String ip, int port, boolean isHost) throws NotBoundException {
         try {
+            this.isHost = isHost;
             client = new Socket(ip, port);
             Registry registry1 = LocateRegistry.getRegistry(ip, 1299);
             eventsInterface = (EventsInterface) registry1.lookup("Events");
@@ -126,7 +128,7 @@ public class Client {
     }
 
     public static void main(String[] args) throws NotBoundException {
-        Client c = new Client("localhost", 25565);
+        Client c = new Client("localhost", 25565, true);
         try {
             //Message.sendPing(c.client);
         } catch (Exception e) {
