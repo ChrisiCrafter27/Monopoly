@@ -49,7 +49,7 @@ public class Client {
         try {
             client = new Socket(ip, port);
             clientThread.start();
-            Registry registry1 = LocateRegistry.getRegistry(ip, 1099);
+            Registry registry1 = LocateRegistry.getRegistry(ip, 1299);
             eventsInterface = (EventsInterface) registry1.lookup("Events");
             Registry registry2 = LocateRegistry.getRegistry(ip, 1199);
             serverInterface = (ServerInterface) registry2.lookup("Server");

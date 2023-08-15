@@ -122,13 +122,13 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
 
         StandardEvents events = new StandardEvents(false, -1, false, true, true, true, 1500, 200, true, true, true, true, true, BuildRule.ON_COLOR_GROUP, OwnedCardsOfColorGroup.ONE, OwnedCardsOfColorGroup.ONE, OwnedCardsOfColorGroup.ONE, OwnedCardsOfColorGroup.ONE, OwnedCardsOfColorGroup.ALL_BUT_ONE, OwnedCardsOfColorGroup.ALL);
         try {
-            registry1 = LocateRegistry.createRegistry(1099);
+            registry1 = LocateRegistry.createRegistry(1299);
             registry1.rebind("Events", events);
             registry2 = LocateRegistry.createRegistry(1199);
             registry2.rebind("Server", this);
         } catch(Exception ignored) {
             try {
-                registry1 = LocateRegistry.createRegistry(1099);
+                registry1 = LocateRegistry.createRegistry(1299);
                 registry1.rebind("Events", events);
                 registry2 = LocateRegistry.createRegistry(1199);
                 registry2.rebind("Server", this);

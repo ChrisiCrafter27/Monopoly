@@ -1,30 +1,16 @@
-[14-08-2023 22:08:37] [INFO] [Server]: Staring server...
-[14-08-2023 22:08:37] [INFO] [Server]: Waiting for new Client
-[14-08-2023 22:08:37] [INFO] [Server]: IP-Address: 192.168.178.44
-[14-08-2023 22:08:37] [INFO] [Server]: Listening for new clients...
-[14-08-2023 22:08:37] [INFO] [Server]: New Client accepted
-[14-08-2023 22:08:37] [INFO] [Server]: Waiting for new Client
-[14-08-2023 22:08:47] [INFO] [Server]: New Client accepted
-[14-08-2023 22:08:47] [INFO] [Server]: Waiting for new Client
-[14-08-2023 22:08:47] [FINE] [Server]: Message received
-[14-08-2023 22:08:47] [FINE] [Server]: Ping to 127.0.0.1 is 3ms
-[14-08-2023 22:08:47] [FINE] [Server]: Message received
-[14-08-2023 22:08:47] [FINE] [Server]: Ping to 127.0.0.1 is 4ms
-[14-08-2023 22:08:48] [INFO] [Server]: New Client accepted
-[14-08-2023 22:08:48] [INFO] [Server]: Waiting for new Client
-[14-08-2023 22:08:56] [WARN] [Server]: Kicked client
-[14-08-2023 22:08:57] [FINE] [Server]: Message received
-[14-08-2023 22:08:57] [FINE] [Server]: Ping to 127.0.0.1 is 0ms
-[14-08-2023 22:08:57] [FINE] [Server]: Message received
-[14-08-2023 22:08:57] [FINE] [Server]: Ping to 127.0.0.1 is 1ms
-[14-08-2023 22:09:00] [WARN] [Server]: Kicked client
-[14-08-2023 22:09:02] [WARN] [Server]: Kicked client
-[14-08-2023 22:09:02] [WARN] [Server]: Server closed...
-[14-08-2023 22:09:02] [FAIL] [Server]: Server crashed due to an Exception
-Socket closed
-[14-08-2023 22:09:05] [INFO] [Server]: Staring server...
-[14-08-2023 22:09:05] [INFO] [Server]: Waiting for new Client
-[14-08-2023 22:09:05] [INFO] [Server]: IP-Address: 192.168.178.44
-[14-08-2023 22:09:05] [INFO] [Server]: Listening for new clients...
-[14-08-2023 22:09:05] [INFO] [Server]: New Client accepted
-[14-08-2023 22:09:05] [INFO] [Server]: Waiting for new Client
+[15-08-2023 14:17:16] [INFO] [Server]: Staring server...
+[15-08-2023 14:17:16] [INFO] [Server]: Waiting for new Client
+[15-08-2023 14:17:16] [INFO] [Server]: IP-Address: 10.16.223.1
+[15-08-2023 14:17:16] [INFO] [Server]: Listening for new clients...
+[15-08-2023 14:17:16] [INFO] [Server]: New Client accepted
+[15-08-2023 14:17:16] [INFO] [Server]: Waiting for new Client
+[15-08-2023 14:17:26] [FINE] [Server]: Message received
+[15-08-2023 14:17:26] [FINE] [Server]: Ping to 127.0.0.1 is 5ms
+[15-08-2023 14:17:36] [FINE] [Server]: Message received
+[15-08-2023 14:17:36] [FINE] [Server]: Ping to 127.0.0.1 is 1ms
+[15-08-2023 14:17:46] [FINE] [Server]: Message received
+[15-08-2023 14:17:46] [FINE] [Server]: Ping to 127.0.0.1 is 1ms
+[15-08-2023 14:17:56] [FINE] [Server]: Message received
+[15-08-2023 14:17:56] [FINE] [Server]: Ping to 127.0.0.1 is 1ms
+[15-08-2023 14:18:06] [FINE] [Server]: Message received
+[15-08-2023 14:18:06] [FINE] [Server]: Ping to 127.0.0.1 is 3ms
