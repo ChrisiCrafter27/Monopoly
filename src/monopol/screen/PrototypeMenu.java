@@ -21,7 +21,6 @@ public class PrototypeMenu {
     private boolean serverAcceptsNewClient;
     private Client client;
     private Client clientTemp;
-    private final KeyHandler keyHandler = new KeyHandler();
     private ArrayList<ServerPlayer> displayedServerPlayers = new ArrayList<>();
     private String ip;
 
@@ -29,7 +28,6 @@ public class PrototypeMenu {
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setFocusable(true);
         frame.setSize(new Dimension(1920, 1080));
-        frame.addKeyListener(keyHandler);
         frame.setUndecorated(true);
         frame.setResizable(false);
         frame.setVisible(true);
