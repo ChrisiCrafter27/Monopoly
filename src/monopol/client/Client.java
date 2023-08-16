@@ -1,5 +1,7 @@
 package monopol.client;
 
+import monopol.core.GameState;
+import monopol.core.Monopoly;
 import monopol.server.DisconnectReason;
 import monopol.rules.EventsInterface;
 import monopol.server.ServerInterface;
@@ -56,6 +58,7 @@ public class Client {
             Registry registry2 = LocateRegistry.getRegistry(ip, 1199);
             serverInterface = (ServerInterface) registry2.lookup("Server");
             if(serverMethod().stopped()) {
+                System.out.println("Target server closed");
                 JOptionPane.showMessageDialog(null, "The target server is currently stopped!", "Connection failed", JOptionPane.WARNING_MESSAGE);
                 client.close();
                 return;
@@ -97,6 +100,10 @@ public class Client {
                         case KICKED -> System.out.println("[Client]: Connection lost: Kicked by other player.");
                         default -> System.out.println("[Client]: Connection lost: No further information.");
                     }
+                    break;
+                case START:
+                    Monopoly.INSTANCE.setState(GameState.RUNNING);
+                    break;
                 case NULL:
                     break;
                 default:

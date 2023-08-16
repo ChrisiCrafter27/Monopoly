@@ -1,6 +1,8 @@
 package monopol.server;
 
-public class ServerSettings {
+import java.io.Serializable;
+
+public class ServerSettings implements Serializable {
     public boolean allPlayersCanKick;
     public boolean allPlayersCanAccessSettings;
 
