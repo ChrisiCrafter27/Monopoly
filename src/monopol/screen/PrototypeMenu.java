@@ -156,7 +156,7 @@ public class PrototypeMenu {
                                     addButton(frame, "change name", 600, y, 150, 25, true, actionEvent -> {
                                         try {
                                             String name = JOptionPane.showInputDialog(null, "New name:", "Change name", JOptionPane.QUESTION_MESSAGE);
-                                            if(client.serverMethod().changeName(client.name, name)) client.name = name; else JOptionPane.showMessageDialog(null, "This name is already in use or not allowed!", "Change name", JOptionPane.WARNING_MESSAGE);
+                                            if(client.serverMethod().changeName(client.name, name)) client.name = name; else JOptionPane.showMessageDialog(null, "This name is either already in use or too long!", "Change name", JOptionPane.WARNING_MESSAGE);
                                         } catch (Exception ignored) {
                                         }
                                     });
@@ -188,7 +188,7 @@ public class PrototypeMenu {
                             int step = frame.getWidth() / clients.size();
                             for(int i = 0; i < clients.size(); i++) {
                                 int[] value = {i};
-                                addButton(frame, clients.get(i).name, i * step, 0, step, 50, true, actionEvent -> {
+                                addButton(frame, clients.get(i).name, i * step, 0, step, 60, true, (client == clients.get(value[0])), actionEvent -> {
                                     setClient(value[0]);
                                 });
                             }
@@ -219,12 +219,30 @@ public class PrototypeMenu {
         client = clients.get(i);
     }
 
-    private static void addButton(JFrame frame, String display, int x, int y, int width, int height, boolean enabled, ActionListener actionEvent){
+    private static JButton addButton(JFrame frame, String display, int x, int y, int width, int height, boolean enabled, ActionListener actionEvent) {
         JButton button = new JButton(display);
         button.addActionListener(actionEvent);
         button.setBounds(x, y, width, height);
         button.setEnabled(enabled);
+        button.setOpaque(false);
+        button.setContentAreaFilled(false);
+        button.setBorderPainted(false);
+        button.setFocusPainted(false);
+        button.setIcon(new ImageIcon(new ImageIcon("images/DO_NOT_CHANGE/plain_button_2.png").getImage().getScaledInstance(150, 38, Image.SCALE_SMOOTH)));
+        button.setDisabledIcon(new ImageIcon(new ImageIcon("images/DO_NOT_CHANGE/plain_button_2.png").getImage().getScaledInstance(150, 38, Image.SCALE_SMOOTH)));
+        button.setPressedIcon(new ImageIcon(new ImageIcon("images/DO_NOT_CHANGE/plain_button_0.png").getImage().getScaledInstance(150, 38, Image.SCALE_SMOOTH)));
+        button.setRolloverIcon(new ImageIcon(new ImageIcon("images/DO_NOT_CHANGE/plain_button_1.png").getImage().getScaledInstance(150, 38, Image.SCALE_SMOOTH)));
+        button.setSelectedIcon(new ImageIcon(new ImageIcon("images/DO_NOT_CHANGE/plain_button_0.png").getImage().getScaledInstance(150, 38, Image.SCALE_SMOOTH)));
+        button.setHorizontalTextPosition(SwingConstants.CENTER);
+        button.setVerticalTextPosition(SwingConstants.CENTER);
         frame.add(button);
+        return button;
+    }
+
+    private static JButton addButton(JFrame frame, String display, int x, int y, int width, int height, boolean enabled, boolean selected, ActionListener actionEvent) {
+        JButton button = addButton(frame, display, x, y, width, height, enabled,  actionEvent);
+        button.setSelected(selected);
+        return button;
     }
 
     private static void addText(JFrame frame, String display, int x, int y, int width, int size, boolean centered) {

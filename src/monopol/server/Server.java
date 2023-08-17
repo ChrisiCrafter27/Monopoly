@@ -283,8 +283,7 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
 
     @Override
     public boolean changeName(String oldName, String newName) {
-        if(newName.contains("Spieler")) return false;
-        if(newName.length() > 20) return false;
+        if(newName.length() > 15) return false;
         for (Map.Entry<ServerPlayer, Socket> entry : serverPlayers.entrySet()) {
             if(entry.getKey().getName().equals(newName)) return false;
         }
