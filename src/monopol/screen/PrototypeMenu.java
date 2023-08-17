@@ -29,6 +29,7 @@ public class PrototypeMenu {
         frame.setSize(new Dimension(1920, 1080));
         frame.setUndecorated(true);
         frame.setResizable(false);
+        frame.setLayout(null);
         frame.setVisible(true);
     }
 
@@ -190,7 +191,7 @@ public class PrototypeMenu {
                                 int[] value = {i};
                                 addButton(frame, clients.get(i).name, i * step, 0, step, 60, true, (client == clients.get(value[0])), actionEvent -> {
                                     setClient(value[0]);
-                                });
+                                }).setIcon(new ImageIcon(new ImageIcon("images/playerselect/playerselect_0_" + clients.size() + ".png").getImage().getScaledInstance(step, 60, Image.SCALE_SMOOTH)));
                             }
                             frame.repaint();
                         }
