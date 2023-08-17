@@ -1,238 +1,57 @@
-[17-08-2023 16:29:18] [INFO] [Server]: Initialing server...
-[17-08-2023 16:29:18] [INFO] [Server]: Waiting for new Client
-[17-08-2023 16:29:21] [INFO] [Server]: Starting server...
-[17-08-2023 16:29:21] [INFO] [Server]: IP-Address: 192.168.178.44
-[17-08-2023 16:29:21] [INFO] [Server]: Listening for new clients...
-[17-08-2023 16:29:21] [INFO] [Server]: New Client accepted
-[17-08-2023 16:29:22] [INFO] [Server]: Waiting for new Client
-[17-08-2023 16:29:23] [INFO] [Server]: New Client accepted
-[17-08-2023 16:29:23] [INFO] [Server]: Waiting for new Client
-[17-08-2023 16:29:24] [INFO] [Server]: New Client accepted
-[17-08-2023 16:29:24] [INFO] [Server]: Waiting for new Client
-[17-08-2023 16:29:24] [INFO] [Server]: New Client accepted
-[17-08-2023 16:29:24] [INFO] [Server]: Waiting for new Client
-[17-08-2023 16:29:24] [INFO] [Server]: New Client accepted
-[17-08-2023 16:29:24] [INFO] [Server]: Waiting for new Client
-[17-08-2023 16:29:24] [INFO] [Server]: New Client accepted
-[17-08-2023 16:29:24] [INFO] [Server]: Waiting for new Client
-[17-08-2023 16:29:25] [INFO] [Server]: New Client accepted
-[17-08-2023 16:29:25] [INFO] [Server]: Waiting for new Client
-[17-08-2023 16:29:25] [INFO] [Server]: New Client accepted
-[17-08-2023 16:29:25] [INFO] [Server]: Waiting for new Client
-[17-08-2023 16:29:25] [INFO] [Server]: New Client accepted
-[17-08-2023 16:29:25] [INFO] [Server]: Waiting for new Client
-[17-08-2023 16:29:25] [INFO] [Server]: New Client accepted
-[17-08-2023 16:29:25] [INFO] [Server]: Waiting for new Client
-[17-08-2023 16:29:31] [FINE] [Server]: Message received
-[17-08-2023 16:29:31] [FINE] [Server]: Ping to 127.0.0.1 is 3ms
-[17-08-2023 16:29:31] [FINE] [Server]: Message received
-[17-08-2023 16:29:31] [FINE] [Server]: Ping to 127.0.0.1 is 4ms
-[17-08-2023 16:29:31] [FINE] [Server]: Message received
-[17-08-2023 16:29:31] [FINE] [Server]: Ping to 127.0.0.1 is 4ms
-[17-08-2023 16:29:31] [FINE] [Server]: Message received
-[17-08-2023 16:29:31] [FINE] [Server]: Ping to 127.0.0.1 is 5ms
-[17-08-2023 16:29:31] [FINE] [Server]: Message received
-[17-08-2023 16:29:31] [FINE] [Server]: Ping to 127.0.0.1 is 4ms
-[17-08-2023 16:29:31] [FINE] [Server]: Message received
-[17-08-2023 16:29:31] [FINE] [Server]: Ping to 127.0.0.1 is 4ms
-[17-08-2023 16:29:31] [FINE] [Server]: Message received
-[17-08-2023 16:29:31] [FINE] [Server]: Ping to 127.0.0.1 is 4ms
-[17-08-2023 16:29:31] [FINE] [Server]: Message received
-[17-08-2023 16:29:31] [FINE] [Server]: Ping to 127.0.0.1 is 4ms
-[17-08-2023 16:29:31] [FINE] [Server]: Message received
-[17-08-2023 16:29:31] [FINE] [Server]: Ping to 127.0.0.1 is 5ms
-[17-08-2023 16:29:31] [FINE] [Server]: Message received
-[17-08-2023 16:29:31] [FINE] [Server]: Ping to 127.0.0.1 is 5ms
-[17-08-2023 16:29:41] [FINE] [Server]: Message received
-[17-08-2023 16:29:41] [FINE] [Server]: Ping to 127.0.0.1 is 0ms
-[17-08-2023 16:29:41] [FINE] [Server]: Message received
-[17-08-2023 16:29:41] [FINE] [Server]: Ping to 127.0.0.1 is 1ms
-[17-08-2023 16:29:41] [FINE] [Server]: Message received
-[17-08-2023 16:29:41] [FINE] [Server]: Ping to 127.0.0.1 is 1ms
-[17-08-2023 16:29:41] [FINE] [Server]: Message received
-[17-08-2023 16:29:41] [FINE] [Server]: Ping to 127.0.0.1 is 1ms
-[17-08-2023 16:29:41] [FINE] [Server]: Message received
-[17-08-2023 16:29:41] [FINE] [Server]: Ping to 127.0.0.1 is 1ms
-[17-08-2023 16:29:41] [FINE] [Server]: Message received
-[17-08-2023 16:29:41] [FINE] [Server]: Ping to 127.0.0.1 is 1ms
-[17-08-2023 16:29:41] [FINE] [Server]: Message received
-[17-08-2023 16:29:41] [FINE] [Server]: Ping to 127.0.0.1 is 2ms
-[17-08-2023 16:29:41] [FINE] [Server]: Message received
-[17-08-2023 16:29:41] [FINE] [Server]: Ping to 127.0.0.1 is 2ms
-[17-08-2023 16:29:41] [FINE] [Server]: Message received
-[17-08-2023 16:29:41] [FINE] [Server]: Ping to 127.0.0.1 is 2ms
-[17-08-2023 16:29:41] [FINE] [Server]: Message received
-[17-08-2023 16:29:41] [FINE] [Server]: Ping to 127.0.0.1 is 2ms
-[17-08-2023 16:29:51] [FINE] [Server]: Message received
-[17-08-2023 16:29:51] [FINE] [Server]: Ping to 127.0.0.1 is 0ms
-[17-08-2023 16:29:51] [FINE] [Server]: Message received
-[17-08-2023 16:29:51] [FINE] [Server]: Ping to 127.0.0.1 is 1ms
-[17-08-2023 16:29:51] [FINE] [Server]: Message received
-[17-08-2023 16:29:51] [FINE] [Server]: Ping to 127.0.0.1 is 1ms
-[17-08-2023 16:29:51] [FINE] [Server]: Message received
-[17-08-2023 16:29:51] [FINE] [Server]: Ping to 127.0.0.1 is 1ms
-[17-08-2023 16:29:51] [FINE] [Server]: Message received
-[17-08-2023 16:29:51] [FINE] [Server]: Ping to 127.0.0.1 is 1ms
-[17-08-2023 16:29:51] [FINE] [Server]: Message received
-[17-08-2023 16:29:51] [FINE] [Server]: Ping to 127.0.0.1 is 1ms
-[17-08-2023 16:29:51] [FINE] [Server]: Message received
-[17-08-2023 16:29:51] [FINE] [Server]: Ping to 127.0.0.1 is 2ms
-[17-08-2023 16:29:51] [FINE] [Server]: Message received
-[17-08-2023 16:29:51] [FINE] [Server]: Ping to 127.0.0.1 is 2ms
-[17-08-2023 16:29:51] [FINE] [Server]: Message received
-[17-08-2023 16:29:51] [FINE] [Server]: Ping to 127.0.0.1 is 2ms
-[17-08-2023 16:29:51] [FINE] [Server]: Message received
-[17-08-2023 16:29:51] [FINE] [Server]: Ping to 127.0.0.1 is 2ms
-[17-08-2023 16:30:01] [FINE] [Server]: Message received
-[17-08-2023 16:30:01] [FINE] [Server]: Ping to 127.0.0.1 is 0ms
-[17-08-2023 16:30:01] [FINE] [Server]: Message received
-[17-08-2023 16:30:01] [FINE] [Server]: Ping to 127.0.0.1 is 1ms
-[17-08-2023 16:30:01] [FINE] [Server]: Message received
-[17-08-2023 16:30:01] [FINE] [Server]: Ping to 127.0.0.1 is 1ms
-[17-08-2023 16:30:01] [FINE] [Server]: Message received
-[17-08-2023 16:30:01] [FINE] [Server]: Ping to 127.0.0.1 is 1ms
-[17-08-2023 16:30:01] [FINE] [Server]: Message received
-[17-08-2023 16:30:01] [FINE] [Server]: Ping to 127.0.0.1 is 1ms
-[17-08-2023 16:30:01] [FINE] [Server]: Message received
-[17-08-2023 16:30:01] [FINE] [Server]: Ping to 127.0.0.1 is 1ms
-[17-08-2023 16:30:01] [FINE] [Server]: Message received
-[17-08-2023 16:30:01] [FINE] [Server]: Ping to 127.0.0.1 is 2ms
-[17-08-2023 16:30:01] [FINE] [Server]: Message received
-[17-08-2023 16:30:01] [FINE] [Server]: Ping to 127.0.0.1 is 2ms
-[17-08-2023 16:30:01] [FINE] [Server]: Message received
-[17-08-2023 16:30:01] [FINE] [Server]: Ping to 127.0.0.1 is 2ms
-[17-08-2023 16:30:01] [FINE] [Server]: Message received
-[17-08-2023 16:30:01] [FINE] [Server]: Ping to 127.0.0.1 is 2ms
-[17-08-2023 16:30:11] [FINE] [Server]: Message received
-[17-08-2023 16:30:11] [FINE] [Server]: Ping to 127.0.0.1 is 0ms
-[17-08-2023 16:30:11] [FINE] [Server]: Message received
-[17-08-2023 16:30:11] [FINE] [Server]: Ping to 127.0.0.1 is 0ms
-[17-08-2023 16:30:11] [FINE] [Server]: Message received
-[17-08-2023 16:30:11] [FINE] [Server]: Ping to 127.0.0.1 is 1ms
-[17-08-2023 16:30:11] [FINE] [Server]: Message received
-[17-08-2023 16:30:11] [FINE] [Server]: Ping to 127.0.0.1 is 1ms
-[17-08-2023 16:30:11] [FINE] [Server]: Message received
-[17-08-2023 16:30:11] [FINE] [Server]: Ping to 127.0.0.1 is 1ms
-[17-08-2023 16:30:11] [FINE] [Server]: Message received
-[17-08-2023 16:30:11] [FINE] [Server]: Ping to 127.0.0.1 is 1ms
-[17-08-2023 16:30:11] [FINE] [Server]: Message received
-[17-08-2023 16:30:11] [FINE] [Server]: Ping to 127.0.0.1 is 1ms
-[17-08-2023 16:30:11] [FINE] [Server]: Message received
-[17-08-2023 16:30:11] [FINE] [Server]: Ping to 127.0.0.1 is 1ms
-[17-08-2023 16:30:11] [FINE] [Server]: Message received
-[17-08-2023 16:30:11] [FINE] [Server]: Ping to 127.0.0.1 is 2ms
-[17-08-2023 16:30:11] [FINE] [Server]: Message received
-[17-08-2023 16:30:11] [FINE] [Server]: Ping to 127.0.0.1 is 2ms
-[17-08-2023 16:30:21] [FINE] [Server]: Message received
-[17-08-2023 16:30:21] [FINE] [Server]: Ping to 127.0.0.1 is 0ms
-[17-08-2023 16:30:21] [FINE] [Server]: Message received
-[17-08-2023 16:30:21] [FINE] [Server]: Ping to 127.0.0.1 is 0ms
-[17-08-2023 16:30:21] [FINE] [Server]: Message received
-[17-08-2023 16:30:21] [FINE] [Server]: Ping to 127.0.0.1 is 1ms
-[17-08-2023 16:30:21] [FINE] [Server]: Message received
-[17-08-2023 16:30:21] [FINE] [Server]: Ping to 127.0.0.1 is 1ms
-[17-08-2023 16:30:21] [FINE] [Server]: Message received
-[17-08-2023 16:30:21] [FINE] [Server]: Ping to 127.0.0.1 is 1ms
-[17-08-2023 16:30:21] [FINE] [Server]: Message received
-[17-08-2023 16:30:21] [FINE] [Server]: Ping to 127.0.0.1 is 1ms
-[17-08-2023 16:30:21] [FINE] [Server]: Message received
-[17-08-2023 16:30:21] [FINE] [Server]: Ping to 127.0.0.1 is 1ms
-[17-08-2023 16:30:21] [FINE] [Server]: Message received
-[17-08-2023 16:30:21] [FINE] [Server]: Ping to 127.0.0.1 is 2ms
-[17-08-2023 16:30:21] [FINE] [Server]: Message received
-[17-08-2023 16:30:21] [FINE] [Server]: Ping to 127.0.0.1 is 2ms
-[17-08-2023 16:30:21] [FINE] [Server]: Message received
-[17-08-2023 16:30:21] [FINE] [Server]: Ping to 127.0.0.1 is 2ms
-[17-08-2023 16:30:31] [FINE] [Server]: Message received
-[17-08-2023 16:30:31] [FINE] [Server]: Ping to 127.0.0.1 is 0ms
-[17-08-2023 16:30:31] [FINE] [Server]: Message received
-[17-08-2023 16:30:31] [FINE] [Server]: Ping to 127.0.0.1 is 0ms
-[17-08-2023 16:30:31] [FINE] [Server]: Message received
-[17-08-2023 16:30:31] [FINE] [Server]: Ping to 127.0.0.1 is 1ms
-[17-08-2023 16:30:31] [FINE] [Server]: Message received
-[17-08-2023 16:30:31] [FINE] [Server]: Ping to 127.0.0.1 is 1ms
-[17-08-2023 16:30:31] [FINE] [Server]: Message received
-[17-08-2023 16:30:31] [FINE] [Server]: Ping to 127.0.0.1 is 1ms
-[17-08-2023 16:30:31] [FINE] [Server]: Message received
-[17-08-2023 16:30:31] [FINE] [Server]: Ping to 127.0.0.1 is 1ms
-[17-08-2023 16:30:31] [FINE] [Server]: Message received
-[17-08-2023 16:30:31] [FINE] [Server]: Ping to 127.0.0.1 is 2ms
-[17-08-2023 16:30:31] [FINE] [Server]: Message received
-[17-08-2023 16:30:31] [FINE] [Server]: Ping to 127.0.0.1 is 2ms
-[17-08-2023 16:30:31] [FINE] [Server]: Message received
-[17-08-2023 16:30:31] [FINE] [Server]: Ping to 127.0.0.1 is 2ms
-[17-08-2023 16:30:31] [FINE] [Server]: Message received
-[17-08-2023 16:30:31] [FINE] [Server]: Ping to 127.0.0.1 is 2ms
-[17-08-2023 16:30:41] [FINE] [Server]: Message received
-[17-08-2023 16:30:41] [FINE] [Server]: Ping to 127.0.0.1 is 0ms
-[17-08-2023 16:30:41] [FINE] [Server]: Message received
-[17-08-2023 16:30:41] [FINE] [Server]: Ping to 127.0.0.1 is 0ms
-[17-08-2023 16:30:41] [FINE] [Server]: Message received
-[17-08-2023 16:30:41] [FINE] [Server]: Ping to 127.0.0.1 is 1ms
-[17-08-2023 16:30:41] [FINE] [Server]: Message received
-[17-08-2023 16:30:41] [FINE] [Server]: Ping to 127.0.0.1 is 1ms
-[17-08-2023 16:30:41] [FINE] [Server]: Message received
-[17-08-2023 16:30:41] [FINE] [Server]: Ping to 127.0.0.1 is 1ms
-[17-08-2023 16:30:41] [FINE] [Server]: Message received
-[17-08-2023 16:30:41] [FINE] [Server]: Ping to 127.0.0.1 is 1ms
-[17-08-2023 16:30:41] [FINE] [Server]: Message received
-[17-08-2023 16:30:41] [FINE] [Server]: Ping to 127.0.0.1 is 1ms
-[17-08-2023 16:30:41] [FINE] [Server]: Message received
-[17-08-2023 16:30:41] [FINE] [Server]: Ping to 127.0.0.1 is 1ms
-[17-08-2023 16:30:41] [FINE] [Server]: Message received
-[17-08-2023 16:30:41] [FINE] [Server]: Ping to 127.0.0.1 is 1ms
-[17-08-2023 16:30:41] [FINE] [Server]: Message received
-[17-08-2023 16:30:41] [FINE] [Server]: Ping to 127.0.0.1 is 2ms
-[17-08-2023 16:30:51] [FINE] [Server]: Message received
-[17-08-2023 16:30:51] [FINE] [Server]: Ping to 127.0.0.1 is 1ms
-[17-08-2023 16:30:51] [FINE] [Server]: Message received
-[17-08-2023 16:30:51] [FINE] [Server]: Ping to 127.0.0.1 is 1ms
-[17-08-2023 16:30:51] [FINE] [Server]: Message received
-[17-08-2023 16:30:51] [FINE] [Server]: Ping to 127.0.0.1 is 1ms
-[17-08-2023 16:30:51] [FINE] [Server]: Message received
-[17-08-2023 16:30:51] [FINE] [Server]: Ping to 127.0.0.1 is 1ms
-[17-08-2023 16:30:51] [FINE] [Server]: Message received
-[17-08-2023 16:30:51] [FINE] [Server]: Ping to 127.0.0.1 is 1ms
-[17-08-2023 16:30:51] [FINE] [Server]: Message received
-[17-08-2023 16:30:51] [FINE] [Server]: Ping to 127.0.0.1 is 1ms
-[17-08-2023 16:30:51] [FINE] [Server]: Message received
-[17-08-2023 16:30:51] [FINE] [Server]: Ping to 127.0.0.1 is 1ms
-[17-08-2023 16:30:51] [FINE] [Server]: Message received
-[17-08-2023 16:30:51] [FINE] [Server]: Ping to 127.0.0.1 is 1ms
-[17-08-2023 16:30:51] [FINE] [Server]: Message received
-[17-08-2023 16:30:51] [FINE] [Server]: Ping to 127.0.0.1 is 1ms
-[17-08-2023 16:30:51] [FINE] [Server]: Message received
-[17-08-2023 16:30:51] [FINE] [Server]: Ping to 127.0.0.1 is 1ms
-[17-08-2023 16:31:01] [FINE] [Server]: Message received
-[17-08-2023 16:31:01] [FINE] [Server]: Ping to 127.0.0.1 is 0ms
-[17-08-2023 16:31:01] [FINE] [Server]: Message received
-[17-08-2023 16:31:01] [FINE] [Server]: Ping to 127.0.0.1 is 1ms
-[17-08-2023 16:31:01] [FINE] [Server]: Message received
-[17-08-2023 16:31:01] [FINE] [Server]: Ping to 127.0.0.1 is 1ms
-[17-08-2023 16:31:01] [FINE] [Server]: Message received
-[17-08-2023 16:31:01] [FINE] [Server]: Ping to 127.0.0.1 is 1ms
-[17-08-2023 16:31:01] [FINE] [Server]: Message received
-[17-08-2023 16:31:01] [FINE] [Server]: Ping to 127.0.0.1 is 1ms
-[17-08-2023 16:31:01] [FINE] [Server]: Message received
-[17-08-2023 16:31:01] [FINE] [Server]: Ping to 127.0.0.1 is 1ms
-[17-08-2023 16:31:01] [FINE] [Server]: Message received
-[17-08-2023 16:31:01] [FINE] [Server]: Ping to 127.0.0.1 is 1ms
-[17-08-2023 16:31:01] [FINE] [Server]: Message received
-[17-08-2023 16:31:01] [FINE] [Server]: Ping to 127.0.0.1 is 1ms
-[17-08-2023 16:31:01] [FINE] [Server]: Message received
-[17-08-2023 16:31:01] [FINE] [Server]: Ping to 127.0.0.1 is 1ms
-[17-08-2023 16:31:01] [FINE] [Server]: Message received
-[17-08-2023 16:31:01] [FINE] [Server]: Ping to 127.0.0.1 is 2ms
-[17-08-2023 16:31:03] [WARN] [Server]: Kicked client
-[17-08-2023 16:31:04] [WARN] [Server]: Kicked client
-[17-08-2023 16:31:04] [WARN] [Server]: Kicked client
-[17-08-2023 16:31:04] [WARN] [Server]: Kicked client
-[17-08-2023 16:31:04] [WARN] [Server]: Kicked client
-[17-08-2023 16:31:04] [WARN] [Server]: Kicked client
-[17-08-2023 16:31:05] [WARN] [Server]: Kicked client
-[17-08-2023 16:31:05] [WARN] [Server]: Kicked client
-[17-08-2023 16:31:05] [WARN] [Server]: Kicked client
-[17-08-2023 16:31:05] [WARN] [Server]: Kicked client
-[17-08-2023 16:31:05] [WARN] [Server]: Server closed...
-[17-08-2023 16:31:13] [INFO] [Server]: New Client denied
-[17-08-2023 16:31:13] [INFO] [Server]: Waiting for new Client
+[17-08-2023 22:31:24] [INFO] [Server]: Initialing server...
+[17-08-2023 22:31:25] [INFO] [Server]: Waiting for new Client
+[17-08-2023 22:31:27] [INFO] [Server]: Starting server...
+[17-08-2023 22:31:27] [INFO] [Server]: IP-Address: 192.168.178.44
+[17-08-2023 22:31:27] [INFO] [Server]: Listening for new clients...
+[17-08-2023 22:31:27] [INFO] [Server]: New Client accepted
+[17-08-2023 22:31:27] [INFO] [Server]: Waiting for new Client
+[17-08-2023 22:31:28] [WARN] [Server]: Kicked client
+[17-08-2023 22:31:28] [WARN] [Server]: Server closed...
+[17-08-2023 22:31:43] [INFO] [Server]: Starting server...
+[17-08-2023 22:31:43] [INFO] [Server]: IP-Address: 192.168.178.44
+[17-08-2023 22:31:43] [INFO] [Server]: Listening for new clients...
+[17-08-2023 22:31:43] [INFO] [Server]: New Client accepted
+[17-08-2023 22:31:43] [INFO] [Server]: Waiting for new Client
+[17-08-2023 22:31:46] [INFO] [Server]: New Client accepted
+[17-08-2023 22:31:46] [INFO] [Server]: Waiting for new Client
+[17-08-2023 22:31:47] [INFO] [Server]: New Client accepted
+[17-08-2023 22:31:47] [INFO] [Server]: Waiting for new Client
+[17-08-2023 22:31:48] [INFO] [Server]: New Client accepted
+[17-08-2023 22:31:48] [INFO] [Server]: Waiting for new Client
+[17-08-2023 22:31:51] [INFO] [Server]: New Client accepted
+[17-08-2023 22:31:51] [INFO] [Server]: Waiting for new Client
+[17-08-2023 22:31:52] [INFO] [Server]: New Client accepted
+[17-08-2023 22:31:52] [INFO] [Server]: Waiting for new Client
+[17-08-2023 22:31:52] [INFO] [Server]: New Client accepted
+[17-08-2023 22:31:52] [INFO] [Server]: Waiting for new Client
+[17-08-2023 22:31:53] [FINE] [Server]: Message received
+[17-08-2023 22:31:53] [FINE] [Server]: Ping to 127.0.0.1 is 3ms
+[17-08-2023 22:31:53] [FINE] [Server]: Message received
+[17-08-2023 22:31:53] [FINE] [Server]: Ping to 127.0.0.1 is 4ms
+[17-08-2023 22:31:53] [FINE] [Server]: Message received
+[17-08-2023 22:31:53] [FINE] [Server]: Ping to 127.0.0.1 is 4ms
+[17-08-2023 22:31:53] [FINE] [Server]: Message received
+[17-08-2023 22:31:53] [FINE] [Server]: Ping to 127.0.0.1 is 3ms
+[17-08-2023 22:31:53] [FINE] [Server]: Message received
+[17-08-2023 22:31:53] [FINE] [Server]: Ping to 127.0.0.1 is 4ms
+[17-08-2023 22:31:53] [FINE] [Server]: Message received
+[17-08-2023 22:31:53] [FINE] [Server]: Ping to 127.0.0.1 is 4ms
+[17-08-2023 22:31:53] [FINE] [Server]: Message received
+[17-08-2023 22:31:53] [FINE] [Server]: Ping to 127.0.0.1 is 4ms
+[17-08-2023 22:31:53] [INFO] [Server]: New Client accepted
+[17-08-2023 22:31:53] [INFO] [Server]: Waiting for new Client
+[17-08-2023 22:31:54] [INFO] [Server]: New Client accepted
+[17-08-2023 22:31:54] [INFO] [Server]: Waiting for new Client
+[17-08-2023 22:31:54] [INFO] [Server]: New Client accepted
+[17-08-2023 22:31:54] [INFO] [Server]: Waiting for new Client
+[17-08-2023 22:31:59] [WARN] [Server]: Kicked client
+[17-08-2023 22:32:00] [WARN] [Server]: Kicked client
+[17-08-2023 22:32:00] [WARN] [Server]: Kicked client
+[17-08-2023 22:32:00] [WARN] [Server]: Kicked client
+[17-08-2023 22:32:01] [WARN] [Server]: Kicked client
+[17-08-2023 22:32:01] [WARN] [Server]: Kicked client
+[17-08-2023 22:32:01] [WARN] [Server]: Kicked client
+[17-08-2023 22:32:01] [WARN] [Server]: Kicked client
+[17-08-2023 22:32:02] [WARN] [Server]: Kicked client
+[17-08-2023 22:32:02] [WARN] [Server]: Kicked client
+[17-08-2023 22:32:02] [WARN] [Server]: Server closed...
