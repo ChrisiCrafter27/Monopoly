@@ -194,6 +194,7 @@ public class GameWindow {
         panel.repaint();
         panel.revalidate();
     }
+
     public void setPannelBild(String Bild,JLayeredPane panel){
 
 
