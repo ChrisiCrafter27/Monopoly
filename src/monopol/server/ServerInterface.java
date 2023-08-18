@@ -1,5 +1,6 @@
 package monopol.server;
 
+import java.io.IOException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -11,4 +12,5 @@ public interface ServerInterface extends Remote {
     public boolean changeName(String oldName, String newName) throws RemoteException;
     public boolean acceptsNewClient() throws RemoteException;
     public boolean stopped() throws RemoteException;
+    public void start() throws IOException;
 }

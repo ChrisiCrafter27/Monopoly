@@ -12,7 +12,6 @@ import monopol.message.MessageType;
 
 import java.io.*;
 import java.net.*;
-import java.rmi.NoSuchObjectException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -44,7 +43,7 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
                     if (acceptNewClients) {
                         logger.getLogger().info("[Server]: New Client accepted");
                         clients.put(clients.size() + 1, newClient);
-                        ServerPlayer serverPlayer = new ServerPlayer("Spieler " + (serverPlayers.size() + 1));
+                        ServerPlayer serverPlayer = newServerPlayer();
                         serverPlayers.put(serverPlayer, newClient);
                         Message.send(new Message(serverPlayer.getName(), MessageType.NAME), newClient);
                     } else {
@@ -66,6 +65,24 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
                 if (pause) acceptNewClients = false;
                 if (clients.size() >= 10) acceptNewClients = false;
             }
+        }
+        private ServerPlayer newServerPlayer() {
+            String name;
+            int i = 1;
+            boolean okay;
+            do {
+                okay = true;
+                name = "Player " + i;
+                for (Map.Entry<ServerPlayer, Socket> entry : serverPlayers.entrySet()) {
+                    if (entry.getKey().getName().equals(name)) {
+                        okay = false;
+                        break;
+                    }
+                }
+                i++;
+            } while (!okay);
+            ServerPlayer serverPlayer = new ServerPlayer(name);
+            return serverPlayer;
         }
     };
     private final Thread requestThread = new Thread() {
@@ -160,6 +177,7 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
     }
 
     public void open(ServerSettings serverSettings) {
+        Monopoly.INSTANCE.setState(GameState.LOBBY);
         logger.getLogger().info("[Server]: Starting server...");
         try {
             logger.getLogger().info("[Server]: IP-Address: " + InetAddress.getLocalHost().getHostAddress());
@@ -265,8 +283,7 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
 
     @Override
     public boolean changeName(String oldName, String newName) {
-        if(newName.contains("Spieler")) return false;
-        if(newName.length() > 20) return false;
+        if(newName.length() > 15) return false;
         for (Map.Entry<ServerPlayer, Socket> entry : serverPlayers.entrySet()) {
             if(entry.getKey().getName().equals(newName)) return false;
         }
@@ -287,6 +304,13 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
     @Override
     public boolean stopped() throws RemoteException {
         return pause;
+    }
+
+    @Override
+    public void start() throws IOException {
+        for (Map.Entry<ServerPlayer, Socket> entry : serverPlayers.entrySet()) {
+            Message.send(new Message(null, MessageType.START), entry.getValue());
+        }
     }
 
     public static void main(String[] args) throws IOException, NotBoundException {

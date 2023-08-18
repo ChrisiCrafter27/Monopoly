@@ -6,5 +6,6 @@ public enum MessageType {
     PING_BACK,
     DISCONNECT,
     NAME,
+    START,
     NULL
 }

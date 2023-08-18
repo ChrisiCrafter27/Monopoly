@@ -1,5 +1,7 @@
 package monopol.client;
 
+import monopol.core.GameState;
+import monopol.core.Monopoly;
 import monopol.server.DisconnectReason;
 import monopol.rules.EventsInterface;
 import monopol.server.ServerInterface;
@@ -20,6 +22,7 @@ public class Client {
     private final Socket client;
     private final EventsInterface eventsInterface;
     private final ServerInterface serverInterface;
+    public final boolean isHost;
     public DisconnectReason disconnectReason = null;
     public String name = null;
 
@@ -46,14 +49,16 @@ public class Client {
         }
     };
 
-    public Client(String ip, int port) throws NotBoundException {
+    public Client(String ip, int port, boolean isHost) throws NotBoundException {
         try {
+            this.isHost = isHost;
             client = new Socket(ip, port);
             Registry registry1 = LocateRegistry.getRegistry(ip, 1299);
             eventsInterface = (EventsInterface) registry1.lookup("Events");
             Registry registry2 = LocateRegistry.getRegistry(ip, 1199);
             serverInterface = (ServerInterface) registry2.lookup("Server");
             if(serverMethod().stopped()) {
+                System.out.println("Target server closed");
                 JOptionPane.showMessageDialog(null, "The target server is currently stopped!", "Connection failed", JOptionPane.WARNING_MESSAGE);
                 client.close();
                 return;
@@ -95,6 +100,10 @@ public class Client {
                         case KICKED -> System.out.println("[Client]: Connection lost: Kicked by other player.");
                         default -> System.out.println("[Client]: Connection lost: No further information.");
                     }
+                    break;
+                case START:
+                    Monopoly.INSTANCE.setState(GameState.RUNNING);
+                    break;
                 case NULL:
                     break;
                 default:
@@ -126,7 +135,7 @@ public class Client {
     }
 
     public static void main(String[] args) throws NotBoundException {
-        Client c = new Client("localhost", 25565);
+        Client c = new Client("localhost", 25565, true);
         try {
             //Message.sendPing(c.client);
         } catch (Exception e) {
