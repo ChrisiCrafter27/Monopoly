@@ -20,6 +20,7 @@ import java.awt.event.MouseAdapter;
 import javax.swing.BorderFactory;
 import java.awt.event.MouseListener;
 
+
 public class GameWindow {
 
     JFrame frame = new JFrame("Monopoly");
@@ -27,7 +28,8 @@ public class GameWindow {
     JLayeredPane HostGame = new JLayeredPane();
     JLayeredPane JoinGame = new JLayeredPane();
 
-    private Map<String, Boolean> clickedButtonsMap = new HashMap<>();
+
+    private ArrayList clickedButtonsMap = new ArrayList();
     private Point mousePosition;
     private boolean animated = false;
     public GameWindow(){
@@ -66,53 +68,61 @@ public class GameWindow {
         addText_panel("Hello i am Mr Monopoly and i will teach you ",MENUPanel,"Arial",40,1000,310,1000,50);
         addText_panel("everything you need to know",MENUPanel,"Arial",40,1000,360,1000,50);
 
-        addbutton_panel("butt1","images/Join_Server_0_0.png","images/Join_Server_0_1.png",false,"images/Join_Server_1_0.png","images/Join_Server_1_1.png",MENUPanel,120,350,450,100, new MouseAdapter()  {
+        addbutton_panel("butt1","images/Join_Server_0_0.png","images/Join_Server_0_1.png",true,"images/Join_Server_1_0.png","images/Join_Server_1_1.png",MENUPanel,120,350,450,100, new MouseAdapter()  {
             public void mouseClicked(MouseEvent e){
-                if(clickedButtonsMap.containsKey("butt2")){
+                if(clickedButtonsMap.contains("butt2")){
+                    System.out.println("Button2 allredy presst: " + clickedButtonsMap.contains("butt2"));
                     System.out.println("error");
-                    MENUPanel.remove(HostGame);
+                    MENUPanel.removeAll();
+                    MENUPanel.repaint();
                 }
                 else{
-                    if(!clickedButtonsMap.containsKey("butt1")){
+                    if(!clickedButtonsMap.contains("butt1")){
+                        System.out.println("button1 wurde schon gecklickt: "+ clickedButtonsMap.contains("butt1"));
                         Joingame(MENUPanel);
-                        System.out.println("joinGame");
+                        System.out.println("joinGame wird ausgeführt");
+                        MENUPanel.repaint();
                     }
-                    else System.out.println("allredy in joingame");
-                    MENUPanel.remove(JoinGame);
+                    else {
+                        System.out.println("button1 wurde schon gecklickt: "+ clickedButtonsMap.contains("butt1"));
+                        JoinGame.removeAll();
+                        System.out.println("removing pannels auf Menüpanel");
+                        MENUPanel.repaint();
+                    }
                 }
 
             }
         });
 
-        addbutton_panel("butt2","images/Host_Server_0_0.png","images/Host_Server_0_1.png.png",false,"images/Host_Server_1_0.png","images/Host_Server_1_1.png",MENUPanel,120,480,450,100, new MouseAdapter()  {
+        addbutton_panel("butt2","images/Host_Server_0_0.png","images/Host_Server_0_1.png.png",true,"images/Host_Server_1_0.png","images/Host_Server_1_1.png",MENUPanel,120,480,450,100, new MouseAdapter()  {
             public void mouseClicked(MouseEvent e){
-                if(clickedButtonsMap.containsKey("butt1")){
+                if(clickedButtonsMap.contains("butt1")){
                     System.out.println("error2");
-                    MENUPanel.remove(JoinGame);
+                    JoinGame.removeAll();
                 }
                 else{
-                    if(!clickedButtonsMap.containsKey("butt2")){
+                    if(!clickedButtonsMap.contains("butt2")){
                         hostgame(MENUPanel);
                         System.out.println("hostgame");
                     }
-                    else System.out.println("allredy in hostgame");
-                    MENUPanel.remove(HostGame);
+                    else {
+                        System.out.println("allredy in hostgame");
+                        MENUPanel.removeAll();
+                    }
                 }
-
             }
         });
     }
     public void Joingame(JLayeredPane panel){
-
+        System.out.println("layer of joingame:"+ MENUPanel.getLayer(JoinGame));
         JoinGame.setBounds(0, 0, 800, 600);
-        panel.add(JoinGame, JLayeredPane.POPUP_LAYER);
-        System.out.println(panel.getBounds());
+        panel.add(JoinGame, 0);
         setPannelBild("images/Host_Server_0_0.png", JoinGame);
         JoinGame.setVisible(true);
+        MENUPanel.repaint();
     }
 
     public void hostgame(JLayeredPane panel){
-
         panel.add(HostGame,JLayeredPane.POPUP_LAYER);
     }
 
@@ -136,74 +146,48 @@ public class GameWindow {
         Image Button2_Image = button2_Icon.getImage();
         Image Button2_skaliert = Button2_Image.getScaledInstance(Width, Height, Image.SCALE_SMOOTH);
 
-        ImageIcon button3_Icon = new ImageIcon(Bild3_1);
-        Image Button3_Image = button3_Icon.getImage();
-        Image Button3_1_skaliert = Button3_Image.getScaledInstance(Width, Height, Image.SCALE_SMOOTH);
 
-        ImageIcon button3_2_Icon = new ImageIcon(Bild3_2);
-        Image Button3_2_Image = button3_2_Icon.getImage();
-        Image Button3_2_skaliert = Button3_2_Image.getScaledInstance(Width, Height, Image.SCALE_SMOOTH);
 
-        JLabel button = new JLabel(new ImageIcon(Button_skaliert));
+        JButton button = new JButton(new ImageIcon(Button_skaliert));
         button.setBounds(x , y, Width, Height);
         button.addMouseListener(actionEvent);
+        button.setOpaque(false);
+        button.setContentAreaFilled(false);
+        button.setBorderPainted(false);
+        button.setFocusPainted(false);
+        button.setIcon(new ImageIcon(new ImageIcon(Bild1).getImage().getScaledInstance(Width, Height, Image.SCALE_SMOOTH)));
+        button.setDisabledIcon(new ImageIcon(new ImageIcon(Bild1).getImage().getScaledInstance(Width, Height, Image.SCALE_SMOOTH)));
+        button.setPressedIcon(new ImageIcon(new ImageIcon(Bild2).getImage().getScaledInstance(Width, Height, Image.SCALE_SMOOTH)));
+        button.setSelectedIcon(new ImageIcon(new ImageIcon(Bild2).getImage().getScaledInstance(Width, Height, Image.SCALE_SMOOTH)));
+        if (mouseanimation) {
+            button.setRolloverSelectedIcon(new ImageIcon(new ImageIcon(Bild3_2).getImage().getScaledInstance(Width, Height, Image.SCALE_SMOOTH)));
+            button.setRolloverIcon(new ImageIcon(new ImageIcon(Bild3_1).getImage().getScaledInstance(Width, Height, Image.SCALE_SMOOTH)));
+        }
+
+
         panel.add(button, JLayeredPane.POPUP_LAYER);
         panel.repaint();
         panel.revalidate();
 
         MouseListener actionEvent2 = new MouseAdapter(){
             public void mouseClicked(MouseEvent e){
-                if (!clickedButtonsMap.containsKey(name)){
-                    clickedButtonsMap.put(name,true);
-                    button.setIcon(new ImageIcon(Button2_skaliert));
+                if (!clickedButtonsMap.contains(name)){
+                    clickedButtonsMap.add(name);
+                    button.setSelected(true);
                 }
-                else if (clickedButtonsMap.containsKey(name)){
-                    clickedButtonsMap.remove(name,true);
-                    button.setIcon(new ImageIcon(Button_skaliert));
+                else if (clickedButtonsMap.contains(name)){
+                    clickedButtonsMap.remove(name);
+                    button.setSelected(false);
                 }
             }
         };
         button.addMouseListener(actionEvent2);
-        if (mouseanimation){
-            frame.addMouseMotionListener(new MouseMotionAdapter() {
-
-                @Override
-                public void mouseMoved(MouseEvent e) {
-                    if(mousePosition.getX() >= x &&  mousePosition.getX() <= x + Width && mousePosition.getY() >= y && mousePosition.getY() <= y + Height ){
-
-                        if (clickedButtonsMap.containsKey(name)){
-                            button.setIcon(new ImageIcon(Button3_2_skaliert));
-                            System.out.println("butt3_2 angezeigt");
-                        }
-                        if(!clickedButtonsMap.containsKey(name)){
-                            button.setIcon(new ImageIcon(Button3_1_skaliert));
-                            System.out.println("butt3_1 angezeigt");
-                        }
-
-                    }
-                    else {
-                        if (clickedButtonsMap.containsKey(name) ) {
-                            button.setIcon(new ImageIcon(Button2_skaliert));
-                            System.out.println("presst button anggezeigt");
-                        }
-                        if (!clickedButtonsMap.containsKey(name) ) {
-                            button.setIcon(new ImageIcon(Button_skaliert));
-                            System.out.println("noraml button anggezeigt");
-                        }
-                    }
-                }
-            });
-        }
     }
     public void setframebild(String bild,JLayeredPane panel){
         panel.setLayout(null);
-        //System.out.println("Bildpfad: " + bild);
         ImageIcon imageIcon = new ImageIcon(bild);
-        //System.out.println("Bild geladen: " + (imageIcon.getImageLoadStatus() == MediaTracker.COMPLETE));
         Image image = imageIcon.getImage();
-        //System.out.println("Bildgröße: " + image.getWidth(null) + "x" + image.getHeight(null));
         Image skaliertesImage = image.getScaledInstance(frame.getWidth(), frame.getHeight(), Image.SCALE_SMOOTH);
-        //System.out.println("skaliertesImage: " + skaliertesImage.getWidth(null) + "x" + skaliertesImage.getHeight(null));
         JLabel BILD = new JLabel(new ImageIcon(skaliertesImage));
         BILD.setBounds(0,0, frame.getWidth(), frame.getHeight());
         panel.add(BILD,JLayeredPane.DEFAULT_LAYER);
@@ -213,22 +197,22 @@ public class GameWindow {
     public void setPannelBild(String Bild,JLayeredPane panel){
 
 
-        System.out.println("Panel size: " + panel.getWidth() + "x" + panel.getHeight());
-        System.out.println("Image path: " + Bild);
+        //System.out.println("Panel size: " + panel.getWidth() + "x" + panel.getHeight());
+        //System.out.println("Image path: " + Bild);
 
         ImageIcon imageIcon = new ImageIcon(Bild);
-        System.out.println("Image loaded: " + (imageIcon.getImageLoadStatus() == MediaTracker.COMPLETE));
+        //System.out.println("Image loaded: " + (imageIcon.getImageLoadStatus() == MediaTracker.COMPLETE));
 
         Image image = imageIcon.getImage();
-        System.out.println("Image size: " + image.getWidth(null) + "x" + image.getHeight(null));
+        //System.out.println("Image size: " + image.getWidth(null) + "x" + image.getHeight(null));
 
         Image skaliertesImage = image.getScaledInstance(55, 20, Image.SCALE_SMOOTH);
-        System.out.println("panel size: " + panel.getWidth() + "x" + panel.getHeight());
-        System.out.println("skaliertesImage size: " + skaliertesImage.getWidth(null) + "x" + skaliertesImage.getHeight(null));
+        //System.out.println("panel size: " + panel.getWidth() + "x" + panel.getHeight());
+        //System.out.println("skaliertesImage size: " + skaliertesImage.getWidth(null) + "x" + skaliertesImage.getHeight(null));
         JLabel BILD = new JLabel(new ImageIcon(skaliertesImage));
         BILD.setBounds(panel.getX(), panel.getY(), panel.getWidth(), panel.getHeight());
-        System.out.println("bild bounds: " + BILD.getBounds());
-        panel.add(BILD, JLayeredPane.DEFAULT_LAYER);
+        //System.out.println("bild bounds: " + BILD.getBounds());
+        panel.add(BILD, 3);
         panel.repaint();
         panel.revalidate();
     }
