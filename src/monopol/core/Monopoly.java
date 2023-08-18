@@ -1,18 +1,42 @@
 package monopol.core;
 
 import monopol.screen.GameWindow;
+import monopol.server.Server;
+import monopol.server.ServerSettings;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.IOException;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 public class Monopoly {
 
     public static final Monopoly INSTANCE = new Monopoly();
-
+    private final Server server;
     GameState state;
+
+    private Monopoly() {
+        try {
+            server = new Server(25565);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void setState(GameState gameState) {
+        state = gameState;
+    }
+    public GameState getState() {
+        return state;
+    }
+    public void openServer(ServerSettings settings) {
+        server.open(settings);
+    }
+    public void closeServer() {
+        server.close();
+    }
 
     public static void main(String[] args) {
         INSTANCE.state = GameState.MAIN_MENU;
@@ -36,13 +60,5 @@ public class Monopoly {
             }
         };
         menuThread.start();
-    }
-
-    public void setState(GameState gameState) {
-        state = gameState;
-    }
-
-    public GameState getState() {
-        return state;
     }
 }

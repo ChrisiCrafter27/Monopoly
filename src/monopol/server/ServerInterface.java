@@ -10,4 +10,5 @@ public interface ServerInterface extends Remote {
     public void kick(String name, DisconnectReason reason) throws RemoteException;
     public boolean changeName(String oldName, String newName) throws RemoteException;
     public boolean acceptsNewClient() throws RemoteException;
+    public boolean stopped() throws RemoteException;
 }

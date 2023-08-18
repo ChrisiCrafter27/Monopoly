@@ -24,6 +24,7 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
     public static final int CLIENT_TIMEOUT = 10000;
 
     public ServerSocket server;
+    private boolean pause = true;
     public final HashMap<Integer, Socket> clients = new HashMap<>();
     public final HashMap<Socket, Boolean> pingCheck = new HashMap<>();
     public final HashMap<ServerPlayer, Socket> serverPlayers = new HashMap<>();
@@ -40,7 +41,7 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
                     logger.getLogger().info("[Server]: Waiting for new Client");
                     Socket newClient = server.accept();
                     if (clients.containsValue(newClient)) continue;
-                    if(acceptNewClients) {
+                    if (acceptNewClients) {
                         logger.getLogger().info("[Server]: New Client accepted");
                         clients.put(clients.size() + 1, newClient);
                         ServerPlayer serverPlayer = new ServerPlayer("Spieler " + (serverPlayers.size() + 1));
@@ -48,7 +49,13 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
                         Message.send(new Message(serverPlayer.getName(), MessageType.NAME), newClient);
                     } else {
                         logger.getLogger().info("[Server]: New Client denied");
-                        if(Monopoly.INSTANCE.getState() == GameState.RUNNING) Message.send(new Message(DisconnectReason.GAME_RUNNING, MessageType.DISCONNECT), newClient); else if(clients.size() >= 10) Message.send(new Message(DisconnectReason.SERVER_FULL, MessageType.DISCONNECT), newClient); else Message.send(new Message(DisconnectReason.UNKNOWN, MessageType.DISCONNECT), newClient);
+                        if (pause)
+                            Message.send(new Message(DisconnectReason.SERVER_CLOSED, MessageType.DISCONNECT), newClient);
+                        else if (Monopoly.INSTANCE.getState() == GameState.RUNNING)
+                            Message.send(new Message(DisconnectReason.GAME_RUNNING, MessageType.DISCONNECT), newClient);
+                        else if (clients.size() >= 10)
+                            Message.send(new Message(DisconnectReason.SERVER_FULL, MessageType.DISCONNECT), newClient);
+                        else Message.send(new Message(DisconnectReason.UNKNOWN, MessageType.DISCONNECT), newClient);
                     }
                 } catch (Exception e) {
                     logger.getLogger().severe("[Server]: Server crashed due to an Exception\r\n" + e.getMessage());
@@ -56,29 +63,33 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
                     return;
                 }
                 acceptNewClients = Monopoly.INSTANCE.getState() == GameState.LOBBY || Monopoly.INSTANCE.getState() == GameState.WAITING_FOR_PLAYER;
-                if(clients.size() >= 10) acceptNewClients = false;
+                if (pause) acceptNewClients = false;
+                if (clients.size() >= 10) acceptNewClients = false;
             }
         }
     };
     private final Thread requestThread = new Thread() {
         @Override
         public void run() {
-            while(!isInterrupted())
-            {
-                try {
-                    clients.forEach((id, client) -> {
-                        try {
-                            DataInputStream input = new DataInputStream(client.getInputStream());
-                            String data = input.readUTF();
-                            logger.getLogger().fine("[Server]: Message received");
-                            messageReceived(data, client);
-                        } catch (IOException ignored) {}
-                    });
-                } catch (ConcurrentModificationException ignored) {}
-                try {
-                    sleep(10);
-                } catch (InterruptedException e) {
-                    return;
+            while(!isInterrupted()) {
+                if(!pause) {
+                    try {
+                        clients.forEach((id, client) -> {
+                            try {
+                                DataInputStream input = new DataInputStream(client.getInputStream());
+                                String data = input.readUTF();
+                                logger.getLogger().fine("[Server]: Message received");
+                                messageReceived(data, client);
+                            } catch (IOException ignored) {
+                            }
+                        });
+                    } catch (ConcurrentModificationException ignored) {
+                    }
+                    try {
+                        sleep(10);
+                    } catch (InterruptedException e) {
+                        return;
+                    }
                 }
             }
         }
@@ -87,34 +98,38 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
     private final Thread pingThread = new Thread() {
         @Override
         public void run() {
-            while(!isInterrupted())
-            {
-                List<Socket> kick = new ArrayList<>();
-                clients.forEach((id, client) -> {
-                    if(!pingCheck.containsKey(client)) pingCheck.put(client, true);
-                    if(!pingCheck.get(client)) kick.add(client);
-                    pingCheck.replace(client, false);
+            while(!isInterrupted()) {
+                if (!pause) {
+                    List<Socket> kick = new ArrayList<>();
+                    clients.forEach((id, client) -> {
+                        if (!pingCheck.containsKey(client)) pingCheck.put(client, true);
+                        if (!pingCheck.get(client)) kick.add(client);
+                        pingCheck.replace(client, false);
+                        try {
+                            Message.sendPing(client);
+                        } catch (IOException ignored) {
+                        }
+                    });
+                    for (Socket client : kick) {
+                        logger.getLogger().warning("[Server]: Client lost connection: timed out");
+                        kick(client, DisconnectReason.CONNECTION_LOST);
+                    }
                     try {
-                        Message.sendPing(client);
-                    } catch (IOException ignored) {}
-                });
-                for (Socket client : kick) {
-                    logger.getLogger().warning("[Server]: Client lost connection: timed out");
-                    kick(client, DisconnectReason.CONNECTION_LOST);
-                }
-                try {
-                    sleep(Server.CLIENT_TIMEOUT);
-                } catch (InterruptedException e) {
-                    return;
+                        sleep(Server.CLIENT_TIMEOUT);
+                    } catch (InterruptedException e) {
+                        return;
+                    }
                 }
             }
         }
     };
 
-    public Server(int port, ServerSettings serverSettings) throws IOException{
-        logger.getLogger().info("[Server]: Staring server...");
+    public Server(int port) throws IOException{
+        logger.getLogger().info("[Server]: Initialing server...");
         server = new ServerSocket(port);
         //server.setSoTimeout(10000);
+
+        serverSettings = new ServerSettings(false, false);
 
         connectionThread.start();
         requestThread.start();
@@ -122,13 +137,13 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
 
         StandardEvents events = new StandardEvents(false, -1, false, true, true, true, 1500, 200, true, true, true, true, true, BuildRule.ON_COLOR_GROUP, OwnedCardsOfColorGroup.ONE, OwnedCardsOfColorGroup.ONE, OwnedCardsOfColorGroup.ONE, OwnedCardsOfColorGroup.ONE, OwnedCardsOfColorGroup.ALL_BUT_ONE, OwnedCardsOfColorGroup.ALL);
         try {
-            registry1 = LocateRegistry.createRegistry(1099);
+            registry1 = LocateRegistry.createRegistry(1299);
             registry1.rebind("Events", events);
             registry2 = LocateRegistry.createRegistry(1199);
             registry2.rebind("Server", this);
         } catch(Exception ignored) {
             try {
-                registry1 = LocateRegistry.createRegistry(1099);
+                registry1 = LocateRegistry.createRegistry(1299);
                 registry1.rebind("Events", events);
                 registry2 = LocateRegistry.createRegistry(1199);
                 registry2.rebind("Server", this);
@@ -137,8 +152,6 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
                 throw new RuntimeException(e);
             }
         }
-
-        this.serverSettings = serverSettings;
         /*
         logger.getLogger().info("[Server]: Server online!");
         logger.getLogger().severe("[Server]: Failed to start server\r\n" + e.getMessage());
@@ -146,14 +159,17 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
         */
     }
 
-    public void open() {
+    public void open(ServerSettings serverSettings) {
+        logger.getLogger().info("[Server]: Starting server...");
         try {
             logger.getLogger().info("[Server]: IP-Address: " + InetAddress.getLocalHost().getHostAddress());
         } catch (UnknownHostException e) {
             logger.getLogger().severe("[Server]: Server crashed due to an Exception\r\n" + e.getMessage());
             close();
-            throw new RuntimeException(e);
+            throw new RuntimeException();
         }
+        this.serverSettings = serverSettings;
+        pause = false;
         acceptNewClients = true;
         logger.getLogger().info("[Server]: Listening for new clients...");
     }
@@ -161,31 +177,14 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
     public void close() {
         acceptNewClients = false;
         List<Socket> list = new ArrayList<>();
-        clients.forEach((id, client) -> {
-            list.add(client);
-        });
+        clients.forEach((id, client) -> list.add(client));
         for (Socket client : list) {
             try {
                 Message.send(new Message(DisconnectReason.SERVER_CLOSED, MessageType.DISCONNECT), client);
             } catch (IOException ignored) {}
             kick(client, DisconnectReason.SERVER_CLOSED);
         }
-        connectionThread.interrupt();
-        requestThread.interrupt();
-        pingThread.interrupt();
-        try {
-            server.close();
-        } catch (IOException ex) {
-            throw new RuntimeException(ex);
-        }
-        try {
-            registry1.unbind("Events");
-            registry2.unbind("Server");
-            UnicastRemoteObject.unexportObject(registry1, true);
-            UnicastRemoteObject.unexportObject(registry2, true);
-        } catch (RemoteException | NotBoundException e) {
-            throw new RuntimeException(e);
-        }
+        pause = true;
         logger.getLogger().warning("[Server]: Server closed...");
     }
 
@@ -285,9 +284,14 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
         return acceptNewClients;
     }
 
+    @Override
+    public boolean stopped() throws RemoteException {
+        return pause;
+    }
+
     public static void main(String[] args) throws IOException, NotBoundException {
-        Server server = new Server(25565, new ServerSettings(false, true));
-        server.open();
+        Server server = new Server(25565);
+        server.open(new ServerSettings(false, true));
 
         //server.connectionThread.interrupt();
         //server.requestThread.interrupt();

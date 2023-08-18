@@ -48,8 +48,7 @@ public class PrototypeMenu {
         addButton(frame, "Host game", 50, 50, 200, 50, actionEvent -> {
             boolean trust = JOptionPane.showConfirmDialog(null, "Vertraust du deinen Mitspielern?", "Host game", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION;
             try {
-                Server server = new Server(25565, new ServerSettings(trust, trust));
-                server.open();
+                Monopoly.INSTANCE.openServer(new ServerSettings(trust, trust));
                 client = new Client("localhost", 25565);
                 clients.add(client);
                 prepareLobby(true);
@@ -113,7 +112,7 @@ public class PrototypeMenu {
 
                 while(!isInterrupted()) {
 
-                    if(keyHandler.isKeyPressed(KeyEvent.VK_W)) JOptionPane.showMessageDialog(null, "You pressed W!", "W pressed", JOptionPane.PLAIN_MESSAGE);
+                    //if(keyHandler.isKeyPressed(KeyEvent.VK_W)) JOptionPane.showMessageDialog(null, "You pressed W!", "W pressed", JOptionPane.PLAIN_MESSAGE);
 
                     if(client.closed()) {
                         clients.remove(client);
