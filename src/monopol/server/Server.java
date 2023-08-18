@@ -12,6 +12,7 @@ import monopol.message.MessageType;
 
 import java.io.*;
 import java.net.*;
+import java.rmi.NoSuchObjectException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -314,8 +315,8 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
     }
 
     public static void main(String[] args) throws IOException, NotBoundException {
-        Server server = new Server(25565);
-        server.open(new ServerSettings(false, true));
+        //Server server = new Server(25565, new ServerSettings(false, true));
+        //server.open();
 
         //server.connectionThread.interrupt();
         //server.requestThread.interrupt();
