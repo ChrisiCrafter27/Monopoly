@@ -6,10 +6,12 @@ import monopol.core.Monopoly;
 import monopol.server.DisconnectReason;
 import monopol.server.ServerPlayer;
 import monopol.server.ServerSettings;
+import monopol.utils.KeyHandler;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 
@@ -22,6 +24,7 @@ public class PrototypeMenu {
     private Client clientTemp;
     private ArrayList<ServerPlayer> displayedServerPlayers = new ArrayList<>();
     private String ip;
+    private KeyHandler keyHandler = new KeyHandler();
 
     public PrototypeMenu() {
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -31,6 +34,7 @@ public class PrototypeMenu {
         frame.setResizable(false);
         frame.setLayout(null);
         frame.setVisible(true);
+        frame.addKeyListener(keyHandler);
     }
 
     public void prepareMenu() {
@@ -102,6 +106,8 @@ public class PrototypeMenu {
                 }
 
                 while(!isInterrupted()) {
+
+                    //if(keyHandler.isKeyPressed(KeyEvent.VK_W)) System.out.println("HI");
 
                     if(client.closed()) {
                         clients.remove(client);

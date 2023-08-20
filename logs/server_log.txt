@@ -1,42 +1,7 @@
-[20-08-2023 14:32:15] [INFO] [Server]: Initialing server...
-[20-08-2023 14:32:15] [INFO] [Server]: Waiting for new Client
-[20-08-2023 14:32:17] [INFO] [Server]: Starting server...
-[20-08-2023 14:32:17] [INFO] [Server]: IP-Address: 192.168.178.44
-[20-08-2023 14:32:17] [INFO] [Server]: Listening for new clients...
-[20-08-2023 14:32:17] [INFO] [Server]: New Client accepted
-[20-08-2023 14:32:17] [INFO] [Server]: Waiting for new Client
-[20-08-2023 14:32:21] [INFO] [Server]: New Client accepted
-[20-08-2023 14:32:21] [INFO] [Server]: Waiting for new Client
-[20-08-2023 14:32:21] [INFO] [Server]: New Client accepted
-[20-08-2023 14:32:21] [INFO] [Server]: Waiting for new Client
-[20-08-2023 14:32:21] [INFO] [Server]: New Client accepted
-[20-08-2023 14:32:21] [INFO] [Server]: Waiting for new Client
-[20-08-2023 14:32:21] [INFO] [Server]: New Client accepted
-[20-08-2023 14:32:21] [INFO] [Server]: Waiting for new Client
-[20-08-2023 14:32:21] [INFO] [Server]: New Client accepted
-[20-08-2023 14:32:21] [INFO] [Server]: Waiting for new Client
-[20-08-2023 14:32:21] [INFO] [Server]: New Client accepted
-[20-08-2023 14:32:21] [INFO] [Server]: Waiting for new Client
-[20-08-2023 14:32:22] [INFO] [Server]: New Client accepted
-[20-08-2023 14:32:22] [INFO] [Server]: Waiting for new Client
-[20-08-2023 14:32:22] [INFO] [Server]: New Client accepted
-[20-08-2023 14:32:22] [INFO] [Server]: Waiting for new Client
-[20-08-2023 14:32:22] [INFO] [Server]: New Client accepted
-[20-08-2023 14:32:22] [INFO] [Server]: Waiting for new Client
-[20-08-2023 14:32:23] [WARN] [Server]: Kicked client
-[20-08-2023 14:32:24] [WARN] [Server]: Kicked client
-[20-08-2023 14:32:24] [WARN] [Server]: Kicked client
-[20-08-2023 14:32:26] [WARN] [Server]: Kicked client
-[20-08-2023 14:32:26] [WARN] [Server]: Kicked client
-[20-08-2023 14:32:27] [WARN] [Server]: Kicked client
-[20-08-2023 14:32:27] [WARN] [Server]: Kicked client
-[20-08-2023 14:32:27] [FINE] [Server]: Message received
-[20-08-2023 14:32:27] [FINE] [Server]: Ping to 127.0.0.1 is 4ms
-[20-08-2023 14:32:27] [FINE] [Server]: Message received
-[20-08-2023 14:32:27] [FINE] [Server]: Ping to 127.0.0.1 is 5ms
-[20-08-2023 14:32:27] [FINE] [Server]: Message received
-[20-08-2023 14:32:27] [FINE] [Server]: Ping to 127.0.0.1 is 5ms
-[20-08-2023 14:32:28] [WARN] [Server]: Kicked client
-[20-08-2023 14:32:29] [WARN] [Server]: Kicked client
-[20-08-2023 14:32:30] [WARN] [Server]: Kicked client
-[20-08-2023 14:32:30] [WARN] [Server]: Server closed...
+[18-08-2023 11:26:29] [INFO] [Server]: Initialing server...
+[18-08-2023 11:26:29] [INFO] [Server]: Waiting for new Client
+[18-08-2023 11:26:35] [INFO] [Server]: Starting server...
+[18-08-2023 11:26:35] [INFO] [Server]: IP-Address: 25.62.108.80
+[18-08-2023 11:26:35] [INFO] [Server]: Listening for new clients...
+[18-08-2023 11:26:35] [INFO] [Server]: New Client accepted
+[18-08-2023 11:26:36] [INFO] [Server]: Waiting for new Client

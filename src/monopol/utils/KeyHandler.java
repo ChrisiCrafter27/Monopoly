@@ -9,7 +9,6 @@ public class KeyHandler implements KeyListener {
 
     public ArrayList<Integer> pressedKeys = new ArrayList<>();
 
-
     @Override
     public void keyTyped(KeyEvent e) {
     }

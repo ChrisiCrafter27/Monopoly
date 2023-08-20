@@ -12,14 +12,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.*;
 import java.sql.SQLOutput;
-import javax.swing.event.AncestorListener;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
+
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseAdapter;
 import javax.swing.BorderFactory;
 import java.awt.event.MouseListener;
-
 
 public class GameWindow {
 
@@ -62,11 +59,10 @@ public class GameWindow {
 
             }
         });
-
         setframebild("images/Monopoly_client1.png",MENUPanel);
 
-        addText_panel("Hello i am Mr Monopoly and i will teach you ",MENUPanel,"Arial",40,1000,310,1000,50);
-        addText_panel("everything you need to know",MENUPanel,"Arial",40,1000,360,1000,50);
+        addText_panel("Hello i am Mr Monopoly and i will teach you ",MENUPanel,"Arial",30,850,260,1000,50);
+        addText_panel("everything you need to know",MENUPanel,"Arial",30,850,310,1000,50);
 
         addbutton_panel("butt1","images/Join_Server_0_0.png","images/Join_Server_0_1.png",true,"images/Join_Server_1_0.png","images/Join_Server_1_1.png",MENUPanel,120,350,450,100, new MouseAdapter()  {
             public void mouseClicked(MouseEvent e){
@@ -110,6 +106,7 @@ public class GameWindow {
                         MENUPanel.removeAll();
                     }
                 }
+
             }
         });
     }
@@ -120,6 +117,7 @@ public class GameWindow {
         setPannelBild("images/Host_Server_0_0.png", JoinGame);
         JoinGame.setVisible(true);
         MENUPanel.repaint();
+        addEingabeFeld();
     }
 
     public void hostgame(JLayeredPane panel){
@@ -217,8 +215,25 @@ public class GameWindow {
         panel.repaint();
         panel.revalidate();
     }
+
     public void addEingabeFeld(){
+        Thread Eingabe = new Thread(){
+            @Override
 
+            public void run(){
+                KeyHandler keyHandler = new KeyHandler();
+                frame.addKeyListener(keyHandler);
+                while(true){
+                    if(keyHandler.isKeyPressed(KeyEvent.VK_W)){
+                        System.out.println("jay");
+                    }
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException ignored) {}
+                }
+            }
+        };
+        Eingabe.start();
+        System.out.println("Thread started");
     }
-
 }
