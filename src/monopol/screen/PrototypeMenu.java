@@ -43,6 +43,14 @@ public class PrototypeMenu {
         frame.getContentPane().removeAll();
         frame.repaint();
 
+        JButton button = new JButton();
+        button.setBounds(100, 100, 70, 30);
+        frame.add(button);
+        JButton button1 = new JButton();
+        button1.setBounds(100, 130, 70, 70);
+        frame.add(button1);
+
+        addButton(frame, "invisible", 0, 0, 0, 0, true, actionEvent -> {});
         addButton(frame, "Host game", 50, 50, 200, 50, true, actionEvent -> {
             boolean canKick = JOptionPane.showConfirmDialog(null, "Allow all players to kick each other?", "Host game", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION;
             boolean canSet = JOptionPane.showConfirmDialog(null, "Allow all players to access settings?", "Host game", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION;
@@ -112,6 +120,8 @@ public class PrototypeMenu {
                         }
                     }
 
+                    clients.removeIf(Client::closed);
+
                     try {
                         boolean shouldUpdate = true;
                         for(ServerPlayer serverPlayer1 : displayedServerPlayers) {
@@ -156,8 +166,7 @@ public class PrototypeMenu {
                                     addButton(frame, "Kick", 600, y, 150, 25, ableToKick, actionEvent -> {
                                         try {
                                             client.serverMethod().kick(serverPlayer.getName(), DisconnectReason.KICKED);
-                                        } catch (Exception ignored) {
-                                        }
+                                        } catch (Exception ignored) {}
                                     });
                                 } else {
                                     addButton(frame, "change name", 600, y, 150, 25, true, actionEvent -> {
@@ -192,12 +201,8 @@ public class PrototypeMenu {
                                 } catch (Exception ignored) {}
                             });
                             displayedServerPlayers = client.serverMethod().getServerPlayers();
-                            int step = frame.getWidth() / clients.size();
                             for(int i = 0; i < clients.size(); i++) {
-                                int[] value = {i};
-                                addButton(frame, clients.get(i).name, i * step, 0, step, 60, true, (client == clients.get(value[0])), actionEvent -> {
-                                    setClient(value[0]);
-                                }).setIcon(new ImageIcon(new ImageIcon("images/playerselect/playerselect_0_" + clients.size() + ".png").getImage().getScaledInstance(step, 60, Image.SCALE_SMOOTH)));
+                                addPlayerButton(i);
                             }
                             frame.repaint();
                         }
@@ -235,19 +240,35 @@ public class PrototypeMenu {
         button.setContentAreaFilled(false);
         button.setBorderPainted(false);
         button.setFocusPainted(false);
-        button.setIcon(new ImageIcon(new ImageIcon("images/DO_NOT_CHANGE/plain_button_2.png").getImage().getScaledInstance(150, 38, Image.SCALE_SMOOTH)));
-        button.setDisabledIcon(new ImageIcon(new ImageIcon("images/DO_NOT_CHANGE/plain_button_2.png").getImage().getScaledInstance(150, 38, Image.SCALE_SMOOTH)));
-        button.setPressedIcon(new ImageIcon(new ImageIcon("images/DO_NOT_CHANGE/plain_button_0.png").getImage().getScaledInstance(150, 38, Image.SCALE_SMOOTH)));
-        button.setRolloverIcon(new ImageIcon(new ImageIcon("images/DO_NOT_CHANGE/plain_button_1.png").getImage().getScaledInstance(150, 38, Image.SCALE_SMOOTH)));
-        button.setSelectedIcon(new ImageIcon(new ImageIcon("images/DO_NOT_CHANGE/plain_button_0.png").getImage().getScaledInstance(150, 38, Image.SCALE_SMOOTH)));
+        if(width < 1) width = 1;
+        if(height < 1) height = 1;
+        button.setIcon(new ImageIcon(new ImageIcon("images/DO_NOT_CHANGE/plain_button_2.png").getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH)));
+        button.setDisabledIcon(new ImageIcon(new ImageIcon("images/DO_NOT_CHANGE/plain_button_2.png").getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH)));
+        button.setPressedIcon(new ImageIcon(new ImageIcon("images/DO_NOT_CHANGE/plain_button_0.png").getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH)));
+        button.setRolloverIcon(new ImageIcon(new ImageIcon("images/DO_NOT_CHANGE/plain_button_1.png").getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH)));
+        button.setSelectedIcon(new ImageIcon(new ImageIcon("images/DO_NOT_CHANGE/plain_button_0.png").getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH)));
         button.setHorizontalTextPosition(SwingConstants.CENTER);
         button.setVerticalTextPosition(SwingConstants.CENTER);
         frame.add(button);
         return button;
     }
 
+    private JButton addPlayerButton(int i) {
+        int step = frame.getWidth() / clients.size();
+        int[] value = {i};
+        JButton button = addButton(frame, clients.get(i).name, i * step, 0, step, 60,true, (client == clients.get(value[0])), actionEvent -> {
+            setClient(value[0]);
+        });
+        button.setIcon(new ImageIcon(new ImageIcon("images/playerselect/playerselect_0_" + clients.size() + ".png").getImage().getScaledInstance(step, 60, Image.SCALE_SMOOTH)));
+        button.setDisabledIcon(new ImageIcon(new ImageIcon("images/playerselect/playerselect_0_" + clients.size() + ".png").getImage().getScaledInstance(step, 60, Image.SCALE_SMOOTH)));
+        button.setPressedIcon(new ImageIcon(new ImageIcon("images/playerselect/playerselect_0_" + clients.size() + ".png").getImage().getScaledInstance(step, 60, Image.SCALE_SMOOTH)));
+        button.setRolloverIcon(new ImageIcon(new ImageIcon("images/playerselect/playerselect_0_" + clients.size() + ".png").getImage().getScaledInstance(step, 60, Image.SCALE_SMOOTH)));
+        button.setSelectedIcon(new ImageIcon(new ImageIcon("images/playerselect/playerselect_0_" + clients.size() + ".png").getImage().getScaledInstance(step, 60, Image.SCALE_SMOOTH)));
+        return button;
+    }
+
     private static JButton addButton(JFrame frame, String display, int x, int y, int width, int height, boolean enabled, boolean selected, ActionListener actionEvent) {
-        JButton button = addButton(frame, display, x, y, width, height, enabled,  actionEvent);
+        JButton button = addButton(frame, display, x, y, width, height, enabled, actionEvent);
         button.setSelected(selected);
         return button;
     }
