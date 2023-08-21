@@ -1,22 +1,14 @@
 package monopol.screen;
 
-import com.sun.tools.javac.Main;
-import monopol.test.TestButton;
 import monopol.utils.KeyHandler;
-import org.w3c.dom.ls.LSOutput;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.*;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.*;
-import java.sql.SQLOutput;
 
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseAdapter;
-import javax.swing.BorderFactory;
-import java.awt.event.MouseListener;
 
 public class GameWindow {
 
@@ -60,55 +52,63 @@ public class GameWindow {
             }
         });
         setframebild("images/Monopoly_client1.png",MENUPanel);
-        System.out.println(MENUPanel.getX() + MENUPanel.getY());
         addText_panel("Hello i am Mr Monopoly and i will teach you ",MENUPanel,"Arial",30,frame.getWidth() - 900,frame.getHeight() - 750,1000,50);
         addText_panel("everything you need to know",MENUPanel,"Arial",30,frame.getWidth() - 900, frame.getHeight() - 700,1000,50);
 
-        addbutton_panel("butt1","images/Join_Server_0_0.png","images/Join_Server_0_1.png",true,"images/Join_Server_1_0.png","images/Join_Server_1_1.png",MENUPanel,120,350,450,100, new MouseAdapter()  {
-            public void mouseClicked(MouseEvent e){
-                if(clickedButtonsMap.contains("butt2")){
-                    System.out.println("Button2 allredy presst: " + clickedButtonsMap.contains("butt2"));
-                    System.out.println("error");
-                    MENUPanel.removeAll();
+        addbutton_panel("butt1","images/Join_Server_0_0.png","images/Join_Server_0_1.png",true,"images/Join_Server_1_0.png","images/Join_Server_1_1.png",MENUPanel,120,350,450,100, actionevent ->  {
+            if(clickedButtonsMap.contains("butt2")){
+                System.out.println("Button2 allredy presst: " + clickedButtonsMap.contains("butt2"));
+                System.out.println("error");
+                HostGame.removeAll();
+                MENUPanel.repaint();
+                clickedButtonsMap.remove("butt2");
+                System.out.println("button1 wurde schon gecklickt: "+ clickedButtonsMap.contains("butt1"));
+                Joingame(MENUPanel);
+                System.out.println("joinGame wird ausgeführt");
+                MENUPanel.repaint();
+                clickedButtonsMap.add("butt1");
+            }
+            else{
+                if(!clickedButtonsMap.contains("butt1")){
+                    System.out.println("button1 wurde schon gecklickt: "+ clickedButtonsMap.contains("butt1"));
+                    Joingame(MENUPanel);
+                    System.out.println("joinGame wird ausgeführt");
+                    MENUPanel.repaint();
+                    clickedButtonsMap.add("butt1");
+                }
+                else {
+                    System.out.println("button1 wurde schon gecklickt: "+ clickedButtonsMap.contains("butt1"));
+                    JoinGame.removeAll();
+                    System.out.println("removing pannels auf Menüpanel");
+                    MENUPanel.repaint();
+                    clickedButtonsMap.remove("butt1");
+                }
+            }
+        });
+
+        addbutton_panel("butt2","images/Host_Server_0_0.png","images/Host_Server_0_1.png.png",true,"images/Host_Server_1_0.png","images/Host_Server_1_1.png",MENUPanel,120,480,450,100, actionEvent -> {
+            if(clickedButtonsMap.contains("butt1")){
+                System.out.println("error2");
+                JoinGame.removeAll();
+                clickedButtonsMap.remove("butt1");
+                hostgame(MENUPanel);
+                System.out.println("hostgame");
+                clickedButtonsMap.add("butt2");
+            }
+            else{
+                if(!clickedButtonsMap.contains("butt2")){
+                    hostgame(MENUPanel);
+                    System.out.println("hostgame");
+                    clickedButtonsMap.add("butt2");
+                }
+                else {
+                    System.out.println("allredy in hostgame");
+                    HostGame.removeAll();
+                    clickedButtonsMap.remove("butt2");
                     MENUPanel.repaint();
                 }
-                else{
-                    if(!clickedButtonsMap.contains("butt1")){
-                        System.out.println("button1 wurde schon gecklickt: "+ clickedButtonsMap.contains("butt1"));
-                        Joingame(MENUPanel);
-                        System.out.println("joinGame wird ausgeführt");
-                        MENUPanel.repaint();
-                    }
-                    else {
-                        System.out.println("button1 wurde schon gecklickt: "+ clickedButtonsMap.contains("butt1"));
-                        JoinGame.removeAll();
-                        System.out.println("removing pannels auf Menüpanel");
-                        MENUPanel.repaint();
-                    }
-                }
-
             }
-        });
-
-        addbutton_panel("butt2","images/Host_Server_0_0.png","images/Host_Server_0_1.png.png",true,"images/Host_Server_1_0.png","images/Host_Server_1_1.png",MENUPanel,120,480,450,100, new MouseAdapter()  {
-            public void mouseClicked(MouseEvent e){
-                if(clickedButtonsMap.contains("butt1")){
-                    System.out.println("error2");
-                    JoinGame.removeAll();
-                }
-                else{
-                    if(!clickedButtonsMap.contains("butt2")){
-                        hostgame(MENUPanel);
-                        System.out.println("hostgame");
-                    }
-                    else {
-                        System.out.println("allredy in hostgame");
-                        MENUPanel.removeAll();
-                    }
-                }
-
-            }
-        });
+    });
     }
     public void Joingame(JLayeredPane panel){
         System.out.println("layer of joingame:"+ MENUPanel.getLayer(JoinGame));
@@ -125,7 +125,7 @@ public class GameWindow {
         System.out.println("layer of joingame:"+ MENUPanel.getLayer(HostGame));
         HostGame.setBounds(0, 0, 800, 600);
         panel.add(HostGame, 0);
-        setPannelBild("images/Host_Server_0_0.png", HostGame);
+        setPannelBild("images/DO_NOT_CHANGE/plain_button_0.png", HostGame);
         HostGame.setVisible(true);
         MENUPanel.repaint();
         addEingabeFeld();
@@ -142,7 +142,7 @@ public class GameWindow {
         //panel.revalidate();
     }
 
-    public void addbutton_panel(String name, String Bild1, String Bild2,boolean mouseanimation,String Bild3_1,String Bild3_2, JLayeredPane panel, int x, int y, int Width, int Height, MouseListener actionEvent){
+    public void addbutton_panel(String name, String Bild1, String Bild2,boolean mouseanimation,String Bild3_1,String Bild3_2, JLayeredPane panel, int x, int y, int Width, int Height, ActionListener actionEvent){
 
         ImageIcon button_Icon = new ImageIcon(Bild1);
         Image Button_Image = button_Icon.getImage();
@@ -156,7 +156,6 @@ public class GameWindow {
 
         JButton button = new JButton(new ImageIcon(Button_skaliert));
         button.setBounds(x , y, Width, Height);
-        button.addMouseListener(actionEvent);
         button.setOpaque(false);
         button.setContentAreaFilled(false);
         button.setBorderPainted(false);
@@ -175,19 +174,9 @@ public class GameWindow {
         panel.repaint();
         panel.revalidate();
 
-        MouseListener actionEvent2 = new MouseAdapter(){
-            public void mouseClicked(MouseEvent e){
-                if (!clickedButtonsMap.contains(name)){
-                    clickedButtonsMap.add(name);
-                    button.setSelected(true);
-                }
-                else if (clickedButtonsMap.contains(name)){
-                    clickedButtonsMap.remove(name);
-                    button.setSelected(false);
-                }
-            }
-        };
-        button.addMouseListener(actionEvent2);
+
+
+        button.addActionListener(actionEvent);
     }
     public void setframebild(String bild,JLayeredPane panel){
         panel.setLayout(null);
