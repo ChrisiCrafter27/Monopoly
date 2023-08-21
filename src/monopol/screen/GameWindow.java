@@ -60,9 +60,9 @@ public class GameWindow {
             }
         });
         setframebild("images/Monopoly_client1.png",MENUPanel);
-
-        addText_panel("Hello i am Mr Monopoly and i will teach you ",MENUPanel,"Arial",30,850,260,1000,50);
-        addText_panel("everything you need to know",MENUPanel,"Arial",30,850,310,1000,50);
+        System.out.println(MENUPanel.getX() + MENUPanel.getY());
+        addText_panel("Hello i am Mr Monopoly and i will teach you ",MENUPanel,"Arial",30,MENUPanel.getX()+850,MENUPanel.getY()+260,1000,50);
+        addText_panel("everything you need to know",MENUPanel,"Arial",30,MENUPanel.getX()+850,MENUPanel.getX()+310,1000,50);
 
         addbutton_panel("butt1","images/Join_Server_0_0.png","images/Join_Server_0_1.png",true,"images/Join_Server_1_0.png","images/Join_Server_1_1.png",MENUPanel,120,350,450,100, new MouseAdapter()  {
             public void mouseClicked(MouseEvent e){
@@ -122,6 +122,14 @@ public class GameWindow {
 
     public void hostgame(JLayeredPane panel){
         panel.add(HostGame,JLayeredPane.POPUP_LAYER);
+        System.out.println("layer of joingame:"+ MENUPanel.getLayer(HostGame));
+        HostGame.setBounds(0, 0, 800, 600);
+        panel.add(HostGame, 0);
+        setPannelBild("images/Host_Server_0_0.png", HostGame);
+        HostGame.setVisible(true);
+        MENUPanel.repaint();
+        addEingabeFeld();
+
     }
 
     public void addText_panel(String text, JLayeredPane panel,String font,int size,int x, int y,int Width, int Height){
