@@ -26,7 +26,7 @@ public class GameWindow {
     JLayeredPane JoinGame = new JLayeredPane();
 
 
-    private ArrayList clickedButtonsMap = new ArrayList();
+    private final ArrayList<String> clickedButtonsMap = new ArrayList();
     private Point mousePosition;
     private boolean animated = false;
     public GameWindow(){
@@ -61,8 +61,8 @@ public class GameWindow {
         });
         setframebild("images/Monopoly_client1.png",MENUPanel);
         System.out.println(MENUPanel.getX() + MENUPanel.getY());
-        addText_panel("Hello i am Mr Monopoly and i will teach you ",MENUPanel,"Arial",30,MENUPanel.getX()+850,MENUPanel.getY()+260,1000,50);
-        addText_panel("everything you need to know",MENUPanel,"Arial",30,MENUPanel.getX()+850,MENUPanel.getX()+310,1000,50);
+        addText_panel("Hello i am Mr Monopoly and i will teach you ",MENUPanel,"Arial",30,frame.getWidth() - 900,frame.getHeight() - 750,1000,50);
+        addText_panel("everything you need to know",MENUPanel,"Arial",30,frame.getWidth() - 900, frame.getHeight() - 700,1000,50);
 
         addbutton_panel("butt1","images/Join_Server_0_0.png","images/Join_Server_0_1.png",true,"images/Join_Server_1_0.png","images/Join_Server_1_1.png",MENUPanel,120,350,450,100, new MouseAdapter()  {
             public void mouseClicked(MouseEvent e){
@@ -139,7 +139,7 @@ public class GameWindow {
         label.setBounds(x, y, Width, Height);
         panel.add(label,JLayeredPane.POPUP_LAYER);
         panel.repaint();
-        panel.revalidate();
+        //panel.revalidate();
     }
 
     public void addbutton_panel(String name, String Bild1, String Bild2,boolean mouseanimation,String Bild3_1,String Bild3_2, JLayeredPane panel, int x, int y, int Width, int Height, MouseListener actionEvent){

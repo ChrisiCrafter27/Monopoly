@@ -38,15 +38,16 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
         public void run() {
             while(!isInterrupted()) {
                 try {
-                    logger.getLogger().info("[Server]: Waiting for new Client");
                     Socket newClient = server.accept();
                     if (clients.containsValue(newClient)) continue;
                     if (acceptNewClients) {
-                        logger.getLogger().info("[Server]: New Client accepted");
                         clients.put(clients.size() + 1, newClient);
                         ServerPlayer serverPlayer = newServerPlayer();
                         serverPlayers.put(serverPlayer, newClient);
+                        System.out.println(clients.toString());
+                        System.out.println(serverPlayers.toString());
                         Message.send(new Message(serverPlayer.getName(), MessageType.NAME), newClient);
+                        logger.getLogger().info("[Server]: New Client accepted (" + serverPlayer.getName() + ")");
                     } else {
                         logger.getLogger().info("[Server]: New Client denied");
                         if (pause)
@@ -58,7 +59,7 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
                         else Message.send(new Message(DisconnectReason.UNKNOWN, MessageType.DISCONNECT), newClient);
                     }
                 } catch (Exception e) {
-                    logger.getLogger().severe("[Server]: Server crashed due to an Exception\r\n" + e.getMessage());
+                    logger.getLogger().severe("[Server]: Server crashed due to an Exception:\r\n" + e.getMessage());
                     close();
                     return;
                 }
@@ -129,7 +130,11 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
                         }
                     });
                     for (Socket client : kick) {
-                        logger.getLogger().warning("[Server]: Client lost connection: timed out");
+                        String name = "unknown";
+                        for(Map.Entry<ServerPlayer, Socket> entry : serverPlayers.entrySet()) {
+                            if(entry.getValue() == client) name = entry.getKey().getName();
+                        }
+                        logger.getLogger().warning("[Server]: Client lost connection: timed out (" + name + ")");
                         kick(client, DisconnectReason.CONNECTION_LOST);
                     }
                     try {
@@ -183,7 +188,7 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
         try {
             logger.getLogger().info("[Server]: IP-Address: " + InetAddress.getLocalHost().getHostAddress());
         } catch (UnknownHostException e) {
-            logger.getLogger().severe("[Server]: Server crashed due to an Exception\r\n" + e.getMessage());
+            logger.getLogger().severe("[Server]: Server crashed due to an Exception:\r\n" + e.getMessage());
             close();
             throw new RuntimeException();
         }
@@ -251,7 +256,11 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
                     if (pingCheck.containsKey(client)) {
                         pingCheck.replace(client, true);
                     }
-                    logger.getLogger().fine("[Server]: Ping to " + client.getInetAddress().getHostAddress() + " is " + delay + "ms");
+                    String name = "unknown";
+                    for(Map.Entry<ServerPlayer, Socket> entry : serverPlayers.entrySet()) {
+                        if(entry.getValue() == client) name = entry.getKey().getName();
+                    }
+                    logger.getLogger().fine("[Server]: Ping to " + name + " is " + delay + "ms");
                 }
                 case DISCONNECT -> kick(client, DisconnectReason.CLIENT_CLOSED);
                 case NULL -> {
@@ -259,7 +268,7 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
                 default -> throw new RuntimeException();
             }
         } catch (Exception e) {
-            logger.getLogger().severe("[Server]: Server crashed due to an Exception\r\n" + e.getMessage());
+            logger.getLogger().severe("[Server]: Server crashed due to an Exception:\r\n" + e.getMessage());
             close();
             throw new RuntimeException(e);
         }
@@ -291,6 +300,7 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
         for (Map.Entry<ServerPlayer, Socket> entry : serverPlayers.entrySet()) {
             if(entry.getKey().getName().equals(oldName)) {
                 entry.getKey().setName(newName);
+                logger.getLogger().info("[Server]: Changed name from " + oldName + " to " + newName);
                 return true;
             }
         }
