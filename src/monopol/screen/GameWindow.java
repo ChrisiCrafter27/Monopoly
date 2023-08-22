@@ -108,7 +108,7 @@ public class GameWindow {
         setPannelBild("images/Host_Server_0_0.png", JoinGame);
         JoinGame.setVisible(true);
         MENUPanel.repaint();
-        addEingabeFeld();
+        addEingabeFeld(200, 700, 20);
     }
 
     public void hostgame(JLayeredPane panel){
@@ -119,8 +119,7 @@ public class GameWindow {
         setPannelBild("images/DO_NOT_CHANGE/plain_button_0.png", HostGame);
         HostGame.setVisible(true);
         MENUPanel.repaint();
-        addEingabeFeld();
-
+        //addEingabeFeld();
     }
 
     public void addText_panel(String text, JLayeredPane panel,String font,int size,double x, double y,int Width, int Height){
@@ -161,10 +160,11 @@ public class GameWindow {
 
         panel.add(button, JLayeredPane.POPUP_LAYER);
         panel.repaint();
-        panel.revalidate();
+        //panel.revalidate();
 
         button.addActionListener(actionEvent);
 
+        /*
         button.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -174,6 +174,7 @@ public class GameWindow {
                 else{button.setSelected(false);}
             }
         });
+        */
     }
     public void setframebild(String bild,JLayeredPane panel){
         panel.setLayout(null);
@@ -184,7 +185,7 @@ public class GameWindow {
         BILD.setBounds(0,0, frame.getWidth(), frame.getHeight());
         panel.add(BILD,JLayeredPane.DEFAULT_LAYER);
         panel.repaint();
-        panel.revalidate();
+        //panel.revalidate();
     }
 
     public void setPannelBild(String Bild,JLayeredPane panel){
@@ -207,14 +208,14 @@ public class GameWindow {
         //System.out.println("bild bounds: " + BILD.getBounds());
         panel.add(BILD, 3);
         panel.repaint();
-        panel.revalidate();
+        //panel.revalidate();
     }
 
-    public void addEingabeFeld(){
-        Thread Eingabe = new Thread(){
+    public void addEingabeFeld(int labelX, int labelY, int maxLength) {
+        Thread Eingabe = new Thread() {
             @Override
-
-            public void run(){
+            public void run() {
+                /*
                 KeyHandler keyHandler = new KeyHandler();
                 frame.addKeyListener(keyHandler);
                 frame.requestFocus();
@@ -350,18 +351,35 @@ public class GameWindow {
                             } catch (InterruptedException ignored) {}
                         }
                     }
-
-
-
-
-
+                }
+                */
+                KeyHandler keyHandler = new KeyHandler();
+                frame.addKeyListener(keyHandler);
+                frame.requestFocus();
+                while (!keyHandler.isKeyPressed(KeyEvent.VK_ENTER) && !keyHandler.isKeyPressed(KeyEvent.VK_ESCAPE) && keyHandler.getString().length() <= maxLength) {
+                    //System.out.println(keyHandler.getString());
                     try {
                         Thread.sleep(10);
                     } catch (InterruptedException ignored) {}
+                }
+                System.out.println(keyHandler.getString());
+                if(keyHandler.getString().length() > maxLength) {
+                    return;
+                }
+                if(keyHandler.getString().equals("")) {
+                    return;
+                }
+                if(keyHandler.isKeyPressed(KeyEvent.VK_ESCAPE)) {
+                    return;
+                }
+                if(keyHandler.isKeyPressed(KeyEvent.VK_ENTER)) {
+
                 }
             }
         };
         Eingabe.start();
         System.out.println("Thread started");
     }
+
+
 }

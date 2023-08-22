@@ -7,10 +7,12 @@ import java.util.ArrayList;
 
 public class KeyHandler implements KeyListener {
 
-    public ArrayList<Integer> pressedKeys = new ArrayList<>();
+    private final ArrayList<Integer> pressedKeys = new ArrayList<>();
+    private String string = "";
 
     @Override
     public void keyTyped(KeyEvent e) {
+        string += e.getKeyChar();
     }
 
     @Override
@@ -27,5 +29,13 @@ public class KeyHandler implements KeyListener {
 
     public boolean isKeyPressed(int code) {
         return pressedKeys.contains(code);
+    }
+
+    public void resetString() {
+        string = "";
+    }
+
+    public String getString() {
+        return string;
     }
 }
