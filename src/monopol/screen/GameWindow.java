@@ -56,57 +56,50 @@ public class GameWindow {
 
         addbutton_panel("butt1","images/Join_Server_0_0.png","images/Join_Server_0_1.png",true,"images/Join_Server_1_0.png","images/Join_Server_1_1.png",MENUPanel,120 * multiplikator_Width,350 * multiplikator_Height,450,100, actionevent ->  {
             if(clickedButtonsMap.contains("butt2")){
-                System.out.println("Button2 allredy presst: " + clickedButtonsMap.contains("butt2"));
+                //System.out.println("Button2 allredy presst: " + clickedButtonsMap.contains("butt2"));
                 HostGame.removeAll();
                 MENUPanel.repaint();
-                /*
-                clickedButtonsMap.remove("butt2");
-                Joingame(MENUPanel);
-                System.out.println("joinGame wird ausgeführt");
-                MENUPanel.repaint();
-                clickedButtonsMap.add("butt1");
-                 */
             }
             else{
                 if(!clickedButtonsMap.contains("butt1")){
-                    System.out.println("button1 wurde schon gecklickt: "+ clickedButtonsMap.contains("butt1"));
+                    //System.out.println("button1 wurde schon gecklickt: "+ clickedButtonsMap.contains("butt1"));
                     Joingame(MENUPanel);
-                    System.out.println("joinGame wird ausgeführt");
+                    //System.out.println("joinGame wird ausgeführt");
                     MENUPanel.repaint();
                     clickedButtonsMap.add("butt1");
                 }
                 else {
-                    System.out.println("button1 wurde schon gecklickt: "+ clickedButtonsMap.contains("butt1"));
+                    //System.out.println("button1 wurde schon gecklickt: "+ clickedButtonsMap.contains("butt1"));
                     JoinGame.removeAll();
                     clickedButtonsMap.remove("butt1");
-                    System.out.println("removing pannels auf Menüpanel");
+                    //System.out.println("removing pannels auf Menüpanel");
                     MENUPanel.repaint();
                 }
             }
         });
 
-        addbutton_panel("butt2","images/Host_Server_0_0.png","images/Host_Server_0_1.png.png",true,"images/Host_Server_1_0.png","images/Host_Server_1_1.png",MENUPanel,120* multiplikator_Width,480* multiplikator_Height,450,100, actionEvent -> {
+        addbutton_panel("butt2","images/Host_Server_0_0.png","images/Host_Server_0_1.png.png",true,"images/Host_Server_1_0.png.png","images/Host_Server_1_1.png.png",MENUPanel,120* multiplikator_Width,480* multiplikator_Height,450,100, actionEvent -> {
             if(clickedButtonsMap.contains("butt1")){
-                System.out.println("Button1 allredy presst: " + clickedButtonsMap.contains("butt1"));
+                //System.out.println("Button1 allredy presst: " + clickedButtonsMap.contains("butt1"));
                 JoinGame.removeAll();
                 hostgame(MENUPanel);
             }
             else{
                 if(!clickedButtonsMap.contains("butt2")){
-                    System.out.println("Button1 allredy presst: " + clickedButtonsMap.contains("butt1"));
+                    //System.out.println("Button1 allredy presst: " + clickedButtonsMap.contains("butt1"));
                     hostgame(MENUPanel);
-                    System.out.println("hostgame wird ausgeführt");
+                    //System.out.println("hostgame wird ausgeführt");
                     clickedButtonsMap.add("butt2");
                 }
                 else {
-                    System.out.println("Button1 allredy presst: " + clickedButtonsMap.contains("butt1"));
-                    System.out.println("removing pannels auf Menüpanel");
+                    //System.out.println("Button1 allredy presst: " + clickedButtonsMap.contains("butt1"));
+                    //System.out.println("removing pannels auf Menüpanel");
                     clickedButtonsMap.remove("butt2");
                     HostGame.removeAll();
                     MENUPanel.repaint();
                 }
             }
-    });
+        });
     }
     public void Joingame(JLayeredPane panel){
         System.out.println("layer of joingame:"+ MENUPanel.getLayer(JoinGame));
@@ -120,7 +113,7 @@ public class GameWindow {
 
     public void hostgame(JLayeredPane panel){
         panel.add(HostGame,JLayeredPane.POPUP_LAYER);
-        System.out.println("layer of joingame:"+ MENUPanel.getLayer(HostGame));
+        System.out.println("layer of hostgame:"+ MENUPanel.getLayer(HostGame));
         HostGame.setBounds(0, 0, 800, 600);
         panel.add(HostGame, 0);
         setPannelBild("images/DO_NOT_CHANGE/plain_button_0.png", HostGame);
@@ -224,12 +217,146 @@ public class GameWindow {
             public void run(){
                 KeyHandler keyHandler = new KeyHandler();
                 frame.addKeyListener(keyHandler);
+                frame.requestFocus();
+                boolean keydown= false;
+
                 while(true){
-                    if(keyHandler.isKeyPressed(KeyEvent.VK_W)){
-                        System.out.println("jay");
+                    if(keyHandler.isKeyPressed(KeyEvent.VK_1) && !keydown){
+                        System.out.println("1");
+                        keydown = true;
+                        while (keydown){
+                            if(!keyHandler.isKeyPressed(KeyEvent.VK_1)){
+                                keydown = false;
+                            }
+                            try {
+                                Thread.sleep(10);
+                            } catch (InterruptedException ignored) {}
+                        }
                     }
+
+                    if(keyHandler.isKeyPressed(KeyEvent.VK_2) && !keydown){
+                        System.out.println("2");
+                        keydown = true;
+                        while (keydown){
+                            if(!keyHandler.isKeyPressed(KeyEvent.VK_2)){
+                                keydown = false;
+                            }
+                            try {
+                                Thread.sleep(5);
+                            } catch (InterruptedException ignored) {}
+                        }
+                    }
+
+                    if(keyHandler.isKeyPressed(KeyEvent.VK_3) && !keydown){
+                        System.out.println("3");
+                        keydown = true;
+                        while (keydown){
+                            if(!keyHandler.isKeyPressed(KeyEvent.VK_3)){
+                                keydown = false;
+                            }
+                            try {
+                                Thread.sleep(5);
+                            } catch (InterruptedException ignored) {}
+                        }
+                    }
+
+                    if(keyHandler.isKeyPressed(KeyEvent.VK_4) && !keydown){
+                        System.out.println("4");
+                        keydown = true;
+                        while (keydown){
+                            if(!keyHandler.isKeyPressed(KeyEvent.VK_4)){
+                                keydown = false;
+                            }
+                            try {
+                                Thread.sleep(5);
+                            } catch (InterruptedException ignored) {}
+                        }
+                    }
+
+                    if(keyHandler.isKeyPressed(KeyEvent.VK_5) && !keydown){
+                        System.out.println("5");
+                        keydown = true;
+                        while (keydown){
+                            if(!keyHandler.isKeyPressed(KeyEvent.VK_5)){
+                                keydown = false;
+                            }
+                            try {
+                                Thread.sleep(5);
+                            } catch (InterruptedException ignored) {}
+                        }
+                    }
+
+                    if(keyHandler.isKeyPressed(KeyEvent.VK_6) && !keydown){
+                        System.out.println("6");
+                        keydown = true;
+                        while (keydown){
+                            if(!keyHandler.isKeyPressed(KeyEvent.VK_6)){
+                                keydown = false;
+                            }
+                            try {
+                                Thread.sleep(5);
+                            } catch (InterruptedException ignored) {}
+                        }
+                    }
+
+                    if(keyHandler.isKeyPressed(KeyEvent.VK_7) && !keydown){
+                        System.out.println("7");
+                        keydown = true;
+                        while (keydown){
+                            if(!keyHandler.isKeyPressed(KeyEvent.VK_7)){
+                                keydown = false;
+                            }
+                            try {
+                                Thread.sleep(5);
+                            } catch (InterruptedException ignored) {}
+                        }
+                    }
+
+                    if(keyHandler.isKeyPressed(KeyEvent.VK_8) && !keydown){
+                        System.out.println("8");
+                        keydown = true;
+                        while (keydown){
+                            if(!keyHandler.isKeyPressed(KeyEvent.VK_8)){
+                                keydown = false;
+                            }
+                            try {
+                                Thread.sleep(5);
+                            } catch (InterruptedException ignored) {}
+                        }
+                    }
+
+                    if(keyHandler.isKeyPressed(KeyEvent.VK_9) && !keydown){
+                        System.out.println("9");
+                        keydown = true;
+                        while (keydown){
+                            if(!keyHandler.isKeyPressed(KeyEvent.VK_9)){
+                                keydown = false;
+                            }
+                            try {
+                                Thread.sleep(5);
+                            } catch (InterruptedException ignored) {}
+                        }
+                    }
+
+                    if(keyHandler.isKeyPressed(KeyEvent.VK_0) && !keydown){
+                        System.out.println("0");
+                        keydown = true;
+                        while (keydown){
+                            if(!keyHandler.isKeyPressed(KeyEvent.VK_0)){
+                                keydown = false;
+                            }
+                            try {
+                                Thread.sleep(5);
+                            } catch (InterruptedException ignored) {}
+                        }
+                    }
+
+
+
+
+
                     try {
-                        Thread.sleep(100);
+                        Thread.sleep(10);
                     } catch (InterruptedException ignored) {}
                 }
             }

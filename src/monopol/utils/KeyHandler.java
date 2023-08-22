@@ -15,7 +15,9 @@ public class KeyHandler implements KeyListener {
 
     @Override
     public void keyPressed(KeyEvent e) {
-        if(!pressedKeys.contains(e.getKeyCode())) pressedKeys.add(e.getKeyCode());
+        if(!pressedKeys.contains(e.getKeyCode())) {
+            pressedKeys.add(e.getKeyCode());
+        }
     }
 
     @Override

@@ -49,10 +49,7 @@ public class Monopoly {
                 frame.setVisible(true);
 
 
-
                 while(!interrupted()) {
-
-
                     try {
                         sleep(10);
                     } catch (InterruptedException ignored) {}
