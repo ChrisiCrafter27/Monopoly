@@ -4,6 +4,7 @@ import monopol.utils.KeyHandler;
 
 import javax.swing.*;
 import java.awt.*;
+import java.sql.Array;
 import java.util.*;
 import java.awt.event.ActionListener;
 import java.awt.event.*;
@@ -17,6 +18,7 @@ public class GameWindow {
     JLayeredPane HostGame = new JLayeredPane();
     JLayeredPane JoinGame = new JLayeredPane();
     private final ArrayList<String> clickedButtonsMap = new ArrayList();
+    private final ArrayList<String> inputtext = new ArrayList();
     int normalWidth = 1920;
     int normalHeight= 1080;
     double multiplikator_Width;
@@ -49,7 +51,7 @@ public class GameWindow {
     }
 
     public void Mainmenu(){
-        frame.add(MENUPanel);
+        frame.add(MENUPanel,0);
         setframebild("images/Monopoly_client1.png",MENUPanel);
         addText_panel("Hello i am Mr Monopoly and i will teach you ",MENUPanel,"Arial",30, 1000 * multiplikator_Width, 310 * multiplikator_Height,1000,50);
         addText_panel("everything you need to know",MENUPanel,"Arial",30,1000 * multiplikator_Width, 360 * multiplikator_Height,1000,50);
@@ -102,13 +104,17 @@ public class GameWindow {
         });
     }
     public void Joingame(JLayeredPane panel){
+        JoinGame.setBounds(MENUPanel.getX() + 100, MENUPanel.getY() + 200, 800, 600);
+        panel.remove(JoinGame);
+        panel.add(JoinGame);
+        MENUPanel.setLayer(JoinGame,JLayeredPane.POPUP_LAYER);
         System.out.println("layer of joingame:"+ MENUPanel.getLayer(JoinGame));
-        JoinGame.setBounds(0, 0, 800, 600);
-        panel.add(JoinGame, 0);
         setPannelBild("images/Host_Server_0_0.png", JoinGame);
         JoinGame.setVisible(true);
         MENUPanel.repaint();
-        addEingabeFeld();
+        addEingabeFeld(JoinGame,"Arial",30, (JoinGame.getX() + 10) * multiplikator_Width, (JoinGame.getY() + 10) * multiplikator_Height,100,50);
+        JoinGame.revalidate();
+        JoinGame.requestFocus();
     }
 
     public void hostgame(JLayeredPane panel){
@@ -119,7 +125,7 @@ public class GameWindow {
         setPannelBild("images/DO_NOT_CHANGE/plain_button_0.png", HostGame);
         HostGame.setVisible(true);
         MENUPanel.repaint();
-        addEingabeFeld();
+        //addEingabeFeld();
 
     }
 
@@ -182,35 +188,38 @@ public class GameWindow {
         Image skaliertesImage = image.getScaledInstance(frame.getWidth(), frame.getHeight(), Image.SCALE_SMOOTH);
         JLabel BILD = new JLabel(new ImageIcon(skaliertesImage));
         BILD.setBounds(0,0, frame.getWidth(), frame.getHeight());
-        panel.add(BILD,JLayeredPane.DEFAULT_LAYER);
+        panel.add(BILD);
         panel.repaint();
         panel.revalidate();
     }
 
     public void setPannelBild(String Bild,JLayeredPane panel){
-
-
-        //System.out.println("Panel size: " + panel.getWidth() + "x" + panel.getHeight());
-        //System.out.println("Image path: " + Bild);
-
+        System.out.println("Panel size: " + panel.getWidth() + "x" + panel.getHeight());
+        System.out.println("Image path: " + Bild);
         ImageIcon imageIcon = new ImageIcon(Bild);
-        //System.out.println("Image loaded: " + (imageIcon.getImageLoadStatus() == MediaTracker.COMPLETE));
-
+        System.out.println("Image loaded: " + (imageIcon.getImageLoadStatus() == MediaTracker.COMPLETE));
         Image image = imageIcon.getImage();
-        //System.out.println("Image size: " + image.getWidth(null) + "x" + image.getHeight(null));
-
-        Image skaliertesImage = image.getScaledInstance(55, 20, Image.SCALE_SMOOTH);
-        //System.out.println("panel size: " + panel.getWidth() + "x" + panel.getHeight());
-        //System.out.println("skaliertesImage size: " + skaliertesImage.getWidth(null) + "x" + skaliertesImage.getHeight(null));
+        System.out.println("Image size: " + image.getWidth(null) + "x" + image.getHeight(null));
+        Image skaliertesImage = image.getScaledInstance(panel.getWidth(), panel.getHeight(), Image.SCALE_SMOOTH);
+        System.out.println("panel size: " + panel.getWidth() + "x" + panel.getHeight());
+        System.out.println("skaliertesImage size: " + skaliertesImage.getWidth(null) + "x" + skaliertesImage.getHeight(null));
         JLabel BILD = new JLabel(new ImageIcon(skaliertesImage));
         BILD.setBounds(panel.getX(), panel.getY(), panel.getWidth(), panel.getHeight());
-        //System.out.println("bild bounds: " + BILD.getBounds());
-        panel.add(BILD, 3);
+        System.out.println("bild bounds: " + BILD.getBounds());
+        panel.add(BILD,JLayeredPane.POPUP_LAYER);
         panel.repaint();
         panel.revalidate();
     }
 
-    public void addEingabeFeld(){
+
+    public void addEingabeFeld(JLayeredPane panel,String font,int size,double x1, double y1,int Width, int Height ){
+
+        StringBuilder Input = new StringBuilder();
+        int x = (int) x1;
+        int y = (int) y1;
+
+        addText_panel("hihihi",panel,font,size,x,y,Width,Height);
+
         Thread Eingabe = new Thread(){
             @Override
 
@@ -221,8 +230,31 @@ public class GameWindow {
                 boolean keydown= false;
 
                 while(true){
+
+                    if(keyHandler.isKeyPressed(KeyEvent.VK_BACK_SPACE) && !keydown){
+                        if(!inputtext.isEmpty()){
+                            inputtext.remove(inputtext.size() - 1);
+                        }
+                        for (String str : inputtext) {
+                            Input.append(str);
+                        }
+                        String finalString = Input.toString();
+                        System.out.println("Kombinierter String: " + finalString);
+                        keydown = true;
+                        while (keydown){
+                            if(!keyHandler.isKeyPressed(KeyEvent.VK_BACK_SPACE)){
+                                keydown = false;
+                            }
+                            try {
+                                Thread.sleep(10);
+                            } catch (InterruptedException ignored) {}
+                        }
+                    }
+
+
                     if(keyHandler.isKeyPressed(KeyEvent.VK_1) && !keydown){
-                        System.out.println("1");
+                        inputtext.add("1");
+                        System.out.println(inputtext);
                         keydown = true;
                         while (keydown){
                             if(!keyHandler.isKeyPressed(KeyEvent.VK_1)){
