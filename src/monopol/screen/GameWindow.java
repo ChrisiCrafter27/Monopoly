@@ -4,11 +4,13 @@ import monopol.utils.KeyHandler;
 
 import javax.swing.*;
 import java.awt.*;
+import java.math.BigDecimal;
 import java.util.*;
 import java.awt.event.ActionListener;
 import java.awt.event.*;
 
 import java.awt.event.MouseEvent;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class GameWindow {
 
@@ -18,10 +20,10 @@ public class GameWindow {
     JLayeredPane JoinGame = new JLayeredPane();
     private final ArrayList<String> clickedButtonsMap = new ArrayList();
     int normalWidth = 1920;
-    int normalY = 1080;
+    int normalHeight= 1080;
+    double multiplikator_Width;
+    double multiplikator_Height;
 
-    int multiplikator_Width = normalWidth / frame.getWidth();
-    int multiplikator_Height = normalY /frame.getHeight();
     public GameWindow(){
         frame.setUndecorated(true);
         frame.setSize(new Dimension( 1920,1080));
@@ -32,10 +34,14 @@ public class GameWindow {
         frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         MENUPanel.setSize(frame.getSize());
         frame.setVisible(true);
+
+        multiplikator_Width = (double) frame.getWidth() / normalWidth;
+        multiplikator_Height = (double) frame.getHeight() / normalHeight;
     }
     public static void main(String[] args){
         GameWindow window = new GameWindow();
         window.Mainmenu();
+
     }
     public JFrame getframe(){
         return frame;
@@ -43,6 +49,7 @@ public class GameWindow {
     public JLayeredPane getMENUpanel(){
         return MENUPanel;
     }
+
     public void Mainmenu(){
         frame.add(MENUPanel);
         setframebild("images/Monopoly_client1.png",MENUPanel);
@@ -126,11 +133,13 @@ public class GameWindow {
 
     }
 
-    public void addText_panel(String text, JLayeredPane panel,String font,int size,int x, int y,int Width, int Height){
+    public void addText_panel(String text, JLayeredPane panel,String font,int size,double x, double y,int Width, int Height){
         String Text = text;
         JLabel label = new JLabel(Text);
         label.setFont(new Font(font, Font.PLAIN, size));
-        label.setBounds(x, y, Width, Height);
+        int x2 = (int) x;
+        int y2 = (int) y;
+        label.setBounds(x2, y2, Width, Height);
         panel.add(label,JLayeredPane.POPUP_LAYER);
         panel.repaint();
         //panel.revalidate();
