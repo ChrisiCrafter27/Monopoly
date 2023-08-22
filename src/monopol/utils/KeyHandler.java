@@ -11,20 +11,17 @@ public class KeyHandler implements KeyListener {
     private String string = "";
 
     @Override
-    public void keyTyped(KeyEvent e) {
-        System.out.println(e.getKeyCode());
-        if(e.getKeyCode() == KeyEvent.VK_BACK_SPACE) {
-            if (string.length() > 0) {
-                string = string.substring(0, string.length() - 1);
-            }
-        } else string += e.getKeyChar();
-    }
+    public void keyTyped(KeyEvent e) {}
 
     @Override
     public void keyPressed(KeyEvent e) {
-        if(!pressedKeys.contains(e.getKeyCode())) {
-            pressedKeys.add(e.getKeyCode());
-        }
+        if(!pressedKeys.contains(e.getKeyCode())) pressedKeys.add(e.getKeyCode());
+        if(e.getKeyCode() == KeyEvent.VK_BACK_SPACE) {
+            if (!string.isEmpty()) {
+                string = string.substring(0, string.length() - 1);
+            }
+        } else if(e.getKeyChar() != '￿') string += e.getKeyChar();
+        System.out.println(e.getKeyChar());
     }
 
     @Override

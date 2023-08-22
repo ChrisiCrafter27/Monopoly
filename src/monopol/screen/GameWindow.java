@@ -22,7 +22,7 @@ public class GameWindow {
     double multiplikator_Width;
     double multiplikator_Height;
 
-    public GameWindow(){
+    public GameWindow() {
         frame.setUndecorated(true);
         frame.setSize(new Dimension( 1920,1080));
         frame.setResizable(true);
@@ -36,15 +36,15 @@ public class GameWindow {
         multiplikator_Width = (double) frame.getWidth() / normalWidth;
         multiplikator_Height = (double) frame.getHeight() / normalHeight;
     }
-    public static void main(String[] args){
+    public static void main(String[] args) {
         GameWindow window = new GameWindow();
         window.Mainmenu();
 
     }
-    public JFrame getframe(){
+    public JFrame getframe() {
         return frame;
     }
-    public JLayeredPane getMENUpanel(){
+    public JLayeredPane getMENUpanel() {
         return MENUPanel;
     }
 
@@ -58,6 +58,9 @@ public class GameWindow {
             if(clickedButtonsMap.contains("butt2")){
                 //System.out.println("Button2 allredy presst: " + clickedButtonsMap.contains("butt2"));
                 HostGame.removeAll();
+                clickedButtonsMap.remove("butt2");
+                clickedButtonsMap.add("butt1");
+                Joingame(MENUPanel);
                 MENUPanel.repaint();
             }
             else{
@@ -82,7 +85,10 @@ public class GameWindow {
             if(clickedButtonsMap.contains("butt1")){
                 //System.out.println("Button1 allredy presst: " + clickedButtonsMap.contains("butt1"));
                 JoinGame.removeAll();
+                clickedButtonsMap.remove("butt1");
+                clickedButtonsMap.add("butt2");
                 hostgame(MENUPanel);
+                MENUPanel.repaint();
             }
             else{
                 if(!clickedButtonsMap.contains("butt2")){
@@ -108,7 +114,7 @@ public class GameWindow {
         setPannelBild("images/Host_Server_0_0.png", JoinGame);
         JoinGame.setVisible(true);
         MENUPanel.repaint();
-        addEingabeFeld();
+        addEingabeFeld(JoinGame, 20, 20,20, 20, 500, 100);
     }
 
     public void hostgame(JLayeredPane panel){
@@ -119,8 +125,7 @@ public class GameWindow {
         setPannelBild("images/DO_NOT_CHANGE/plain_button_0.png", HostGame);
         HostGame.setVisible(true);
         MENUPanel.repaint();
-        addEingabeFeld();
-
+        //addEingabeFeld(HostGame, 20, 20, 20, 20, 500, 100);
     }
 
     public void addText_panel(String text, JLayeredPane panel,String font,int size,double x, double y,int Width, int Height){
@@ -161,19 +166,21 @@ public class GameWindow {
 
         panel.add(button, JLayeredPane.POPUP_LAYER);
         panel.repaint();
-        panel.revalidate();
+        //panel.revalidate();
 
         button.addActionListener(actionEvent);
 
-        button.addMouseListener(new MouseAdapter() {
+        new Thread() {
             @Override
-            public void mouseClicked(MouseEvent e) {
-                if(!button.isSelected()){
-                    button.setSelected(true);
+            public void run() {
+                while(!interrupted()) {
+                    button.setSelected(clickedButtonsMap.contains(name));
+                    try {
+                        sleep(10);
+                    } catch (InterruptedException ignored) {}
                 }
-                else{button.setSelected(false);}
             }
-        });
+        }.start();
     }
     public void setframebild(String bild,JLayeredPane panel){
         panel.setLayout(null);
@@ -184,7 +191,7 @@ public class GameWindow {
         BILD.setBounds(0,0, frame.getWidth(), frame.getHeight());
         panel.add(BILD,JLayeredPane.DEFAULT_LAYER);
         panel.repaint();
-        panel.revalidate();
+        //panel.revalidate();
     }
 
     public void setPannelBild(String Bild,JLayeredPane panel){
@@ -207,14 +214,19 @@ public class GameWindow {
         //System.out.println("bild bounds: " + BILD.getBounds());
         panel.add(BILD, 3);
         panel.repaint();
-        panel.revalidate();
+        //panel.revalidate();
     }
 
-    public void addEingabeFeld(){
-        Thread Eingabe = new Thread(){
-            @Override
 
-            public void run(){
+    public void addEingabeFeld(JLayeredPane panel, int fontSize, int maxLength, double x, double y, int width, int height) {
+
+        int labelX = (int) x;
+        int labelY = (int) y;
+
+        Thread Eingabe = new Thread() {
+            @Override
+            public void run() {
+                /*
                 KeyHandler keyHandler = new KeyHandler();
                 frame.addKeyListener(keyHandler);
                 frame.requestFocus();
@@ -350,14 +362,34 @@ public class GameWindow {
                             } catch (InterruptedException ignored) {}
                         }
                     }
-
-
-
-
-
+                }
+                */
+                KeyHandler keyHandler = new KeyHandler();
+                frame.addKeyListener(keyHandler);
+                frame.requestFocus();
+                JLabel label = new JLabel("");
+                label.setBounds(labelX, labelY, width, height);
+                label.setFont(label.getFont().deriveFont(fontSize));
+                panel.add(label);
+                while (!keyHandler.isKeyPressed(KeyEvent.VK_ENTER) && !keyHandler.isKeyPressed(KeyEvent.VK_ESCAPE)) {
+                    //System.out.println(keyHandler.getString());
+                    label.setText(keyHandler.getString());
+                    panel.repaint();
+                    MENUPanel.repaint();
+                    frame.repaint();
                     try {
                         Thread.sleep(10);
                     } catch (InterruptedException ignored) {}
+                }
+                System.out.println(keyHandler.getString());
+                if(keyHandler.getString().length() > maxLength) {
+
+                } else if(keyHandler.getString().equals("")) {
+
+                } else if(keyHandler.isKeyPressed(KeyEvent.VK_ESCAPE)) {
+
+                } else if(keyHandler.isKeyPressed(KeyEvent.VK_ENTER)) {
+
                 }
             }
         };
