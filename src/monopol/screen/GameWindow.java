@@ -108,7 +108,7 @@ public class GameWindow {
         setPannelBild("images/Host_Server_0_0.png", JoinGame);
         JoinGame.setVisible(true);
         MENUPanel.repaint();
-        addEingabeFeld(200, 700, 20);
+        addEingabeFeld(0, 0, 20, 20);
     }
 
     public void hostgame(JLayeredPane panel){
@@ -211,7 +211,7 @@ public class GameWindow {
         //panel.revalidate();
     }
 
-    public void addEingabeFeld(int labelX, int labelY, int maxLength) {
+    public void addEingabeFeld(int labelX, int labelY, int maxLength, float fontSize) {
         Thread Eingabe = new Thread() {
             @Override
             public void run() {
@@ -356,23 +356,28 @@ public class GameWindow {
                 KeyHandler keyHandler = new KeyHandler();
                 frame.addKeyListener(keyHandler);
                 frame.requestFocus();
+                JLabel label = new JLabel("");
+                label.setBounds(labelX, labelY, 500, 100);
+                label.setFont(label.getFont().deriveFont(fontSize));
+                JoinGame.add(label);
                 while (!keyHandler.isKeyPressed(KeyEvent.VK_ENTER) && !keyHandler.isKeyPressed(KeyEvent.VK_ESCAPE) && keyHandler.getString().length() <= maxLength) {
                     //System.out.println(keyHandler.getString());
+                    label.setText(keyHandler.getString());
+                    JoinGame.repaint();
+                    MENUPanel.repaint();
+                    frame.repaint();
                     try {
                         Thread.sleep(10);
                     } catch (InterruptedException ignored) {}
                 }
                 System.out.println(keyHandler.getString());
                 if(keyHandler.getString().length() > maxLength) {
-                    return;
-                }
-                if(keyHandler.getString().equals("")) {
-                    return;
-                }
-                if(keyHandler.isKeyPressed(KeyEvent.VK_ESCAPE)) {
-                    return;
-                }
-                if(keyHandler.isKeyPressed(KeyEvent.VK_ENTER)) {
+
+                } else if(keyHandler.getString().equals("")) {
+
+                } else if(keyHandler.isKeyPressed(KeyEvent.VK_ESCAPE)) {
+
+                } else if(keyHandler.isKeyPressed(KeyEvent.VK_ENTER)) {
 
                 }
             }
@@ -380,6 +385,5 @@ public class GameWindow {
         Eingabe.start();
         System.out.println("Thread started");
     }
-
 
 }

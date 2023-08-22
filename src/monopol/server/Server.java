@@ -44,8 +44,6 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
                         clients.put(clients.size() + 1, newClient);
                         ServerPlayer serverPlayer = newServerPlayer();
                         serverPlayers.put(serverPlayer, newClient);
-                        System.out.println(clients.toString());
-                        System.out.println(serverPlayers.toString());
                         Message.send(new Message(serverPlayer.getName(), MessageType.NAME), newClient);
                         logger.getLogger().info("[Server]: New Client accepted (" + serverPlayer.getName() + ")");
                     } else {

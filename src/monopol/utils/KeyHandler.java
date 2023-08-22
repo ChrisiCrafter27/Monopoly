@@ -12,7 +12,12 @@ public class KeyHandler implements KeyListener {
 
     @Override
     public void keyTyped(KeyEvent e) {
-        string += e.getKeyChar();
+        System.out.println(e.getKeyCode());
+        if(e.getKeyCode() == KeyEvent.VK_BACK_SPACE) {
+            if (string.length() > 0) {
+                string = string.substring(0, string.length() - 1);
+            }
+        } else string += e.getKeyChar();
     }
 
     @Override
