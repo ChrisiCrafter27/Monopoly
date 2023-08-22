@@ -16,11 +16,12 @@ public class GameWindow {
     JLayeredPane MENUPanel = new JLayeredPane();
     JLayeredPane HostGame = new JLayeredPane();
     JLayeredPane JoinGame = new JLayeredPane();
-
-
     private final ArrayList<String> clickedButtonsMap = new ArrayList();
-    private Point mousePosition;
-    private boolean animated = false;
+    int normalWidth = 1920;
+    int normalY = 1080;
+
+    int multiplikator_Width = normalWidth / frame.getWidth();
+    int multiplikator_Height = normalY /frame.getHeight();
     public GameWindow(){
         frame.setUndecorated(true);
         frame.setSize(new Dimension( 1920,1080));
@@ -44,16 +45,9 @@ public class GameWindow {
     }
     public void Mainmenu(){
         frame.add(MENUPanel);
-        frame.addMouseMotionListener(new MouseMotionAdapter() {
-            @Override
-            public void mouseMoved(MouseEvent e) {
-                mousePosition = e.getPoint();
-
-            }
-        });
         setframebild("images/Monopoly_client1.png",MENUPanel);
-        addText_panel("Hello i am Mr Monopoly and i will teach you ",MENUPanel,"Arial",30,frame.getWidth() - 900,frame.getHeight() - 750,1000,50);
-        addText_panel("everything you need to know",MENUPanel,"Arial",30,frame.getWidth() - 900, frame.getHeight() - 700,1000,50);
+        addText_panel("Hello i am Mr Monopoly and i will teach you ",MENUPanel,"Arial",30, 1000 * multiplikator_Width, 310 * multiplikator_Height,1000,50);
+        addText_panel("everything you need to know",MENUPanel,"Arial",30,1000 * multiplikator_Width, 360 * multiplikator_Height,1000,50);
 
         addbutton_panel("butt1","images/Join_Server_0_0.png","images/Join_Server_0_1.png",true,"images/Join_Server_1_0.png","images/Join_Server_1_1.png",MENUPanel,120,350,450,100, actionevent ->  {
             if(clickedButtonsMap.contains("butt2")){
