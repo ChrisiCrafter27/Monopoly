@@ -2,6 +2,7 @@ package monopol.client;
 
 import monopol.core.GameState;
 import monopol.core.Monopoly;
+import monopol.rules.Street;
 import monopol.server.DisconnectReason;
 import monopol.rules.EventsInterface;
 import monopol.server.ServerInterface;

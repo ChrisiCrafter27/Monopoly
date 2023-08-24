@@ -3,6 +3,7 @@ package monopol.screen;
 import monopol.client.Client;
 import monopol.core.GameState;
 import monopol.core.Monopoly;
+import monopol.rules.Street;
 import monopol.server.DisconnectReason;
 import monopol.server.ServerPlayer;
 import monopol.server.ServerSettings;
@@ -42,13 +43,6 @@ public class PrototypeMenu {
         displayedServerPlayers = new ArrayList<>();
         frame.getContentPane().removeAll();
         frame.repaint();
-
-        JButton button = new JButton();
-        button.setBounds(100, 100, 70, 30);
-        frame.add(button);
-        JButton button1 = new JButton();
-        button1.setBounds(100, 130, 70, 70);
-        frame.add(button1);
 
         addButton(frame, "invisible", 0, 0, 0, 0, true, actionEvent -> {});
         addButton(frame, "Host game", 50, 50, 200, 50, true, actionEvent -> {
@@ -227,6 +221,10 @@ public class PrototypeMenu {
         lobbyThread.start();
     }
 
+    public void prepareGame() {
+
+    }
+
     private void setClient(int i) {
         client = clients.get(i);
     }
@@ -279,6 +277,23 @@ public class PrototypeMenu {
         label.setFont(new Font("Arial", Font.PLAIN, size));
         label.setBounds(x, y, width, size);
         frame.add(label);
+    }
+
+    private static JLabel addImage(JFrame frame, String src, int x, int y) {
+        ImageIcon icon = new ImageIcon(src);
+        JLabel label = new JLabel(icon);
+        label.setBounds(x, y, icon.getIconWidth(), icon.getIconHeight());
+        frame.add(label);
+        frame.repaint();
+        return label;
+    }
+
+    private static JLabel addImage(JFrame frame, String src, int x, int y, int width, int height) {
+        JLabel label = addImage(frame, src, x, y);
+        label.setIcon(new ImageIcon(((ImageIcon) label.getIcon()).getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH)));
+        label.setBounds(x, y, width, height);
+        frame.repaint();
+        return label;
     }
 
     private static void addText(JFrame frame, String display, int x, int y, int width, int size) {
