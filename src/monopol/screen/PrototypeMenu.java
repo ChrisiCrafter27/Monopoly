@@ -210,7 +210,7 @@ public class PrototypeMenu {
                     if(Monopoly.INSTANCE.getState() == GameState.RUNNING) {
                         System.out.println("The game should now start!");
                         interrupt();
-                        System.exit(0);
+                        prepareGame();
                     }
                     try {
                         sleep(100);
@@ -222,6 +222,10 @@ public class PrototypeMenu {
     }
 
     public void prepareGame() {
+        Monopoly.INSTANCE.setState(GameState.RUNNING);
+        frame.getContentPane().removeAll();
+        frame.repaint();
+
 
     }
 
