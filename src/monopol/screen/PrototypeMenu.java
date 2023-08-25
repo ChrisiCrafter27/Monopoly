@@ -12,7 +12,6 @@ import monopol.utils.KeyHandler;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 
@@ -26,6 +25,7 @@ public class PrototypeMenu {
     private ArrayList<ServerPlayer> displayedServerPlayers = new ArrayList<>();
     private String ip;
     private KeyHandler keyHandler = new KeyHandler();
+    private Street selectedStreet = Street.BADSTRASSE;
 
     public PrototypeMenu() {
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -211,6 +211,7 @@ public class PrototypeMenu {
                         System.out.println("The game should now start!");
                         interrupt();
                         prepareGame();
+                        return;
                     }
                     try {
                         sleep(100);
@@ -226,7 +227,9 @@ public class PrototypeMenu {
         frame.getContentPane().removeAll();
         frame.repaint();
 
+        addStreetButton(frame, Street.BADSTRASSE, 100, 100, Direction.LEFT);
 
+        frame.repaint();
     }
 
     private void setClient(int i) {
@@ -245,13 +248,35 @@ public class PrototypeMenu {
         if(width < 1) width = 1;
         if(height < 1) height = 1;
         button.setIcon(new ImageIcon(new ImageIcon("images/DO_NOT_CHANGE/plain_button_2.png").getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH)));
-        button.setDisabledIcon(new ImageIcon(new ImageIcon("images/DO_NOT_CHANGE/plain_button_2.png").getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH)));
-        button.setPressedIcon(new ImageIcon(new ImageIcon("images/DO_NOT_CHANGE/plain_button_0.png").getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH)));
-        button.setRolloverIcon(new ImageIcon(new ImageIcon("images/DO_NOT_CHANGE/plain_button_1.png").getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH)));
-        button.setSelectedIcon(new ImageIcon(new ImageIcon("images/DO_NOT_CHANGE/plain_button_0.png").getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH)));
+        //button.setDisabledIcon(new ImageIcon(new ImageIcon("images/DO_NOT_CHANGE/plain_button_2.png").getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH)));
+        //button.setPressedIcon(new ImageIcon(new ImageIcon("images/DO_NOT_CHANGE/plain_button_0.png").getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH)));
+        //button.setRolloverIcon(new ImageIcon(new ImageIcon("images/DO_NOT_CHANGE/plain_button_1.png").getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH)));
+        //button.setSelectedIcon(new ImageIcon(new ImageIcon("images/DO_NOT_CHANGE/plain_button_0.png").getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH)));
         button.setHorizontalTextPosition(SwingConstants.CENTER);
         button.setVerticalTextPosition(SwingConstants.CENTER);
         frame.add(button);
+        return button;
+    }
+
+    private static JButton addButton(JLayeredPane frame, String display, int x, int y, int width, int height, boolean enabled, int pos, ActionListener actionEvent) {
+        JButton button = new JButton(display);
+        button.addActionListener(actionEvent);
+        button.setBounds(x, y, width, height);
+        button.setEnabled(enabled);
+        button.setOpaque(false);
+        button.setContentAreaFilled(false);
+        button.setBorderPainted(false);
+        button.setFocusPainted(false);
+        if(width < 1) width = 1;
+        if(height < 1) height = 1;
+        button.setIcon(new ImageIcon(new ImageIcon("images/DO_NOT_CHANGE/plain_button_2.png").getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH)));
+        //button.setDisabledIcon(new ImageIcon(new ImageIcon("images/DO_NOT_CHANGE/plain_button_2.png").getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH)));
+        //button.setPressedIcon(new ImageIcon(new ImageIcon("images/DO_NOT_CHANGE/plain_button_0.png").getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH)));
+        //button.setRolloverIcon(new ImageIcon(new ImageIcon("images/DO_NOT_CHANGE/plain_button_1.png").getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH)));
+        //button.setSelectedIcon(new ImageIcon(new ImageIcon("images/DO_NOT_CHANGE/plain_button_0.png").getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH)));
+        button.setHorizontalTextPosition(SwingConstants.CENTER);
+        button.setVerticalTextPosition(SwingConstants.CENTER);
+        frame.add(button, pos);
         return button;
     }
 
@@ -269,8 +294,57 @@ public class PrototypeMenu {
         return button;
     }
 
+    private JLayeredPane addStreetButton(JFrame frame, Street street, int x, int y, Direction direction) {
+        JButton button;
+        JLayeredPane pane = new JLayeredPane();
+        pane.setBounds(0, 0, frame.getWidth(), frame.getHeight());
+        switch (direction) {
+            case LEFT -> {
+                button = addButton(pane, "", x, y, 90, 70, true, 1, actionEvent -> {
+                    selectedStreet = street;
+                });
+                button.setIcon(new ImageIcon("images/felder/left_background.png"));
+                addImage(pane, "images/felder/" + street.colorGroup.IMAGE + "_cardcolor.png", x+1, y+1, 1);
+                JLabel label;
+                label = addText(pane, street.name, x+25, y+60, 70, 20, 2);
+                //((Graphics2D) label.getGraphics()).rotate(Math.toRadians(90));
+                label = addText(pane, street.price + "€", x+75, y+60, 70, 20, 3);
+                //((Graphics2D) label.getGraphics()).rotate(Math.toRadians(90));
+            }
+            case UP -> {
+                button = addButton(frame, "", x, y, 70, 90, false, actionEvent -> {
+                    selectedStreet = street;
+                });
+                button.setIcon(new ImageIcon("images/felder/up_background.png"));
+            }
+            case RIGHT -> {
+                button = addButton(frame, "", x, y, 90, 70, false, actionEvent -> {
+                    selectedStreet = street;
+                });
+                button.setIcon(new ImageIcon("images/felder/right_background.png"));
+            }
+            case DOWN -> {
+                button = addButton(frame, "", x, y, 70, 90, false, actionEvent -> {
+                    selectedStreet = street;
+                });
+                button.setIcon(new ImageIcon("images/felder/down_background.png"));
+            }
+            default -> throw new RuntimeException();
+        }
+        frame.add(pane);
+        pane.repaint();
+        pane.setVisible(true);
+        return pane;
+    }
+
     private static JButton addButton(JFrame frame, String display, int x, int y, int width, int height, boolean enabled, boolean selected, ActionListener actionEvent) {
         JButton button = addButton(frame, display, x, y, width, height, enabled, actionEvent);
+        button.setSelected(selected);
+        return button;
+    }
+
+    private static JButton addButton(JLayeredPane frame, String display, int x, int y, int width, int height, boolean enabled, boolean selected, int pos, ActionListener actionEvent) {
+        JButton button = addButton(frame, display, x, y, width, height, enabled, pos, actionEvent);
         button.setSelected(selected);
         return button;
     }
@@ -292,6 +366,15 @@ public class PrototypeMenu {
         return label;
     }
 
+    private static JLabel addImage(JLayeredPane frame, String src, int x, int y, int pos) {
+        ImageIcon icon = new ImageIcon(src);
+        JLabel label = new JLabel(icon);
+        label.setBounds(x, y, icon.getIconWidth(), icon.getIconHeight());
+        frame.add(label, pos);
+        frame.repaint();
+        return label;
+    }
+
     private static JLabel addImage(JFrame frame, String src, int x, int y, int width, int height) {
         JLabel label = addImage(frame, src, x, y);
         label.setIcon(new ImageIcon(((ImageIcon) label.getIcon()).getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH)));
@@ -300,11 +383,20 @@ public class PrototypeMenu {
         return label;
     }
 
-    private static void addText(JFrame frame, String display, int x, int y, int width, int size) {
+    private static JLabel addText(JFrame frame, String display, int x, int y, int width, int size) {
         JLabel label = new JLabel(display);
         label.setFont(new Font("Arial", Font.PLAIN, size));
         label.setBounds(x, y, width, size);
         frame.add(label);
+        return label;
+    }
+
+    private static JLabel addText(JLayeredPane frame, String display, int x, int y, int width, int size, int pos) {
+        JLabel label = new JLabel(display);
+        label.setFont(new Font("Arial", Font.PLAIN, size));
+        label.setBounds(x, y, width, size);
+        frame.add(label, pos);
+        return label;
     }
 
     public static void main(String[] args) {
