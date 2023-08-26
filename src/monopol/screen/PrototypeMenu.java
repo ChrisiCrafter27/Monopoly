@@ -307,9 +307,7 @@ public class PrototypeMenu {
                 addImage(pane, "images/felder/" + street.colorGroup.IMAGE + "_cardcolor.png", x+1, y+1, 1);
                 JLabel label;
                 label = addText(pane, street.name, x+25, y+60, 70, 20, 2);
-                //((Graphics2D) label.getGraphics()).rotate(Math.toRadians(90));
                 label = addText(pane, street.price + "€", x+75, y+60, 70, 20, 3);
-                //((Graphics2D) label.getGraphics()).rotate(Math.toRadians(90));
             }
             case UP -> {
                 button = addButton(frame, "", x, y, 70, 90, false, actionEvent -> {
