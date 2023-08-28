@@ -24,6 +24,7 @@ public class Server extends UnicastRemoteObject implements IServer {
 
     public ServerSocket server;
     private boolean pause = true;
+    private String ip;
     public final HashMap<Integer, Socket> clients = new HashMap<>();
     public final HashMap<Socket, Boolean> pingCheck = new HashMap<>();
     public final HashMap<ServerPlayer, Socket> serverPlayers = new HashMap<>();
@@ -184,6 +185,7 @@ public class Server extends UnicastRemoteObject implements IServer {
         logger.getLogger().info("[Server]: Starting server...");
         try {
             logger.getLogger().info("[Server]: IP-Address: " + InetAddress.getLocalHost().getHostAddress());
+            ip = InetAddress.getLocalHost().getHostAddress();
         } catch (UnknownHostException e) {
             logger.getLogger().severe("[Server]: Server crashed due to an Exception:\r\n" + e.getMessage());
             close();
@@ -271,14 +273,21 @@ public class Server extends UnicastRemoteObject implements IServer {
         }
     }
 
+    @Override
     public ServerSettings getServerSettings() {
         return serverSettings;
     }
 
+    @Override
     public ArrayList<ServerPlayer> getServerPlayers() {
         ArrayList<ServerPlayer> list = new ArrayList<>(serverPlayers.keySet());
         list.removeIf(serverPlayer -> serverPlayers.get(serverPlayer) == null);
         return list;
+    }
+
+    @Override
+    public String getIp() throws RemoteException {
+        return ip;
     }
 
     @Override

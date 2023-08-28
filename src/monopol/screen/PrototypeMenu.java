@@ -198,6 +198,7 @@ public class PrototypeMenu {
                                     client.serverMethod().start();
                                 } catch (Exception ignored) {}
                             }));
+                            frame.add(addText("IP-Address: " + client.serverMethod().getIp(), (frame.getWidth()/2)-250, frame.getHeight()-70, 500, 30, true));
                             displayedServerPlayers = client.serverMethod().getServerPlayers();
                             for(int i = 0; i < clients.size(); i++) {
                                 frame.add(addPlayerButton(i));
