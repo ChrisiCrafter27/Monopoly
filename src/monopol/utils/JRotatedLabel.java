@@ -2,13 +2,12 @@ package monopol.utils;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 
-public class RotateJLabel extends JLabel {
+public class JRotatedLabel extends JLabel {
     private final double rotation;
     private final int maxLength;
-    public RotateJLabel(String text, int size, int font, double rotation, int x, int y, int maxLength) {
+    public JRotatedLabel(String text, int size, int font, double rotation, int x, int y, int maxLength) {
         super(text);
         this.rotation = rotation;
         this.maxLength = maxLength;

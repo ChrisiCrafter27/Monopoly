@@ -6,12 +6,12 @@ import monopol.core.Monopoly;
 import monopol.rules.ISelectedCard;
 import monopol.rules.Street;
 import monopol.rules.TrainStation;
-import monopol.rules.Works;
+import monopol.rules.Plant;
 import monopol.server.DisconnectReason;
 import monopol.server.ServerPlayer;
 import monopol.server.ServerSettings;
 import monopol.utils.KeyHandler;
-import monopol.utils.RotateJLabel;
+import monopol.utils.JRotatedLabel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -238,7 +238,7 @@ public class PrototypeMenu {
         //LEFT
         addStreetButton(frame, Street.TIERGARTENSTRASSE, 0, 150, Direction.RIGHT);
         addStreetButton(frame, Street.POSTSTRASSE, 0, 220, Direction.RIGHT);
-        addWorksButton(frame, Works.GASWERK, 0, 290, Direction.RIGHT);
+        addPlantButton(frame, Plant.GASWERK, 0, 290, Direction.RIGHT);
         addEreignisfeld(frame, 0, 360, Direction.RIGHT);
         addStreetButton(frame, Street.ELISENSTRASSE, 0, 430, Direction.RIGHT);
         addStreetButton(frame, Street.CHAUSSESTRASSE, 0, 500, Direction.RIGHT);
@@ -249,10 +249,10 @@ public class PrototypeMenu {
         addGemeinschaftsfeld(frame, 0, 850, Direction.RIGHT);
         addStreetButton(frame, Street.BADSTRASSE, 0, 920, Direction.RIGHT);
         //UP
-        addSpecialfeld(frame, 90, 60, Direction.DOWN);
+        addSpecialField(frame, 90, 60, Direction.DOWN);
         addStreetButton(frame, Street.SEESTRASSE, 160, 60, Direction.DOWN);
         addStreetButton(frame, Street.HAFENSTRASSE, 230, 60, Direction.DOWN);
-        addWorksButton(frame, Works.ELEKTRIZITAETSWERK, 300, 60, Direction.DOWN);
+        addPlantButton(frame, Plant.ELEKTRIZITAETSWERK, 300, 60, Direction.DOWN);
         addStreetButton(frame, Street.NEUESTRASSE, 370, 60, Direction.DOWN);
         addStreetButton(frame, Street.MARKTPLATZ, 440, 60, Direction.DOWN);
         addTrainStationButton(frame, TrainStation.WESTBAHNHOF, 510, 60, Direction.DOWN);
@@ -267,11 +267,11 @@ public class PrototypeMenu {
         addStreetButton(frame, Street.MUSEUMSTRASSE, 930, 290, Direction.LEFT);
         addStreetButton(frame, Street.OPERNPLATZ, 930, 360, Direction.LEFT);
         addStreetButton(frame, Street.KONZERTHAUSSTRASSE, 930, 430, Direction.LEFT);
-        addSpecialfeld(frame, 930, 500, Direction.LEFT);
+        addSpecialField(frame, 930, 500, Direction.LEFT);
         addTrainStationButton(frame, TrainStation.NORDBAHNHOF, 930, 570, Direction.LEFT);
         addStreetButton(frame, Street.LESSINGSTRASSE, 930, 640, Direction.LEFT);
         addStreetButton(frame, Street.SCHILLERSTRASSE, 930, 710, Direction.LEFT);
-        addWorksButton(frame, Works.WASSERWERK, 930, 780, Direction.LEFT);
+        addPlantButton(frame, Plant.WASSERWERK, 930, 780, Direction.LEFT);
         addStreetButton(frame, Street.GOETHESTRASSE, 930, 850, Direction.LEFT);
         addStreetButton(frame, Street.RILKESTRASSE, 930, 920, Direction.LEFT);
         //DOWN
@@ -283,7 +283,7 @@ public class PrototypeMenu {
         addSteuerfeld(frame, 440, 990, Direction.UP);
         addTrainStationButton(frame, TrainStation.HAUPTBAHNHOF, 510, 990, Direction.UP);
         addStreetButton(frame, Street.BAHNHOFSTRASSE, 580, 990, Direction.UP);
-        addSpecialfeld(frame, 650, 990, Direction.UP);
+        addSpecialField(frame, 650, 990, Direction.UP);
         addStreetButton(frame, Street.BOERSENPLATZ, 720, 990, Direction.UP);
         addStreetButton(frame, Street.HAUPSTRASSE, 790, 990, Direction.UP);
         addStreetButton(frame, Street.RATHAUSPLATZ, 860, 990, Direction.UP);
@@ -334,7 +334,7 @@ public class PrototypeMenu {
         return button;
     }
 
-    private JLayeredPane addStreetButton(JFrame frame, Street street, int x, int y, Direction direction) {
+    private void addStreetButton(JFrame frame, Street street, int x, int y, Direction direction) {
         JButton button;
         JLayeredPane pane = new JLayeredPane();
         pane.setBounds(0, 0, frame.getWidth(), frame.getHeight());
@@ -381,10 +381,9 @@ public class PrototypeMenu {
         frame.add(pane);
         pane.repaint();
         pane.setVisible(true);
-        return pane;
     }
 
-    private JLayeredPane addTrainStationButton(JFrame frame, TrainStation station, int x, int y, Direction direction) {
+    private void addTrainStationButton(JFrame frame, TrainStation station, int x, int y, Direction direction) {
         JButton button;
         JLayeredPane pane = new JLayeredPane();
         pane.setBounds(0, 0, frame.getWidth(), frame.getHeight());
@@ -431,43 +430,42 @@ public class PrototypeMenu {
         frame.add(pane);
         pane.repaint();
         pane.setVisible(true);
-        return pane;
     }
 
-    private JLayeredPane addWorksButton(JFrame frame, Works works, int x, int y, Direction direction) {
+    private void addPlantButton(JFrame frame, Plant plant, int x, int y, Direction direction) {
         JButton button;
         JLayeredPane pane = new JLayeredPane();
         pane.setBounds(0, 0, frame.getWidth(), frame.getHeight());
         switch (direction) {
             case LEFT -> {
                 button = addButton("", x, y, 90, 70, true, actionEvent -> {
-                    selectedCard = works;
+                    selectedCard = plant;
                 });
                 button.setIcon(new ImageIcon("images/felder/wide_background.png"));
                 pane.add(addImage("images/felder/water_icon.png", x+15, y+10), 2);
-                pane.add(addRotatedText(works.name, Font.BOLD, x-25, y+2,11, -90, 66), 1);
-                pane.add(addRotatedText(works.price + "€", Font.BOLD, x+45, y+2, 13, -90, 66), 1);
+                pane.add(addRotatedText(plant.name, Font.BOLD, x-25, y+2,11, -90, 66), 1);
+                pane.add(addRotatedText(plant.price + "€", Font.BOLD, x+45, y+2, 13, -90, 66), 1);
             }
             case UP -> {
                 throw new RuntimeException();
             }
             case RIGHT -> {
                 button = addButton("", x, y, 90, 70, true, actionEvent -> {
-                    selectedCard = works;
+                    selectedCard = plant;
                 });
                 button.setIcon(new ImageIcon("images/felder/wide_background.png"));
                 pane.add(addImage("images/felder/gas_icon.png", x+25, y+10), 2);
-                pane.add(addRotatedText(works.name, Font.BOLD, x+48, y+2,11, 90, 66), 1);
-                pane.add(addRotatedText(works.price + "€", Font.BOLD, x-22, y+2, 13, 90, 66), 1);
+                pane.add(addRotatedText(plant.name, Font.BOLD, x+48, y+2,11, 90, 66), 1);
+                pane.add(addRotatedText(plant.price + "€", Font.BOLD, x-22, y+2, 13, 90, 66), 1);
             }
             case DOWN -> {
                 button = addButton("", x, y, 70, 90, true, actionEvent -> {
-                    selectedCard = works;
+                    selectedCard = plant;
                 });
                 button.setIcon(new ImageIcon("images/felder/high_background.png"));
                 pane.add(addImage("images/felder/power_icon.png", x+10, y+20), 2);
-                pane.add(addRotatedText(works.name, Font.BOLD, x+2, y+48,11, 180, 66), 1);
-                pane.add(addRotatedText(works.price + "€", Font.BOLD, x+2, y-22, 13, 180, 66), 1);
+                pane.add(addRotatedText(plant.name, Font.BOLD, x+2, y+48,11, 180, 66), 1);
+                pane.add(addRotatedText(plant.price + "€", Font.BOLD, x+2, y-22, 13, 180, 66), 1);
             }
             default -> throw new RuntimeException();
         }
@@ -475,10 +473,9 @@ public class PrototypeMenu {
         frame.add(pane);
         pane.repaint();
         pane.setVisible(true);
-        return pane;
     }
 
-    private JLayeredPane addEreignisfeld(JFrame frame, int x, int y, Direction direction) {
+    private void addEreignisfeld(JFrame frame, int x, int y, Direction direction) {
         JLabel label;
         JLayeredPane pane = new JLayeredPane();
         pane.setBounds(0, 0, frame.getWidth(), frame.getHeight());
@@ -509,10 +506,9 @@ public class PrototypeMenu {
         frame.add(pane);
         pane.repaint();
         pane.setVisible(true);
-        return pane;
     }
 
-    private JLayeredPane addGemeinschaftsfeld(JFrame frame, int x, int y, Direction direction) {
+    private void addGemeinschaftsfeld(JFrame frame, int x, int y, Direction direction) {
         JLabel label;
         JLayeredPane pane = new JLayeredPane();
         pane.setBounds(0, 0, frame.getWidth(), frame.getHeight());
@@ -543,10 +539,9 @@ public class PrototypeMenu {
         frame.add(pane);
         pane.repaint();
         pane.setVisible(true);
-        return pane;
     }
 
-    private JLayeredPane addSteuerfeld(JFrame frame, int x, int y, Direction direction) {
+    private void addSteuerfeld(JFrame frame, int x, int y, Direction direction) {
         JLabel label;
         JLayeredPane pane = new JLayeredPane();
         pane.setBounds(0, 0, frame.getWidth(), frame.getHeight());
@@ -570,10 +565,9 @@ public class PrototypeMenu {
         frame.add(pane);
         pane.repaint();
         pane.setVisible(true);
-        return pane;
     }
 
-    private JLayeredPane addSpecialfeld(JFrame frame, int x, int y, Direction direction) {
+    private void addSpecialField(JFrame frame, int x, int y, Direction direction) {
         JLabel label;
         JLayeredPane pane = new JLayeredPane();
         pane.setBounds(0, 0, frame.getWidth(), frame.getHeight());
@@ -599,7 +593,6 @@ public class PrototypeMenu {
         frame.add(pane);
         pane.repaint();
         pane.setVisible(true);
-        return pane;
     }
 
     private static JButton addButton(String display, int x, int y, int width, int height, boolean enabled, boolean selected, ActionListener actionEvent) {
@@ -638,7 +631,7 @@ public class PrototypeMenu {
     }
 
     private static JLabel addRotatedText(String display, int font, int x, int y, int size, double angle, int maxLength) {
-        RotateJLabel label = new RotateJLabel(display, size, font, angle, x, y, maxLength);
+        JRotatedLabel label = new JRotatedLabel(display, size, font, angle, x, y, maxLength);
         //label.setHorizontalAlignment(SwingConstants.CENTER);
         //label.setVerticalAlignment(SwingConstants.CENTER);
         //label.setHorizontalTextPosition(SwingConstants.CENTER);

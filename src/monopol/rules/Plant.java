@@ -1,6 +1,6 @@
 package monopol.rules;
 
-public enum Works implements ISelectedCard {
+public enum Plant implements ISelectedCard {
     GASWERK ("Gaswerk"),
     ELEKTRIZITAETSWERK ("Elektrizitätswerk"),
     WASSERWERK ("Wasserwerk");
@@ -11,7 +11,7 @@ public enum Works implements ISelectedCard {
     private String owner;
     private boolean mortgaged;
 
-    Works(String name) {
+    Plant(String name) {
         this.name = name;
     }
 
