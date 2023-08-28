@@ -1,6 +1,6 @@
-package monopol.rules;
+package monopol.constants;
 
-public enum TrainStation implements ISelectedCard {
+public enum TrainStation implements IPurchasable {
     SUEDBAHNHOF ("Südbahnhof"),
     WESTBAHNHOF ("Westbahnhof"),
     NORDBAHNHOF ("Nordbahnhof"),

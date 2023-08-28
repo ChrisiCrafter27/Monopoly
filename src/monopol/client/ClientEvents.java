@@ -1,6 +1,6 @@
 package monopol.client;
 
-import monopol.rules.Street;
+import monopol.constants.Street;
 
 public class ClientEvents {
     public static void clickedOnStreet(String name, Street street) {

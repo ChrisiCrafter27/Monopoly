@@ -1,6 +1,6 @@
-package monopol.rules;
+package monopol.constants;
 
-public enum Plant implements ISelectedCard {
+public enum Plant implements IPurchasable {
     GASWERK ("Gaswerk"),
     ELEKTRIZITAETSWERK ("Elektrizitätswerk"),
     WASSERWERK ("Wasserwerk");

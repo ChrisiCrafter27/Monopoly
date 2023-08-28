@@ -3,10 +3,10 @@ package monopol.screen;
 import monopol.client.Client;
 import monopol.core.GameState;
 import monopol.core.Monopoly;
-import monopol.rules.ISelectedCard;
-import monopol.rules.Street;
-import monopol.rules.TrainStation;
-import monopol.rules.Plant;
+import monopol.constants.IPurchasable;
+import monopol.constants.Street;
+import monopol.constants.TrainStation;
+import monopol.constants.Plant;
 import monopol.server.DisconnectReason;
 import monopol.server.ServerPlayer;
 import monopol.server.ServerSettings;
@@ -29,7 +29,7 @@ public class PrototypeMenu {
     private ArrayList<ServerPlayer> displayedServerPlayers = new ArrayList<>();
     private String ip;
     private KeyHandler keyHandler = new KeyHandler();
-    private ISelectedCard selectedCard = Street.BADSTRASSE;
+    private IPurchasable selectedCard = Street.BADSTRASSE;
 
     public PrototypeMenu() {
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);

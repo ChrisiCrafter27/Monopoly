@@ -1,6 +1,8 @@
-package monopol.rules;
+package monopol.constants;
 
-public enum Street implements ISelectedCard {
+import monopol.rules.ColorGroup;
+
+public enum Street implements IPurchasable {
     BADSTRASSE ("Badstraße", 60, 0, 2, 10, 30, 90, 160, 250, 750, ColorGroup.BROWN, null, false),
     TURMSTRASSE ("Turmstraße", 60, 0, 4, 20, 60, 180, 320, 450, 950, ColorGroup.BROWN, null, false),
     STADIONSTRASSE ("Stadionstraße", 60, 0, 5, 30, 80, 240, 360, 500, 950, ColorGroup.BROWN, null, false),
