@@ -12,7 +12,6 @@ import monopol.message.MessageType;
 
 import java.io.*;
 import java.net.*;
-import java.rmi.NoSuchObjectException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -20,7 +19,7 @@ import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.*;
 
-public class Server extends UnicastRemoteObject implements ServerInterface {
+public class Server extends UnicastRemoteObject implements IServer {
     public static final int CLIENT_TIMEOUT = 10000;
 
     public ServerSocket server;

@@ -1,6 +1,5 @@
 package monopol.log;
 
-import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -10,10 +9,10 @@ import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 import java.util.logging.Level;
 
-public abstract class CustomLogger {
+public abstract class ICustomLogger {
     private final Logger LOGGER;
 
-    protected CustomLogger(String logPath) {
+    protected ICustomLogger(String logPath) {
         LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
         LOGGER.setLevel(Level.ALL);
         LOGGER.setUseParentHandlers(false);
@@ -57,5 +56,5 @@ public abstract class CustomLogger {
         return LOGGER;
     }
 
-    public abstract CustomLogger getInstance();
+    public abstract ICustomLogger getInstance();
 }

@@ -5,7 +5,7 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 
-public interface ServerInterface extends Remote {
+public interface IServer extends Remote {
     public ServerSettings getServerSettings() throws RemoteException;
     public ArrayList<ServerPlayer> getServerPlayers() throws RemoteException;
     public void kick(String name, DisconnectReason reason) throws RemoteException;

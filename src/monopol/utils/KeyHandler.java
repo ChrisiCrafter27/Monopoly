@@ -21,7 +21,6 @@ public class KeyHandler implements KeyListener {
                 string = string.substring(0, string.length() - 1);
             }
         } else if(e.getKeyChar() != '￿') string += e.getKeyChar();
-        System.out.println(e.getKeyChar());
     }
 
     @Override

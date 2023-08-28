@@ -2,16 +2,16 @@ package monopol.log;
 
 import java.util.logging.Level;
 
-public class ServerLogger extends CustomLogger {
+public class ServerLogger extends ICustomLogger {
     public static final ServerLogger INSTANCE = new ServerLogger();
 
     private ServerLogger() {
         super("logs/server_log.txt");
-        getLogger().setLevel(Level.FINE);
+        getLogger().setLevel(Level.CONFIG);
     }
 
     @Override
-    public CustomLogger getInstance() {
+    public ICustomLogger getInstance() {
         return ServerLogger.INSTANCE;
     }
 }

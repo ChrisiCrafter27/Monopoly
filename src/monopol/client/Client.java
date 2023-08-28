@@ -2,10 +2,9 @@ package monopol.client;
 
 import monopol.core.GameState;
 import monopol.core.Monopoly;
-import monopol.rules.Street;
 import monopol.server.DisconnectReason;
-import monopol.rules.EventsInterface;
-import monopol.server.ServerInterface;
+import monopol.rules.IEvents;
+import monopol.server.IServer;
 import monopol.utils.Json;
 import monopol.message.Message;
 import monopol.message.MessageType;
@@ -21,8 +20,8 @@ import java.rmi.registry.Registry;
 
 public class Client {
     private final Socket client;
-    private final EventsInterface eventsInterface;
-    private final ServerInterface serverInterface;
+    private final IEvents eventsInterface;
+    private final IServer serverInterface;
     public final boolean isHost;
     public DisconnectReason disconnectReason = null;
     public String name = null;
@@ -55,9 +54,9 @@ public class Client {
             this.isHost = isHost;
             client = new Socket(ip, port);
             Registry registry1 = LocateRegistry.getRegistry(ip, 1299);
-            eventsInterface = (EventsInterface) registry1.lookup("Events");
+            eventsInterface = (IEvents) registry1.lookup("Events");
             Registry registry2 = LocateRegistry.getRegistry(ip, 1199);
-            serverInterface = (ServerInterface) registry2.lookup("Server");
+            serverInterface = (IServer) registry2.lookup("Server");
             if(serverMethod().stopped()) {
                 System.out.println("Target server closed");
                 JOptionPane.showMessageDialog(null, "The target server is currently stopped!", "Connection failed", JOptionPane.WARNING_MESSAGE);
@@ -128,10 +127,10 @@ public class Client {
         return client.isClosed();
     }
 
-    public EventsInterface eventMethod() {
+    public IEvents eventMethod() {
         return eventsInterface;
     }
-    public ServerInterface serverMethod() {
+    public IServer serverMethod() {
         return serverInterface;
     }
 

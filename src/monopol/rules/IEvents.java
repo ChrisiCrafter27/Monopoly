@@ -3,7 +3,7 @@ package monopol.rules;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
-public interface EventsInterface extends Remote {
+public interface IEvents extends Remote {
     void onGameStart() throws RemoteException;
     void onNextRound() throws RemoteException;
     void onPrisonerRound() throws RemoteException;

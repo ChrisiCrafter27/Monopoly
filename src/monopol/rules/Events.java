@@ -3,7 +3,7 @@ package monopol.rules;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
-public abstract class Events extends UnicastRemoteObject implements EventsInterface {
+public abstract class Events extends UnicastRemoteObject implements IEvents {
     public final boolean LIMIT_BUS_TICKETS;
     public final int MAX_BUS_TICKETS;
     public final boolean LIMIT_BUILDINGS;
