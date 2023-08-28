@@ -279,11 +279,11 @@ public class PrototypeMenu {
         addGemeinschaftsfeld(frame, 160, 990, Direction.UP);
         addStreetButton(frame, Street.PARKSTRASSE, 230, 990, Direction.UP);
         addStreetButton(frame, Street.DOMPLATZ, 300, 990, Direction.UP);
-        addEreignisfeld(frame, 370, 990, Direction.UP);
+        addSpecialField(frame, 370, 990, Direction.UP);
         addSteuerfeld(frame, 440, 990, Direction.UP);
         addTrainStationButton(frame, TrainStation.HAUPTBAHNHOF, 510, 990, Direction.UP);
         addStreetButton(frame, Street.BAHNHOFSTRASSE, 580, 990, Direction.UP);
-        addSpecialField(frame, 650, 990, Direction.UP);
+        addEreignisfeld(frame, 650, 990, Direction.UP);
         addStreetButton(frame, Street.BOERSENPLATZ, 720, 990, Direction.UP);
         addStreetButton(frame, Street.HAUPSTRASSE, 790, 990, Direction.UP);
         addStreetButton(frame, Street.RATHAUSPLATZ, 860, 990, Direction.UP);

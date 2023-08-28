@@ -1,35 +1,5 @@
-[28-08-2023 19:31:03] [INFO] [Server]: Initialing server...
-[28-08-2023 19:31:06] [INFO] [Server]: Starting server...
-[28-08-2023 19:31:06] [INFO] [Server]: IP-Address: 192.168.178.44
-[28-08-2023 19:31:06] [INFO] [Server]: Listening for new clients...
-[28-08-2023 19:31:06] [INFO] [Server]: New Client accepted (Player 1)
-[28-08-2023 19:31:08] [WARN] [Server]: Kicked client
-[28-08-2023 19:31:08] [WARN] [Server]: Server closed...
-[28-08-2023 19:31:11] [INFO] [Server]: Starting server...
-[28-08-2023 19:31:11] [INFO] [Server]: IP-Address: 192.168.178.44
-[28-08-2023 19:31:11] [INFO] [Server]: Listening for new clients...
-[28-08-2023 19:31:11] [INFO] [Server]: New Client accepted (Player 1)
-[28-08-2023 19:31:16] [FINE] [Server]: Message received
-[28-08-2023 19:31:16] [FINE] [Server]: Ping to Player 1 is 3ms
-[28-08-2023 19:31:17] [INFO] [Server]: New Client accepted (Player 2)
-[28-08-2023 19:31:19] [INFO] [Server]: New Client accepted (Player 3)
-[28-08-2023 19:31:26] [FINE] [Server]: Message received
-[28-08-2023 19:31:26] [FINE] [Server]: Ping to Player 1 is 0ms
-[28-08-2023 19:31:26] [FINE] [Server]: Message received
-[28-08-2023 19:31:26] [FINE] [Server]: Ping to Player 2 is 1ms
-[28-08-2023 19:31:26] [FINE] [Server]: Message received
-[28-08-2023 19:31:26] [FINE] [Server]: Ping to Player 3 is 1ms
-[28-08-2023 19:31:33] [INFO] [Server]: Changed name from Player 3 to Moinsen
-[28-08-2023 19:31:36] [FINE] [Server]: Message received
-[28-08-2023 19:31:36] [FINE] [Server]: Ping to Player 1 is 0ms
-[28-08-2023 19:31:36] [FINE] [Server]: Message received
-[28-08-2023 19:31:36] [FINE] [Server]: Ping to Player 2 is 1ms
-[28-08-2023 19:31:36] [FINE] [Server]: Message received
-[28-08-2023 19:31:36] [FINE] [Server]: Ping to Moinsen is 1ms
-[28-08-2023 19:31:39] [WARN] [Server]: Kicked client
-[28-08-2023 19:31:42] [WARN] [Server]: Kicked client
-[28-08-2023 19:31:46] [FINE] [Server]: Message received
-[28-08-2023 19:31:46] [FINE] [Server]: Ping to Moinsen is 0ms
-[28-08-2023 19:31:48] [WARN] [Server]: Kicked client
-[28-08-2023 19:31:48] [WARN] [Server]: Server closed...
-[28-08-2023 19:32:02] [INFO] [Server]: New Client denied
+[28-08-2023 20:29:09] [INFO] [Server]: Initialing server...
+[28-08-2023 20:29:11] [INFO] [Server]: Starting server...
+[28-08-2023 20:29:11] [INFO] [Server]: IP-Address: 192.168.178.44
+[28-08-2023 20:29:11] [INFO] [Server]: Listening for new clients...
+[28-08-2023 20:29:11] [INFO] [Server]: New Client accepted (Player 1)
