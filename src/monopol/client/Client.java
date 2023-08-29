@@ -133,13 +133,4 @@ public class Client {
     public IServer serverMethod() {
         return serverInterface;
     }
-
-    public static void main(String[] args) throws NotBoundException {
-        Client c = new Client("localhost", 25565, true);
-        try {
-            //Message.sendPing(c.client);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
 }

@@ -1,5 +1,5 @@
 package monopol.constants;
 
-public interface IPurchasable {
+public interface IPurchasable extends IField {
 
 }

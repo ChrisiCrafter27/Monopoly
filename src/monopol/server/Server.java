@@ -329,24 +329,4 @@ public class Server extends UnicastRemoteObject implements IServer {
             Message.send(new Message(null, MessageType.START), entry.getValue());
         }
     }
-
-    public static void main(String[] args) throws IOException, NotBoundException {
-        //Server server = new Server(25565, new ServerSettings(false, true));
-        //server.open();
-
-        //server.connectionThread.interrupt();
-        //server.requestThread.interrupt();
-        //server.pingThread.interrupt();
-
-        new Thread() {
-            @Override
-            public void run() {
-                try {
-                    sleep(1000);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        }.start();
-    }
 }
