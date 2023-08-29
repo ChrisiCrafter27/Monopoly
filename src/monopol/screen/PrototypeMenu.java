@@ -293,7 +293,13 @@ public class PrototypeMenu {
         frame.add(addImage("images/felder/los.png", 0, 990));
         frame.add(addImage("images/felder/freiparken.png", 930, 60));
         frame.add(addImage("images/felder/ins_gefaengnis.png", 930, 990));
+        //REPAINT
         frame.repaint();
+
+
+
+        //TODO  \/  FABIANS PART  \/
+
     }
 
     private void setClient(int i) {
@@ -380,8 +386,6 @@ public class PrototypeMenu {
         }
         pane.add(button, 3);
         frame.add(pane);
-        pane.repaint();
-        pane.setVisible(true);
     }
 
     private void addTrainStationButton(JFrame frame, TrainStation station, int x, int y, Direction direction) {
@@ -429,8 +433,6 @@ public class PrototypeMenu {
         }
         pane.add(button, 3);
         frame.add(pane);
-        pane.repaint();
-        pane.setVisible(true);
     }
 
     private void addPlantButton(JFrame frame, Plant plant, int x, int y, Direction direction) {
@@ -472,8 +474,6 @@ public class PrototypeMenu {
         }
         pane.add(button, 3);
         frame.add(pane);
-        pane.repaint();
-        pane.setVisible(true);
     }
 
     private void addEreignisfeld(JFrame frame, int x, int y, Direction direction) {
@@ -505,8 +505,6 @@ public class PrototypeMenu {
         }
         pane.add(label, 3);
         frame.add(pane);
-        pane.repaint();
-        pane.setVisible(true);
     }
 
     private void addGemeinschaftsfeld(JFrame frame, int x, int y, Direction direction) {
@@ -538,8 +536,6 @@ public class PrototypeMenu {
         }
         pane.add(label, 3);
         frame.add(pane);
-        pane.repaint();
-        pane.setVisible(true);
     }
 
     private void addSteuerfeld(JFrame frame, int x, int y, Direction direction) {
@@ -564,8 +560,6 @@ public class PrototypeMenu {
         }
         pane.add(label, 4);
         frame.add(pane);
-        pane.repaint();
-        pane.setVisible(true);
     }
 
     private void addSpecialField(JFrame frame, int x, int y, Direction direction) {
@@ -592,8 +586,6 @@ public class PrototypeMenu {
         }
         pane.add(label, 3);
         frame.add(pane);
-        pane.repaint();
-        pane.setVisible(true);
     }
 
     private static JButton addButton(String display, int x, int y, int width, int height, boolean enabled, boolean selected, ActionListener actionEvent) {
