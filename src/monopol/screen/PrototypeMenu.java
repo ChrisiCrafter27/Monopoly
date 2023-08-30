@@ -35,7 +35,7 @@ public class PrototypeMenu {
     public PrototypeMenu() {
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setFocusable(true);
-        frame.setSize(new Dimension(1920, 1080));
+        frame.setSize(new Dimension(Toolkit.getDefaultToolkit().getScreenSize().width, Toolkit.getDefaultToolkit().getScreenSize().height));
         frame.setUndecorated(true);
         frame.setResizable(false);
         frame.setLayout(null);
@@ -93,7 +93,7 @@ public class PrototypeMenu {
             @Override
             public void run() {
 
-                frame.add(addText("Connecting to server...", (frame.getWidth() / 2) - 250, frame.getHeight() / 2, 500, 25, true));
+                frame.add(addText("Connecting to server...", (1920 / 2) - 250, 1080 / 2, 500, 25, true));
                 frame.repaint();
 
                 while(!isInterrupted() && client.name == null) {
@@ -178,7 +178,7 @@ public class PrototypeMenu {
                                 }
                                 y += 50;
                             }
-                            frame.add(addButton("add player", 50, frame.getHeight() - 100, 200, 50, true, actionEvent -> {
+                            frame.add(addButton("add player", 50, 1080 - 100, 200, 50, true, actionEvent -> {
                                 try {
                                     if(client.serverMethod().acceptsNewClient()) {
                                         client = new Client(ip, 25565, false);
@@ -186,20 +186,20 @@ public class PrototypeMenu {
                                     }
                                 } catch (Exception ignored) {}
                             }));
-                            frame.add(addButton("add bot", 50, frame.getHeight() - 200, 200, 50, client.isHost, actionEvent -> {
+                            frame.add(addButton("add bot", 50, 1080 - 200, 200, 50, client.isHost, actionEvent -> {
                                 JOptionPane.showMessageDialog(null, "This option is not possible yet", "Add bot", JOptionPane.WARNING_MESSAGE);
                             }));
-                            frame.add(addButton("leave", frame.getWidth() - 250, frame.getHeight() - 100, 200, 50, true, actionEvent -> {
+                            frame.add(addButton("leave", 1920 - 250, 1080 - 100, 200, 50, true, actionEvent -> {
                                 try {
                                     client.serverMethod().kick(client.name, DisconnectReason.CLIENT_CLOSED);
                                 } catch (Exception ignored) {}
                             }));
-                            frame.add(addButton("start", frame.getWidth() - 250, frame.getHeight() - 200, 200, 50, client.isHost, actionEvent -> {
+                            frame.add(addButton("start", 1920 - 250, 1080 - 200, 200, 50, client.isHost, actionEvent -> {
                                 try {
                                     client.serverMethod().start();
                                 } catch (Exception ignored) {}
                             }));
-                            frame.add(addText("IP-Address: " + client.serverMethod().getIp(), (frame.getWidth()/2)-250, frame.getHeight()-70, 500, 30, true));
+                            frame.add(addText("IP-Address: " + client.serverMethod().getIp(), (1920/2)-250, 1080-70, 500, 30, true));
                             displayedServerPlayers = client.serverMethod().getServerPlayers();
                             for(int i = 0; i < clients.size(); i++) {
                                 frame.add(addPlayerButton(i));
@@ -309,8 +309,10 @@ public class PrototypeMenu {
 
     private JButton addButton(String display, int x, int y, int width, int height, boolean enabled, ActionListener actionEvent) {
         JButton button = new JButton(display);
+        width = getX(width);
+        height = getY(height);
         button.addActionListener(actionEvent);
-        button.setBounds(getX(x), getY(y), getX(width), getY(height));
+        button.setBounds(getX(x), getY(y), width, height);
         button.setEnabled(enabled);
         button.setOpaque(false);
         button.setContentAreaFilled(false);
@@ -329,7 +331,7 @@ public class PrototypeMenu {
     }
 
     private JButton addPlayerButton(int i) {
-        int step = frame.getWidth() / clients.size();
+        int step = 1920 / clients.size();
         int[] value = {i};
         JButton button = addButton(clients.get(i).name, i * step, 0, step, 60, true, (client == clients.get(value[0])), actionEvent -> {
             setClient(value[0]);
@@ -346,13 +348,14 @@ public class PrototypeMenu {
     private void addStreetButton(JFrame frame, Street street, int x, int y, Direction direction) {
         JButton button;
         JLayeredPane pane = new JLayeredPane();
-        pane.setBounds(0, 0, frame.getWidth(), frame.getHeight());
+        pane.setBounds(0, 0, getX(1920), getY(1080));
         switch (direction) {
             case LEFT -> {
                 button = addButton("", x, y, 90, 70, true, actionEvent -> {
                     selectedCard = street;
                 });
-                button.setIcon(new ImageIcon("images/felder/left_background.png"));
+                ImageIcon icon = new ImageIcon("images/felder/left_background.png");
+                button.setIcon(new ImageIcon(icon.getImage().getScaledInstance(button.getWidth(), button.getHeight(), Image.SCALE_SMOOTH)));
                 pane.add(addImage("images/felder/" + street.colorGroup.IMAGE + "_cardcolor.png", x+2, y+1), 2);
                 pane.add(addRotatedText(street.name, Font.BOLD, x-5, y+2,11, -90, 66), 1);
                 pane.add(addRotatedText(street.price + "€", Font.BOLD, x+45, y+2, 13, -90, 66), 1);
@@ -361,7 +364,8 @@ public class PrototypeMenu {
                 button = addButton("", x, y, 70, 90, true, actionEvent -> {
                     selectedCard = street;
                 });
-                button.setIcon(new ImageIcon("images/felder/up_background.png"));
+                ImageIcon icon = new ImageIcon("images/felder/up_background.png");
+                button.setIcon(new ImageIcon(icon.getImage().getScaledInstance(button.getWidth(), button.getHeight(), Image.SCALE_SMOOTH)));
                 pane.add(addImage("images/felder/" + street.colorGroup.IMAGE + "_cardcolor.png", x+1, y+2), 2);
                 pane.add(addRotatedText(street.name, Font.BOLD, x+2, y-5,11, 0, 66), 1);
                 pane.add(addRotatedText(street.price + "€", Font.BOLD, x+2, y+45, 13, 0, 66), 1);
@@ -370,7 +374,8 @@ public class PrototypeMenu {
                 button = addButton("", x, y, 90, 70, true, actionEvent -> {
                     selectedCard = street;
                 });
-                button.setIcon(new ImageIcon("images/felder/right_background.png"));
+                ImageIcon icon = new ImageIcon("images/felder/right_background.png");
+                button.setIcon(new ImageIcon(icon.getImage().getScaledInstance(button.getWidth(), button.getHeight(), Image.SCALE_SMOOTH)));
                 pane.add(addImage("images/felder/" + street.colorGroup.IMAGE + "_cardcolor.png", x+70, y+1), 2);
                 pane.add(addRotatedText(street.name, Font.BOLD, x+28, y+2,11, 90, 66), 1);
                 pane.add(addRotatedText(street.price + "€", Font.BOLD, x-22, y+2, 13, 90, 66), 1);
@@ -379,7 +384,8 @@ public class PrototypeMenu {
                 button = addButton("", x, y, 70, 90, true, actionEvent -> {
                     selectedCard = street;
                 });
-                button.setIcon(new ImageIcon("images/felder/down_background.png"));
+                ImageIcon icon = new ImageIcon("images/felder/down_background.png");
+                button.setIcon(new ImageIcon(icon.getImage().getScaledInstance(button.getWidth(), button.getHeight(), Image.SCALE_SMOOTH)));
                 pane.add(addImage("images/felder/" + street.colorGroup.IMAGE + "_cardcolor.png", x+1, y+70), 2);
                 pane.add(addRotatedText(street.name, Font.BOLD, x+2, y+28,11, 180, 66), 1);
                 pane.add(addRotatedText(street.price + "€", Font.BOLD, x+2, y-22, 13, 180, 66), 1);
@@ -393,13 +399,14 @@ public class PrototypeMenu {
     private void addTrainStationButton(JFrame frame, TrainStation station, int x, int y, Direction direction) {
         JButton button;
         JLayeredPane pane = new JLayeredPane();
-        pane.setBounds(0, 0, frame.getWidth(), frame.getHeight());
+        pane.setBounds(0, 0, 1920, 1080);
         switch (direction) {
             case LEFT -> {
                 button = addButton("", x, y, 90, 70, true, actionEvent -> {
                     selectedCard = station;
                 });
-                button.setIcon(new ImageIcon("images/felder/wide_background.png"));
+                ImageIcon icon = new ImageIcon("images/felder/wide_background.png");
+                button.setIcon(new ImageIcon(icon.getImage().getScaledInstance(button.getWidth(), button.getHeight(), Image.SCALE_SMOOTH)));
                 pane.add(addImage("images/felder/left_train.png", x+25, y+10), 2);
                 pane.add(addRotatedText(station.name, Font.BOLD, x-25, y+2,11, -90, 66), 1);
                 pane.add(addRotatedText(station.price + "€", Font.BOLD, x+45, y+2, 13, -90, 66), 1);
@@ -408,7 +415,8 @@ public class PrototypeMenu {
                 button = addButton("", x, y, 70, 90, true, actionEvent -> {
                     selectedCard = station;
                 });
-                button.setIcon(new ImageIcon("images/felder/high_background.png"));
+                ImageIcon icon = new ImageIcon("images/felder/high_background.png");
+                button.setIcon(new ImageIcon(icon.getImage().getScaledInstance(button.getWidth(), button.getHeight(), Image.SCALE_SMOOTH)));
                 pane.add(addImage("images/felder/up_train.png", x+10, y+25), 2);
                 pane.add(addRotatedText(station.name, Font.BOLD, x+2, y-25,11, 0, 66), 1);
                 pane.add(addRotatedText(station.price + "€", Font.BOLD, x+2, y+45, 13, 0, 66), 1);
@@ -417,7 +425,8 @@ public class PrototypeMenu {
                 button = addButton("", x, y, 90, 70, true, actionEvent -> {
                     selectedCard = station;
                 });
-                button.setIcon(new ImageIcon("images/felder/wide_background.png"));
+                ImageIcon icon = new ImageIcon("images/felder/wide_background.png");
+                button.setIcon(new ImageIcon(icon.getImage().getScaledInstance(button.getWidth(), button.getHeight(), Image.SCALE_SMOOTH)));
                 pane.add(addImage("images/felder/right_train.png", x+25, y+10), 2);
                 pane.add(addRotatedText(station.name, Font.BOLD, x+48, y+2,11, 90, 66), 1);
                 pane.add(addRotatedText(station.price + "€", Font.BOLD, x-22, y+2, 13, 90, 66), 1);
@@ -426,7 +435,8 @@ public class PrototypeMenu {
                 button = addButton("", x, y, 70, 90, true, actionEvent -> {
                     selectedCard = station;
                 });
-                button.setIcon(new ImageIcon("images/felder/high_background.png"));
+                ImageIcon icon = new ImageIcon("images/felder/high_background.png");
+                button.setIcon(new ImageIcon(icon.getImage().getScaledInstance(button.getWidth(), button.getHeight(), Image.SCALE_SMOOTH)));
                 pane.add(addImage("images/felder/down_train.png", x+10, y+27), 2);
                 pane.add(addRotatedText(station.name, Font.BOLD, x+2, y+48,11, 180, 66), 1);
                 pane.add(addRotatedText(station.price + "€", Font.BOLD, x+2, y-22, 13, 180, 66), 1);
@@ -440,13 +450,14 @@ public class PrototypeMenu {
     private void addPlantButton(JFrame frame, Plant plant, int x, int y, Direction direction) {
         JButton button;
         JLayeredPane pane = new JLayeredPane();
-        pane.setBounds(0, 0, frame.getWidth(), frame.getHeight());
+        pane.setBounds(0, 0, 1920, 1080);
         switch (direction) {
             case LEFT -> {
                 button = addButton("", x, y, 90, 70, true, actionEvent -> {
                     selectedCard = plant;
                 });
-                button.setIcon(new ImageIcon("images/felder/wide_background.png"));
+                ImageIcon icon = new ImageIcon("images/felder/wide_background.png");
+                button.setIcon(new ImageIcon(icon.getImage().getScaledInstance(button.getWidth(), button.getHeight(), Image.SCALE_SMOOTH)));
                 pane.add(addImage("images/felder/water_icon.png", x+15, y+10), 2);
                 pane.add(addRotatedText(plant.name, Font.BOLD, x-25, y+2,11, -90, 66), 1);
                 pane.add(addRotatedText(plant.price + "€", Font.BOLD, x+45, y+2, 13, -90, 66), 1);
@@ -458,7 +469,8 @@ public class PrototypeMenu {
                 button = addButton("", x, y, 90, 70, true, actionEvent -> {
                     selectedCard = plant;
                 });
-                button.setIcon(new ImageIcon("images/felder/wide_background.png"));
+                ImageIcon icon = new ImageIcon("images/felder/wide_background.png");
+                button.setIcon(new ImageIcon(icon.getImage().getScaledInstance(button.getWidth(), button.getHeight(), Image.SCALE_SMOOTH)));
                 pane.add(addImage("images/felder/gas_icon.png", x+25, y+10), 2);
                 pane.add(addRotatedText(plant.name, Font.BOLD, x+48, y+2,11, 90, 66), 1);
                 pane.add(addRotatedText(plant.price + "€", Font.BOLD, x-22, y+2, 13, 90, 66), 1);
@@ -467,7 +479,8 @@ public class PrototypeMenu {
                 button = addButton("", x, y, 70, 90, true, actionEvent -> {
                     selectedCard = plant;
                 });
-                button.setIcon(new ImageIcon("images/felder/high_background.png"));
+                ImageIcon icon = new ImageIcon("images/felder/high_background.png");
+                button.setIcon(new ImageIcon(icon.getImage().getScaledInstance(button.getWidth(), button.getHeight(), Image.SCALE_SMOOTH)));
                 pane.add(addImage("images/felder/power_icon.png", x+10, y+20), 2);
                 pane.add(addRotatedText(plant.name, Font.BOLD, x+2, y+48,11, 180, 66), 1);
                 pane.add(addRotatedText(plant.price + "€", Font.BOLD, x+2, y-22, 13, 180, 66), 1);
@@ -481,7 +494,7 @@ public class PrototypeMenu {
     private void addEreignisfeld(JFrame frame, int x, int y, Direction direction) {
         JLabel label;
         JLayeredPane pane = new JLayeredPane();
-        pane.setBounds(0, 0, frame.getWidth(), frame.getHeight());
+        pane.setBounds(0, 0, 1920, 1080);
         switch (direction) {
             case LEFT -> {
                 label = addImage("images/felder/wide_background.png", x, y);
@@ -512,7 +525,7 @@ public class PrototypeMenu {
     private void addGemeinschaftsfeld(JFrame frame, int x, int y, Direction direction) {
         JLabel label;
         JLayeredPane pane = new JLayeredPane();
-        pane.setBounds(0, 0, frame.getWidth(), frame.getHeight());
+        pane.setBounds(0, 0, 1920, 1080);
         switch (direction) {
             case LEFT -> {
                 label = addImage("images/felder/wide_background.png", x, y);
@@ -543,7 +556,7 @@ public class PrototypeMenu {
     private void addSteuerfeld(JFrame frame, int x, int y, Direction direction) {
         JLabel label;
         JLayeredPane pane = new JLayeredPane();
-        pane.setBounds(0, 0, frame.getWidth(), frame.getHeight());
+        pane.setBounds(0, 0, 1920, 1080);
         switch (direction) {
             case UP -> {
                 label = addImage("images/felder/high_background.png", x, y);
@@ -567,7 +580,7 @@ public class PrototypeMenu {
     private void addSpecialField(JFrame frame, int x, int y, Direction direction) {
         JLabel label;
         JLayeredPane pane = new JLayeredPane();
-        pane.setBounds(0, 0, frame.getWidth(), frame.getHeight());
+        pane.setBounds(0, 0, 1920, 1080);
         switch (direction) {
             case LEFT -> {
                 label = addImage("images/felder/wide_background.png", x, y);
@@ -596,42 +609,59 @@ public class PrototypeMenu {
         return button;
     }
 
-    private JLabel addText(String display, int x, int y, int width, int size, boolean centered) {
+    private JLabel addText(String display, int x, int y, int width, int height, boolean centered) {
         JLabel label;
+        width = getX(width);
+        height = getY(height);
         if(centered) label = new JLabel(display, SwingConstants.CENTER); else label = new JLabel(display);
-        label.setFont(new Font("Arial", Font.PLAIN, size));
-        label.setBounds(getX(x), getY(y), getX(width), getY(size));
+        label.setFont(new Font("Arial", Font.PLAIN, height));
+        label.setBounds(getX(x), getY(y), width, height);
         return label;
     }
 
     private JLabel addImage(String src, int x, int y) {
         ImageIcon icon = new ImageIcon(src);
+        icon = new ImageIcon(icon.getImage().getScaledInstance(getX(icon.getIconWidth()), getY(icon.getIconHeight()), Image.SCALE_DEFAULT));
         JLabel label = new JLabel(icon);
-        label.setBounds(getX(x), getY(y), getX(icon.getIconWidth()), getY(icon.getIconHeight()));
+        label.setBounds(getX(x), getY(y), icon.getIconWidth(), icon.getIconHeight());
         return label;
     }
 
     private JLabel addImage(String src, int x, int y, int width, int height) {
         JLabel label = addImage(src, x, y);
-        label.setIcon(new ImageIcon(((ImageIcon) label.getIcon()).getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH)));
+        width = getX(width);
+        height = getY(height);
+        label.setIcon(new ImageIcon(((ImageIcon) label.getIcon()).getImage().getScaledInstance(width, height, Image.SCALE_DEFAULT)));
         label.setBounds(getX(x), getY(y), getX(width), getY(height));
         return label;
     }
 
-    private JLabel addText(String display, int x, int y, int width, int size) {
+    private JLabel addText(String display, int x, int y, int width, int height) {
         JLabel label = new JLabel(display);
-        label.setFont(new Font("Arial", Font.PLAIN, size));
-        label.setBounds(getX(x), getY(y), getX(width), getY(size));
+        width = getX(width);
+        height = getY(height);
+        label.setFont(new Font("Arial", Font.PLAIN, height));
+        label.setBounds(getX(x), getY(y), getX(width), getY(height));
         return label;
     }
 
     private JLabel addRotatedText(String display, int font, int x, int y, int size, double angle, int maxLength) {
-        return new JRotatedLabel(display, getX(size), font, angle, getX(x), getY(y), maxLength);
+        x = getX(x);
+        y = getY(y);
+        if(angle == 0 || angle == 180) {
+            maxLength = getX(maxLength);
+            size = getX(size);
+        } else if(angle == 90 || angle == -90) {
+            maxLength = getY(maxLength);
+            size = getY(size);
+        }
+        return new JRotatedLabel(display, size, font, angle, x, y, maxLength);
     }
 
     @Deprecated
-    private void drawToScreen(JPanel panel, JFrame frame) {double originalWidth = frame.getWidth();
-        double originalHeight = frame.getHeight();
+    private void drawToScreen(JPanel panel, JFrame frame) {
+        double originalWidth = frame.getWidth();
+        double originalHeight = 1080;
         double targetWidth = Toolkit.getDefaultToolkit().getScreenSize().width;
         double targetHeight = Toolkit.getDefaultToolkit().getScreenSize().height;
         double widthMultiplier = originalWidth / targetWidth;
