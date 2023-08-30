@@ -6,11 +6,10 @@ import java.awt.geom.Rectangle2D;
 
 public class JRotatedLabel extends JLabel {
     private final double rotation;
-    private final int maxLength;
+
     public JRotatedLabel(String text, int size, int font, double rotation, int x, int y, int maxLength) {
         super(text);
         this.rotation = rotation;
-        this.maxLength = maxLength;
         Font newFont = new Font("Arial", font, size);
         setFont(newFont);
         FontMetrics metrics = new FontMetrics(newFont) {
@@ -31,22 +30,12 @@ public class JRotatedLabel extends JLabel {
     }
     @Override
     protected void paintComponent(Graphics g) {
-        //Graphics2D gx = (Graphics2D) g;
-        //gx.rotate(Math.toRadians(rotation), getX() + getWidth()/2, getY() + getHeight()/2);
-        //gx.translate(0, getHeight()/2);
-        //gx.rotate(0.6, getX() + getWidth()/2, getY() + getHeight()/2);
-        //gx.translate(getHeight(), getHeight());
-        //super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g;
 
         int width = getWidth();
         int height = getHeight();
 
-        //g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        g2d.rotate(Math.toRadians(rotation), width / 2f, height / 2f); // Rotate around the center
-
-        //g2d.setColor(Color.BLACK);
-        //g2d.drawString("Rotated Text", 10, height / 2);
+        g2d.rotate(Math.toRadians(rotation), width / 2f, height / 2f);
 
         super.paintComponent(g2d);
     }
