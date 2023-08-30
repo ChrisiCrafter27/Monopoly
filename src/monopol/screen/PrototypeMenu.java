@@ -18,6 +18,7 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class PrototypeMenu {
     private final JFrame frame = new JFrame("Monopoly - PrototypeWindow");
@@ -306,10 +307,10 @@ public class PrototypeMenu {
         client = clients.get(i);
     }
 
-    private static JButton addButton(String display, int x, int y, int width, int height, boolean enabled, ActionListener actionEvent) {
+    private JButton addButton(String display, int x, int y, int width, int height, boolean enabled, ActionListener actionEvent) {
         JButton button = new JButton(display);
         button.addActionListener(actionEvent);
-        button.setBounds(x, y, width, height);
+        button.setBounds(getX(x), getY(y), getX(width), getY(height));
         button.setEnabled(enabled);
         button.setOpaque(false);
         button.setContentAreaFilled(false);
@@ -333,6 +334,7 @@ public class PrototypeMenu {
         JButton button = addButton(clients.get(i).name, i * step, 0, step, 60, true, (client == clients.get(value[0])), actionEvent -> {
             setClient(value[0]);
         });
+        step = Math.max(step, 1);
         button.setIcon(new ImageIcon(new ImageIcon("images/playerselect/playerselect_0_" + clients.size() + ".png").getImage().getScaledInstance(step, 60, Image.SCALE_SMOOTH)));
         button.setDisabledIcon(new ImageIcon(new ImageIcon("images/playerselect/playerselect_0_" + clients.size() + ".png").getImage().getScaledInstance(step, 60, Image.SCALE_SMOOTH)));
         button.setPressedIcon(new ImageIcon(new ImageIcon("images/playerselect/playerselect_0_" + clients.size() + ".png").getImage().getScaledInstance(step, 60, Image.SCALE_SMOOTH)));
@@ -588,48 +590,74 @@ public class PrototypeMenu {
         frame.add(pane);
     }
 
-    private static JButton addButton(String display, int x, int y, int width, int height, boolean enabled, boolean selected, ActionListener actionEvent) {
+    private JButton addButton(String display, int x, int y, int width, int height, boolean enabled, boolean selected, ActionListener actionEvent) {
         JButton button = addButton(display, x, y, width, height, enabled, actionEvent);
         button.setSelected(selected);
         return button;
     }
 
-    private static JLabel addText(String display, int x, int y, int width, int size, boolean centered) {
+    private JLabel addText(String display, int x, int y, int width, int size, boolean centered) {
         JLabel label;
         if(centered) label = new JLabel(display, SwingConstants.CENTER); else label = new JLabel(display);
         label.setFont(new Font("Arial", Font.PLAIN, size));
-        label.setBounds(x, y, width, size);
+        label.setBounds(getX(x), getY(y), getX(width), getY(size));
         return label;
     }
 
-    private static JLabel addImage(String src, int x, int y) {
+    private JLabel addImage(String src, int x, int y) {
         ImageIcon icon = new ImageIcon(src);
         JLabel label = new JLabel(icon);
-        label.setBounds(x, y, icon.getIconWidth(), icon.getIconHeight());
+        label.setBounds(getX(x), getY(y), getX(icon.getIconWidth()), getY(icon.getIconHeight()));
         return label;
     }
 
-    private static JLabel addImage(String src, int x, int y, int width, int height) {
+    private JLabel addImage(String src, int x, int y, int width, int height) {
         JLabel label = addImage(src, x, y);
         label.setIcon(new ImageIcon(((ImageIcon) label.getIcon()).getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH)));
-        label.setBounds(x, y, width, height);
+        label.setBounds(getX(x), getY(y), getX(width), getY(height));
         return label;
     }
 
-    private static JLabel addText(String display, int x, int y, int width, int size) {
+    private JLabel addText(String display, int x, int y, int width, int size) {
         JLabel label = new JLabel(display);
         label.setFont(new Font("Arial", Font.PLAIN, size));
-        label.setBounds(x, y, width, size);
+        label.setBounds(getX(x), getY(y), getX(width), getY(size));
         return label;
     }
 
-    private static JLabel addRotatedText(String display, int font, int x, int y, int size, double angle, int maxLength) {
-        JRotatedLabel label = new JRotatedLabel(display, size, font, angle, x, y, maxLength);
-        //label.setHorizontalAlignment(SwingConstants.CENTER);
-        //label.setVerticalAlignment(SwingConstants.CENTER);
-        //label.setHorizontalTextPosition(SwingConstants.CENTER);
-        //label.setVerticalTextPosition(SwingConstants.CENTER);
-        return label;
+    private JLabel addRotatedText(String display, int font, int x, int y, int size, double angle, int maxLength) {
+        return new JRotatedLabel(display, getX(size), font, angle, getX(x), getY(y), maxLength);
+    }
+
+    @Deprecated
+    private void drawToScreen(JPanel panel, JFrame frame) {double originalWidth = frame.getWidth();
+        double originalHeight = frame.getHeight();
+        double targetWidth = Toolkit.getDefaultToolkit().getScreenSize().width;
+        double targetHeight = Toolkit.getDefaultToolkit().getScreenSize().height;
+        double widthMultiplier = originalWidth / targetWidth;
+        double heightMultiplier = originalHeight / targetHeight;
+
+        frame.getContentPane().removeAll();
+
+        for(Component component : panel.getComponents()) {
+            if(!Arrays.asList(frame.getComponents()).contains(component)) {
+                int width = (int) (component.getWidth() * widthMultiplier);
+                int height = (int) (component.getHeight() * heightMultiplier);
+                component.setBounds((int) (component.getX() * widthMultiplier), (int) (component.getY() * heightMultiplier), Math.max(width, 1), Math.max(height, 1));
+                frame.add(component);
+                System.out.println("yes");
+            } else System.out.println("no");
+        }
+        
+        frame.repaint();
+    }
+
+    private int getX(double x) {
+        return (int) (x * (frame.getWidth() / 1920d));
+    }
+
+    private int getY(double y) {
+        return (int) (y * (frame.getHeight() / 1080d));
     }
 
     public static void main(String[] args) {
