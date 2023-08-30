@@ -22,7 +22,7 @@ public class GameWindow {
     double multiplikator_Width;
     double multiplikator_Height;
 
-    public GameWindow() {
+    public GameWindow(){
         frame.setUndecorated(true);
         frame.setSize(new Dimension( 1920,1080));
         frame.setResizable(true);
@@ -36,15 +36,15 @@ public class GameWindow {
         multiplikator_Width = (double) frame.getWidth() / normalWidth;
         multiplikator_Height = (double) frame.getHeight() / normalHeight;
     }
-    public static void main(String[] args) {
+    public static void main(String[] args){
         GameWindow window = new GameWindow();
         window.Mainmenu();
 
     }
-    public JFrame getframe() {
+    public JFrame getframe(){
         return frame;
     }
-    public JLayeredPane getMENUpanel() {
+    public JLayeredPane getMENUpanel(){
         return MENUPanel;
     }
 

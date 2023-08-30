@@ -109,7 +109,7 @@ public class PrototypeMenu {
 
                     if(client.closed()) {
                         clients.remove(client);
-                        if(!clients.isEmpty()) {
+                        if(!clients.isEmpty()) {//MonopolyScreen.png
                             client = clients.get(0);
                         } else {
                             interrupt();
@@ -299,6 +299,8 @@ public class PrototypeMenu {
 
 
         //TODO  \/  FABIANS PART  \/
+
+        
 
     }
 
