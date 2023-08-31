@@ -22,9 +22,10 @@ public class Client {
     private final Socket client;
     private final IEvents eventsInterface;
     private final IServer serverInterface;
-    public final boolean isHost;
+    public final ClientPlayer player;
     public DisconnectReason disconnectReason = null;
-    public String name = null;
+    public TradeState tradeState = TradeState.NULL;
+    public String tradePlayer = null;
 
     private final Thread clientThread = new Thread() {
         @Override
@@ -51,7 +52,7 @@ public class Client {
 
     public Client(String ip, int port, boolean isHost) throws NotBoundException {
         try {
-            this.isHost = isHost;
+            this.player = new ClientPlayer(isHost);
             client = new Socket(ip, port);
             Registry registry1 = LocateRegistry.getRegistry(ip, 1299);
             eventsInterface = (IEvents) registry1.lookup("Events");
@@ -74,23 +75,21 @@ public class Client {
         try {
             message = Json.toObject(value, Message.class);
             switch (message.getMessageType()) {
-                case PRINTLN:
-                    System.out.println(message.getMessage()[0]);
-                    break;
-                case PING:
+                case PRINTLN -> System.out.println(message.getMessage()[0]);
+                case PING -> {
                     DataOutputStream output = new DataOutputStream(client.getOutputStream());
                     Object[] array = new Object[1];
                     array[0] = message.getMessage()[0];
                     output.writeUTF(Json.toString(new Message(array, MessageType.PING_BACK), false));
-                    break;
-                case PING_BACK:
+                }
+                case PING_BACK -> {
                     long delay = System.currentTimeMillis() - (long) message.getMessage()[0];
                     System.out.println("[Server]: Your ping is " + delay + "ms");
-                    break;
-                case NAME:
-                    if(name == null) name = (String) message.getMessage()[0];
-                    break;
-                case DISCONNECT:
+                }
+                case NAME -> {
+                    if (player.getName() == null) player.setName((String) message.getMessage()[0]);
+                }
+                case DISCONNECT -> {
                     disconnectReason = DisconnectReason.valueOf((String) message.getMessage()[0]);
                     clientThread.interrupt();
                     switch (DisconnectReason.valueOf((String) message.getMessage()[0])) {
@@ -100,14 +99,14 @@ public class Client {
                         case KICKED -> System.out.println("[Client]: Connection lost: Kicked by other player.");
                         default -> System.out.println("[Client]: Connection lost: No further information.");
                     }
-                    break;
-                case START:
-                    Monopoly.INSTANCE.setState(GameState.RUNNING);
-                    break;
-                case NULL:
-                    break;
-                default:
-                    throw new RuntimeException();
+                }
+                case TRADE -> {
+                    System.out.println("TRADE");
+                }
+                case START -> Monopoly.INSTANCE.setState(GameState.RUNNING);
+                case NULL -> {
+                }
+                default -> throw new RuntimeException();
             }
         } catch (IOException e) {
             System.out.println("[Server]: Connection lost: No further information.");

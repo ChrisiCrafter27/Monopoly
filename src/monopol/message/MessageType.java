@@ -7,5 +7,6 @@ public enum MessageType {
     DISCONNECT,
     NAME,
     START,
+    TRADE,
     NULL
 }

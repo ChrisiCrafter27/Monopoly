@@ -1,6 +1,8 @@
 package monopol.screen;
 
 import monopol.client.Client;
+import monopol.client.ClientEvents;
+import monopol.client.TradeState;
 import monopol.core.GameState;
 import monopol.core.Monopoly;
 import monopol.constants.IPurchasable;
@@ -22,11 +24,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class PrototypeMenu {
-    private final JFrame frame = new JFrame("Monopoly - PrototypeWindow");
+    public final JFrame frame = new JFrame("Monopoly - PrototypeWindow");
     private final ArrayList<Client> clients = new ArrayList<>();
     private final ArrayList<Client> clientsTemp = new ArrayList<>();
     private boolean serverAcceptsNewClient;
-    private Client client;
+    public Client client;
     private Client clientTemp;
     private ArrayList<ServerPlayer> displayedServerPlayers = new ArrayList<>();
     private String ip;
@@ -34,6 +36,7 @@ public class PrototypeMenu {
     private IPurchasable selectedCard = Street.BADSTRASSE;
 
     public PrototypeMenu() {
+        if((int) JUtils.SCREEN_WIDTH / (int) JUtils.SCREEN_HEIGHT != 16 / 9) System.err.println("[WARNING]: Your screen resolution is not 16/9. This may causes wrong screen drawing. Please change your screen device!");
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setFocusable(true);
         frame.setSize(new Dimension((int) JUtils.SCREEN_WIDTH, (int) JUtils.SCREEN_HEIGHT));
@@ -42,7 +45,6 @@ public class PrototypeMenu {
         frame.setLayout(null);
         frame.setVisible(true);
         frame.addKeyListener(keyHandler);
-        if(frame.getWidth() / frame.getHeight() != 16 / 9) System.err.println("[WARNING]: Your screen resolution is not 16/9. This may causes wrong screen drawing. Please change your screen device!");
     }
 
     public void prepareMenu() {
@@ -98,7 +100,7 @@ public class PrototypeMenu {
                 frame.add(addText("Connecting to server...", (1920 / 2) - 250, 1080 / 2, 500, 25, true));
                 frame.repaint();
 
-                while(!isInterrupted() && client.name == null) {
+                while(!isInterrupted() && client.player.getName() == null) {
                     if(client.closed()) {
                         interrupt();
                         prepareMenu();
@@ -151,19 +153,19 @@ public class PrototypeMenu {
                             boolean ableToKick;
                             boolean ableToAccessSettings;
                             try {
-                                if (client.isHost) ableToKick = true;
+                                if (client.player.isHost) ableToKick = true;
                                 else ableToKick = client.serverMethod().getServerSettings().allPlayersCanKick;
-                                if (client.isHost) ableToAccessSettings = true;
+                                if (client.player.isHost) ableToAccessSettings = true;
                                 else ableToAccessSettings = client.serverMethod().getServerSettings().allPlayersCanAccessSettings;
                             } catch (RemoteException e) {
-                                ableToKick = client.isHost;
-                                ableToAccessSettings = client.isHost;
+                                ableToKick = client.player.isHost;
+                                ableToAccessSettings = client.player.isHost;
                             }
                             frame.getContentPane().removeAll();
                             int y = 150;
                             for (ServerPlayer serverPlayer : client.serverMethod().getServerPlayers()) {
                                 frame.add(addText(serverPlayer.getName(), 50, y, 500, 25));
-                                if(!serverPlayer.getName().equals(client.name)) {
+                                if(!serverPlayer.getName().equals(client.player.getName())) {
                                     frame.add(addButton("Kick", 600, y, 150, 25, ableToKick, actionEvent -> {
                                         try {
                                             client.serverMethod().kick(serverPlayer.getName(), DisconnectReason.KICKED);
@@ -173,7 +175,7 @@ public class PrototypeMenu {
                                     frame.add(addButton("change name", 600, y, 150, 25, true, actionEvent -> {
                                         try {
                                             String name = JOptionPane.showInputDialog(null, "New name:", "Change name", JOptionPane.QUESTION_MESSAGE);
-                                            if(client.serverMethod().changeName(client.name, name)) client.name = name; else JOptionPane.showMessageDialog(null, "This name is either already in use or too long!", "Change name", JOptionPane.WARNING_MESSAGE);
+                                            if(client.serverMethod().changeName(client.player.getName(), name)) client.player.setName(name); else JOptionPane.showMessageDialog(null, "This name is either already in use or too long!", "Change name", JOptionPane.WARNING_MESSAGE);
                                         } catch (Exception ignored) {
                                         }
                                     }));
@@ -188,15 +190,15 @@ public class PrototypeMenu {
                                     }
                                 } catch (Exception ignored) {}
                             }));
-                            frame.add(addButton("add bot", 50, 1080 - 200, 200, 50, client.isHost, actionEvent -> {
+                            frame.add(addButton("add bot", 50, 1080 - 200, 200, 50, client.player.isHost, actionEvent -> {
                                 JOptionPane.showMessageDialog(null, "This option is not possible yet", "Add bot", JOptionPane.WARNING_MESSAGE);
                             }));
                             frame.add(addButton("leave", 1920 - 250, 1080 - 100, 200, 50, true, actionEvent -> {
                                 try {
-                                    client.serverMethod().kick(client.name, DisconnectReason.CLIENT_CLOSED);
+                                    client.serverMethod().kick(client.player.getName(), DisconnectReason.CLIENT_CLOSED);
                                 } catch (Exception ignored) {}
                             }));
-                            frame.add(addButton("start", 1920 - 250, 1080 - 200, 200, 50, client.isHost, actionEvent -> {
+                            frame.add(addButton("start", 1920 - 250, 1080 - 200, 200, 50, client.player.isHost, actionEvent -> {
                                 try {
                                     client.serverMethod().start();
                                 } catch (Exception ignored) {}
@@ -299,7 +301,18 @@ public class PrototypeMenu {
         //REPAINT
         frame.repaint();
 
+        frame.add(addButton("Trade", JUtils.getX(1300), JUtils.getY(500), 200, 50, true, actionEvent -> {
+            try {
+                ClientEvents.trade(this, null, TradeState.CHOOSE_PLAYER);
+            } catch (RemoteException ignored) {}
+        }));
+        frame.repaint();
 
+        if(client.tradeState != TradeState.NULL) {
+            try {
+                ClientEvents.trade(this, client.tradePlayer, client.tradeState);
+            } catch (RemoteException ignored) {}
+        }
 
         //TODO  \/  FABIANS PART  \/
 
@@ -311,7 +324,7 @@ public class PrototypeMenu {
         client = clients.get(i);
     }
 
-    private JButton addButton(String display, int x, int y, int width, int height, boolean enabled, ActionListener actionEvent) {
+    public JButton addButton(String display, int x, int y, int width, int height, boolean enabled, ActionListener actionEvent) {
         JButton button = new JButton(display);
         width = JUtils.getX(width);
         height = JUtils.getY(height);
@@ -337,8 +350,11 @@ public class PrototypeMenu {
     private JButton addPlayerButton(int i) {
         int step = 1920 / clients.size();
         int[] value = {i};
-        JButton button = addButton(clients.get(i).name, i * step, 0, step, 60, true, (client == clients.get(value[0])), actionEvent -> {
+        JButton button = addButton(clients.get(i).player.getName(), i * step, 0, step, 60, true, (client == clients.get(value[0])), actionEvent -> {
             setClient(value[0]);
+            switch (Monopoly.INSTANCE.getState()) {
+                case RUNNING -> prepareGame();
+            }
         });
         step = Math.max(step, 1);
         button.setIcon(new ImageIcon(new ImageIcon("images/playerselect/playerselect_0_" + clients.size() + ".png").getImage().getScaledInstance(step, 60, Image.SCALE_SMOOTH)));
@@ -607,13 +623,13 @@ public class PrototypeMenu {
         frame.add(pane);
     }
 
-    private JButton addButton(String display, int x, int y, int width, int height, boolean enabled, boolean selected, ActionListener actionEvent) {
+    public JButton addButton(String display, int x, int y, int width, int height, boolean enabled, boolean selected, ActionListener actionEvent) {
         JButton button = addButton(display, x, y, width, height, enabled, actionEvent);
         button.setSelected(selected);
         return button;
     }
 
-    private JLabel addText(String display, int x, int y, int width, int height, boolean centered) {
+    public JLabel addText(String display, int x, int y, int width, int height, boolean centered) {
         JLabel label;
         width = JUtils.getX(width);
         height = JUtils.getY(height);
@@ -623,7 +639,7 @@ public class PrototypeMenu {
         return label;
     }
 
-    private JLabel addImage(String src, int x, int y) {
+    public JLabel addImage(String src, int x, int y) {
         ImageIcon icon = new ImageIcon(src);
         icon = new ImageIcon(icon.getImage().getScaledInstance(JUtils.getX(icon.getIconWidth()), JUtils.getY(icon.getIconHeight()), Image.SCALE_DEFAULT));
         JLabel label = new JLabel(icon);
@@ -631,7 +647,7 @@ public class PrototypeMenu {
         return label;
     }
 
-    private JLabel addImage(String src, int x, int y, int width, int height) {
+    public JLabel addImage(String src, int x, int y, int width, int height) {
         JLabel label = addImage(src, x, y);
         width = JUtils.getX(width);
         height = JUtils.getY(height);
@@ -640,7 +656,7 @@ public class PrototypeMenu {
         return label;
     }
 
-    private JLabel addText(String display, int x, int y, int width, int height) {
+    public JLabel addText(String display, int x, int y, int width, int height) {
         JLabel label = new JLabel(display);
         width = JUtils.getX(width);
         height = JUtils.getY(height);
@@ -649,7 +665,7 @@ public class PrototypeMenu {
         return label;
     }
 
-    private JLabel addRotatedText(String display, int font, int x, int y, int size, double angle, int maxLength) {
+    public JLabel addRotatedText(String display, int font, int x, int y, int size, double angle, int maxLength) {
         x = JUtils.getX(x);
         y = JUtils.getY(y);
         if(angle == 0 || angle == 180) {

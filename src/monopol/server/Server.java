@@ -314,6 +314,20 @@ public class Server extends UnicastRemoteObject implements IServer {
     }
 
     @Override
+    public void sendMessage(String name, MessageType type, Object[] value) throws IOException {
+        for (Map.Entry<ServerPlayer, Socket> entrySet : serverPlayers.entrySet()) {
+            if(entrySet.getKey().getName().equals(name)) Message.send(new Message(value, type), entrySet.getValue());
+        }
+    }
+
+    @Override
+    public void sendMessage(String name, MessageType type, Object value) throws IOException {
+        for (Map.Entry<ServerPlayer, Socket> entrySet : serverPlayers.entrySet()) {
+            if(entrySet.getKey().getName().equals(name)) Message.send(new Message(value, type), entrySet.getValue());
+        }
+    }
+
+    @Override
     public boolean acceptsNewClient() throws RemoteException {
         return acceptNewClients;
     }
