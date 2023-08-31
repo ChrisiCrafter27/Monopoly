@@ -9,10 +9,10 @@ import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 import java.util.logging.Level;
 
-public abstract class ICustomLogger {
+public abstract class CustomLogger {
     private final Logger LOGGER;
 
-    protected ICustomLogger(String logPath) {
+    protected CustomLogger(String logPath) {
         LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
         LOGGER.setLevel(Level.ALL);
         LOGGER.setUseParentHandlers(false);
@@ -56,5 +56,5 @@ public abstract class ICustomLogger {
         return LOGGER;
     }
 
-    public abstract ICustomLogger getInstance();
+    public abstract CustomLogger getInstance();
 }
