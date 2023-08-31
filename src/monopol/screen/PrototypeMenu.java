@@ -10,6 +10,7 @@ import monopol.constants.Plant;
 import monopol.server.DisconnectReason;
 import monopol.server.ServerPlayer;
 import monopol.server.ServerSettings;
+import monopol.utils.JUtils;
 import monopol.utils.KeyHandler;
 import monopol.utils.JRotatedLabel;
 
@@ -35,12 +36,13 @@ public class PrototypeMenu {
     public PrototypeMenu() {
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setFocusable(true);
-        frame.setSize(new Dimension(Toolkit.getDefaultToolkit().getScreenSize().width, Toolkit.getDefaultToolkit().getScreenSize().height));
+        frame.setSize(new Dimension((int) JUtils.SCREEN_WIDTH, (int) JUtils.SCREEN_HEIGHT));
         frame.setUndecorated(true);
         frame.setResizable(false);
         frame.setLayout(null);
         frame.setVisible(true);
         frame.addKeyListener(keyHandler);
+        if(frame.getWidth() / frame.getHeight() != 16 / 9) System.err.println("[WARNING]: Your screen resolution is not 16/9. This may causes wrong screen drawing. Please change your screen device!");
     }
 
     public void prepareMenu() {
@@ -311,10 +313,10 @@ public class PrototypeMenu {
 
     private JButton addButton(String display, int x, int y, int width, int height, boolean enabled, ActionListener actionEvent) {
         JButton button = new JButton(display);
-        width = getX(width);
-        height = getY(height);
+        width = JUtils.getX(width);
+        height = JUtils.getY(height);
         button.addActionListener(actionEvent);
-        button.setBounds(getX(x), getY(y), width, height);
+        button.setBounds(JUtils.getX(x), JUtils.getY(y), width, height);
         button.setEnabled(enabled);
         button.setOpaque(false);
         button.setContentAreaFilled(false);
@@ -350,7 +352,7 @@ public class PrototypeMenu {
     private void addStreetButton(JFrame frame, Street street, int x, int y, Direction direction) {
         JButton button;
         JLayeredPane pane = new JLayeredPane();
-        pane.setBounds(0, 0, getX(1920), getY(1080));
+        pane.setBounds(0, 0, JUtils.getX(1920), JUtils.getY(1080));
         switch (direction) {
             case LEFT -> {
                 button = addButton("", x, y, 90, 70, true, actionEvent -> {
@@ -613,49 +615,49 @@ public class PrototypeMenu {
 
     private JLabel addText(String display, int x, int y, int width, int height, boolean centered) {
         JLabel label;
-        width = getX(width);
-        height = getY(height);
+        width = JUtils.getX(width);
+        height = JUtils.getY(height);
         if(centered) label = new JLabel(display, SwingConstants.CENTER); else label = new JLabel(display);
         label.setFont(new Font("Arial", Font.PLAIN, height));
-        label.setBounds(getX(x), getY(y), width, height);
+        label.setBounds(JUtils.getX(x), JUtils.getY(y), width, height);
         return label;
     }
 
     private JLabel addImage(String src, int x, int y) {
         ImageIcon icon = new ImageIcon(src);
-        icon = new ImageIcon(icon.getImage().getScaledInstance(getX(icon.getIconWidth()), getY(icon.getIconHeight()), Image.SCALE_DEFAULT));
+        icon = new ImageIcon(icon.getImage().getScaledInstance(JUtils.getX(icon.getIconWidth()), JUtils.getY(icon.getIconHeight()), Image.SCALE_DEFAULT));
         JLabel label = new JLabel(icon);
-        label.setBounds(getX(x), getY(y), icon.getIconWidth(), icon.getIconHeight());
+        label.setBounds(JUtils.getX(x), JUtils.getY(y), icon.getIconWidth(), icon.getIconHeight());
         return label;
     }
 
     private JLabel addImage(String src, int x, int y, int width, int height) {
         JLabel label = addImage(src, x, y);
-        width = getX(width);
-        height = getY(height);
+        width = JUtils.getX(width);
+        height = JUtils.getY(height);
         label.setIcon(new ImageIcon(((ImageIcon) label.getIcon()).getImage().getScaledInstance(width, height, Image.SCALE_DEFAULT)));
-        label.setBounds(getX(x), getY(y), getX(width), getY(height));
+        label.setBounds(JUtils.getX(x), JUtils.getY(y), JUtils.getX(width), JUtils.getY(height));
         return label;
     }
 
     private JLabel addText(String display, int x, int y, int width, int height) {
         JLabel label = new JLabel(display);
-        width = getX(width);
-        height = getY(height);
+        width = JUtils.getX(width);
+        height = JUtils.getY(height);
         label.setFont(new Font("Arial", Font.PLAIN, height));
-        label.setBounds(getX(x), getY(y), getX(width), getY(height));
+        label.setBounds(JUtils.getX(x), JUtils.getY(y), JUtils.getX(width), JUtils.getY(height));
         return label;
     }
 
     private JLabel addRotatedText(String display, int font, int x, int y, int size, double angle, int maxLength) {
-        x = getX(x);
-        y = getY(y);
+        x = JUtils.getX(x);
+        y = JUtils.getY(y);
         if(angle == 0 || angle == 180) {
-            maxLength = getX(maxLength);
-            size = getX(size);
+            maxLength = JUtils.getX(maxLength);
+            size = JUtils.getX(size);
         } else if(angle == 90 || angle == -90) {
-            maxLength = getY(maxLength);
-            size = getY(size);
+            maxLength = JUtils.getY(maxLength);
+            size = JUtils.getY(size);
         }
         return new JRotatedLabel(display, size, font, angle, x, y, maxLength);
     }
@@ -664,8 +666,8 @@ public class PrototypeMenu {
     private void drawToScreen(JPanel panel, JFrame frame) {
         double originalWidth = frame.getWidth();
         double originalHeight = 1080;
-        double targetWidth = Toolkit.getDefaultToolkit().getScreenSize().width;
-        double targetHeight = Toolkit.getDefaultToolkit().getScreenSize().height;
+        double targetWidth = JUtils.SCREEN_WIDTH;
+        double targetHeight = JUtils.SCREEN_HEIGHT;
         double widthMultiplier = originalWidth / targetWidth;
         double heightMultiplier = originalHeight / targetHeight;
 
@@ -682,14 +684,6 @@ public class PrototypeMenu {
         }
         
         frame.repaint();
-    }
-
-    private int getX(double x) {
-        return (int) (x * (frame.getWidth() / 1920d));
-    }
-
-    private int getY(double y) {
-        return (int) (y * (frame.getHeight() / 1080d));
     }
 
     public static void main(String[] args) {
