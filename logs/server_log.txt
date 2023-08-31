@@ -1,14 +1,6 @@
-[31-08-2023 22:18:31] [INFO] [Server]: Initialing server...
-[31-08-2023 22:18:33] [INFO] [Server]: Starting server...
-[31-08-2023 22:18:33] [INFO] [Server]: IP-Address: 192.168.178.44
-[31-08-2023 22:18:33] [INFO] [Server]: Listening for new clients...
-[31-08-2023 22:18:33] [INFO] [Server]: New Client accepted (Player 1)
-[31-08-2023 22:18:35] [INFO] [Server]: New Client accepted (Player 2)
-[31-08-2023 22:18:35] [INFO] [Server]: New Client accepted (Player 3)
-[31-08-2023 22:18:35] [INFO] [Server]: New Client accepted (Player 4)
-[31-08-2023 22:18:35] [INFO] [Server]: New Client accepted (Player 5)
-[31-08-2023 22:18:35] [INFO] [Server]: New Client accepted (Player 6)
-[31-08-2023 22:18:35] [INFO] [Server]: New Client accepted (Player 7)
-[31-08-2023 22:18:36] [INFO] [Server]: New Client accepted (Player 8)
-[31-08-2023 22:18:36] [INFO] [Server]: New Client accepted (Player 9)
-[31-08-2023 22:18:36] [INFO] [Server]: New Client accepted (Player 10)
+[31-08-2023 22:22:40] [INFO] [Server]: Initialing server...
+[31-08-2023 22:22:41] [INFO] [Server]: Starting server...
+[31-08-2023 22:22:41] [INFO] [Server]: IP-Address: 192.168.178.44
+[31-08-2023 22:22:41] [INFO] [Server]: Listening for new clients...
+[31-08-2023 22:22:42] [INFO] [Server]: New Client accepted (Player 1)
+[31-08-2023 22:22:43] [INFO] [Server]: New Client accepted (Player 2)
