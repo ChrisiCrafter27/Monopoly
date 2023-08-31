@@ -38,7 +38,7 @@ public class ClientEvents {
                 int i = 0;
                 for(ServerPlayer serverPlayer : client1.serverMethod().getServerPlayers()) {
                     if(!player1Name.equals(serverPlayer.getName())) {
-                        frame.add(menu.addButton(serverPlayer.getName(), 1920 / 2 - 250, 200 + (150 * i), 500, 100, true, actionEvent -> {
+                        frame.add(menu.addButton(serverPlayer.getName(), 1920 / 2 - 250, 200 + (75 * i), 500, 50, true, actionEvent -> {
                             try {
                                 client1.tradePlayer = serverPlayer.getName();
                                 client1.tradeState = TradeState.WAIT_FOR_ACCEPT;
