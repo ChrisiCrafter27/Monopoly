@@ -1,6 +1,7 @@
 package monopol.core;
 
 import monopol.screen.GameWindow;
+import monopol.screen.PrototypeMenu;
 import monopol.server.Server;
 import monopol.server.ServerSettings;
 
@@ -56,6 +57,8 @@ public class Monopoly {
                 }
             }
         };
-        menuThread.start();
+        //menuThread.start();
+        PrototypeMenu menu = new PrototypeMenu();
+        menu.prepareMenu();
     }
 }

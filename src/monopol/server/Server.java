@@ -64,6 +64,9 @@ public class Server extends UnicastRemoteObject implements IServer {
                 acceptNewClients = Monopoly.INSTANCE.getState() == GameState.LOBBY || Monopoly.INSTANCE.getState() == GameState.WAITING_FOR_PLAYER;
                 if (pause) acceptNewClients = false;
                 if (clients.size() >= 10) acceptNewClients = false;
+                try {
+                    sleep(100);
+                } catch (InterruptedException ignored) {}
             }
         }
         private ServerPlayer newServerPlayer() {

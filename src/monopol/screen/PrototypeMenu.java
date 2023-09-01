@@ -302,7 +302,7 @@ public class PrototypeMenu {
         //REPAINT
         frame.repaint();
 
-        frame.add(addButton("Trade", JUtils.getX(1300), JUtils.getY(500), 200, 50, true, actionEvent -> {
+        frame.add(addButton("Handeln", JUtils.getX(1300), JUtils.getY(500), 200, 50, true, actionEvent -> {
             try {
                 ClientEvents.trade(this, null, TradeState.CHOOSE_PLAYER);
             } catch (RemoteException ignored) {}

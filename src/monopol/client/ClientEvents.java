@@ -51,12 +51,17 @@ public class ClientEvents {
                         i += 1;
                     }
                 }
+                frame.add(menu.addButton("Abbrechen", 1920/2-100, 1080-100, 200, 50, true, actionEvent -> {
+                    client1.tradePlayer = null;
+                    client1.tradeState = TradeState.NULL;
+                    menu.prepareGame();
+                }), 0);
             }
             case WAIT_FOR_ACCEPT -> {
                 //Print a waiting screen and an interrupt button for accepting
                 if(player2Name == null) return;
-                frame.add(menu.addText("Waiting for " + player2Name + " to accept your invite", 1920/2-500, 1020/2-50, 1000, 20, true), 0);
-                frame.add(menu.addButton("abort", 1920/2-100, 1020/2+50, 200, 50, true, actionEvent -> {
+                frame.add(menu.addText("Warte, bis " + player2Name + " deine Einladungs akzeptiert", 1920/2-500, 1020/2-50, 1000, 20, true), 0);
+                frame.add(menu.addButton("Abbrechen", 1920/2-100, 1020/2+50, 200, 50, true, actionEvent -> {
                     client1.tradePlayer = null;
                     client1.tradeState = TradeState.NULL;
                     menu.prepareGame();
