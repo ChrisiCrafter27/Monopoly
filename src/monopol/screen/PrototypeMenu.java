@@ -85,6 +85,7 @@ public class PrototypeMenu {
             frame.dispose();
             System.exit(0);
         }));
+        frame.add(addImage("images/Monopoly_client1.png", 0, 0, 1920, 1080));
         frame.repaint();
     }
 
