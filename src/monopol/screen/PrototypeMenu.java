@@ -302,7 +302,7 @@ public class PrototypeMenu {
         //REPAINT
         frame.repaint();
 
-        frame.add(addButton("Handeln", JUtils.getX(1300), JUtils.getY(500), 200, 50, true, actionEvent -> {
+        frame.add(addButton("Handeln", JUtils.getX(300), JUtils.getY(500), 200, 50, true, actionEvent -> {
             try {
                 ClientEvents.trade(this, null, TradeState.CHOOSE_PLAYER);
             } catch (RemoteException ignored) {}
@@ -343,6 +343,25 @@ public class PrototypeMenu {
         //button.setPressedIcon(new ImageIcon(new ImageIcon("images/DO_NOT_CHANGE/plain_button_0.png").getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH)));
         //button.setRolloverIcon(new ImageIcon(new ImageIcon("images/DO_NOT_CHANGE/plain_button_1.png").getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH)));
         //button.setSelectedIcon(new ImageIcon(new ImageIcon("images/DO_NOT_CHANGE/plain_button_0.png").getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH)));
+        button.setHorizontalTextPosition(SwingConstants.CENTER);
+        button.setVerticalTextPosition(SwingConstants.CENTER);
+        return button;
+    }
+
+    public JButton addButton(String display, int x, int y, int width, int height, boolean enabled, String icon, ActionListener actionEvent) {
+        JButton button = new JButton(display);
+        width = JUtils.getX(width);
+        height = JUtils.getY(height);
+        button.addActionListener(actionEvent);
+        button.setBounds(JUtils.getX(x), JUtils.getY(y), width, height);
+        button.setEnabled(enabled);
+        button.setOpaque(false);
+        button.setContentAreaFilled(false);
+        button.setBorderPainted(false);
+        button.setFocusPainted(false);
+        if(width < 1) width = 1;
+        if(height < 1) height = 1;
+        button.setIcon(new ImageIcon(new ImageIcon(icon).getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH)));
         button.setHorizontalTextPosition(SwingConstants.CENTER);
         button.setVerticalTextPosition(SwingConstants.CENTER);
         return button;
@@ -640,6 +659,16 @@ public class PrototypeMenu {
         return label;
     }
 
+    public JLabel addText(JLabel label, String display,String font, int x, int y, int width, int height, boolean centered) {
+        width = JUtils.getX(width);
+        height = JUtils.getY(height);
+        if(centered) label.setHorizontalAlignment(SwingConstants.CENTER);
+        label.setText(display);
+        label.setFont(new Font(font, Font.PLAIN, height));
+        label.setBounds(JUtils.getX(x), JUtils.getY(y), width, height);
+        return label;
+    }
+
     public JLabel addImage(String src, int x, int y) {
         ImageIcon icon = new ImageIcon(src);
         icon = new ImageIcon(icon.getImage().getScaledInstance(JUtils.getX(icon.getIconWidth()), JUtils.getY(icon.getIconHeight()), Image.SCALE_DEFAULT));
@@ -653,7 +682,7 @@ public class PrototypeMenu {
         width = JUtils.getX(width);
         height = JUtils.getY(height);
         label.setIcon(new ImageIcon(((ImageIcon) label.getIcon()).getImage().getScaledInstance(width, height, Image.SCALE_DEFAULT)));
-        label.setBounds(JUtils.getX(x), JUtils.getY(y), JUtils.getX(width), JUtils.getY(height));
+        label.setBounds(JUtils.getX(x), JUtils.getY(y), width, height);
         return label;
     }
 
@@ -662,11 +691,11 @@ public class PrototypeMenu {
         width = JUtils.getX(width);
         height = JUtils.getY(height);
         label.setFont(new Font("Arial", Font.PLAIN, height));
-        label.setBounds(JUtils.getX(x), JUtils.getY(y), JUtils.getX(width), JUtils.getY(height));
+        label.setBounds(JUtils.getX(x), JUtils.getY(y), width, height);
         return label;
     }
 
-    public JLabel addRotatedText(String display, int font, int x, int y, int size, double angle, int maxLength) {
+    public JLabel addRotatedText(String display, int font, int x, int y, int size, double angle, int maxLength){
         x = JUtils.getX(x);
         y = JUtils.getY(y);
         if(angle == 0 || angle == 180) {
@@ -677,30 +706,6 @@ public class PrototypeMenu {
             size = JUtils.getY(size);
         }
         return new JRotatedLabel(display, size, font, angle, x, y, maxLength);
-    }
-
-    @Deprecated
-    private void drawToScreen(JPanel panel, JFrame frame) {
-        double originalWidth = frame.getWidth();
-        double originalHeight = 1080;
-        double targetWidth = JUtils.SCREEN_WIDTH;
-        double targetHeight = JUtils.SCREEN_HEIGHT;
-        double widthMultiplier = originalWidth / targetWidth;
-        double heightMultiplier = originalHeight / targetHeight;
-
-        frame.getContentPane().removeAll();
-
-        for(Component component : panel.getComponents()) {
-            if(!Arrays.asList(frame.getComponents()).contains(component)) {
-                int width = (int) (component.getWidth() * widthMultiplier);
-                int height = (int) (component.getHeight() * heightMultiplier);
-                component.setBounds((int) (component.getX() * widthMultiplier), (int) (component.getY() * heightMultiplier), Math.max(width, 1), Math.max(height, 1));
-                frame.add(component);
-                System.out.println("yes");
-            } else System.out.println("no");
-        }
-        
-        frame.repaint();
     }
 
     public static void main(String[] args) {
