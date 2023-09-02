@@ -221,7 +221,6 @@ public class PrototypeMenu {
                     if(Monopoly.INSTANCE.getState() == GameState.RUNNING) {
                         System.out.println("The game should now start!");
                         interrupt();
-
                         prepareGame();
                         return;
                     }
@@ -234,7 +233,7 @@ public class PrototypeMenu {
         lobbyThread.start();
     }
 
-    public void prepareGame(){
+    public void prepareGame() {
         Monopoly.INSTANCE.setState(GameState.RUNNING);
         frame.getContentPane().removeAll();
         frame.repaint();
@@ -711,17 +710,6 @@ public class PrototypeMenu {
         return label;
     }
 
-    public JLabel addText(JLabel label, String display,String font, int x, int y, int width, int height, boolean centered) {
-        width = JUtils.getX(width);
-        height = JUtils.getY(height);
-        if(centered) label.setHorizontalAlignment(SwingConstants.CENTER);
-        if(centered) label.setVerticalAlignment(SwingConstants.CENTER);
-        label.setText(display);
-        label.setFont(new Font(font, Font.PLAIN, height));
-        label.setBounds(JUtils.getX(x), JUtils.getY(y), width, height);
-        return label;
-    }
-
     public JLabel addImage(String src, int x, int y) {
         ImageIcon icon = new ImageIcon(src);
         icon = new ImageIcon(icon.getImage().getScaledInstance(JUtils.getX(icon.getIconWidth()), JUtils.getY(icon.getIconHeight()), Image.SCALE_DEFAULT));
@@ -735,7 +723,7 @@ public class PrototypeMenu {
         width = JUtils.getX(width);
         height = JUtils.getY(height);
         label.setIcon(new ImageIcon(((ImageIcon) label.getIcon()).getImage().getScaledInstance(width, height, Image.SCALE_DEFAULT)));
-        label.setBounds(JUtils.getX(x), JUtils.getY(y), width,height);
+        label.setBounds(JUtils.getX(x), JUtils.getY(y), JUtils.getX(width), JUtils.getY(height));
         return label;
     }
 
@@ -744,7 +732,7 @@ public class PrototypeMenu {
         width = JUtils.getX(width);
         height = JUtils.getY(height);
         label.setFont(new Font("Arial", Font.PLAIN, height));
-        label.setBounds(JUtils.getX(x), JUtils.getY(y),width,height);
+        label.setBounds(JUtils.getX(x), JUtils.getY(y), JUtils.getX(width), JUtils.getY(height));
         return label;
     }
 

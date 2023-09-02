@@ -92,7 +92,7 @@ public class Client {
                 case DISCONNECT -> {
                     disconnectReason = DisconnectReason.valueOf((String) message.getMessage()[0]);
                     clientThread.interrupt();
-                    switch (DisconnectReason.valueOf((String) message.getMessage()[0])) {
+                    switch (disconnectReason) {
                         case CONNECTION_LOST -> System.out.println("[Client]: Connection lost: Timed out.");
                         case SERVER_CLOSED -> System.out.println("[Client]: Connection lost: Server closed.");
                         case CLIENT_CLOSED -> System.out.println("[Client]: Connection lost: Left game");
@@ -101,7 +101,58 @@ public class Client {
                     }
                 }
                 case TRADE -> {
-                    System.out.println("TRADE");
+                    TradeState state = TradeState.valueOf((String) message.getMessage()[0]);
+                    switch (state) {
+                        case ABORT -> {
+                            if(tradeState != TradeState.NULL && tradePlayer.equals(message.getMessage()[1])) {
+                                tradeState = TradeState.ABORT;
+                            }
+                        }
+                        case ACCEPT -> {
+                            if(tradeState == TradeState.WAIT_FOR_ACCEPT && tradePlayer.equals(message.getMessage()[1])) {
+                                tradeState = TradeState.CHANGE_OFFER;
+                            }
+                        }
+                        case CHANGE_OFFER -> {
+
+                        }
+                        case CONFIRM -> {
+
+                        }
+                        case DENY -> {
+                            if(tradeState != TradeState.NULL && tradePlayer.equals(message.getMessage()[1])) {
+                                tradeState = TradeState.DENY;
+                            }
+                        }
+                        case IN_PROGRESS -> {
+                            if(tradeState != TradeState.NULL && tradePlayer.equals(message.getMessage()[1])) {
+                                tradeState = TradeState.IN_PROGRESS;
+                            }
+                        }
+                        case NULL -> {
+                            if(tradeState != TradeState.NULL) {
+                                tradeState = TradeState.NULL;
+                                tradePlayer = null;
+                            }
+                        }
+                        case WAIT_FOR_CONFIRM -> {
+
+                        }
+                        case WAIT_FOR_OFFER -> {
+
+                        }
+                        case WAIT_FOR_ACCEPT -> {
+                            if(tradeState == TradeState.NULL) {
+                                tradeState = TradeState.ACCEPT;
+                                tradePlayer = (String) message.getMessage()[1];
+                            } else {
+                                Object[] array = new Object[2];
+                                array[0] = TradeState.IN_PROGRESS;
+                                array[1] = player.getName();
+                                serverMethod().sendMessage((String) message.getMessage()[1], MessageType.TRADE, array);
+                            }
+                        }
+                    }
                 }
                 case START -> Monopoly.INSTANCE.setState(GameState.RUNNING);
                 case NULL -> {
