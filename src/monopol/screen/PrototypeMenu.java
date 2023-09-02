@@ -723,7 +723,7 @@ public class PrototypeMenu {
         width = JUtils.getX(width);
         height = JUtils.getY(height);
         label.setIcon(new ImageIcon(((ImageIcon) label.getIcon()).getImage().getScaledInstance(width, height, Image.SCALE_DEFAULT)));
-        label.setBounds(JUtils.getX(x), JUtils.getY(y), JUtils.getX(width), JUtils.getY(height));
+        label.setBounds(JUtils.getX(x), JUtils.getY(y), width,height);
         return label;
     }
 
@@ -732,7 +732,16 @@ public class PrototypeMenu {
         width = JUtils.getX(width);
         height = JUtils.getY(height);
         label.setFont(new Font("Arial", Font.PLAIN, height));
-        label.setBounds(JUtils.getX(x), JUtils.getY(y), JUtils.getX(width), JUtils.getY(height));
+        label.setBounds(JUtils.getX(x), JUtils.getY(y), width,height);
+        return label;
+    }
+    public JLabel addText(JLabel label, String display,String font, int x, int y, int width, int height, boolean centered) {
+        width = JUtils.getX(width);
+        height = JUtils.getY(height);
+        if(centered) label.setHorizontalAlignment(SwingConstants.CENTER);
+        label.setText(display);
+        label.setFont(new Font(font, Font.PLAIN, height));
+        label.setBounds(JUtils.getX(x), JUtils.getY(y), width, height);
         return label;
     }
 
