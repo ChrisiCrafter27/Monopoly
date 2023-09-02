@@ -221,6 +221,7 @@ public class PrototypeMenu {
                     if(Monopoly.INSTANCE.getState() == GameState.RUNNING) {
                         System.out.println("The game should now start!");
                         interrupt();
+
                         prepareGame();
                         return;
                     }
@@ -233,7 +234,7 @@ public class PrototypeMenu {
         lobbyThread.start();
     }
 
-    public void prepareGame() {
+    public void prepareGame(){
         Monopoly.INSTANCE.setState(GameState.RUNNING);
         frame.getContentPane().removeAll();
         frame.repaint();
@@ -302,7 +303,7 @@ public class PrototypeMenu {
         //REPAINT
         frame.repaint();
 
-        frame.add(addButton("Handeln", JUtils.getX(1300), JUtils.getY(500), 200, 50, true, actionEvent -> {
+        frame.add(addButton("Handeln", JUtils.getX(800), JUtils.getY(500), 200, 50, true, actionEvent -> {
             try {
                 ClientEvents.trade(this, null, TradeState.CHOOSE_PLAYER);
             } catch (RemoteException ignored) {}
@@ -317,8 +318,59 @@ public class PrototypeMenu {
 
         //TODO  \/  FABIANS PART  \/
 
-        
+        frame.add(addImage("images/Main_pictures/Background_Right.png", 1020, 60));
 
+        int[] currentPlayer = new int[1];
+        currentPlayer[0] = 0;
+        int[] maxplayers;
+
+        try {
+            maxplayers = new int[client.serverMethod().getServerPlayers().size()];
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
+
+        JButton button1 = new JButton();
+        JButton button2 = new JButton();
+        JLabel label_button1 = new JLabel();
+        JLabel label_button2 = new JLabel();
+        Thread lobbyThread = new Thread(){
+            @Override
+            public void run(){
+                ServerPlayer serverPlayer;
+
+                while(!interrupted()){
+                    try {
+                        serverPlayer = client.serverMethod().getServerPlayers().get(currentPlayer[0]);
+                    } catch (RemoteException e) {
+                        throw new RuntimeException(e);
+                    }
+                    label_button1.setText(serverPlayer.getName());
+
+                    try {
+                        sleep(100);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+
+            }
+        };
+        lobbyThread.start();
+
+        frame.add(addButton(button1,null,1060,90,400,60,true,"images/Main_pictures/Player_display.png",actionevent ->  {
+            if(currentPlayer[0] < maxplayers.length - 1){
+                currentPlayer[0] = currentPlayer[0] + 1;
+            }else{
+                currentPlayer[0] = 0;
+            }
+        }),0);
+
+        frame.add(addButton(button2,null,1479,90,400,60,true,"images/Main_pictures/Player_display.png",actionevent ->  {}),0);
+        frame.add(addText(label_button1,"","Arial",button1.getX(),button1.getY() + 13,400,30,true),0);
+        frame.add(addText(label_button2,client.player.getName(),"Arial",button2.getX(),button2.getY() + 13,400,30,true),0);
+        frame.add(addImage("images/Main_pictures/Player_property.png",1060,135,400,217),0);
+        frame.repaint();
     }
 
     private void setClient(int i) {
@@ -343,6 +395,25 @@ public class PrototypeMenu {
         //button.setPressedIcon(new ImageIcon(new ImageIcon("images/DO_NOT_CHANGE/plain_button_0.png").getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH)));
         //button.setRolloverIcon(new ImageIcon(new ImageIcon("images/DO_NOT_CHANGE/plain_button_1.png").getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH)));
         //button.setSelectedIcon(new ImageIcon(new ImageIcon("images/DO_NOT_CHANGE/plain_button_0.png").getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH)));
+        button.setHorizontalTextPosition(SwingConstants.CENTER);
+        button.setVerticalTextPosition(SwingConstants.CENTER);
+        return button;
+    }
+
+    public JButton addButton(JButton button,String display, int x, int y, int width, int height, boolean enabled, String icon, ActionListener actionEvent) {
+        button.setText(display);
+        width = JUtils.getX(width);
+        height = JUtils.getY(height);
+        button.addActionListener(actionEvent);
+        button.setBounds(JUtils.getX(x), JUtils.getY(y), width, height);
+        button.setEnabled(enabled);
+        button.setOpaque(false);
+        button.setContentAreaFilled(false);
+        button.setBorderPainted(false);
+        button.setFocusPainted(false);
+        if(width < 1) width = 1;
+        if(height < 1) height = 1;
+        button.setIcon(new ImageIcon(new ImageIcon(icon).getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH)));
         button.setHorizontalTextPosition(SwingConstants.CENTER);
         button.setVerticalTextPosition(SwingConstants.CENTER);
         return button;
@@ -640,6 +711,17 @@ public class PrototypeMenu {
         return label;
     }
 
+    public JLabel addText(JLabel label, String display,String font, int x, int y, int width, int height, boolean centered) {
+        width = JUtils.getX(width);
+        height = JUtils.getY(height);
+        if(centered) label.setHorizontalAlignment(SwingConstants.CENTER);
+        if(centered) label.setVerticalAlignment(SwingConstants.CENTER);
+        label.setText(display);
+        label.setFont(new Font(font, Font.PLAIN, height));
+        label.setBounds(JUtils.getX(x), JUtils.getY(y), width, height);
+        return label;
+    }
+
     public JLabel addImage(String src, int x, int y) {
         ImageIcon icon = new ImageIcon(src);
         icon = new ImageIcon(icon.getImage().getScaledInstance(JUtils.getX(icon.getIconWidth()), JUtils.getY(icon.getIconHeight()), Image.SCALE_DEFAULT));
@@ -653,7 +735,7 @@ public class PrototypeMenu {
         width = JUtils.getX(width);
         height = JUtils.getY(height);
         label.setIcon(new ImageIcon(((ImageIcon) label.getIcon()).getImage().getScaledInstance(width, height, Image.SCALE_DEFAULT)));
-        label.setBounds(JUtils.getX(x), JUtils.getY(y), JUtils.getX(width), JUtils.getY(height));
+        label.setBounds(JUtils.getX(x), JUtils.getY(y), width,height);
         return label;
     }
 
@@ -662,7 +744,7 @@ public class PrototypeMenu {
         width = JUtils.getX(width);
         height = JUtils.getY(height);
         label.setFont(new Font("Arial", Font.PLAIN, height));
-        label.setBounds(JUtils.getX(x), JUtils.getY(y), JUtils.getX(width), JUtils.getY(height));
+        label.setBounds(JUtils.getX(x), JUtils.getY(y),width,height);
         return label;
     }
 
