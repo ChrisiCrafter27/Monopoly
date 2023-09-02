@@ -11,7 +11,7 @@ public enum TrainStation implements IPurchasable {
     public final int mortgage = 100;
     private boolean upgraded;
     public final int rentNormal = 25;
-    private String owner;
+    private String owner = "";
     private boolean mortgaged;
 
     TrainStation(String name) {

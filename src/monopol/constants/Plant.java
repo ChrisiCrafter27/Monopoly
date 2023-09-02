@@ -8,7 +8,7 @@ public enum Plant implements IPurchasable {
     public final String name;
     public final int price = 150;
     public final int mortgage = 75;
-    private String owner;
+    private String owner = "";
     private boolean mortgaged;
 
     Plant(String name) {

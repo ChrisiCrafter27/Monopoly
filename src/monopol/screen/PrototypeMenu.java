@@ -219,7 +219,6 @@ public class PrototypeMenu {
                         return;
                     }
                     if(Monopoly.INSTANCE.getState() == GameState.RUNNING) {
-                        System.out.println("The game should now start!");
                         interrupt();
                         prepareGame();
                         return;
@@ -337,7 +336,7 @@ public class PrototypeMenu {
             @Override
             public void run(){
                 ServerPlayer serverPlayer;
-
+                Street street = Street.values()[0];
                 while(!interrupted()){
                     try {
                         serverPlayer = client.serverMethod().getServerPlayers().get(currentPlayer[0]);
@@ -399,7 +398,7 @@ public class PrototypeMenu {
         return button;
     }
 
-    public JButton addButton(JButton button,String display, int x, int y, int width, int height, boolean enabled, String icon, ActionListener actionEvent) {
+    public JButton addButton(JButton button, String display, int x, int y, int width, int height, boolean enabled, String icon, ActionListener actionEvent) {
         button.setText(display);
         width = JUtils.getX(width);
         height = JUtils.getY(height);
@@ -700,6 +699,12 @@ public class PrototypeMenu {
         return button;
     }
 
+    public JButton addButton(JButton button, String display, String icon, int x, int y, int width, int height, boolean enabled, boolean selected, ActionListener actionEvent) {
+        button = addButton(button, display, x, y, width, height, enabled, icon, actionEvent);
+        button.setSelected(selected);
+        return button;
+    }
+
     public JLabel addText(String display, int x, int y, int width, int height, boolean centered) {
         JLabel label;
         width = JUtils.getX(width);
@@ -762,5 +767,8 @@ public class PrototypeMenu {
     public static void main(String[] args) {
         PrototypeMenu menu = new PrototypeMenu();
         menu.prepareMenu();
+        for(Street street : Street.values()) street.setOwner("Player 1");
+        for(TrainStation trainStation : TrainStation.values()) trainStation.setOwner("Player 1");
+        for(Plant plant : Plant.values()) plant.setOwner("Player 1");
     }
 }
