@@ -5,3 +5,9 @@
 [02-09-2023 21:55:40] [INFO] [Server]: New Client accepted (Player 1)
 [02-09-2023 21:55:41] [INFO] [Server]: New Client accepted (Player 2)
 [02-09-2023 21:55:41] [INFO] [Server]: New Client accepted (Player 3)
+[02-09-2023 21:46:13] [INFO] [Server]: Initialing server...
+[02-09-2023 21:46:15] [INFO] [Server]: Starting server...
+[02-09-2023 21:46:15] [INFO] [Server]: IP-Address: 192.168.178.44
+[02-09-2023 21:46:15] [INFO] [Server]: Listening for new clients...
+[02-09-2023 21:46:16] [INFO] [Server]: New Client accepted (Player 1)
+[02-09-2023 21:46:17] [INFO] [Server]: New Client accepted (Player 2)

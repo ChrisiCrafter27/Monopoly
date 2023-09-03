@@ -1,5 +1,6 @@
 package monopol.client;
 
+import monopol.constants.IPurchasable;
 import monopol.core.GameState;
 import monopol.core.Monopoly;
 import monopol.server.DisconnectReason;
@@ -17,6 +18,7 @@ import java.net.Socket;
 import java.rmi.NotBoundException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.util.ArrayList;
 
 public class Client {
     private final Socket client;
@@ -26,6 +28,7 @@ public class Client {
     public DisconnectReason disconnectReason = null;
     public TradeState tradeState = TradeState.NULL;
     public String tradePlayer = null;
+    public final ArrayList<IPurchasable> offer = new ArrayList<>();
 
     private final Thread clientThread = new Thread() {
         @Override
