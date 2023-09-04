@@ -29,6 +29,8 @@ public class Client {
     public TradeState tradeState = TradeState.NULL;
     public String tradePlayer = null;
     public final ArrayList<IPurchasable> offer = new ArrayList<>();
+    public final ArrayList<IPurchasable> counteroffer = new ArrayList<>();
+    public final ArrayList<IPurchasable> purchasedCardsInfo = new ArrayList<>();
 
     private final Thread clientThread = new Thread() {
         @Override
@@ -139,9 +141,6 @@ public class Client {
                             }
                         }
                         case WAIT_FOR_CONFIRM -> {
-
-                        }
-                        case WAIT_FOR_OFFER -> {
 
                         }
                         case WAIT_FOR_ACCEPT -> {

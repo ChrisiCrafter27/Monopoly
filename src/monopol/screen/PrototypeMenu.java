@@ -36,7 +36,7 @@ public class PrototypeMenu {
     private IPurchasable selectedCard = Street.BADSTRASSE;
 
     public PrototypeMenu() {
-        if((int) JUtils.SCREEN_WIDTH / (int) JUtils.SCREEN_HEIGHT != 16 / 9) System.err.println("[WARNING]: Your screen resolution is not 16/9. This may causes wrong screen drawing. Please change your screen device!");
+        if((int) JUtils.SCREEN_WIDTH / (int) JUtils.SCREEN_HEIGHT != 16 / 9) System.err.println("[WARNING]: Deine Bildschirmauflösung ist nicht 16/9. Dadurch werden einige Dinge nicht richtig angezeigt. Es ist allerdings trotzdem möglich, so zu spielen.");
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setFocusable(true);
         frame.setSize(new Dimension((int) JUtils.SCREEN_WIDTH, (int) JUtils.SCREEN_HEIGHT));
@@ -308,11 +308,7 @@ public class PrototypeMenu {
         }));
         frame.repaint();
 
-        if(client.tradeState != TradeState.NULL) {
-            try {
-                ClientEvents.trade(this, client.tradePlayer, client.tradeState);
-            } catch (RemoteException ignored) {}
-        }
+
 
         //TODO  \/  FABIANS PART  \/
 
@@ -369,6 +365,12 @@ public class PrototypeMenu {
         frame.add(addText(label_button2,client.player.getName(),"Arial",button2.getX(),button2.getY() + 13,400,30,true),0);
         frame.add(addImage("images/Main_pictures/Player_property.png",1060,135,400,217),0);
         frame.repaint();
+
+        if(client.tradeState != TradeState.NULL) {
+            try {
+                ClientEvents.trade(this, client.tradePlayer, client.tradeState);
+            } catch (RemoteException ignored) {}
+        }
     }
 
     private void setClient(int i) {
@@ -768,7 +770,7 @@ public class PrototypeMenu {
         PrototypeMenu menu = new PrototypeMenu();
         menu.prepareMenu();
         for(Street street : Street.values()) street.setOwner("Player 1");
-        for(TrainStation trainStation : TrainStation.values()) trainStation.setOwner("Player 1");
-        for(Plant plant : Plant.values()) plant.setOwner("Player 1");
+        for(TrainStation trainStation : TrainStation.values()) trainStation.setOwner("Player 2");
+        for(Plant plant : Plant.values()) plant.setOwner("Player 2");
     }
 }

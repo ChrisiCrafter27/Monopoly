@@ -8,7 +8,6 @@ public enum TradeState {
     DENY,
     ABORT,
     CHANGE_OFFER,
-    WAIT_FOR_OFFER,
     CONFIRM,
     WAIT_FOR_CONFIRM,
     IN_PROGRESS
