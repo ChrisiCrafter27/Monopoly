@@ -16,13 +16,13 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 
 public class ClientEvents {
-    public static void trade(PrototypeMenu menu, String player2Name, TradeState state) throws RemoteException {
+    public static void trade(PrototypeMenu menu, String player2, TradeState state) throws RemoteException {
         JFrame frame = menu.frame;
-        Client client1 = menu.client;
-        ClientPlayer player1 = client1.player;
-        String player1Name = player1.getName();
+        Client client = menu.client;
+        ClientPlayer clientPlayer = client.player;
+        String player1 = clientPlayer.getName();
 
-        client1.tradeState = state;
+        client.tradeState = state;
 
         for(Component component : frame.getContentPane().getComponents()) {
             if(component instanceof JButton button) {
@@ -35,57 +35,57 @@ public class ClientEvents {
         switch (state) {
             case CHOOSE_PLAYER -> {
                 //Print a list of all other players with a button to send a trade invite
-                client1.offer.removeAll(client1.offer);
-                client1.counteroffer.removeAll(client1.counteroffer);
-                client1.purchasedCardsInfo.removeAll(client1.purchasedCardsInfo);
+                client.offer.removeAll(client.offer);
+                client.counteroffer.removeAll(client.counteroffer);
+                client.purchasedCardsInfo.removeAll(client.purchasedCardsInfo);
                 int i = 0;
-                for(ServerPlayer serverPlayer : client1.serverMethod().getServerPlayers()) {
-                    if(!player1Name.equals(serverPlayer.getName())) {
+                for(ServerPlayer serverPlayer : client.serverMethod().getServerPlayers()) {
+                    if(!player1.equals(serverPlayer.getName())) {
                         frame.add(menu.addButton(serverPlayer.getName(), 1920 / 2 - 250, 200 + (75 * i), 500, 50, true, actionEvent -> {
                             try {
-                                client1.tradePlayer = serverPlayer.getName();
-                                client1.tradeState = TradeState.WAIT_FOR_ACCEPT;
+                                client.tradePlayer = serverPlayer.getName();
+                                client.tradeState = TradeState.WAIT_FOR_ACCEPT;
                                 Object[] array = new Object[2];
                                 array[0] = TradeState.WAIT_FOR_ACCEPT;
-                                array[1] = player1Name;
-                                client1.serverMethod().sendMessage(serverPlayer.getName(), MessageType.TRADE, array);
+                                array[1] = player1;
+                                client.serverMethod().sendMessage(serverPlayer.getName(), MessageType.TRADE, array);
                                 menu.prepareGame();
                             } catch (IOException e) {
-                                client1.close();
+                                client.close();
                             }
                         }), 0);
                         i += 1;
                     }
                 }
                 frame.add(menu.addButton("Handel abbrechen", 1920/2-100, 1080-100, 200, 50, true, actionEvent -> {
-                    client1.tradePlayer = null;
-                    client1.tradeState = TradeState.NULL;
+                    client.tradePlayer = null;
+                    client.tradeState = TradeState.NULL;
                     menu.prepareGame();
                 }), 0);
             }
             case WAIT_FOR_ACCEPT -> {
                 //Print a waiting screen and an interrupt button for accepting
-                client1.tradePlayer = player2Name;
-                if(player2Name == null) return;
-                frame.add(menu.addText("Warte, bis " + player2Name + " deine Einladungs akzeptiert", 1920/2-500, 1020/2-50, 1000, 20, true), 0);
+                client.tradePlayer = player2;
+                if(player2 == null) return;
+                frame.add(menu.addText("Warte, bis " + player2 + " deine Einladungs akzeptiert", 1920/2-500, 1020/2-50, 1000, 20, true), 0);
                 frame.add(menu.addButton("Handel abbrechen", 1920/2-100, 1020/2+50, 200, 50, true, actionEvent -> {
-                    client1.tradePlayer = null;
-                    client1.tradeState = TradeState.NULL;
+                    client.tradePlayer = null;
+                    client.tradeState = TradeState.NULL;
                     Object[] array = new Object[2];
                     array[0] = TradeState.ABORT;
-                    array[1] = player1Name;
+                    array[1] = player1;
                     try {
-                        client1.serverMethod().sendMessage(player2Name, MessageType.TRADE, array);
+                        client.serverMethod().sendMessage(player2, MessageType.TRADE, array);
                     } catch (IOException e) {
-                        client1.close();
+                        client.close();
                     }
                 }), 0);
                 new Thread() {
                     @Override
                     public void run() {
                         while (!isInterrupted()) {
-                            if(menu.client != client1) return;
-                            if(client1.tradeState != TradeState.WAIT_FOR_ACCEPT) {
+                            if(menu.client != client) return;
+                            if(client.tradeState != TradeState.WAIT_FOR_ACCEPT) {
                                 menu.prepareGame();
                                 return;
                             }
@@ -98,41 +98,41 @@ public class ClientEvents {
             }
             case ACCEPT -> {
                 //Print buttons to accept or deny invite
-                if(player2Name == null) return;
-                client1.offer.removeAll(client1.offer);
-                client1.counteroffer.removeAll(client1.counteroffer);
-                client1.purchasedCardsInfo.removeAll(client1.purchasedCardsInfo);
-                client1.tradePlayer = player2Name;
-                frame.add(menu.addText(player2Name + " möchte mit dir handeln", 1920/2-500, 1020/2-50, 1000, 20, true), 0);
+                if(player2 == null) return;
+                client.offer.removeAll(client.offer);
+                client.counteroffer.removeAll(client.counteroffer);
+                client.purchasedCardsInfo.removeAll(client.purchasedCardsInfo);
+                client.tradePlayer = player2;
+                frame.add(menu.addText(player2 + " möchte mit dir handeln", 1920/2-500, 1020/2-50, 1000, 20, true), 0);
                 frame.add(menu.addButton("Angebot ablehnen", 1920/2-100-150, 1020/2+50, 200, 50, true, actionEvent -> {
-                    client1.tradePlayer = null;
-                    client1.tradeState = TradeState.NULL;
+                    client.tradePlayer = null;
+                    client.tradeState = TradeState.NULL;
                     Object[] array = new Object[2];
                     array[0] = TradeState.DENY;
-                    array[1] = player1Name;
+                    array[1] = player1;
                     try {
-                        client1.serverMethod().sendMessage(player2Name, MessageType.TRADE, array);
+                        client.serverMethod().sendMessage(player2, MessageType.TRADE, array);
                     } catch (IOException e) {
-                        client1.close();
+                        client.close();
                     }
                 }), 0);
                 frame.add(menu.addButton("Angebot annehmen", 1920/2-100+150, 1020/2+50, 200, 50, true, actionEvent -> {
-                    client1.tradeState = TradeState.CHANGE_OFFER;
+                    client.tradeState = TradeState.CHANGE_OFFER;
                     Object[] array = new Object[2];
                     array[0] = TradeState.ACCEPT;
-                    array[1] = player1Name;
+                    array[1] = player1;
                     try {
-                        client1.serverMethod().sendMessage(player2Name, MessageType.TRADE, array);
+                        client.serverMethod().sendMessage(player2, MessageType.TRADE, array);
                     } catch (IOException e) {
-                        client1.close();
+                        client.close();
                     }
                 }), 0);
                 new Thread() {
                     @Override
                     public void run() {
                         while (!isInterrupted()) {
-                            if(menu.client != client1) return;
-                            if(client1.tradeState != TradeState.ACCEPT) {
+                            if(menu.client != client) return;
+                            if(client.tradeState != TradeState.ACCEPT) {
                                 menu.prepareGame();
                                 return;
                             }
@@ -145,64 +145,66 @@ public class ClientEvents {
             }
             case DENY -> {
                 //Print the info that the other player denied your trade invite
-                if(player2Name == null) return;
-                frame.add(menu.addText(player2Name + " hat deine Einladung abgelehnt", 1920/2-500, 1020/2-50, 1000, 20, true), 0);
+                if(player2 == null) return;
+                frame.add(menu.addText(player2 + " hat deine Einladung abgelehnt", 1920/2-500, 1020/2-50, 1000, 20, true), 0);
                 frame.add(menu.addButton("Okay", 1920/2-100, 1020/2+50, 200, 50, true, actionEvent -> {
-                    client1.tradePlayer = null;
-                    client1.tradeState = TradeState.NULL;
+                    client.tradePlayer = null;
+                    client.tradeState = TradeState.NULL;
                     menu.prepareGame();
                 }), 0);
             }
             case ABORT -> {
-                if(player2Name == null) return;
-                frame.add(menu.addText(player2Name + " hat den Handel abgebrochen", 1920/2-500, 1020/2-50, 1000, 20, true), 0);
+                if(player2 == null) return;
+                frame.add(menu.addText(player2 + " hat den Handel abgebrochen", 1920/2-500, 1020/2-50, 1000, 20, true), 0);
                 frame.add(menu.addButton("Okay", 1920/2-100, 1020/2+50, 200, 50, true, actionEvent -> {
-                    client1.tradePlayer = null;
-                    client1.tradeState = TradeState.NULL;
+                    client.tradePlayer = null;
+                    client.tradeState = TradeState.NULL;
                     menu.prepareGame();
                 }), 0);
             }
             case IN_PROGRESS -> {
-                if(player2Name == null) return;
-                frame.add(menu.addText(player2Name + " handelt schon", 1920/2-500, 1020/2-50, 1000, 20, true), 0);
+                if(player2 == null) return;
+                frame.add(menu.addText(player2 + " handelt schon", 1920/2-500, 1020/2-50, 1000, 20, true), 0);
                 frame.add(menu.addButton("Okay", 1920/2-100, 1020/2+50, 200, 50, true, actionEvent -> {
-                    client1.tradePlayer = null;
-                    client1.tradeState = TradeState.NULL;
+                    client.tradePlayer = null;
+                    client.tradeState = TradeState.NULL;
                     menu.prepareGame();
                 }), 0);
             }
             case CHANGE_OFFER -> {
                 //Print the trade offers and buttons to change offer
-                if(player2Name == null) return;
-                frame.add(menu.addText("Angebot von dir", 0, 100, 1920/2, 20, true), 0);
-                frame.add(menu.addText("Angebot von " + player2Name, 1920/2, 100, 1920/2, 20, true), 0);
+                updateOwner(client);
 
-                addTradeInfo(menu, client1, player2Name, 1920/4+1920/4+1920/4-40-40-40-15-15-15-10-10, 200);
-                addTradeButtons(menu, client1, player1Name, 1920/4-40-40-40-15-15-15-10-10, 200);
+                if(player2 == null) return;
+                frame.add(menu.addText("Angebot von dir", 0, 100, 1920/2, 20, true), 0);
+                frame.add(menu.addText("Angebot von " + player2, 1920/2, 100, 1920/2, 20, true), 0);
+
+                addTradeInfo(menu, client, player2, 1920/4+1920/4+1920/4-40-40-40-15-15-15-10-10, 200);
+                addTradeButtons(menu, client, player1, 1920/4-40-40-40-15-15-15-10-10, 200);
 
                 frame.add(menu.addButton("Handel abbrechen", 1920/2-100, 1080-225, 200, 50, true, actionEvent -> {
-                    client1.tradePlayer = null;
-                    client1.tradeState = TradeState.NULL;
+                    client.tradePlayer = null;
+                    client.tradeState = TradeState.NULL;
                     Object[] array = new Object[2];
                     array[0] = TradeState.ABORT;
-                    array[1] = player1Name;
+                    array[1] = player1;
                     try {
-                        client1.serverMethod().sendMessage(player2Name, MessageType.TRADE, array);
+                        client.serverMethod().sendMessage(player2, MessageType.TRADE, array);
                     } catch (IOException e) {
-                        client1.close();
+                        client.close();
                     }
                 }), 0);
                 frame.add(menu.addButton("Angebot absenden", 1920/2-100, 1080-150, 200, 50, true, actionEvent -> {
-                    client1.tradePlayer = null;
-                    client1.tradeState = TradeState.CONFIRM;
+                    client.tradePlayer = null;
+                    client.tradeState = TradeState.CONFIRM;
                     Object[] array = new Object[3];
                     array[0] = TradeState.SEND_OFFER;
-                    array[1] = player1Name;
-                    array[2] = client1.offer;
+                    array[1] = player1;
+                    array[2] = client.offer;
                     try {
-                        client1.serverMethod().sendMessage(player2Name, MessageType.TRADE, array);
+                        client.serverMethod().sendMessage(player2, MessageType.TRADE, array);
                     } catch (IOException e) {
-                        client1.close();
+                        client.close();
                     }
                 }), 0);
 
@@ -210,8 +212,8 @@ public class ClientEvents {
                     @Override
                     public void run() {
                         while (!isInterrupted()) {
-                            if(menu.client != client1) return;
-                            if(client1.tradeState != TradeState.CHANGE_OFFER) {
+                            if(menu.client != client) return;
+                            if(client.tradeState != TradeState.CHANGE_OFFER) {
                                 menu.prepareGame();
                                 return;
                             }
@@ -224,46 +226,46 @@ public class ClientEvents {
             }
             case CONFIRM -> {
                 //Print the trade offers with an accept button
-                if(player2Name == null) return;
+                if(player2 == null) return;
                 frame.add(menu.addText("Angebot von dir", 0, 100, 1920/2, 20, true), 0);
-                frame.add(menu.addText("Angebot von " + player2Name, 1920/2, 100, 1920/2, 20, true), 0);
-                addTradeInfo(menu, client1, player2Name, 1920/4+1920/4+1920/4-40-40-40-15-15-15-10-10, 200);
-                addTradeInfo(menu, client1, player1Name, 1920/4-40-40-40-15-15-15-10-10, 200);
+                frame.add(menu.addText("Angebot von " + player2, 1920/2, 100, 1920/2, 20, true), 0);
+                addTradeInfo(menu, client, player2, 1920/4+1920/4+1920/4-40-40-40-15-15-15-10-10, 200);
+                addTradeInfo(menu, client, player1, 1920/4-40-40-40-15-15-15-10-10, 200);
 
                 frame.add(menu.addButton("Handel abbrechen", 1920/2-175, 1080-225, 200, 50, true, actionEvent -> {
-                    client1.tradePlayer = null;
-                    client1.tradeState = TradeState.NULL;
+                    client.tradePlayer = null;
+                    client.tradeState = TradeState.NULL;
                     Object[] array = new Object[2];
                     array[0] = TradeState.ABORT;
-                    array[1] = player1Name;
+                    array[1] = player1;
                     try {
-                        client1.serverMethod().sendMessage(player2Name, MessageType.TRADE, array);
+                        client.serverMethod().sendMessage(player2, MessageType.TRADE, array);
                     } catch (IOException e) {
-                        client1.close();
+                        client.close();
                     }
                 }), 0);
                 frame.add(menu.addButton("Angebot bearbeiten", 1920/2-175, 1080-150, 200, 50, true, actionEvent -> {
-                    client1.tradePlayer = null;
-                    client1.tradeState = TradeState.CHANGE_OFFER;
+                    client.tradePlayer = null;
+                    client.tradeState = TradeState.CHANGE_OFFER;
                     Object[] array = new Object[3];
                     array[0] = TradeState.CHANGE_OFFER;
-                    array[1] = player1Name;
+                    array[1] = player1;
                     try {
-                        client1.serverMethod().sendMessage(player2Name, MessageType.TRADE, array);
+                        client.serverMethod().sendMessage(player2, MessageType.TRADE, array);
                     } catch (IOException e) {
-                        client1.close();
+                        client.close();
                     }
                 }), 0);
                 frame.add(menu.addButton("Handel abschließen", 1920/2-100, 1080-225, 550, 50, true, actionEvent -> {
-                    client1.tradePlayer = null;
-                    client1.tradeState = TradeState.WAIT_FOR_CONFIRM;
+                    client.tradePlayer = null;
+                    client.tradeState = TradeState.WAIT_FOR_CONFIRM;
                     Object[] array = new Object[2];
                     array[0] = TradeState.WAIT_FOR_CONFIRM;
-                    array[1] = player1Name;
+                    array[1] = player1;
                     try {
-                        client1.serverMethod().sendMessage(player2Name, MessageType.TRADE, array);
+                        client.serverMethod().sendMessage(player2, MessageType.TRADE, array);
                     } catch (IOException e) {
-                        client1.close();
+                        client.close();
                     }
                 }), 0);
 
@@ -271,8 +273,8 @@ public class ClientEvents {
                     @Override
                     public void run() {
                         while (!isInterrupted()) {
-                            if(menu.client != client1) return;
-                            if(client1.tradeState != TradeState.ACCEPT) {
+                            if(menu.client != client) return;
+                            if(client.tradeState != TradeState.ACCEPT) {
                                 menu.prepareGame();
                                 return;
                             }
@@ -285,18 +287,18 @@ public class ClientEvents {
             }
             case WAIT_FOR_CONFIRM -> {
                 //Print a waiting screen and an interrupt button for confirmation
-                if(player2Name == null) return;
-                frame.add(menu.addText("Warte auf " + player2Name + "...", 1920/2-500, 1020/2-50, 1000, 20, true), 0);
+                if(player2 == null) return;
+                frame.add(menu.addText("Warte auf " + player2 + "...", 1920/2-500, 1020/2-50, 1000, 20, true), 0);
 
-                addTradeInfo(menu, client1, player2Name, 1920/4+1920/4+1920/4-40-40-40-15-15-15-10-10, 200);
-                addTradeInfo(menu, client1, player1Name, 1920/4-40-40-40-15-15-15-10-10, 200);
+                addTradeInfo(menu, client, player2, 1920/4+1920/4+1920/4-40-40-40-15-15-15-10-10, 200);
+                addTradeInfo(menu, client, player1, 1920/4-40-40-40-15-15-15-10-10, 200);
 
                 new Thread() {
                     @Override
                     public void run() {
                         while (!isInterrupted()) {
-                            if(menu.client != client1) return;
-                            if(client1.tradeState != TradeState.WAIT_FOR_CONFIRM) {
+                            if(menu.client != client) return;
+                            if(client.tradeState != TradeState.WAIT_FOR_CONFIRM) {
                                 menu.prepareGame();
                                 return;
                             }
@@ -309,27 +311,27 @@ public class ClientEvents {
             }
             case FINISH -> {
                 //Send a message to the server and print a success screen
-                frame.add(menu.addText("Der Handel mit " + player2Name + " wurder erfolgreich abgeschlossen!", 1920/2-500, 1020/2-50, 1000, 20, true), 0);
+                frame.add(menu.addText("Der Handel mit " + player2 + " wurder erfolgreich abgeschlossen!", 1920/2-500, 1020/2-50, 1000, 20, true), 0);
 
-                addTradeInfo(menu, client1, player2Name, 1920/4+1920/4+1920/4-40-40-40-15-15-15-10-10, 200);
-                addTradeInfo(menu, client1, player1Name, 1920/4-40-40-40-15-15-15-10-10, 200);
+                addTradeInfo(menu, client, player2, 1920/4+1920/4+1920/4-40-40-40-15-15-15-10-10, 200);
+                addTradeInfo(menu, client, player1, 1920/4-40-40-40-15-15-15-10-10, 200);
 
                 frame.add(menu.addButton("Okay", 1920/2-100, 1020/2+50, 200, 50, true, actionEvent -> {
-                    client1.tradePlayer = null;
-                    client1.tradeState = TradeState.NULL;
+                    client.tradePlayer = null;
+                    client.tradeState = TradeState.NULL;
                     menu.prepareGame();
                 }), 0);
             }
             case SERVER_FAIL -> {
-                frame.add(menu.addText("Der Handel mit " + player2Name + " konnte aus einem unbekannten Grund nich abgeschlossen werden.", 1920/2-500, 1020/2-50, 1000, 20, true), 0);
+                frame.add(menu.addText("Der Handel mit " + player2 + " konnte aus einem unbekannten Grund nich abgeschlossen werden.", 1920/2-500, 1020/2-50, 1000, 20, true), 0);
                 frame.add(menu.addText("Bitte versuche es später erneut.", 1920/2-500, 1020/2-100, 1000, 20, true), 0);
 
-                addTradeInfo(menu, client1, player2Name, 1920/4+1920/4+1920/4-40-40-40-15-15-15-10-10, 200);
-                addTradeInfo(menu, client1, player1Name, 1920/4-40-40-40-15-15-15-10-10, 200);
+                addTradeInfo(menu, client, player2, 1920/4+1920/4+1920/4-40-40-40-15-15-15-10-10, 200);
+                addTradeInfo(menu, client, player1, 1920/4-40-40-40-15-15-15-10-10, 200);
 
                 frame.add(menu.addButton("Okay", 1920/2-100, 1020/2+50, 200, 50, true, actionEvent -> {
-                    client1.tradePlayer = null;
-                    client1.tradeState = TradeState.NULL;
+                    client.tradePlayer = null;
+                    client.tradeState = TradeState.NULL;
                     menu.prepareGame();
                 }), 0);
             }
@@ -338,6 +340,14 @@ public class ClientEvents {
     }
 
     //TODO Owner sync between client and server
+
+    public static void updateAll(Client client) {
+        updateOwner(client);
+    }
+
+    public static void updateOwner(Client client) {
+
+    }
 
     private static void addTradeButtons(PrototypeMenu menu, Client client, String name, int x, int y) {
         JFrame frame = menu.frame;
