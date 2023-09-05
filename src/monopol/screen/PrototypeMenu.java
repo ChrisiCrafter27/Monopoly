@@ -21,7 +21,6 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class PrototypeMenu {
     public final JFrame frame = new JFrame("Monopoly - PrototypeWindow");
@@ -51,7 +50,7 @@ public class PrototypeMenu {
         Monopoly.INSTANCE.setState(GameState.MAIN_MENU);
         displayedServerPlayers = new ArrayList<>();
         frame.getContentPane().removeAll();
-        frame.repaint();
+        //frame.repaint();
 
         frame.add(addButton("invisible", 0, 0, 0, 0, true, actionEvent -> {}));
         frame.add(addButton("Host game", 50, 50, 200, 50, true, actionEvent -> {
@@ -92,7 +91,7 @@ public class PrototypeMenu {
     public void prepareLobby() {
         Monopoly.INSTANCE.setState(GameState.LOBBY);
         frame.getContentPane().removeAll();
-        frame.repaint();
+        //frame.repaint();
 
         Thread lobbyThread = new Thread() {
             @Override
@@ -235,7 +234,7 @@ public class PrototypeMenu {
     public void prepareGame() {
         Monopoly.INSTANCE.setState(GameState.RUNNING);
         frame.getContentPane().removeAll();
-        frame.repaint();
+        //frame.repaint();
 
         for(int i = 0; i < clients.size(); i++) {
             frame.add(addPlayerButton(i));
@@ -299,14 +298,14 @@ public class PrototypeMenu {
         frame.add(addImage("images/felder/freiparken.png", 930, 60));
         frame.add(addImage("images/felder/ins_gefaengnis.png", 930, 990));
         //REPAINT
-        frame.repaint();
+        //frame.repaint();
 
         frame.add(addButton("Handeln", JUtils.getX(300), JUtils.getY(500), 200, 50, true, actionEvent -> {
             try {
                 ClientEvents.trade(this, null, TradeState.CHOOSE_PLAYER);
             } catch (RemoteException ignored) {}
         }));
-        frame.repaint();
+        //frame.repaint();
 
 
 
@@ -364,13 +363,13 @@ public class PrototypeMenu {
         frame.add(addText(label_button1,"","Arial",button1.getX(),button1.getY() + 13,400,30,true),0);
         frame.add(addText(label_button2,client.player.getName(),"Arial",button2.getX(),button2.getY() + 13,400,30,true),0);
         frame.add(addImage("images/Main_pictures/Player_property.png",1060,135,400,217),0);
-        frame.repaint();
+        //frame.repaint();
 
         if(client.tradeState != TradeState.NULL) {
             try {
                 ClientEvents.trade(this, client.tradePlayer, client.tradeState);
             } catch (RemoteException ignored) {}
-        }
+        } else frame.repaint();
     }
 
     private void setClient(int i) {

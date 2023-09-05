@@ -11,6 +11,7 @@ public enum TradeState {
     SEND_OFFER,
     CONFIRM,
     WAIT_FOR_CONFIRM,
+    CONFIRMED,
     IN_PROGRESS,
     FINISH,
     SERVER_FAIL
