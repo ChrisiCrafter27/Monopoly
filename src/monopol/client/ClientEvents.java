@@ -23,8 +23,6 @@ public class ClientEvents {
         ClientPlayer clientPlayer = client.player;
         String player1 = clientPlayer.getName();
 
-        System.out.println(player1 + ": " + client.tradeState);
-
         client.tradeState = state;
 
         ArrayList<JButton> buttonsToDisable = new ArrayList<>();
