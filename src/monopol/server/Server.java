@@ -1,5 +1,9 @@
 package monopol.server;
 
+import monopol.constants.IPurchasable;
+import monopol.constants.Plant;
+import monopol.constants.Street;
+import monopol.constants.TrainStation;
 import monopol.core.GameState;
 import monopol.core.Monopoly;
 import monopol.log.ServerLogger;
@@ -331,6 +335,42 @@ public class Server extends UnicastRemoteObject implements IServer {
     }
 
     @Override
+    public HashMap<IPurchasable, String> getOwnerMap() {
+        HashMap<IPurchasable, String> ownerMap = new HashMap<>();
+        for(Street street : Street.values()) {
+            ownerMap.put(street, street.getOwner());
+        }
+        for(TrainStation trainStation : TrainStation.values()) {
+            ownerMap.put(trainStation, trainStation.getOwner());
+        }
+        for(Plant plant : Plant.values()) {
+            ownerMap.put(plant, plant.getOwner());
+        }
+        return ownerMap;
+    }
+
+    @Override
+    public boolean trade(String player1, String player2, ArrayList<IPurchasable> offer1, ArrayList<IPurchasable> offer2, int money1, int money2) throws RemoteException {
+        for (IPurchasable purchasable : offer1) {
+            if(!purchasable.getOwner().equals(player1)) return false;
+        }
+        for (IPurchasable purchasable : offer2) {
+            if(!purchasable.getOwner().equals(player2)) return false;
+        }
+        for (IPurchasable purchasable : offer1) {
+            purchasable.setOwner(player2);
+        }
+        for (IPurchasable purchasable : offer2) {
+            purchasable.setOwner(player1);
+        }
+        for(ServerPlayer serverPlayer : serverPlayers.keySet()) {
+            if(serverPlayer.getName().equals(player1)) serverPlayer.contractMoney(money1);
+            if(serverPlayer.getName().equals(player2)) serverPlayer.contractMoney(money2);
+        }
+        return true;
+    }
+
+    @Override
     public boolean acceptsNewClient() throws RemoteException {
         return acceptNewClients;
     }
@@ -342,6 +382,7 @@ public class Server extends UnicastRemoteObject implements IServer {
 
     @Override
     public void start() throws IOException {
+        //TODO initialize the game
         for (Map.Entry<ServerPlayer, Socket> entry : serverPlayers.entrySet()) {
             Message.send(new Message(null, MessageType.START), entry.getValue());
         }

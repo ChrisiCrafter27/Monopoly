@@ -138,6 +138,11 @@ public class Client {
                                 tradeState = TradeState.DENY;
                             }
                         }
+                        case FINISH -> {
+                            if(tradeState == TradeState.WAIT_FOR_CONFIRM && tradePlayer.equals(message.getMessage()[1])) {
+                                tradeState = TradeState.FINISH;
+                            }
+                        }
                         case IN_PROGRESS -> {
                             if(tradeState != TradeState.NULL && tradePlayer.equals(message.getMessage()[1])) {
                                 tradeState = TradeState.IN_PROGRESS;
@@ -150,8 +155,9 @@ public class Client {
                             }
                         }
                         case SEND_OFFER -> {
-                            if(tradeState == TradeState.CHANGE_OFFER && tradePlayer.equals(message.getMessage()[1])) {
+                            if((tradeState == TradeState.CHANGE_OFFER || tradeState == TradeState.SEND_OFFER || tradeState == TradeState.CONFIRM) && tradePlayer.equals(message.getMessage()[1])) {
 
+                                System.out.println("Neues Angebot");
                                 counteroffer.removeAll(counteroffer);
                                 for(String string : (ArrayList<String>) message.getMessage()[2]) {
                                     try {
@@ -166,7 +172,7 @@ public class Client {
                                 }
 
                                 counterOfferSend = true;
-                                tradeState = TradeState.SEND_OFFER;
+                                if(tradeState != TradeState.CONFIRM) tradeState = TradeState.SEND_OFFER;
                             }
                         }
                         case SERVER_FAIL -> {
@@ -175,7 +181,7 @@ public class Client {
                             }
                         }
                         case WAIT_FOR_CONFIRM -> {
-
+                            tradePlayerConfirmed = true;
                         }
                         case WAIT_FOR_ACCEPT -> {
                             if(tradeState == TradeState.NULL) {
@@ -189,6 +195,9 @@ public class Client {
                             }
                         }
                     }
+                }
+                case UPDATE_OWNER -> {
+                    ClientEvents.updateOwner(this);
                 }
                 case START -> Monopoly.INSTANCE.setState(GameState.RUNNING);
                 case NULL -> {

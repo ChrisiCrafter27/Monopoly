@@ -13,6 +13,8 @@ import java.awt.*;
 import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ClientEvents {
     public static void trade(PrototypeMenu menu, String player2, TradeState state) throws RemoteException {
@@ -293,11 +295,6 @@ public class ClientEvents {
                     }
                 }.start();
             }
-            case CONFIRMED -> {
-                if(player2 == null) return;
-                client.tradeState = TradeState.CONFIRM;
-                menu.prepareGame();
-            }
             case WAIT_FOR_CONFIRM -> {
                 //Print a waiting screen and an interrupt button for confirmation
                 if(player2 == null) return;
@@ -311,8 +308,8 @@ public class ClientEvents {
                     public void run() {
                         while (!isInterrupted()) {
                             if(menu.client != client) return;
+                            if(client.tradePlayerConfirmed) client.tradeState = TradeState.CONFIRMED;
                             if(client.tradeState != TradeState.WAIT_FOR_CONFIRM) {
-                                if(client.tradeState == TradeState.CONFIRMED) client.tradeState = TradeState.FINISH;
                                 menu.prepareGame();
                                 return;
                             }
@@ -323,14 +320,40 @@ public class ClientEvents {
                     }
                 }.start();
             }
+            case CONFIRMED -> {
+                //Perform the trade
+                if(player2 == null) return;
+                //TODO add money
+                if(client.serverMethod().trade(player1, player2, client.offer, client.counteroffer, 0, 0)) {
+                    client.tradeState = TradeState.FINISH;
+                    Object[] array = new Object[2];
+                    array[0] = TradeState.FINISH;
+                    array[1] = player1;
+                    try {
+                        client.serverMethod().sendMessage(player2, MessageType.TRADE, array);
+                    } catch (IOException e) {
+                        client.close();
+                    }
+                } else {
+                    client.tradeState = TradeState.SERVER_FAIL;
+                    Object[] array = new Object[2];
+                    array[0] = TradeState.SERVER_FAIL;
+                    array[1] = player1;
+                    try {
+                        client.serverMethod().sendMessage(player2, MessageType.TRADE, array);
+                    } catch (IOException e) {
+                        client.close();
+                    }
+                }
+
+                menu.prepareGame();
+            }
             case FINISH -> {
                 //Send a message to the server and print a success screen
                 frame.add(menu.addText("Der Handel mit " + player2 + " wurder erfolgreich abgeschlossen!", 1920/2-500, 1020/2-50, 1000, 20, true), 0);
 
                 addTradeInfo(menu, client.counteroffer, player2, 1920/4+1920/4+1920/4-40-40-40-15-15-15-10-10, 200);
                 addTradeInfo(menu, client.offer, player1, 1920/4-40-40-40-15-15-15-10-10, 200);
-
-                //TODO send a message to the server to perform the trade
 
                 frame.add(menu.addButton("Okay", 1920/2-100, 1020/2+50, 200, 50, true, actionEvent -> {
                     client.tradePlayer = null;
@@ -366,7 +389,15 @@ public class ClientEvents {
     }
 
     public static void updateOwner(Client client) {
-        //TODO do it
+        try {
+            for (Map.Entry<IPurchasable, String> entry : client.serverMethod().getOwnerMap().entrySet()) {
+                if(entry.getKey() instanceof Street street) street.setOwner(entry.getValue());
+                else if(entry.getKey() instanceof TrainStation trainStation) trainStation.setOwner(entry.getValue());
+                else if(entry.getKey() instanceof Plant plant) plant.setOwner(entry.getValue());
+            }
+        } catch (RemoteException e) {
+            client.close();
+        }
     }
 
     private static void addTradeButtons(PrototypeMenu menu, Client client, String name, int x, int y) {
@@ -648,17 +679,17 @@ public class ClientEvents {
         frame.add(menu.addImage(Street.MARKTPLATZ.getOwner().equals(name) ? tradeItems.contains(Street.MARKTPLATZ) ? "images/kleine_karten/pink_filled.png" : "images/kleine_karten/pink.png" : "images/kleine_karten/disabled.png", x+335, y), 0);
 
         frame.add(menu.addImage(Street.MUENCHENERSTRASSE.getOwner().equals(name) ? tradeItems.contains(Street.MUENCHENERSTRASSE) ? "images/kleine_karten/orange_filled.png" : "images/kleine_karten/orange.png" : "images/kleine_karten/disabled.png", x, y+50), 0);
-        frame.add(menu.addImage(Street.WIENERSTRASSE.getOwner().equals(name) ? tradeItems.contains(Street.WIENERSTRASSE) ? "images/kleine_karten/orange_filled.png" : "images/kleine_karten/orange.png" : "images/kleine_karten/disabled.png", x+30, y+50));
+        frame.add(menu.addImage(Street.WIENERSTRASSE.getOwner().equals(name) ? tradeItems.contains(Street.WIENERSTRASSE) ? "images/kleine_karten/orange_filled.png" : "images/kleine_karten/orange.png" : "images/kleine_karten/disabled.png", x+30, y+50), 0);
         frame.add(menu.addImage(Street.BERLINERSTRASSE.getOwner().equals(name) ? tradeItems.contains(Street.BERLINERSTRASSE) ? "images/kleine_karten/orange_filled.png" : "images/kleine_karten/orange.png" : "images/kleine_karten/disabled.png", x+60, y+50), 0);
         frame.add(menu.addImage(Street.HAMBURGERSTRASSE.getOwner().equals(name) ? tradeItems.contains(Street.HAMBURGERSTRASSE) ? "images/kleine_karten/orange_filled.png" : "images/kleine_karten/orange.png" : "images/kleine_karten/disabled.png", x+90, y+50), 0);
         frame.add(menu.addImage(Street.THEATERSTRASSE.getOwner().equals(name) ? tradeItems.contains(Street.THEATERSTRASSE) ? "images/kleine_karten/red_filled.png" : "images/kleine_karten/red.png" : "images/kleine_karten/disabled.png", x+130, y+50), 0);
-        frame.add(menu.addImage(Street.MUSEUMSTRASSE.getOwner().equals(name) ? tradeItems.contains(Street.MUSEUMSTRASSE) ? "images/kleine_karten/red_filled.png" : "images/kleine_karten/red.png" : "images/kleine_karten/disabled.png", x+170, y+50), 0);
-        frame.add(menu.addImage(Street.OPERNPLATZ.getOwner().equals(name) ? tradeItems.contains(Street.OPERNPLATZ) ? "images/kleine_karten/red_filled.png" : "images/kleine_karten/red.png" : "images/kleine_karten/disabled.png", x+200, y+50), 0);
-        frame.add(menu.addImage(Street.KONZERTHAUSSTRASSE.getOwner().equals(name) ? tradeItems.contains(Street.KONZERTHAUSSTRASSE) ? "images/kleine_karten/red_filled.png" : "images/kleine_karten/red.png" : "images/kleine_karten/disabled.png", x+230, y+50), 0);
-        frame.add(menu.addImage(Street.LESSINGSTRASSE.getOwner().equals(name) ? tradeItems.contains(Street.LESSINGSTRASSE) ? "images/kleine_karten/yellow_filled.png" : "images/kleine_karten/yellow.png" : "images/kleine_karten/disabled.png", x+270, y+50), 0);
-        frame.add(menu.addImage(Street.SCHILLERSTRASSE.getOwner().equals(name) ? tradeItems.contains(Street.SCHILLERSTRASSE) ? "images/kleine_karten/yellow_filled.png" : "images/kleine_karten/yellow.png" : "images/kleine_karten/disabled.png", x+300, y+50), 0);
-        frame.add(menu.addImage(Street.GOETHESTRASSE.getOwner().equals(name) ? tradeItems.contains(Street.GOETHESTRASSE) ? "images/kleine_karten/yellow_filled.png" : "images/kleine_karten/yellow.png" : "images/kleine_karten/disabled.png", x+330, y+50), 0);
-        frame.add(menu.addImage(Street.RILKESTRASSE.getOwner().equals(name) ? tradeItems.contains(Street.RILKESTRASSE) ? "images/kleine_karten/yellow_filled.png" : "images/kleine_karten/yellow.png" : "images/kleine_karten/disabled.png", x+360, y+50), 0);
+        frame.add(menu.addImage(Street.MUSEUMSTRASSE.getOwner().equals(name) ? tradeItems.contains(Street.MUSEUMSTRASSE) ? "images/kleine_karten/red_filled.png" : "images/kleine_karten/red.png" : "images/kleine_karten/disabled.png", x+160, y+50), 0);
+        frame.add(menu.addImage(Street.OPERNPLATZ.getOwner().equals(name) ? tradeItems.contains(Street.OPERNPLATZ) ? "images/kleine_karten/red_filled.png" : "images/kleine_karten/red.png" : "images/kleine_karten/disabled.png", x+190, y+50), 0);
+        frame.add(menu.addImage(Street.KONZERTHAUSSTRASSE.getOwner().equals(name) ? tradeItems.contains(Street.KONZERTHAUSSTRASSE) ? "images/kleine_karten/red_filled.png" : "images/kleine_karten/red.png" : "images/kleine_karten/disabled.png", x+220, y+50), 0);
+        frame.add(menu.addImage(Street.LESSINGSTRASSE.getOwner().equals(name) ? tradeItems.contains(Street.LESSINGSTRASSE) ? "images/kleine_karten/yellow_filled.png" : "images/kleine_karten/yellow.png" : "images/kleine_karten/disabled.png", x+260, y+50), 0);
+        frame.add(menu.addImage(Street.SCHILLERSTRASSE.getOwner().equals(name) ? tradeItems.contains(Street.SCHILLERSTRASSE) ? "images/kleine_karten/yellow_filled.png" : "images/kleine_karten/yellow.png" : "images/kleine_karten/disabled.png", x+290, y+50), 0);
+        frame.add(menu.addImage(Street.GOETHESTRASSE.getOwner().equals(name) ? tradeItems.contains(Street.GOETHESTRASSE) ? "images/kleine_karten/yellow_filled.png" : "images/kleine_karten/yellow.png" : "images/kleine_karten/disabled.png", x+320, y+50), 0);
+        frame.add(menu.addImage(Street.RILKESTRASSE.getOwner().equals(name) ? tradeItems.contains(Street.RILKESTRASSE) ? "images/kleine_karten/yellow_filled.png" : "images/kleine_karten/yellow.png" : "images/kleine_karten/disabled.png", x+350, y+50), 0);
 
         frame.add(menu.addImage(Street.RATHAUSPLATZ.getOwner().equals(name) ? tradeItems.contains(Street.RATHAUSPLATZ) ? "images/kleine_karten/green_filled.png" : "images/kleine_karten/green.png" : "images/kleine_karten/disabled.png", x+80, y+100), 0);
         frame.add(menu.addImage(Street.HAUPSTRASSE.getOwner().equals(name) ? tradeItems.contains(Street.HAUPSTRASSE) ? "images/kleine_karten/green_filled.png" : "images/kleine_karten/green.png" : "images/kleine_karten/disabled.png", x+110, y+100), 0);
