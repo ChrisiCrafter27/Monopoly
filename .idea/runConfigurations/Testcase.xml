@@ -1,0 +1,9 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Testcase" type="Application" factoryName="Application">
+    <option name="MAIN_CLASS_NAME" value="monopol.screen.PrototypeMenu" />
+    <module name="Server Test" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

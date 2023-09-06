@@ -21,7 +21,6 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class PrototypeMenu {
     public final JFrame frame = new JFrame("Monopoly - PrototypeWindow");
@@ -36,7 +35,7 @@ public class PrototypeMenu {
     private IPurchasable selectedCard = Street.BADSTRASSE;
 
     public PrototypeMenu() {
-        if((int) JUtils.SCREEN_WIDTH / (int) JUtils.SCREEN_HEIGHT != 16 / 9) System.err.println("[WARNING]: Your screen resolution is not 16/9. This may causes wrong screen drawing. Please change your screen device!");
+        if((int) JUtils.SCREEN_WIDTH / (int) JUtils.SCREEN_HEIGHT != 16 / 9) System.err.println("[WARNING]: Deine Bildschirmauflösung ist nicht 16/9. Dadurch werden einige Dinge nicht richtig angezeigt. Es ist allerdings trotzdem möglich, so zu spielen.");
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setFocusable(true);
         frame.setSize(new Dimension((int) JUtils.SCREEN_WIDTH, (int) JUtils.SCREEN_HEIGHT));
@@ -51,7 +50,7 @@ public class PrototypeMenu {
         Monopoly.INSTANCE.setState(GameState.MAIN_MENU);
         displayedServerPlayers = new ArrayList<>();
         frame.getContentPane().removeAll();
-        frame.repaint();
+        //frame.repaint();
 
         frame.add(addButton("invisible", 0, 0, 0, 0, true, actionEvent -> {}));
         frame.add(addButton("Host game", 50, 50, 200, 50, true, actionEvent -> {
@@ -92,7 +91,7 @@ public class PrototypeMenu {
     public void prepareLobby() {
         Monopoly.INSTANCE.setState(GameState.LOBBY);
         frame.getContentPane().removeAll();
-        frame.repaint();
+        //frame.repaint();
 
         Thread lobbyThread = new Thread() {
             @Override
@@ -235,7 +234,7 @@ public class PrototypeMenu {
     public void prepareGame() {
         Monopoly.INSTANCE.setState(GameState.RUNNING);
         frame.getContentPane().removeAll();
-        frame.repaint();
+        //frame.repaint();
 
         for(int i = 0; i < clients.size(); i++) {
             frame.add(addPlayerButton(i));
@@ -299,20 +298,16 @@ public class PrototypeMenu {
         frame.add(addImage("images/felder/freiparken.png", 930, 60));
         frame.add(addImage("images/felder/ins_gefaengnis.png", 930, 990));
         //REPAINT
-        frame.repaint();
+        //frame.repaint();
 
         frame.add(addButton("Handeln", JUtils.getX(300), JUtils.getY(500), 200, 50, true, actionEvent -> {
             try {
                 ClientEvents.trade(this, null, TradeState.CHOOSE_PLAYER);
             } catch (RemoteException ignored) {}
         }));
-        frame.repaint();
+        //frame.repaint();
 
-        if(client.tradeState != TradeState.NULL) {
-            try {
-                ClientEvents.trade(this, client.tradePlayer, client.tradeState);
-            } catch (RemoteException ignored) {}
-        }
+
 
         //TODO  \/  FABIANS PART  \/
 
@@ -436,6 +431,7 @@ public class PrototypeMenu {
             @Override
             public void run(){
                 ServerPlayer serverPlayer;
+                Street street = Street.values()[0];
                 while(!interrupted()){
                     try {
                         serverPlayer = client.serverMethod().getServerPlayers().get(currentPlayer[0]);
@@ -563,6 +559,7 @@ public class PrototypeMenu {
                 currentPlayer[0] = 0;
             }
         }),0);
+
         frame.add(addButton(button2,null,1479,90,400,60,true,"images/Main_pictures/Player_display.png",actionevent ->  {}),0);
         frame.add(addText(label_button1,"","Arial",button1.getX(),button1.getY() + 13,400,30,true),0);
         frame.add(addText(label_button2,client.player.getName(),"Arial",button2.getX(),button2.getY() + 13,400,30,true),0);
@@ -570,10 +567,15 @@ public class PrototypeMenu {
         frame.add(addImage("images/Main_pictures/Player_property.png",button2.getX(),button2.getY()+56,400,217),0);
 
         frame.add(BADSTRASSE_Companion,0);
+        //frame.repaint();
 
-
-        frame.repaint();
+        if(client.tradeState != TradeState.NULL) {
+            try {
+                ClientEvents.trade(this, client.tradePlayer, client.tradeState);
+            } catch (RemoteException ignored) {}
+        } else frame.repaint();
     }
+
 
     private void setClient(int i) {
         client = clients.get(i);
@@ -946,8 +948,6 @@ public class PrototypeMenu {
         return label;
     }
 
-
-
     public JLabel addText(String display, int x, int y, int width, int height) {
         JLabel label = new JLabel(display);
         width = JUtils.getX(width);
@@ -974,7 +974,7 @@ public class PrototypeMenu {
         PrototypeMenu menu = new PrototypeMenu();
         menu.prepareMenu();
         for(Street street : Street.values()) street.setOwner("Player 1");
-        for(TrainStation trainStation : TrainStation.values()) trainStation.setOwner("Player 1");
-        for(Plant plant : Plant.values()) plant.setOwner("Player 1");
+        for(TrainStation trainStation : TrainStation.values()) trainStation.setOwner("Player 2");
+        for(Plant plant : Plant.values()) plant.setOwner("Player 2");
     }
 }

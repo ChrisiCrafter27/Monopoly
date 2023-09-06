@@ -1,6 +1,9 @@
 package monopol.client;
 
 import monopol.constants.IPurchasable;
+import monopol.constants.Plant;
+import monopol.constants.Street;
+import monopol.constants.TrainStation;
 import monopol.core.GameState;
 import monopol.core.Monopoly;
 import monopol.server.DisconnectReason;
@@ -28,7 +31,10 @@ public class Client {
     public DisconnectReason disconnectReason = null;
     public TradeState tradeState = TradeState.NULL;
     public String tradePlayer = null;
+    public boolean counterOfferSend;
+    public boolean tradePlayerConfirmed;
     public final ArrayList<IPurchasable> offer = new ArrayList<>();
+    public final ArrayList<IPurchasable> counteroffer = new ArrayList<>();
 
     private final Thread clientThread = new Thread() {
         @Override
@@ -117,14 +123,24 @@ public class Client {
                             }
                         }
                         case CHANGE_OFFER -> {
-
+                            if(tradeState != TradeState.NULL && tradePlayer.equals(message.getMessage()[1])) {
+                                counterOfferSend = false;
+                            }
                         }
                         case CONFIRM -> {
-
+                            if((tradeState == TradeState.CONFIRM || tradeState == TradeState.WAIT_FOR_CONFIRM) && tradePlayer.equals(message.getMessage()[1])) {
+                                tradePlayerConfirmed = true;
+                                tradeState = TradeState.CONFIRMED;
+                            }
                         }
                         case DENY -> {
                             if(tradeState != TradeState.NULL && tradePlayer.equals(message.getMessage()[1])) {
                                 tradeState = TradeState.DENY;
+                            }
+                        }
+                        case FINISH -> {
+                            if(tradeState == TradeState.WAIT_FOR_CONFIRM && tradePlayer.equals(message.getMessage()[1])) {
+                                tradeState = TradeState.FINISH;
                             }
                         }
                         case IN_PROGRESS -> {
@@ -138,11 +154,34 @@ public class Client {
                                 tradePlayer = null;
                             }
                         }
-                        case WAIT_FOR_CONFIRM -> {
+                        case SEND_OFFER -> {
+                            if((tradeState == TradeState.CHANGE_OFFER || tradeState == TradeState.SEND_OFFER || tradeState == TradeState.CONFIRM) && tradePlayer.equals(message.getMessage()[1])) {
 
+                                System.out.println("Neues Angebot");
+                                counteroffer.removeAll(counteroffer);
+                                for(String string : (ArrayList<String>) message.getMessage()[2]) {
+                                    try {
+                                        counteroffer.add(Street.valueOf(string));
+                                    } catch (Exception ignored) {}
+                                    try {
+                                        counteroffer.add(TrainStation.valueOf(string));
+                                    } catch (Exception ignored) {}
+                                    try {
+                                        counteroffer.add(Plant.valueOf(string));
+                                    } catch (Exception ignored) {}
+                                }
+
+                                counterOfferSend = true;
+                                if(tradeState != TradeState.CONFIRM) tradeState = TradeState.SEND_OFFER;
+                            }
                         }
-                        case WAIT_FOR_OFFER -> {
-
+                        case SERVER_FAIL -> {
+                            if(tradeState != TradeState.NULL /*TODO other conditions*/) {
+                                tradeState = TradeState.SERVER_FAIL;
+                            }
+                        }
+                        case WAIT_FOR_CONFIRM -> {
+                            tradePlayerConfirmed = true;
                         }
                         case WAIT_FOR_ACCEPT -> {
                             if(tradeState == TradeState.NULL) {
@@ -156,6 +195,9 @@ public class Client {
                             }
                         }
                     }
+                }
+                case UPDATE_OWNER -> {
+                    ClientEvents.updateOwner(this);
                 }
                 case START -> Monopoly.INSTANCE.setState(GameState.RUNNING);
                 case NULL -> {
