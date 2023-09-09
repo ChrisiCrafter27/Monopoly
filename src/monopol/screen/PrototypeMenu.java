@@ -50,7 +50,7 @@ public class PrototypeMenu {
         Monopoly.INSTANCE.setState(GameState.MAIN_MENU);
         displayedServerPlayers = new ArrayList<>();
         frame.getContentPane().removeAll();
-        //frame.repaint();
+        frame.repaint();
 
         frame.add(addButton("invisible", 0, 0, 0, 0, true, actionEvent -> {}));
         frame.add(addButton("Host game", 50, 50, 200, 50, true, actionEvent -> {
@@ -65,7 +65,7 @@ public class PrototypeMenu {
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(null, "Failed to start server. Make sure there are no other running server on your PC!", "Failed to start server", JOptionPane.WARNING_MESSAGE);
             }
-        }));
+        }),0);
         frame.add(addButton("Join game", 50, 150, 200, 50, true, actionEvent -> {
             do {
                 ip = JOptionPane.showInputDialog(null, "Please enter the IP-Address:", "Join game", JOptionPane.QUESTION_MESSAGE);
@@ -78,12 +78,12 @@ public class PrototypeMenu {
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(null, "Server not found. Make sure the IP-Address is correct!", "Server not found", JOptionPane.WARNING_MESSAGE);
             }
-        }));
+        }),0);
         frame.add(addButton("Close", 50, 250, 200, 50, true, actionEvent -> {
             frame.setVisible(false);
             frame.dispose();
             System.exit(0);
-        }));
+        }),0);
         frame.add(addImage("images/Monopoly_client1.png", 0, 0, 1920, 1080));
         frame.repaint();
     }
@@ -91,7 +91,7 @@ public class PrototypeMenu {
     public void prepareLobby() {
         Monopoly.INSTANCE.setState(GameState.LOBBY);
         frame.getContentPane().removeAll();
-        //frame.repaint();
+        frame.repaint();
 
         Thread lobbyThread = new Thread() {
             @Override
@@ -298,7 +298,7 @@ public class PrototypeMenu {
         frame.add(addImage("images/felder/freiparken.png", 930, 60));
         frame.add(addImage("images/felder/ins_gefaengnis.png", 930, 990));
         //REPAINT
-        //frame.repaint();
+        frame.repaint();
 
         frame.add(addButton("Handeln", JUtils.getX(300), JUtils.getY(500), 200, 50, true, actionEvent -> {
             try {
@@ -310,6 +310,7 @@ public class PrototypeMenu {
 
 
         //TODO  \/  FABIANS PART  \/
+
 
         frame.add(addImage("images/Main_pictures/Background_Right.png", 1020, 60));
 
@@ -328,103 +329,105 @@ public class PrototypeMenu {
         JLabel label_button1 = new JLabel();
         JLabel label_button2 = new JLabel();
 
+        int x = 1479 + 15;
+        int y = 150;
 
-        JLabel BADSTRASSE = addImage("",10,10,20,40);
-        JLabel TURMSTRASSE = addImage("",10,10,20,40);
-        JLabel STADIONSTRASSE = addImage("",10,10,20,40);
+        JLabel BADSTRASSE = addImage("images/kleine_karten/brown.png",x+15,y,20,40);
+        JLabel TURMSTRASSE = addImage("images/kleine_karten/brown.png",x+45,y,20,40);
+        JLabel STADIONSTRASSE = addImage("images/kleine_karten/brown.png",x+75,y,20,40);
 
-        JLabel CHAUSSESTRASSE = addImage("",10,10,20,40);
-        JLabel ELISENSTRASSE = addImage("",10,10,20,40);
-        JLabel POSTSTRASSE = addImage("",10,10,20,40);
-        JLabel TIERGARTENSTRASSE = addImage("",10,10,20,40);
+        JLabel CHAUSSESTRASSE = addImage("images/kleine_karten/cyan.png",x+115,y,20,40);
+        JLabel ELISENSTRASSE = addImage("images/kleine_karten/cyan.png",x+145,y,20,40);
+        JLabel POSTSTRASSE = addImage("images/kleine_karten/cyan.png",x+175,y,20,40);
+        JLabel TIERGARTENSTRASSE = addImage("images/kleine_karten/cyan.png",x+205,y,20,40);
 
-        JLabel SEESTRASSE = addImage("",10,10,20,40);
-        JLabel HAFENSTRASSE = addImage("",10,10,20,40);
-        JLabel NEUESTRASSE = addImage("",10,10,20,40);
-        JLabel MARKTPLATZ = addImage("",10,10,20,40);
+        JLabel SEESTRASSE = addImage("images/kleine_karten/pink.png",x+245,y,20,40);
+        JLabel HAFENSTRASSE = addImage("images/kleine_karten/pink.png",x+275,y,20,40);
+        JLabel NEUESTRASSE = addImage("images/kleine_karten/pink.png",x+305,y,20,40);
+        JLabel MARKTPLATZ = addImage("images/kleine_karten/pink.png",x+335,y,20,40);
 
-        JLabel MUENCHENERSTRASSE = addImage("",10,10,20,40);
-        JLabel WIENERSTRASSE = addImage("",10,10,20,40);
-        JLabel BERLINERSTRASSE = addImage("",10,10,20,40);
-        JLabel HAMBURGERSTRASSE = addImage("",10,10,20,40);
+        JLabel MUENCHENERSTRASSE = addImage("images/kleine_karten/orange.png",x,y+50,20,40);
+        JLabel WIENERSTRASSE = addImage("images/kleine_karten/orange.png",x+30,y+50,20,40);
+        JLabel BERLINERSTRASSE = addImage("images/kleine_karten/orange.png",x+60,y+50,20,40);
+        JLabel HAMBURGERSTRASSE = addImage("images/kleine_karten/orange.png",x+90,y+50,20,40);
 
-        JLabel THEATERSTRASSE = addImage("",10,10,20,40);
-        JLabel MUSEUMSTRASSE = addImage("",10,10,20,40);
-        JLabel OPERNPLATZ = addImage("",10,10,20,40);
-        JLabel KONZERTHAUSSTRASSE = addImage("",10,10,20,40);
+        JLabel THEATERSTRASSE = addImage("images/kleine_karten/red.png",x+130,y+50,20,40);
+        JLabel MUSEUMSTRASSE = addImage("images/kleine_karten/red.png",x+160,y+50,20,40);
+        JLabel OPERNPLATZ = addImage("images/kleine_karten/red.png",x+190,y+50,20,40);
+        JLabel KONZERTHAUSSTRASSE = addImage("images/kleine_karten/red.png",x+220,y+50,20,40);
 
-        JLabel LESSINGSTRASSE = addImage("",10,10,20,40);
-        JLabel SCHILLERSTRASSE = addImage("",10,10,20,40);
-        JLabel GOETHESTRASSE = addImage("",10,10,20,40);
-        JLabel RILKESTRASSE = addImage("",10,10,20,40);
+        JLabel LESSINGSTRASSE = addImage("images/kleine_karten/yellow.png",x+260,y+50,20,40);
+        JLabel SCHILLERSTRASSE = addImage("images/kleine_karten/yellow.png",x+290,y+50,20,40);
+        JLabel GOETHESTRASSE = addImage("images/kleine_karten/yellow.png",x+320,y+50,20,40);
+        JLabel RILKESTRASSE = addImage("images/kleine_karten/yellow.png",x+350,y+50,20,40);
 
-        JLabel RATHAUSPLATZ = addImage("",10,10,20,40);
-        JLabel HAUPSTRASSE = addImage("",10,10,20,40);
-        JLabel BOERSENPLATZ = addImage("",10,10,20,40);
-        JLabel BAHNHOFSTRASSE = addImage("",10,10,20,40);
+        JLabel RATHAUSPLATZ = addImage("images/kleine_karten/green.png",x+80,y+100,20,40);
+        JLabel HAUPSTRASSE = addImage("images/kleine_karten/green.png",x+110,y+100,20,40);
+        JLabel BOERSENPLATZ = addImage("images/kleine_karten/green.png",x+140,y+100,20,40);
+        JLabel BAHNHOFSTRASSE = addImage("images/kleine_karten/green.png",x+170,y+100,20,40);
 
-        JLabel DOMPLATZ = addImage("",10,10,20,40);
-        JLabel PARKSTRASSE = addImage("",10,10,20,40);
-        JLabel SCHLOSSALLEE = addImage("",10,10,20,40);
+        JLabel DOMPLATZ = addImage("images/kleine_karten/blue.png",x+210,y+100,20,40);
+        JLabel PARKSTRASSE = addImage("images/kleine_karten/blue.png",x+240,y+100,20,40);
+        JLabel SCHLOSSALLEE = addImage("images/kleine_karten/blue.png",x+270,y+100,20,40);
 
-        JLabel GASWERK = addImage("",10,10,20,40);
-        JLabel ELEKTRIZITAETSWERK = addImage("",10,10,20,40);
-        JLabel WASSERWERK = addImage("",10,10,20,40);
+        JLabel GASWERK = addImage("images/kleine_karten/gas.png",x+210,y+150,20,40);
+        JLabel ELEKTRIZITAETSWERK = addImage("images/kleine_karten/elec.png",x+240,y+150,20,40);
+        JLabel WASSERWERK = addImage("images/kleine_karten/water.png",x+270,y+150,20,40);
 
-        JLabel SUEDBAHNHOF = addImage("",10,10,20,40);
-        JLabel WESTBAHNHOF = addImage("",10,10,20,40);
-        JLabel NORDBAHNHOF = addImage("",10,10,20,40);
-        JLabel HAUPTBAHNHOF = addImage("",10,10,20,40);
+        JLabel SUEDBAHNHOF = addImage("images/kleine_karten/train.png",x+80,y+150,20,40);
+        JLabel WESTBAHNHOF = addImage("images/kleine_karten/train.png",x+110,y+150,20,40);
+        JLabel NORDBAHNHOF = addImage("images/kleine_karten/train.png",x+140,y+150,20,40);
+        JLabel HAUPTBAHNHOF = addImage("images/kleine_karten/train.png",x+170,y+150,20,40);
 
+        x = 1060;
+        y = 300;
 
-        JLabel BADSTRASSE_Companion = addImage("images/kleine_karten/brown.png",1075,160,20,40);
-        JLabel TURMSTRASSE_Companion = addImage("",10,10,20,40);
-        JLabel STADIONSTRASSE_Companion = addImage("",10,10,20,40);
+        JLabel BADSTRASSE_Companion = addImage("images/kleine_karten/brown.png",x+15,y,20,40);
+        JLabel TURMSTRASSE_Companion = addImage("images/kleine_karten/brown.png",x+45,y,20,40);
+        JLabel STADIONSTRASSE_Companion = addImage("images/kleine_karten/brown.png",x+75,y,20,40);
 
-        JLabel CHAUSSESTRASSE_Companion = addImage("",10,10,20,40);
-        JLabel ELISENSTRASSE_Companion = addImage("",10,10,20,40);
-        JLabel POSTSTRASSE_Companion = addImage("",10,10,20,40);
-        JLabel TIERGARTENSTRASSE_Companion = addImage("",10,10,20,40);
+        JLabel CHAUSSESTRASSE_Companion = addImage("images/kleine_karten/cyan.png",x+115,y,20,40);
+        JLabel ELISENSTRASSE_Companion = addImage("images/kleine_karten/cyan.png",x+145,y,20,40);
+        JLabel POSTSTRASSE_Companion = addImage("images/kleine_karten/cyan.png",x+175,y,20,40);
+        JLabel TIERGARTENSTRASSE_Companion = addImage("images/kleine_karten/cyan.png",x+205,y,20,40);
 
-        JLabel SEESTRASSE_Companion = addImage("",10,10,20,40);
-        JLabel HAFENSTRASSE_Companion = addImage("",10,10,20,40);
-        JLabel NEUESTRASSE_Companion = addImage("",10,10,20,40);
-        JLabel MARKTPLATZ_Companion = addImage("",10,10,20,40);
+        JLabel SEESTRASSE_Companion = addImage("images/kleine_karten/pink.png",x+245,y,20,40);
+        JLabel HAFENSTRASSE_Companion = addImage("images/kleine_karten/pink.png",x+275,y,20,40);
+        JLabel NEUESTRASSE_Companion = addImage("images/kleine_karten/pink.png",x+305,y,20,40);
+        JLabel MARKTPLATZ_Companion = addImage("images/kleine_karten/pink.png",x+335,y,20,40);
 
-        JLabel MUENCHENERSTRASSE_Companion = addImage("",10,10,20,40);
-        JLabel WIENERSTRASSE_Companion = addImage("",10,10,20,40);
-        JLabel BERLINERSTRASSE_Companion = addImage("",10,10,20,40);
-        JLabel HAMBURGERSTRASSE_Companion = addImage("",10,10,20,40);
+        JLabel MUENCHENERSTRASSE_Companion = addImage("images/kleine_karten/orange.png",x,y+50,20,40);
+        JLabel WIENERSTRASSE_Companion = addImage("images/kleine_karten/orange.png",x+30,y+50,20,40);
+        JLabel BERLINERSTRASSE_Companion = addImage("images/kleine_karten/orange.png",x+60,y+50,20,40);
+        JLabel HAMBURGERSTRASSE_Companion = addImage("images/kleine_karten/orange.png",x+90,y+50,20,40);
 
-        JLabel THEATERSTRASSE_Companion = addImage("",10,10,20,40);
-        JLabel MUSEUMSTRASSE_Companion = addImage("",10,10,20,40);
-        JLabel OPERNPLATZ_Companion = addImage("",10,10,20,40);
-        JLabel KONZERTHAUSSTRASSE_Companion = addImage("",10,10,20,40);
+        JLabel THEATERSTRASSE_Companion = addImage("images/kleine_karten/red.png",x+130,y+50,20,40);
+        JLabel MUSEUMSTRASSE_Companion = addImage("images/kleine_karten/red.png",x+160,y+50,20,40);
+        JLabel OPERNPLATZ_Companion = addImage("images/kleine_karten/red.png",x+190,y+50,20,40);
+        JLabel KONZERTHAUSSTRASSE_Companion = addImage("images/kleine_karten/red.png",x+220,y+50,20,40);
 
-        JLabel LESSINGSTRASSE_Companion = addImage("",10,10,20,40);
-        JLabel SCHILLERSTRASSE_Companion = addImage("",10,10,20,40);
-        JLabel GOETHESTRASSE_Companion = addImage("",10,10,20,40);
-        JLabel RILKESTRASSE_Companion = addImage("",10,10,20,40);
+        JLabel LESSINGSTRASSE_Companion = addImage("images/kleine_karten/yellow.png",x+260,y+50,20,40);
+        JLabel SCHILLERSTRASSE_Companion = addImage("images/kleine_karten/yellow.png",x+290,y+50,20,40);
+        JLabel GOETHESTRASSE_Companion = addImage("images/kleine_karten/yellow.png",x+320,y+50,20,40);
+        JLabel RILKESTRASSE_Companion = addImage("images/kleine_karten/yellow.png",x+350,y+50,20,40);
 
-        JLabel RATHAUSPLATZ_Companion = addImage("",10,10,20,40);
-        JLabel HAUPSTRASSE_Companion = addImage("",10,10,20,40);
-        JLabel BOERSENPLATZ_Companion = addImage("",10,10,20,40);
-        JLabel BAHNHOFSTRASSE_Companion= addImage("",10,10,20,40);
+        JLabel RATHAUSPLATZ_Companion = addImage("images/kleine_karten/green.png",x+80,y+100,20,40);
+        JLabel HAUPSTRASSE_Companion = addImage("images/kleine_karten/green.png",x+110,y+100,20,40);
+        JLabel BOERSENPLATZ_Companion = addImage("images/kleine_karten/green.png",x+140,y+100,20,40);
+        JLabel BAHNHOFSTRASSE_Companion = addImage("images/kleine_karten/green.png",x+170,y+100,20,40);
 
-        JLabel DOMPLATZ_Companion = addImage("",10,10,20,40);
-        JLabel PARKSTRASSE_Companion = addImage("",10,10,20,40);
-        JLabel SCHLOSSALLEE_Companion = addImage("",10,10,20,40);
+        JLabel DOMPLATZ_Companion = addImage("images/kleine_karten/blue.png",x+210,y+100,20,40);
+        JLabel PARKSTRASSE_Companion = addImage("images/kleine_karten/blue.png",x+240,y+100,20,40);
+        JLabel SCHLOSSALLEE_Companion = addImage("images/kleine_karten/blue.png",x+270,y+100,20,40);
 
-        JLabel GASWERK_Companion = addImage("",10,10,20,40);
-        JLabel ELEKTRIZITAETSWERK_Companion = addImage("",10,10,20,40);
-        JLabel WASSERWERK_Companion = addImage("",10,10,20,40);
+        JLabel GASWERK_Companion = addImage("images/kleine_karten/gas.png",x+210,y+150,20,40);
+        JLabel ELEKTRIZITAETSWERK_Companion = addImage("images/kleine_karten/elec.png",x+240,y+150,20,40);
+        JLabel WASSERWERK_Companion = addImage("images/kleine_karten/water.png",x+270,y+150,20,40);
 
-        JLabel SUEDBAHNHOF_Companion = addImage("",10,10,20,40);
-        JLabel WESTBAHNHOF_Companion = addImage("",10,10,20,40);
-        JLabel NORDBAHNHOF_Companion = addImage("",10,10,20,40);
-        JLabel HAUPTBAHNHOF_Companion = addImage("",10,10,20,40);
-
-
+        JLabel SUEDBAHNHOF_Companion = addImage("images/kleine_karten/train.png",x+80,y+150,20,40);
+        JLabel WESTBAHNHOF_Companion = addImage("images/kleine_karten/train.png",x+110,y+150,20,40);
+        JLabel NORDBAHNHOF_Companion = addImage("images/kleine_karten/train.png",x+140,y+150,20,40);
+        JLabel HAUPTBAHNHOF_Companion = addImage("images/kleine_karten/train.png",x+170,y+150,20,40);
 
 
         Thread lobbyThread = new Thread(){
@@ -433,113 +436,65 @@ public class PrototypeMenu {
                 ServerPlayer serverPlayer;
                 Street street = Street.values()[0];
                 while(!interrupted()){
+
                     try {
                         serverPlayer = client.serverMethod().getServerPlayers().get(currentPlayer[0]);
                     } catch (RemoteException e) {
                         throw new RuntimeException(e);
                     }
-
-
-
                     label_button1.setText(serverPlayer.getName());
 
-                    BADSTRASSE_Companion.setIcon(new ImageIcon(Street.BADSTRASSE.getOwner().equals(client.player.getName()) ? "images/kleine_karten/brown_filled.png" : "images/kleine_karten/brown.png"));
-                    /*
-                    TURMSTRASSE_Companion.setIcon(new ImageIcon(Street.TURMSTRASSE.getOwner().equals(client.player.getName()) ? "w" : ""));
-                    STADIONSTRASSE_Companion.setIcon(new ImageIcon(Street.STADIONSTRASSE.getOwner().equals(client.player.getName()) ? "w" : ""));
 
-                    CHAUSSESTRASSE_Companion.setIcon(new ImageIcon(Street.CHAUSSESTRASSE.getOwner().equals(client.player.getName()) ? "w" : ""));
-                    ELISENSTRASSE_Companion.setIcon(new ImageIcon(Street.ELISENSTRASSE.getOwner().equals(client.player.getName()) ? "w" : ""));
-                    POSTSTRASSE_Companion.setIcon(new ImageIcon(Street.POSTSTRASSE.getOwner().equals(client.player.getName()) ? "w" : ""));
-                    TIERGARTENSTRASSE_Companion.setIcon(new ImageIcon(Street.TIERGARTENSTRASSE.getOwner().equals(client.player.getName()) ? "w" : ""));
 
-                    SEESTRASSE_Companion.setIcon(new ImageIcon(Street.SEESTRASSE.getOwner().equals(client.player.getName()) ? "w" : ""));
-                    HAFENSTRASSE_Companion.setIcon(new ImageIcon(Street.HAFENSTRASSE.getOwner().equals(client.player.getName()) ? "w" : ""));
-                    NEUESTRASSE_Companion.setIcon(new ImageIcon(Street.NEUESTRASSE.getOwner().equals(client.player.getName()) ? "w" : ""));
-                    MARKTPLATZ_Companion.setIcon(new ImageIcon(Street.MARKTPLATZ.getOwner().equals(client.player.getName()) ? "w" : ""));
+                    BADSTRASSE.setIcon(new ImageIcon(Street.BADSTRASSE.getOwner().equals(client.player.getName()) ? "images/kleine_karten/brown_filled.png" : "images/kleine_karten/brown.png"));
+                    TURMSTRASSE.setIcon(new ImageIcon(Street.TURMSTRASSE.getOwner().equals(client.player.getName()) ? "images/kleine_karten/brown_filled.png" : "images/kleine_karten/brown.png"));
+                    STADIONSTRASSE.setIcon(new ImageIcon(Street.STADIONSTRASSE.getOwner().equals(client.player.getName()) ? "images/kleine_karten/brown_filled.png" : "images/kleine_karten/brown.png"));
 
-                    MUENCHENERSTRASSE_Companion.setIcon(new ImageIcon(Street.MUENCHENERSTRASSE.getOwner().equals(client.player.getName()) ? "w" : ""));
-                    WIENERSTRASSE_Companion.setIcon(new ImageIcon(Street.WIENERSTRASSE.getOwner().equals(client.player.getName()) ? "w" : ""));
-                    BERLINERSTRASSE_Companion.setIcon(new ImageIcon(Street.BERLINERSTRASSE.getOwner().equals(client.player.getName()) ? "w" : ""));
-                    HAMBURGERSTRASSE_Companion.setIcon(new ImageIcon(Street.HAMBURGERSTRASSE.getOwner().equals(client.player.getName()) ? "w" : ""));
+                    CHAUSSESTRASSE.setIcon(new ImageIcon(Street.CHAUSSESTRASSE.getOwner().equals(serverPlayer.getName()) ? "images/kleine_karten/cyan_filled.png" : "images/kleine_karten/cyan.png"));
+                    ELISENSTRASSE.setIcon(new ImageIcon(Street.ELISENSTRASSE.getOwner().equals(serverPlayer.getName()) ? "images/kleine_karten/cyan_filled.png" : "images/kleine_karten/cyan.png"));
+                    POSTSTRASSE.setIcon(new ImageIcon(Street.POSTSTRASSE.getOwner().equals(serverPlayer.getName()) ? "images/kleine_karten/cyan_filled.png" : "images/kleine_karten/cyan.png"));
+                    TIERGARTENSTRASSE.setIcon(new ImageIcon(Street.TIERGARTENSTRASSE.getOwner().equals(serverPlayer.getName()) ? "images/kleine_karten/cyan_filled.png" : "images/kleine_karten/cyan.png"));
 
-                    THEATERSTRASSE_Companion.setIcon(new ImageIcon(Street.THEATERSTRASSE.getOwner().equals(client.player.getName()) ? "w" : ""));
-                    MUSEUMSTRASSE_Companion.setIcon(new ImageIcon(Street.MUSEUMSTRASSE.getOwner().equals(client.player.getName()) ? "w" : ""));
-                    OPERNPLATZ_Companion.setIcon(new ImageIcon(Street.OPERNPLATZ.getOwner().equals(client.player.getName()) ? "w" : ""));
-                    KONZERTHAUSSTRASSE_Companion.setIcon(new ImageIcon(Street.KONZERTHAUSSTRASSE_Companion.getOwner().equals(client.player.getName()) ? "w" : ""));
+                    SEESTRASSE.setIcon(new ImageIcon(Street.SEESTRASSE.getOwner().equals(serverPlayer.getName()) ? "images/kleine_karten/pink_filled.png" : "images/kleine_karten/pink.png"));
+                    HAFENSTRASSE.setIcon(new ImageIcon(Street.HAFENSTRASSE.getOwner().equals(serverPlayer.getName()) ? "images/kleine_karten/pink_filled.png" : "images/kleine_karten/pink.png"));
+                    NEUESTRASSE.setIcon(new ImageIcon(Street.NEUESTRASSE.getOwner().equals(serverPlayer.getName()) ? "images/kleine_karten/pink_filled.png" : "images/kleine_karten/pink.png"));
+                    MARKTPLATZ.setIcon(new ImageIcon(Street.MARKTPLATZ.getOwner().equals(serverPlayer.getName()) ? "images/kleine_karten/pink_filled.png" : "images/kleine_karten/pink.png"));
 
-                    LESSINGSTRASSE_Companion.setIcon(new ImageIcon(Street.LESSINGSTRASSE.getOwner().equals(client.player.getName()) ? "w" : ""));
-                    SCHILLERSTRASSE_Companion.setIcon(new ImageIcon(Street.SCHILLERSTRASSE.getOwner().equals(client.player.getName()) ? "w" : ""));
-                    GOETHESTRASSE_Companion.setIcon(new ImageIcon(Street.GOETHESTRASSE.getOwner().equals(client.player.getName()) ? "w" : ""));
-                    RILKESTRASSE_Companion.setIcon(new ImageIcon(Street.RILKESTRASSE.getOwner().equals(client.player.getName()) ? "w" : ""));
+                    MUENCHENERSTRASSE.setIcon(new ImageIcon(Street.MUENCHENERSTRASSE.getOwner().equals(serverPlayer.getName()) ? "images/kleine_karten/orange_filled.png" : "images/kleine_karten/orange.png"));
+                    WIENERSTRASSE.setIcon(new ImageIcon(Street.WIENERSTRASSE.getOwner().equals(serverPlayer.getName()) ? "images/kleine_karten/orange_filled.png" : "images/kleine_karten/pink.orange"));
+                    BERLINERSTRASSE.setIcon(new ImageIcon(Street.BERLINERSTRASSE.getOwner().equals(serverPlayer.getName()) ? "images/kleine_karten/orange_filled.png" : "images/kleine_karten/pink.orange"));
+                    HAMBURGERSTRASSE.setIcon(new ImageIcon(Street.HAMBURGERSTRASSE.getOwner().equals(serverPlayer.getName()) ? "images/kleine_karten/orange_filled.png" : "images/kleine_karten/pink.orange"));
 
-                    RATHAUSPLATZ_Companion.setIcon(new ImageIcon(Street.RATHAUSPLATZ.getOwner().equals(client.player.getName()) ? "w" : ""));
-                    HAUPSTRASSE_Companion.setIcon(new ImageIcon(Street.HAUPSTRASSE.getOwner().equals(client.player.getName()) ? "w" : ""));
-                    BOERSENPLATZ_Companion.setIcon(new ImageIcon(Street.BOERSENPLATZ.getOwner().equals(client.player.getName()) ? "w" : ""));
-                    BAHNHOFSTRASSE_Companion.setIcon(new ImageIcon(Street.BAHNHOFSTRASSE.getOwner().equals(client.player.getName()) ? "w" : ""));
+                    THEATERSTRASSE.setIcon(new ImageIcon(Street.THEATERSTRASSE.getOwner().equals(serverPlayer.getName()) ? "images/kleine_karten/red_filled.png" : "images/kleine_karten/red.png"));
+                    MUSEUMSTRASSE.setIcon(new ImageIcon(Street.MUSEUMSTRASSE.getOwner().equals(serverPlayer.getName()) ? "images/kleine_karten/red_filled.png" : "images/kleine_karten/red.png"));
+                    OPERNPLATZ.setIcon(new ImageIcon(Street.OPERNPLATZ.getOwner().equals(serverPlayer.getName()) ? "images/kleine_karten/red_filled.png" : "images/kleine_karten/red.png"));
+                    KONZERTHAUSSTRASSE.setIcon(new ImageIcon(Street.KONZERTHAUSSTRASSE.getOwner().equals(serverPlayer.getName()) ? "images/kleine_karten/red_filled.png" : "images/kleine_karten/red.png"));
 
-                    DOMPLATZ_Companion.setIcon(new ImageIcon(Street.DOMPLATZ.getOwner().equals(client.player.getName()) ? "w" : ""));
-                    PARKSTRASSE_Companion.setIcon(new ImageIcon(Street.PARKSTRASSE.getOwner().equals(client.player.getName()) ? "w" : ""));
-                    SCHLOSSALLEE_Companion.setIcon(new ImageIcon(Street.SCHLOSSALLEE.getOwner().equals(client.player.getName()) ? "w" : ""));
+                    LESSINGSTRASSE.setIcon(new ImageIcon(Street.LESSINGSTRASSE.getOwner().equals(serverPlayer.getName()) ? "images/kleine_karten/yellow_filled.png" : "images/kleine_karten/yellow.png"));
+                    SCHILLERSTRASSE.setIcon(new ImageIcon(Street.SCHILLERSTRASSE.getOwner().equals(serverPlayer.getName()) ? "images/kleine_karten/yellow_filled.png" : "images/kleine_karten/yellow.png"));
+                    GOETHESTRASSE.setIcon(new ImageIcon(Street.GOETHESTRASSE.getOwner().equals(serverPlayer.getName()) ? "images/kleine_karten/yellow_filled.png" : "images/kleine_karten/yellow.png"));
+                    RILKESTRASSE.setIcon(new ImageIcon(Street.RILKESTRASSE.getOwner().equals(serverPlayer.getName()) ? "images/kleine_karten/yellow_filled.png" : "images/kleine_karten/yellow.png"));
 
-                    GASWERK_Companion.setIcon(new ImageIcon(Plant.GASWERK.getOwner().equals(client.player.getName()) ? "w" : ""));
-                    ELEKTRIZITAETSWERK_Companion.setIcon(new ImageIcon(Plant.ELEKTRIZITAETSWERK.getOwner().equals(client.player.getName()) ? "w" : ""));
-                    WASSERWERK_Companion.setIcon(new ImageIcon(Plant.WASSERWERK.getOwner().equals(client.player.getName()) ? "w" : ""));
+                    RATHAUSPLATZ.setIcon(new ImageIcon(Street.RATHAUSPLATZ.getOwner().equals(serverPlayer.getName()) ? "images/kleine_karten/green_filled.png" : "images/kleine_karten/green.png"));
+                    HAUPSTRASSE.setIcon(new ImageIcon(Street.HAUPSTRASSE.getOwner().equals(serverPlayer.getName()) ? "images/kleine_karten/green_filled.png" : "images/kleine_karten/green.png"));
+                    BOERSENPLATZ.setIcon(new ImageIcon(Street.BOERSENPLATZ.getOwner().equals(serverPlayer.getName()) ? "images/kleine_karten/green_filled.png" : "images/kleine_karten/green.png"));
+                    BAHNHOFSTRASSE.setIcon(new ImageIcon(Street.BAHNHOFSTRASSE.getOwner().equals(serverPlayer.getName()) ? "images/kleine_karten/green_filled.png" : "images/kleine_karten/green.png"));
 
-                    SUEDBAHNHOF_Companion.setIcon(new ImageIcon(TrainStation.SUEDBAHNHOF.getOwner().equals(client.player.getName()) ? "w" : ""));
-                    WESTBAHNHOF_Companion.setIcon(new ImageIcon(TrainStation.WESTBAHNHOF.getOwner().equals(client.player.getName()) ? "w" : ""));
-                    NORDBAHNHOF_Companion.setIcon(new ImageIcon(TrainStation.NORDBAHNHOF.getOwner().equals(client.player.getName()) ? "w" : ""));
-                    HAUPTBAHNHOF_Companion.setIcon(new ImageIcon(TrainStation.HAUPTBAHNHOF.getOwner().equals(client.player.getName()) ? "w" : ""));
-                     */
+                    DOMPLATZ.setIcon(new ImageIcon(Street.DOMPLATZ.getOwner().equals(serverPlayer.getName()) ? "images/kleine_karten/blue_filled.png" : "images/kleine_karten/blue.png"));
+                    PARKSTRASSE.setIcon(new ImageIcon(Street.PARKSTRASSE.getOwner().equals(serverPlayer.getName()) ? "images/kleine_karten/blue_filled.png" : "images/kleine_karten/blue.png"));
+                    SCHLOSSALLEE.setIcon(new ImageIcon(Street.SCHLOSSALLEE.getOwner().equals(serverPlayer.getName()) ? "images/kleine_karten/blue_filled.png" : "images/kleine_karten/blue.png"));
 
-                    /*
-                    BADSTRASSE.setIcon(new ImageIcon(Street.BADSTRASSE.getOwner().equals(serverPlayer.getName()) ? "w" : ""));
-                    TURMSTRASSE.setIcon(new ImageIcon(Street.TURMSTRASSE.getOwner().equals(serverPlayer.getName()) ? "w" : ""));
-                    STADIONSTRASSE.setIcon(new ImageIcon(Street.STADIONSTRASSE.getOwner().equals(serverPlayer.getName()) ? "w" : ""));
+                    GASWERK.setIcon(new ImageIcon(Plant.GASWERK.getOwner().equals(serverPlayer.getName()) ? "images/kleine_karten/gas_filled.png" : "images/kleine_karten/gas.png"));
+                    ELEKTRIZITAETSWERK.setIcon(new ImageIcon(Plant.ELEKTRIZITAETSWERK.getOwner().equals(serverPlayer.getName()) ? "images/kleine_karten/elec_filled.png" : "images/kleine_karten/elec.png"));
+                    WASSERWERK.setIcon(new ImageIcon(Plant.WASSERWERK.getOwner().equals(serverPlayer.getName()) ? "images/kleine_karten/water_filled.png" : "images/kleine_karten/water.png"));
 
-                    CHAUSSESTRASSE.setIcon(new ImageIcon(Street.CHAUSSESTRASSE.getOwner().equals(serverPlayer.getName()) ? "w" : ""));
-                    ELISENSTRASSE.setIcon(new ImageIcon(Street.ELISENSTRASSE.getOwner().equals(serverPlayer.getName()) ? "w" : ""));
-                    POSTSTRASSE.setIcon(new ImageIcon(Street.POSTSTRASSE.getOwner().equals(serverPlayer.getName()) ? "w" : ""));
-                    TIERGARTENSTRASSE.setIcon(new ImageIcon(Street.TIERGARTENSTRASSE.getOwner().equals(serverPlayer.getName()) ? "w" : ""));
+                    SUEDBAHNHOF.setIcon(new ImageIcon(TrainStation.SUEDBAHNHOF.getOwner().equals(serverPlayer.getName()) ? "images/kleine_karten/train_filled.png" : "images/kleine_karten/train.png"));
+                    WESTBAHNHOF.setIcon(new ImageIcon(TrainStation.WESTBAHNHOF.getOwner().equals(serverPlayer.getName()) ? "images/kleine_karten/train_filled.png" : "images/kleine_karten/train.png"));
+                    NORDBAHNHOF.setIcon(new ImageIcon(TrainStation.NORDBAHNHOF.getOwner().equals(serverPlayer.getName()) ? "images/kleine_karten/train_filled.png" : "images/kleine_karten/train.png"));
+                    HAUPTBAHNHOF.setIcon(new ImageIcon(TrainStation.HAUPTBAHNHOF.getOwner().equals(serverPlayer.getName()) ? "images/kleine_karten/train_filled.png" : "images/kleine_karten/train.png"));
 
-                    SEESTRASSE.setIcon(new ImageIcon(Street.SEESTRASSE.getOwner().equals(serverPlayer.getName()) ? "w" : ""));
-                    HAFENSTRASSE.setIcon(new ImageIcon(Street.HAFENSTRASSE.getOwner().equals(serverPlayer.getName()) ? "w" : ""));
-                    NEUESTRASSE.setIcon(new ImageIcon(Street.NEUESTRASSE.getOwner().equals(serverPlayer.getName()) ? "w" : ""));
-                    MARKTPLATZ.setIcon(new ImageIcon(Street.MARKTPLATZ.getOwner().equals(serverPlayer.getName()) ? "w" : ""));
 
-                    MUENCHENERSTRASSE.setIcon(new ImageIcon(Street.MUENCHENERSTRASSE.getOwner().equals(serverPlayer.getName()) ? "w" : ""));
-                    WIENERSTRASSE.setIcon(new ImageIcon(Street.WIENERSTRASSE.getOwner().equals(serverPlayer.getName()) ? "w" : ""));
-                    BERLINERSTRASSE.setIcon(new ImageIcon(Street.BERLINERSTRASSE.getOwner().equals(serverPlayer.getName()) ? "w" : ""));
-                    HAMBURGERSTRASSE.setIcon(new ImageIcon(Street.HAMBURGERSTRASSE.getOwner().equals(serverPlayer.getName()) ? "w" : ""));
 
-                    THEATERSTRASSE.setIcon(new ImageIcon(Street.THEATERSTRASSE.getOwner().equals(serverPlayer.getName()) ? "w" : ""));
-                    MUSEUMSTRASSE.setIcon(new ImageIcon(Street.MUSEUMSTRASSE.getOwner().equals(serverPlayer.getName()) ? "w" : ""));
-                    OPERNPLATZ.setIcon(new ImageIcon(Street.OPERNPLATZ.getOwner().equals(serverPlayer.getName()) ? "w" : ""));
-                    KONZERTHAUSSTRASSE.setIcon(new ImageIcon(Street.KONZERTHAUSSTRASSE.getOwner().equals(serverPlayer.getName()) ? "w" : ""));
-
-                    LESSINGSTRASSE.setIcon(new ImageIcon(Street.LESSINGSTRASSE.getOwner().equals(serverPlayer.getName()) ? "w" : ""));
-                    SCHILLERSTRASSE.setIcon(new ImageIcon(Street.SCHILLERSTRASSE.getOwner().equals(serverPlayer.getName()) ? "w" : ""));
-                    GOETHESTRASSE.setIcon(new ImageIcon(Street.GOETHESTRASSE.getOwner().equals(serverPlayer.getName()) ? "w" : ""));
-                    RILKESTRASSE.setIcon(new ImageIcon(Street.RILKESTRASSE.getOwner().equals(serverPlayer.getName()) ? "w" : ""));
-
-                    RATHAUSPLATZ.setIcon(new ImageIcon(Street.RATHAUSPLATZ.getOwner().equals(serverPlayer.getName()) ? "w" : ""));
-                    HAUPSTRASSE.setIcon(new ImageIcon(Street.HAUPSTRASSE.getOwner().equals(serverPlayer.getName()) ? "w" : ""));
-                    BOERSENPLATZ.setIcon(new ImageIcon(Street.BOERSENPLATZ.getOwner().equals(serverPlayer.getName()) ? "w" : ""));
-                    BAHNHOFSTRASSE.setIcon(new ImageIcon(Street.BAHNHOFSTRASSE.getOwner().equals(serverPlayer.getName()) ? "w" : ""));
-
-                    DOMPLATZ.setIcon(new ImageIcon(Street.DOMPLATZ.getOwner().equals(serverPlayer.getName()) ? "w" : ""));
-                    PARKSTRASSE.setIcon(new ImageIcon(Street.PARKSTRASSE.getOwner().equals(serverPlayer.getName()) ? "w" : ""));
-                    SCHLOSSALLEE.setIcon(new ImageIcon(Street.SCHLOSSALLEE.getOwner().equals(serverPlayer.getName()) ? "w" : ""));
-
-                    GASWERK.setIcon(new ImageIcon(Plant.GASWERK.getOwner().equals(serverPlayer.getName()) ? "w" : ""));
-                    ELEKTRIZITAETSWERK.setIcon(new ImageIcon(Plant.ELEKTRIZITAETSWERK.getOwner().equals(serverPlayer.getName()) ? "w" : ""));
-                    WASSERWERK.setIcon(new ImageIcon(Plant.WASSERWERK.getOwner().equals(serverPlayer.getName()) ? "w" : ""));
-
-                    SUEDBAHNHOF.setIcon(new ImageIcon(TrainStation.SUEDBAHNHOF.getOwner().equals(serverPlayer.getName()) ? "w" : ""));
-                    WESTBAHNHOF.setIcon(new ImageIcon(TrainStation.WESTBAHNHOF.getOwner().equals(serverPlayer.getName()) ? "w" : ""));
-                    NORDBAHNHOF.setIcon(new ImageIcon(TrainStation.NORDBAHNHOF.getOwner().equals(serverPlayer.getName()) ? "w" : ""));
-                    HAUPTBAHNHOF.setIcon(new ImageIcon(TrainStation.HAUPTBAHNHOF.getOwner().equals(serverPlayer.getName()) ? "w" : ""));
-                     */
 
                     try {
                         sleep(100);
@@ -561,13 +516,62 @@ public class PrototypeMenu {
         }),0);
 
         frame.add(addButton(button2,null,1479,90,400,60,true,"images/Main_pictures/Player_display.png",actionevent ->  {}),0);
-        frame.add(addText(label_button1,"","Arial",button1.getX(),button1.getY() + 13,400,30,true),0);
-        frame.add(addText(label_button2,client.player.getName(),"Arial",button2.getX(),button2.getY() + 13,400,30,true),0);
-        frame.add(addImage("images/Main_pictures/Player_property.png",button1.getX(),button1.getY()+56,400,217),0);
-        frame.add(addImage("images/Main_pictures/Player_property.png",button2.getX(),button2.getY()+56,400,217),0);
+        frame.add(addText(label_button1,"","Arial",1060,90 + 13,400,30,true),0);
+        frame.add(addText(label_button2,client.player.getName(),"Arial",1479,90 + 13,400,30,true),0);
+        frame.add(addImage("images/Main_pictures/Player_property.png",1060,135,400,217),0);
+        frame.add(addImage("images/Main_pictures/Player_property.png",1479,135,400,217),0);
 
-        frame.add(BADSTRASSE_Companion,0);
-        //frame.repaint();
+        frame.add(BADSTRASSE,0);
+        frame.add(TURMSTRASSE,0);
+        frame.add(STADIONSTRASSE,0);
+
+        frame.add(CHAUSSESTRASSE,0);
+        frame.add(ELISENSTRASSE,0);
+        frame.add(POSTSTRASSE,0);
+        frame.add(TIERGARTENSTRASSE,0);
+
+        frame.add(SEESTRASSE,0);
+        frame.add(HAFENSTRASSE,0);
+        frame.add(NEUESTRASSE,0);
+        frame.add(MARKTPLATZ,0);
+
+        frame.add(MUENCHENERSTRASSE,0);
+        frame.add(WIENERSTRASSE,0);
+        frame.add(BERLINERSTRASSE,0);
+        frame.add(HAMBURGERSTRASSE,0);
+
+        frame.add(THEATERSTRASSE,0);
+        frame.add(MUSEUMSTRASSE,0);
+        frame.add(OPERNPLATZ,0);
+        frame.add(KONZERTHAUSSTRASSE,0);
+
+        frame.add(LESSINGSTRASSE,0);
+        frame.add(SCHILLERSTRASSE,0);
+        frame.add(GOETHESTRASSE,0);
+        frame.add(RILKESTRASSE,0);
+
+        frame.add(RATHAUSPLATZ,0);
+        frame.add(HAUPSTRASSE,0);
+        frame.add(BOERSENPLATZ,0);
+        frame.add(BAHNHOFSTRASSE,0);
+
+        frame.add(DOMPLATZ,0);
+        frame.add(PARKSTRASSE,0);
+        frame.add(SCHLOSSALLEE,0);
+
+        frame.add(GASWERK,0);
+        frame.add(ELEKTRIZITAETSWERK,0);
+        frame.add(WASSERWERK,0);
+
+        frame.add(SUEDBAHNHOF,0);
+        frame.add(WESTBAHNHOF,0);
+        frame.add(NORDBAHNHOF,0);
+        frame.add(HAUPTBAHNHOF,0);
+
+
+
+
+        frame.repaint();
 
         if(client.tradeState != TradeState.NULL) {
             try {
@@ -974,7 +978,274 @@ public class PrototypeMenu {
         PrototypeMenu menu = new PrototypeMenu();
         menu.prepareMenu();
         for(Street street : Street.values()) street.setOwner("Player 1");
-        for(TrainStation trainStation : TrainStation.values()) trainStation.setOwner("Player 2");
+        for(TrainStation trainStation : TrainStation.values()) trainStation.setOwner("Player 1");
         for(Plant plant : Plant.values()) plant.setOwner("Player 2");
     }
 }
+/*
+
+        frame.add(addImage("images/Main_pictures/Background_Right.png", 1020, 60));
+
+        int[] currentPlayer = new int[1];
+        currentPlayer[0] = 0;
+        int[] maxplayers;
+
+        try {
+            maxplayers = new int[client.serverMethod().getServerPlayers().size()];
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
+
+        JButton button1 = new JButton();
+        JButton button2 = new JButton();
+        JLabel label_button1 = new JLabel();
+        JLabel label_button2 = new JLabel();
+
+
+        JLabel BADSTRASSE = addImage("",10,10,20,40);
+        JLabel TURMSTRASSE = addImage("",10,10,20,40);
+        JLabel STADIONSTRASSE = addImage("",10,10,20,40);
+
+        JLabel CHAUSSESTRASSE = addImage("",10,10,20,40);
+        JLabel ELISENSTRASSE = addImage("",10,10,20,40);
+        JLabel POSTSTRASSE = addImage("",10,10,20,40);
+        JLabel TIERGARTENSTRASSE = addImage("",10,10,20,40);
+
+        JLabel SEESTRASSE = addImage("",10,10,20,40);
+        JLabel HAFENSTRASSE = addImage("",10,10,20,40);
+        JLabel NEUESTRASSE = addImage("",10,10,20,40);
+        JLabel MARKTPLATZ = addImage("",10,10,20,40);
+
+        JLabel MUENCHENERSTRASSE = addImage("",10,10,20,40);
+        JLabel WIENERSTRASSE = addImage("",10,10,20,40);
+        JLabel BERLINERSTRASSE = addImage("",10,10,20,40);
+        JLabel HAMBURGERSTRASSE = addImage("",10,10,20,40);
+
+        JLabel THEATERSTRASSE = addImage("",10,10,20,40);
+        JLabel MUSEUMSTRASSE = addImage("",10,10,20,40);
+        JLabel OPERNPLATZ = addImage("",10,10,20,40);
+        JLabel KONZERTHAUSSTRASSE = addImage("",10,10,20,40);
+
+        JLabel LESSINGSTRASSE = addImage("",10,10,20,40);
+        JLabel SCHILLERSTRASSE = addImage("",10,10,20,40);
+        JLabel GOETHESTRASSE = addImage("",10,10,20,40);
+        JLabel RILKESTRASSE = addImage("",10,10,20,40);
+
+        JLabel RATHAUSPLATZ = addImage("",10,10,20,40);
+        JLabel HAUPSTRASSE = addImage("",10,10,20,40);
+        JLabel BOERSENPLATZ = addImage("",10,10,20,40);
+        JLabel BAHNHOFSTRASSE = addImage("",10,10,20,40);
+
+        JLabel DOMPLATZ = addImage("",10,10,20,40);
+        JLabel PARKSTRASSE = addImage("",10,10,20,40);
+        JLabel SCHLOSSALLEE = addImage("",10,10,20,40);
+
+        JLabel GASWERK = addImage("",10,10,20,40);
+        JLabel ELEKTRIZITAETSWERK = addImage("",10,10,20,40);
+        JLabel WASSERWERK = addImage("",10,10,20,40);
+
+        JLabel SUEDBAHNHOF = addImage("",10,10,20,40);
+        JLabel WESTBAHNHOF = addImage("",10,10,20,40);
+        JLabel NORDBAHNHOF = addImage("",10,10,20,40);
+        JLabel HAUPTBAHNHOF = addImage("",10,10,20,40);
+
+
+        JLabel BADSTRASSE_Companion = addImage("images/kleine_karten/brown.png",1075,160,20,40);
+        JLabel TURMSTRASSE_Companion = addImage("",10,10,20,40);
+        JLabel STADIONSTRASSE_Companion = addImage("",10,10,20,40);
+
+        JLabel CHAUSSESTRASSE_Companion = addImage("",10,10,20,40);
+        JLabel ELISENSTRASSE_Companion = addImage("",10,10,20,40);
+        JLabel POSTSTRASSE_Companion = addImage("",10,10,20,40);
+        JLabel TIERGARTENSTRASSE_Companion = addImage("",10,10,20,40);
+
+        JLabel SEESTRASSE_Companion = addImage("",10,10,20,40);
+        JLabel HAFENSTRASSE_Companion = addImage("",10,10,20,40);
+        JLabel NEUESTRASSE_Companion = addImage("",10,10,20,40);
+        JLabel MARKTPLATZ_Companion = addImage("",10,10,20,40);
+
+        JLabel MUENCHENERSTRASSE_Companion = addImage("",10,10,20,40);
+        JLabel WIENERSTRASSE_Companion = addImage("",10,10,20,40);
+        JLabel BERLINERSTRASSE_Companion = addImage("",10,10,20,40);
+        JLabel HAMBURGERSTRASSE_Companion = addImage("",10,10,20,40);
+
+        JLabel THEATERSTRASSE_Companion = addImage("",10,10,20,40);
+        JLabel MUSEUMSTRASSE_Companion = addImage("",10,10,20,40);
+        JLabel OPERNPLATZ_Companion = addImage("",10,10,20,40);
+        JLabel KONZERTHAUSSTRASSE_Companion = addImage("",10,10,20,40);
+
+        JLabel LESSINGSTRASSE_Companion = addImage("",10,10,20,40);
+        JLabel SCHILLERSTRASSE_Companion = addImage("",10,10,20,40);
+        JLabel GOETHESTRASSE_Companion = addImage("",10,10,20,40);
+        JLabel RILKESTRASSE_Companion = addImage("",10,10,20,40);
+
+        JLabel RATHAUSPLATZ_Companion = addImage("",10,10,20,40);
+        JLabel HAUPSTRASSE_Companion = addImage("",10,10,20,40);
+        JLabel BOERSENPLATZ_Companion = addImage("",10,10,20,40);
+        JLabel BAHNHOFSTRASSE_Companion= addImage("",10,10,20,40);
+
+        JLabel DOMPLATZ_Companion = addImage("",10,10,20,40);
+        JLabel PARKSTRASSE_Companion = addImage("",10,10,20,40);
+        JLabel SCHLOSSALLEE_Companion = addImage("",10,10,20,40);
+
+        JLabel GASWERK_Companion = addImage("",10,10,20,40);
+        JLabel ELEKTRIZITAETSWERK_Companion = addImage("",10,10,20,40);
+        JLabel WASSERWERK_Companion = addImage("",10,10,20,40);
+
+        JLabel SUEDBAHNHOF_Companion = addImage("",10,10,20,40);
+        JLabel WESTBAHNHOF_Companion = addImage("",10,10,20,40);
+        JLabel NORDBAHNHOF_Companion = addImage("",10,10,20,40);
+        JLabel HAUPTBAHNHOF_Companion = addImage("",10,10,20,40);
+
+
+
+
+        Thread lobbyThread = new Thread(){
+            @Override
+            public void run(){
+                ServerPlayer serverPlayer;
+                Street street = Street.values()[0];
+                while(!interrupted()){
+                    try {
+                        serverPlayer = client.serverMethod().getServerPlayers().get(currentPlayer[0]);
+                    } catch (RemoteException e) {
+                        throw new RuntimeException(e);
+                    }
+
+
+
+                    label_button1.setText(serverPlayer.getName());
+
+                    BADSTRASSE_Companion.setIcon(new ImageIcon(Street.BADSTRASSE.getOwner().equals(client.player.getName()) ? "images/kleine_karten/brown_filled.png" : "images/kleine_karten/brown.png"));
+                    /*
+                    TURMSTRASSE_Companion.setIcon(new ImageIcon(Street.TURMSTRASSE.getOwner().equals(client.player.getName()) ? "w" : ""));
+                    STADIONSTRASSE_Companion.setIcon(new ImageIcon(Street.STADIONSTRASSE.getOwner().equals(client.player.getName()) ? "w" : ""));
+
+                    CHAUSSESTRASSE_Companion.setIcon(new ImageIcon(Street.CHAUSSESTRASSE.getOwner().equals(client.player.getName()) ? "w" : ""));
+                    ELISENSTRASSE_Companion.setIcon(new ImageIcon(Street.ELISENSTRASSE.getOwner().equals(client.player.getName()) ? "w" : ""));
+                    POSTSTRASSE_Companion.setIcon(new ImageIcon(Street.POSTSTRASSE.getOwner().equals(client.player.getName()) ? "w" : ""));
+                    TIERGARTENSTRASSE_Companion.setIcon(new ImageIcon(Street.TIERGARTENSTRASSE.getOwner().equals(client.player.getName()) ? "w" : ""));
+
+                    SEESTRASSE_Companion.setIcon(new ImageIcon(Street.SEESTRASSE.getOwner().equals(client.player.getName()) ? "w" : ""));
+                    HAFENSTRASSE_Companion.setIcon(new ImageIcon(Street.HAFENSTRASSE.getOwner().equals(client.player.getName()) ? "w" : ""));
+                    NEUESTRASSE_Companion.setIcon(new ImageIcon(Street.NEUESTRASSE.getOwner().equals(client.player.getName()) ? "w" : ""));
+                    MARKTPLATZ_Companion.setIcon(new ImageIcon(Street.MARKTPLATZ.getOwner().equals(client.player.getName()) ? "w" : ""));
+
+                    MUENCHENERSTRASSE_Companion.setIcon(new ImageIcon(Street.MUENCHENERSTRASSE.getOwner().equals(client.player.getName()) ? "w" : ""));
+                    WIENERSTRASSE_Companion.setIcon(new ImageIcon(Street.WIENERSTRASSE.getOwner().equals(client.player.getName()) ? "w" : ""));
+                    BERLINERSTRASSE_Companion.setIcon(new ImageIcon(Street.BERLINERSTRASSE.getOwner().equals(client.player.getName()) ? "w" : ""));
+                    HAMBURGERSTRASSE_Companion.setIcon(new ImageIcon(Street.HAMBURGERSTRASSE.getOwner().equals(client.player.getName()) ? "w" : ""));
+
+                    THEATERSTRASSE_Companion.setIcon(new ImageIcon(Street.THEATERSTRASSE.getOwner().equals(client.player.getName()) ? "w" : ""));
+                    MUSEUMSTRASSE_Companion.setIcon(new ImageIcon(Street.MUSEUMSTRASSE.getOwner().equals(client.player.getName()) ? "w" : ""));
+                    OPERNPLATZ_Companion.setIcon(new ImageIcon(Street.OPERNPLATZ.getOwner().equals(client.player.getName()) ? "w" : ""));
+                    KONZERTHAUSSTRASSE_Companion.setIcon(new ImageIcon(Street.KONZERTHAUSSTRASSE_Companion.getOwner().equals(client.player.getName()) ? "w" : ""));
+
+                    LESSINGSTRASSE_Companion.setIcon(new ImageIcon(Street.LESSINGSTRASSE.getOwner().equals(client.player.getName()) ? "w" : ""));
+                    SCHILLERSTRASSE_Companion.setIcon(new ImageIcon(Street.SCHILLERSTRASSE.getOwner().equals(client.player.getName()) ? "w" : ""));
+                    GOETHESTRASSE_Companion.setIcon(new ImageIcon(Street.GOETHESTRASSE.getOwner().equals(client.player.getName()) ? "w" : ""));
+                    RILKESTRASSE_Companion.setIcon(new ImageIcon(Street.RILKESTRASSE.getOwner().equals(client.player.getName()) ? "w" : ""));
+
+                    RATHAUSPLATZ_Companion.setIcon(new ImageIcon(Street.RATHAUSPLATZ.getOwner().equals(client.player.getName()) ? "w" : ""));
+                    HAUPSTRASSE_Companion.setIcon(new ImageIcon(Street.HAUPSTRASSE.getOwner().equals(client.player.getName()) ? "w" : ""));
+                    BOERSENPLATZ_Companion.setIcon(new ImageIcon(Street.BOERSENPLATZ.getOwner().equals(client.player.getName()) ? "w" : ""));
+                    BAHNHOFSTRASSE_Companion.setIcon(new ImageIcon(Street.BAHNHOFSTRASSE.getOwner().equals(client.player.getName()) ? "w" : ""));
+
+                    DOMPLATZ_Companion.setIcon(new ImageIcon(Street.DOMPLATZ.getOwner().equals(client.player.getName()) ? "w" : ""));
+                    PARKSTRASSE_Companion.setIcon(new ImageIcon(Street.PARKSTRASSE.getOwner().equals(client.player.getName()) ? "w" : ""));
+                    SCHLOSSALLEE_Companion.setIcon(new ImageIcon(Street.SCHLOSSALLEE.getOwner().equals(client.player.getName()) ? "w" : ""));
+
+                    GASWERK_Companion.setIcon(new ImageIcon(Plant.GASWERK.getOwner().equals(client.player.getName()) ? "w" : ""));
+                    ELEKTRIZITAETSWERK_Companion.setIcon(new ImageIcon(Plant.ELEKTRIZITAETSWERK.getOwner().equals(client.player.getName()) ? "w" : ""));
+                    WASSERWERK_Companion.setIcon(new ImageIcon(Plant.WASSERWERK.getOwner().equals(client.player.getName()) ? "w" : ""));
+
+                    SUEDBAHNHOF_Companion.setIcon(new ImageIcon(TrainStation.SUEDBAHNHOF.getOwner().equals(client.player.getName()) ? "w" : ""));
+                    WESTBAHNHOF_Companion.setIcon(new ImageIcon(TrainStation.WESTBAHNHOF.getOwner().equals(client.player.getName()) ? "w" : ""));
+                    NORDBAHNHOF_Companion.setIcon(new ImageIcon(TrainStation.NORDBAHNHOF.getOwner().equals(client.player.getName()) ? "w" : ""));
+                    HAUPTBAHNHOF_Companion.setIcon(new ImageIcon(TrainStation.HAUPTBAHNHOF.getOwner().equals(client.player.getName()) ? "w" : ""));
+
+
+
+                    BADSTRASSE.setIcon(new ImageIcon(Street.BADSTRASSE.getOwner().equals(serverPlayer.getName()) ? "w" : ""));
+                    TURMSTRASSE.setIcon(new ImageIcon(Street.TURMSTRASSE.getOwner().equals(serverPlayer.getName()) ? "w" : ""));
+                    STADIONSTRASSE.setIcon(new ImageIcon(Street.STADIONSTRASSE.getOwner().equals(serverPlayer.getName()) ? "w" : ""));
+
+                    CHAUSSESTRASSE.setIcon(new ImageIcon(Street.CHAUSSESTRASSE.getOwner().equals(serverPlayer.getName()) ? "w" : ""));
+                    ELISENSTRASSE.setIcon(new ImageIcon(Street.ELISENSTRASSE.getOwner().equals(serverPlayer.getName()) ? "w" : ""));
+                    POSTSTRASSE.setIcon(new ImageIcon(Street.POSTSTRASSE.getOwner().equals(serverPlayer.getName()) ? "w" : ""));
+                    TIERGARTENSTRASSE.setIcon(new ImageIcon(Street.TIERGARTENSTRASSE.getOwner().equals(serverPlayer.getName()) ? "w" : ""));
+
+                    SEESTRASSE.setIcon(new ImageIcon(Street.SEESTRASSE.getOwner().equals(serverPlayer.getName()) ? "w" : ""));
+                    HAFENSTRASSE.setIcon(new ImageIcon(Street.HAFENSTRASSE.getOwner().equals(serverPlayer.getName()) ? "w" : ""));
+                    NEUESTRASSE.setIcon(new ImageIcon(Street.NEUESTRASSE.getOwner().equals(serverPlayer.getName()) ? "w" : ""));
+                    MARKTPLATZ.setIcon(new ImageIcon(Street.MARKTPLATZ.getOwner().equals(serverPlayer.getName()) ? "w" : ""));
+
+                    MUENCHENERSTRASSE.setIcon(new ImageIcon(Street.MUENCHENERSTRASSE.getOwner().equals(serverPlayer.getName()) ? "w" : ""));
+                    WIENERSTRASSE.setIcon(new ImageIcon(Street.WIENERSTRASSE.getOwner().equals(serverPlayer.getName()) ? "w" : ""));
+                    BERLINERSTRASSE.setIcon(new ImageIcon(Street.BERLINERSTRASSE.getOwner().equals(serverPlayer.getName()) ? "w" : ""));
+                    HAMBURGERSTRASSE.setIcon(new ImageIcon(Street.HAMBURGERSTRASSE.getOwner().equals(serverPlayer.getName()) ? "w" : ""));
+
+                    THEATERSTRASSE.setIcon(new ImageIcon(Street.THEATERSTRASSE.getOwner().equals(serverPlayer.getName()) ? "w" : ""));
+                    MUSEUMSTRASSE.setIcon(new ImageIcon(Street.MUSEUMSTRASSE.getOwner().equals(serverPlayer.getName()) ? "w" : ""));
+                    OPERNPLATZ.setIcon(new ImageIcon(Street.OPERNPLATZ.getOwner().equals(serverPlayer.getName()) ? "w" : ""));
+                    KONZERTHAUSSTRASSE.setIcon(new ImageIcon(Street.KONZERTHAUSSTRASSE.getOwner().equals(serverPlayer.getName()) ? "w" : ""));
+
+                    LESSINGSTRASSE.setIcon(new ImageIcon(Street.LESSINGSTRASSE.getOwner().equals(serverPlayer.getName()) ? "w" : ""));
+                    SCHILLERSTRASSE.setIcon(new ImageIcon(Street.SCHILLERSTRASSE.getOwner().equals(serverPlayer.getName()) ? "w" : ""));
+                    GOETHESTRASSE.setIcon(new ImageIcon(Street.GOETHESTRASSE.getOwner().equals(serverPlayer.getName()) ? "w" : ""));
+                    RILKESTRASSE.setIcon(new ImageIcon(Street.RILKESTRASSE.getOwner().equals(serverPlayer.getName()) ? "w" : ""));
+
+                    RATHAUSPLATZ.setIcon(new ImageIcon(Street.RATHAUSPLATZ.getOwner().equals(serverPlayer.getName()) ? "w" : ""));
+                    HAUPSTRASSE.setIcon(new ImageIcon(Street.HAUPSTRASSE.getOwner().equals(serverPlayer.getName()) ? "w" : ""));
+                    BOERSENPLATZ.setIcon(new ImageIcon(Street.BOERSENPLATZ.getOwner().equals(serverPlayer.getName()) ? "w" : ""));
+                    BAHNHOFSTRASSE.setIcon(new ImageIcon(Street.BAHNHOFSTRASSE.getOwner().equals(serverPlayer.getName()) ? "w" : ""));
+
+                    DOMPLATZ.setIcon(new ImageIcon(Street.DOMPLATZ.getOwner().equals(serverPlayer.getName()) ? "w" : ""));
+                    PARKSTRASSE.setIcon(new ImageIcon(Street.PARKSTRASSE.getOwner().equals(serverPlayer.getName()) ? "w" : ""));
+                    SCHLOSSALLEE.setIcon(new ImageIcon(Street.SCHLOSSALLEE.getOwner().equals(serverPlayer.getName()) ? "w" : ""));
+
+                    GASWERK.setIcon(new ImageIcon(Plant.GASWERK.getOwner().equals(serverPlayer.getName()) ? "w" : ""));
+                    ELEKTRIZITAETSWERK.setIcon(new ImageIcon(Plant.ELEKTRIZITAETSWERK.getOwner().equals(serverPlayer.getName()) ? "w" : ""));
+                    WASSERWERK.setIcon(new ImageIcon(Plant.WASSERWERK.getOwner().equals(serverPlayer.getName()) ? "w" : ""));
+
+                    SUEDBAHNHOF.setIcon(new ImageIcon(TrainStation.SUEDBAHNHOF.getOwner().equals(serverPlayer.getName()) ? "w" : ""));
+                    WESTBAHNHOF.setIcon(new ImageIcon(TrainStation.WESTBAHNHOF.getOwner().equals(serverPlayer.getName()) ? "w" : ""));
+                    NORDBAHNHOF.setIcon(new ImageIcon(TrainStation.NORDBAHNHOF.getOwner().equals(serverPlayer.getName()) ? "w" : ""));
+                    HAUPTBAHNHOF.setIcon(new ImageIcon(TrainStation.HAUPTBAHNHOF.getOwner().equals(serverPlayer.getName()) ? "w" : ""));
+
+
+                    try {
+                            sleep(100);
+                            } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                            }
+                            }
+
+                            }
+                            };
+                            lobbyThread.start();
+
+                            frame.add(addButton(button1,null,1060,90,400,60,true,"images/Main_pictures/Player_display.png",actionevent ->  {
+                            if(currentPlayer[0] < maxplayers.length - 1){
+        currentPlayer[0] = currentPlayer[0] + 1;
+        }else{
+        currentPlayer[0] = 0;
+        }
+        }),0);
+
+        frame.add(addButton(button2,null,1479,90,400,60,true,"images/Main_pictures/Player_display.png",actionevent ->  {}),0);
+        frame.add(addText(label_button1,"","Arial",button1.getX(),button1.getY() + 13,400,30,true),0);
+        frame.add(addText(label_button2,client.player.getName(),"Arial",button2.getX(),button2.getY() + 13,400,30,true),0);
+        frame.add(addImage("images/Main_pictures/Player_property.png",button1.getX(),button1.getY()+56,400,217),0);
+        frame.add(addImage("images/Main_pictures/Player_property.png",button2.getX(),button2.getY()+56,400,217),0);
+
+        frame.add(BADSTRASSE_Companion,0);
+        //frame.repaint();
+
+        if(client.tradeState != TradeState.NULL) {
+        try {
+        ClientEvents.trade(this, client.tradePlayer, client.tradeState);
+        } catch (RemoteException ignored) {}
+        } else frame.repaint();
+        }
+ */
