@@ -12,7 +12,8 @@ public enum TradeState {
     CONFIRM,
     WAIT_FOR_CONFIRM,
     CONFIRMED,
-    IN_PROGRESS,
+    PERFORM,
     FINISH,
+    IN_PROGRESS,
     SERVER_FAIL
 }

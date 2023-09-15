@@ -1,6 +1,5 @@
 package monopol.client;
 
-import monopol.constants.IPurchasable;
 import monopol.constants.Plant;
 import monopol.constants.Street;
 import monopol.constants.TrainStation;
@@ -29,12 +28,7 @@ public class Client {
     private final IServer serverInterface;
     public final ClientPlayer player;
     public DisconnectReason disconnectReason = null;
-    public TradeState tradeState = TradeState.NULL;
-    public String tradePlayer = null;
-    public boolean counterOfferSend;
-    public boolean tradePlayerConfirmed;
-    public final ArrayList<IPurchasable> offer = new ArrayList<>();
-    public final ArrayList<IPurchasable> counteroffer = new ArrayList<>();
+    public final TradeData tradeData = new TradeData();
 
     private final Thread clientThread = new Thread() {
         @Override
@@ -113,80 +107,81 @@ public class Client {
                     TradeState state = TradeState.valueOf((String) message.getMessage()[0]);
                     switch (state) {
                         case ABORT -> {
-                            if(tradeState != TradeState.NULL && tradePlayer.equals(message.getMessage()[1])) {
-                                tradeState = TradeState.ABORT;
+                            if(tradeData.tradeState != TradeState.NULL && tradeData.tradePlayer.equals(message.getMessage()[1])) {
+                                tradeData.tradeState = TradeState.ABORT;
                             }
                         }
                         case ACCEPT -> {
-                            if(tradeState == TradeState.WAIT_FOR_ACCEPT && tradePlayer.equals(message.getMessage()[1])) {
-                                tradeState = TradeState.CHANGE_OFFER;
+                            if(tradeData.tradeState == TradeState.WAIT_FOR_ACCEPT && tradeData.tradePlayer.equals(message.getMessage()[1])) {
+                                tradeData.tradeState = TradeState.CHANGE_OFFER;
                             }
                         }
                         case CHANGE_OFFER -> {
-                            if(tradeState != TradeState.NULL && tradePlayer.equals(message.getMessage()[1])) {
-                                counterOfferSend = false;
+                            if(tradeData.tradeState != TradeState.NULL && tradeData.tradePlayer.equals(message.getMessage()[1])) {
+                                tradeData.counterOfferSend = false;
                             }
                         }
                         case CONFIRM -> {
-                            if((tradeState == TradeState.CONFIRM || tradeState == TradeState.WAIT_FOR_CONFIRM) && tradePlayer.equals(message.getMessage()[1])) {
-                                tradePlayerConfirmed = true;
-                                tradeState = TradeState.CONFIRMED;
+                            if((tradeData.tradeState == TradeState.CONFIRM || tradeData.tradeState == TradeState.WAIT_FOR_CONFIRM) && tradeData.tradePlayer.equals(message.getMessage()[1])) {
+                                tradeData.tradePlayerConfirmed = true;
+                                tradeData.tradeState = TradeState.CONFIRMED;
                             }
                         }
                         case DENY -> {
-                            if(tradeState != TradeState.NULL && tradePlayer.equals(message.getMessage()[1])) {
-                                tradeState = TradeState.DENY;
+                            if(tradeData.tradeState != TradeState.NULL && tradeData.tradePlayer.equals(message.getMessage()[1])) {
+                                tradeData.tradeState = TradeState.DENY;
                             }
                         }
                         case FINISH -> {
-                            if(tradeState == TradeState.WAIT_FOR_CONFIRM && tradePlayer.equals(message.getMessage()[1])) {
-                                tradeState = TradeState.FINISH;
+                            if(tradeData.tradeState == TradeState.WAIT_FOR_CONFIRM && tradeData.tradePlayer.equals(message.getMessage()[1])) {
+                                tradeData.tradeState = TradeState.FINISH;
                             }
                         }
                         case IN_PROGRESS -> {
-                            if(tradeState != TradeState.NULL && tradePlayer.equals(message.getMessage()[1])) {
-                                tradeState = TradeState.IN_PROGRESS;
+                            if(tradeData.tradeState != TradeState.NULL && tradeData.tradePlayer.equals(message.getMessage()[1])) {
+                                tradeData.tradeState = TradeState.IN_PROGRESS;
                             }
                         }
                         case NULL -> {
-                            if(tradeState != TradeState.NULL) {
-                                tradeState = TradeState.NULL;
-                                tradePlayer = null;
+                            if(tradeData.tradeState != TradeState.NULL) {
+                                tradeData.tradeState = TradeState.NULL;
+                                tradeData.tradePlayer = null;
                             }
                         }
                         case SEND_OFFER -> {
-                            if((tradeState == TradeState.CHANGE_OFFER || tradeState == TradeState.SEND_OFFER || tradeState == TradeState.CONFIRM) && tradePlayer.equals(message.getMessage()[1])) {
+                            if((tradeData.tradeState == TradeState.CHANGE_OFFER || tradeData.tradeState == TradeState.SEND_OFFER || tradeData.tradeState == TradeState.CONFIRM) && tradeData.tradePlayer.equals(message.getMessage()[1])) {
 
-                                System.out.println("Neues Angebot");
-                                counteroffer.removeAll(counteroffer);
+                                tradeData.counterofferCards.removeAll(tradeData.counterofferCards);
                                 for(String string : (ArrayList<String>) message.getMessage()[2]) {
                                     try {
-                                        counteroffer.add(Street.valueOf(string));
+                                        tradeData.counterofferCards.add(Street.valueOf(string));
                                     } catch (Exception ignored) {}
                                     try {
-                                        counteroffer.add(TrainStation.valueOf(string));
+                                        tradeData.counterofferCards.add(TrainStation.valueOf(string));
                                     } catch (Exception ignored) {}
                                     try {
-                                        counteroffer.add(Plant.valueOf(string));
+                                        tradeData.counterofferCards.add(Plant.valueOf(string));
                                     } catch (Exception ignored) {}
                                 }
 
-                                counterOfferSend = true;
-                                if(tradeState != TradeState.CONFIRM) tradeState = TradeState.SEND_OFFER;
+                                tradeData.counterOfferMoney = (int) message.getMessage()[3];
+
+                                tradeData.counterOfferSend = true;
+                                if(tradeData.tradeState != TradeState.CONFIRM) tradeData.tradeState = TradeState.SEND_OFFER;
                             }
                         }
                         case SERVER_FAIL -> {
-                            if(tradeState != TradeState.NULL /*TODO other conditions*/) {
-                                tradeState = TradeState.SERVER_FAIL;
+                            if(tradeData.tradeState != TradeState.NULL /*TODO other conditions*/) {
+                                tradeData.tradeState = TradeState.SERVER_FAIL;
                             }
                         }
                         case WAIT_FOR_CONFIRM -> {
-                            tradePlayerConfirmed = true;
+                            tradeData.tradePlayerConfirmed = true;
                         }
                         case WAIT_FOR_ACCEPT -> {
-                            if(tradeState == TradeState.NULL) {
-                                tradeState = TradeState.ACCEPT;
-                                tradePlayer = (String) message.getMessage()[1];
+                            if(tradeData.tradeState == TradeState.NULL) {
+                                tradeData.tradeState = TradeState.ACCEPT;
+                                tradeData.tradePlayer = (String) message.getMessage()[1];
                             } else {
                                 Object[] array = new Object[2];
                                 array[0] = TradeState.IN_PROGRESS;

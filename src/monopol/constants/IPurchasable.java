@@ -1,6 +1,8 @@
 package monopol.constants;
 
-public interface IPurchasable extends IField {
+import java.io.Serializable;
+
+public interface IPurchasable extends IField, Serializable {
     void setOwner(String owner);
     String getOwner();
 }

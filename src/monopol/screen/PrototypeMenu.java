@@ -21,6 +21,7 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.Map;
 
 public class PrototypeMenu {
     public final JFrame frame = new JFrame("Monopoly - PrototypeWindow");
@@ -52,6 +53,7 @@ public class PrototypeMenu {
         Monopoly.INSTANCE.setState(GameState.MAIN_MENU);
         displayedServerPlayers = new ArrayList<>();
         frame.getContentPane().removeAll();
+        if(lobbyThread.isAlive()) lobbyThread.interrupt();
         frame.repaint();
 
         frame.add(addButton("invisible", 0, 0, 0, 0, true, actionEvent -> {}));
@@ -93,6 +95,7 @@ public class PrototypeMenu {
     public void prepareLobby() {
         Monopoly.INSTANCE.setState(GameState.LOBBY);
         frame.getContentPane().removeAll();
+        if(lobbyThread.isAlive()) lobbyThread.interrupt();
         frame.repaint();
 
         Thread lobbyThread = new Thread() {
@@ -233,10 +236,17 @@ public class PrototypeMenu {
         lobbyThread.start();
     }
 
+    Thread lobbyThread = new Thread() {
+        @Override
+        public void run() {
+            //Do nothing
+        }
+    };
+
     public void prepareGame() {
         Monopoly.INSTANCE.setState(GameState.RUNNING);
         frame.getContentPane().removeAll();
-        //frame.repaint();
+        if(lobbyThread.isAlive()) lobbyThread.interrupt();
 
         for(int i = 0; i < clients.size(); i++) {
             frame.add(addPlayerButton(i));
@@ -299,8 +309,8 @@ public class PrototypeMenu {
         frame.add(addImage("images/felder/los.png", 0, 990));
         frame.add(addImage("images/felder/freiparken.png", 930, 60));
         frame.add(addImage("images/felder/ins_gefaengnis.png", 930, 990));
-        //REPAINT
-        frame.repaint();
+        //no REPAINT
+        //frame.repaint();
 
         frame.add(addButton("Handeln", JUtils.getX(300), JUtils.getY(500), 200, 50, true, actionEvent -> {
             try {
@@ -339,14 +349,14 @@ public class PrototypeMenu {
 
 
         int X = 1160;
-        JLabel label_moneyCommpanion = addText("2"+"$",X+110,342,200,30,false);
-        JLabel busfahrkarten_Commpanion = addText("5",X-57,307,20,30,false);
-        JLabel gefängnisfreikarte_Commpanion = addText("4",X+243,315,13,24,false);
+        JLabel label_moneyCommpanion = addText("----",X+95,342,200,30,false);
+        JLabel busfahrkarten_Commpanion = addText("-",X-57,307,20,30,false);
+        JLabel gefängnisfreikarte_Commpanion = addText("-",X+243,315,13,24,false);
 
         X = 1579;
-        JLabel label_moneyPlayer = addText("1002"+"$",X+110,342,200,30,false);
-        JLabel busfahrkarten_player = addText("3",X-57,307,20,30,false);
-        JLabel gefängnisfreikarte_player = addText("2",X+243,315,13,24,false);
+        JLabel label_moneyPlayer = addText("----",X+95,342,200,30,false);
+        JLabel busfahrkarten_player = addText("-",X-57,307,20,30,false);
+        JLabel gefängnisfreikarte_player = addText("-",X+243,315,13,24,false);
 
         int x = 1060 + 15;
         int y = 148;
@@ -449,18 +459,31 @@ public class PrototypeMenu {
         JLabel HAUPTBAHNHOF_Companion = addImage("images/kleine_karten/train.png",x+170,y+150,20,40);
 
 
-        Thread lobbyThread = new Thread(){
+        lobbyThread = new Thread(){
             @Override
             public void run(){
                 ServerPlayer serverPlayer;
+                ServerPlayer oldServerPlayer = null;
                 Street street = Street.values()[0];
                 while(!interrupted()){
+
+                    //If the selected player disconnected, check if there is another
+                    while(!isInterrupted() && client.player.getName() == null) {
+                        if(client.closed()) {
+                            interrupt();
+                            prepareMenu();
+                            return;
+                        }
+                    }
 
                     try {
                         serverPlayer = client.serverMethod().getServerPlayers().get(currentPlayer[0]);
                     } catch (RemoteException e) {
-                        throw new RuntimeException(e);
+                        client.close();
+                        continue;
                     }
+                    if(oldServerPlayer == null) oldServerPlayer = serverPlayer;
+
                     label_button1.setText(serverPlayer.getName());
 
                     //ClientEvents.updateOwner(client);
@@ -468,6 +491,13 @@ public class PrototypeMenu {
 
                     label_moneyCommpanion.setIcon(new ImageIcon());
                     //System.out.println(label_moneyCommpanion.getIcon());
+
+                    try {
+                        label_moneyPlayer.setText(client.serverMethod().getServerPlayer(client.player.getName()).getMoney() + "€");
+                    } catch (RemoteException e) {
+                        client.close();
+                    }
+                    label_moneyCommpanion.setText(serverPlayer.getMoney() + "€");
 
                     BADSTRASSE.setIcon(new ImageIcon(Street.BADSTRASSE.getOwner().equals(serverPlayer.getName()) ? "images/kleine_karten/brown_filled.png" : "images/kleine_karten/brown.png"));
                     TURMSTRASSE.setIcon(new ImageIcon(Street.TURMSTRASSE.getOwner().equals(serverPlayer.getName()) ? "images/kleine_karten/brown_filled.png" : "images/kleine_karten/brown.png"));
@@ -484,9 +514,9 @@ public class PrototypeMenu {
                     MARKTPLATZ.setIcon(new ImageIcon(Street.MARKTPLATZ.getOwner().equals(serverPlayer.getName()) ? "images/kleine_karten/pink_filled.png" : "images/kleine_karten/pink.png"));
 
                     MUENCHENERSTRASSE.setIcon(new ImageIcon(Street.MUENCHENERSTRASSE.getOwner().equals(serverPlayer.getName()) ? "images/kleine_karten/orange_filled.png" : "images/kleine_karten/orange.png"));
-                    WIENERSTRASSE.setIcon(new ImageIcon(Street.WIENERSTRASSE.getOwner().equals(serverPlayer.getName()) ? "images/kleine_karten/orange_filled.png" : "images/kleine_karten/pink.png"));
-                    BERLINERSTRASSE.setIcon(new ImageIcon(Street.BERLINERSTRASSE.getOwner().equals(serverPlayer.getName()) ? "images/kleine_karten/orange_filled.png" : "images/kleine_karten/pink.png"));
-                    HAMBURGERSTRASSE.setIcon(new ImageIcon(Street.HAMBURGERSTRASSE.getOwner().equals(serverPlayer.getName()) ? "images/kleine_karten/orange_filled.png" : "images/kleine_karten/pink.png"));
+                    WIENERSTRASSE.setIcon(new ImageIcon(Street.WIENERSTRASSE.getOwner().equals(serverPlayer.getName()) ? "images/kleine_karten/orange_filled.png" : "images/kleine_karten/orange.png"));
+                    BERLINERSTRASSE.setIcon(new ImageIcon(Street.BERLINERSTRASSE.getOwner().equals(serverPlayer.getName()) ? "images/kleine_karten/orange_filled.png" : "images/kleine_karten/orange.png"));
+                    HAMBURGERSTRASSE.setIcon(new ImageIcon(Street.HAMBURGERSTRASSE.getOwner().equals(serverPlayer.getName()) ? "images/kleine_karten/orange_filled.png" : "images/kleine_karten/orange.png"));
 
                     THEATERSTRASSE.setIcon(new ImageIcon(Street.THEATERSTRASSE.getOwner().equals(serverPlayer.getName()) ? "images/kleine_karten/red_filled.png" : "images/kleine_karten/red.png"));
                     MUSEUMSTRASSE.setIcon(new ImageIcon(Street.MUSEUMSTRASSE.getOwner().equals(serverPlayer.getName()) ? "images/kleine_karten/red_filled.png" : "images/kleine_karten/red.png"));
@@ -532,9 +562,9 @@ public class PrototypeMenu {
                     MARKTPLATZ_Companion.setIcon(new ImageIcon(Street.MARKTPLATZ.getOwner().equals(client.player.getName()) ? "images/kleine_karten/pink_filled.png" : "images/kleine_karten/pink.png"));
 
                     MUENCHENERSTRASSE_Companion.setIcon(new ImageIcon(Street.MUENCHENERSTRASSE.getOwner().equals(client.player.getName()) ? "images/kleine_karten/orange_filled.png" : "images/kleine_karten/orange.png"));
-                    WIENERSTRASSE_Companion.setIcon(new ImageIcon(Street.WIENERSTRASSE.getOwner().equals(client.player.getName()) ? "images/kleine_karten/orange_filled.png" : "images/kleine_karten/pink.png"));
-                    BERLINERSTRASSE_Companion.setIcon(new ImageIcon(Street.BERLINERSTRASSE.getOwner().equals(client.player.getName()) ? "images/kleine_karten/orange_filled.png" : "images/kleine_karten/pink.png"));
-                    HAMBURGERSTRASSE_Companion.setIcon(new ImageIcon(Street.HAMBURGERSTRASSE.getOwner().equals(client.player.getName()) ? "images/kleine_karten/orange_filled.png" : "images/kleine_karten/pink.png"));
+                    WIENERSTRASSE_Companion.setIcon(new ImageIcon(Street.WIENERSTRASSE.getOwner().equals(client.player.getName()) ? "images/kleine_karten/orange_filled.png" : "images/kleine_karten/orange.png"));
+                    BERLINERSTRASSE_Companion.setIcon(new ImageIcon(Street.BERLINERSTRASSE.getOwner().equals(client.player.getName()) ? "images/kleine_karten/orange_filled.png" : "images/kleine_karten/orange.png"));
+                    HAMBURGERSTRASSE_Companion.setIcon(new ImageIcon(Street.HAMBURGERSTRASSE.getOwner().equals(client.player.getName()) ? "images/kleine_karten/orange_filled.png" : "images/kleine_karten/orange.png"));
 
                     THEATERSTRASSE_Companion.setIcon(new ImageIcon(Street.THEATERSTRASSE.getOwner().equals(client.player.getName()) ? "images/kleine_karten/red_filled.png" : "images/kleine_karten/red.png"));
                     MUSEUMSTRASSE_Companion.setIcon(new ImageIcon(Street.MUSEUMSTRASSE.getOwner().equals(client.player.getName()) ? "images/kleine_karten/red_filled.png" : "images/kleine_karten/red.png"));
@@ -564,12 +594,37 @@ public class PrototypeMenu {
                     NORDBAHNHOF_Companion.setIcon(new ImageIcon(TrainStation.NORDBAHNHOF.getOwner().equals(client.player.getName()) ? "images/kleine_karten/train_filled.png" : "images/kleine_karten/train.png"));
                     HAUPTBAHNHOF_Companion.setIcon(new ImageIcon(TrainStation.HAUPTBAHNHOF.getOwner().equals(client.player.getName()) ? "images/kleine_karten/train_filled.png" : "images/kleine_karten/train.png"));
 
+                    boolean shouldRepaint = false;
+                    try {
+                        for (Map.Entry<IPurchasable, String> entry : client.serverMethod().getOwnerMap().entrySet()) {
+                            if(entry.getKey() instanceof Street value) {
+                                for(Street value2 : Street.values()) {
+                                    if(value2.name.equals(value.name)) shouldRepaint = shouldRepaint || !(value2.getOwner().equals(value.getOwner()));
+                                }
+                            }
+                            else if(entry.getKey() instanceof TrainStation value) {
+                                for(TrainStation value2 : TrainStation.values()) {
+                                    if(value2.name.equals(value.name)) shouldRepaint = shouldRepaint || !(value2.getOwner().equals(value.getOwner()));
+                                }
+                            }
+                            else if(entry.getKey() instanceof Plant value) {
+                                for(Plant value2 : Plant.values()) {
+                                    if(value2.name.equals(value.name)) shouldRepaint = shouldRepaint || !(value2.getOwner().equals(value.getOwner()));
+                                }
+                            }
+                        }
+                    } catch (RemoteException e) {
+                        client.close();
+                    }
+                    if(shouldRepaint) System.out.println("Should repaint"); //Debug output
+                    if(!(serverPlayer.getBusfahrkarten() == oldServerPlayer.getBusfahrkarten() && serverPlayer.getGefaengniskarten() == oldServerPlayer.getGefaengniskarten() && serverPlayer.getMoney() == oldServerPlayer.getMoney()) || shouldRepaint) {
+                        frame.repaint();
+                    }
+                    oldServerPlayer = serverPlayer;
 
                     try {
                         sleep(100);
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
-                    }
+                    } catch (InterruptedException ignored) {}
                 }
 
             }
@@ -586,13 +641,13 @@ public class PrototypeMenu {
 
         frame.add(addButton(button2,null,1479,90,400,60,true,"images/Main_pictures/Player_display.png",actionevent ->  {}),0);
         frame.add(addText(label_button1,"","Arial",1060,90 + 13,400,30,true),0);
-        frame.add(addText(label_button2,client.player.getName(),"Arial",1479,90 + 13,400,30,true),0);
+        frame.add(addText(label_button2, client.player.getName(),"Arial",1479,90 + 13,400,30,true),0);
         frame.add(addImage("images/Main_pictures/Player_property.png",1060,135,400,247),0);
         frame.add(addImage("images/Main_pictures/Player_property.png",1479,135,400,247),0);
 
         X = 1160;
         frame.add(addImage("images/Main_pictures/money_underlay.png",X,340,200,33),0);
-        frame.add(addText("Money: ",X+10,340,152,30,false),0);
+        frame.add(addText("Geld: ",X+25,342,152,30,false),0);
         frame.add(label_moneyCommpanion,0);
         frame.add(addImage("images/Main_pictures/busfahrkarte_rechts.png",X-100+15,250,70,90),0);
         frame.add(addText("Busfahrkarte",X-100+19,259,160,12,false),0);
@@ -604,7 +659,7 @@ public class PrototypeMenu {
 
         X = 1579;
         frame.add(addImage("images/Main_pictures/money_underlay.png",X,340,200,33),0);
-        frame.add(addText("Money: ",X+10,340,152,30,false),0);
+        frame.add(addText("Geld: ",X+25,342,152,30,false),0);
         frame.add(label_moneyPlayer,0);
         frame.add(addImage("images/Main_pictures/busfahrkarte_rechts.png",X-100+15,250,70,90),0);
         frame.add(addText("Busfahrkarte",X-100+19,259,160,12,false),0);
@@ -753,12 +808,15 @@ public class PrototypeMenu {
 
 
 
-        frame.repaint();
+        //frame.repaint();
 
-        if(client.tradeState != TradeState.NULL) {
+        if(client.tradeData.tradeState != TradeState.NULL) {
             try {
-                ClientEvents.trade(this, client.tradePlayer, client.tradeState);
-            } catch (RemoteException ignored) {}
+                ClientEvents.trade(this, client.tradeData.tradePlayer, client.tradeData.tradeState);
+            } catch (RemoteException e) {
+                frame.repaint();
+                client.close();
+            }
         } else frame.repaint();
     }
 
@@ -1162,7 +1220,6 @@ public class PrototypeMenu {
         for(Street street : Street.values()) street.setOwner("Player 1");
         for(TrainStation trainStation : TrainStation.values()) trainStation.setOwner("Player 1");
         for(Plant plant : Plant.values()) plant.setOwner("Player 1");
-
     }
 }
 

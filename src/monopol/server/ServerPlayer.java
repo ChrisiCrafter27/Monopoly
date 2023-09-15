@@ -4,9 +4,9 @@ import java.io.Serializable;
 
 public class ServerPlayer implements Serializable {
     private String name;
-    private int money;
-    private int gefängniskarten;
-    private int busfahrkarten;
+    private int money = 1000;
+    private int gefängniskarten = 0;
+    private int busfahrkarten = 0;
 
     public ServerPlayer(String name) {
         this.name = name;
@@ -18,7 +18,7 @@ public class ServerPlayer implements Serializable {
     public int getMoney() {
         return money;
     }
-    public int getGefängniskarten(){ return gefängniskarten; }
+    public int getGefaengniskarten(){ return gefängniskarten; }
     public int getBusfahrkarten(){ return busfahrkarten; }
 
     public void setName(String name) {

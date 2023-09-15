@@ -13,7 +13,6 @@ import java.awt.*;
 import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 
 public class ClientEvents {
@@ -23,7 +22,7 @@ public class ClientEvents {
         ClientPlayer clientPlayer = client.player;
         String player1 = clientPlayer.getName();
 
-        client.tradeState = state;
+        client.tradeData.tradeState = state;
 
         ArrayList<JButton> buttonsToDisable = new ArrayList<>();
         for(Component component : frame.getContentPane().getComponents()) {
@@ -37,17 +36,19 @@ public class ClientEvents {
         switch (state) {
             case CHOOSE_PLAYER -> {
                 //Print a list of all other players with a button to send a trade invite
-                client.offer.removeAll(client.offer);
-                client.counteroffer.removeAll(client.counteroffer);
-                client.counterOfferSend = false;
-                client.tradePlayerConfirmed = false;
+                client.tradeData.offerCards.removeAll(client.tradeData.offerCards);
+                client.tradeData.counterofferCards.removeAll(client.tradeData.counterofferCards);
+                client.tradeData.offerMoney = 0;
+                client.tradeData.counterOfferMoney = 0;
+                client.tradeData.counterOfferSend = false;
+                client.tradeData.tradePlayerConfirmed = false;
                 int i = 0;
                 for(ServerPlayer serverPlayer : client.serverMethod().getServerPlayers()) {
                     if(!player1.equals(serverPlayer.getName())) {
                         frame.add(menu.addButton(serverPlayer.getName(), 1920 / 2 - 250, 200 + (75 * i), 500, 50, true, actionEvent -> {
                             try {
-                                client.tradePlayer = serverPlayer.getName();
-                                client.tradeState = TradeState.WAIT_FOR_ACCEPT;
+                                client.tradeData.tradePlayer = serverPlayer.getName();
+                                client.tradeData.tradeState = TradeState.WAIT_FOR_ACCEPT;
                                 Object[] array = new Object[2];
                                 array[0] = TradeState.WAIT_FOR_ACCEPT;
                                 array[1] = player1;
@@ -61,19 +62,19 @@ public class ClientEvents {
                     }
                 }
                 frame.add(menu.addButton("Handel abbrechen", 1920/2-100, 1080-100, 200, 50, true, actionEvent -> {
-                    client.tradePlayer = null;
-                    client.tradeState = TradeState.NULL;
+                    client.tradeData.tradePlayer = null;
+                    client.tradeData.tradeState = TradeState.NULL;
                     menu.prepareGame();
                 }), 0);
             }
             case WAIT_FOR_ACCEPT -> {
                 //Print a waiting screen and an interrupt button for accepting
-                client.tradePlayer = player2;
+                client.tradeData.tradePlayer = player2;
                 if(player2 == null) return;
                 frame.add(menu.addText("Warte, bis " + player2 + " deine Einladungs akzeptiert", 1920/2-500, 1020/2-50, 1000, 20, true), 0);
                 frame.add(menu.addButton("Handel abbrechen", 1920/2-100, 1020/2+50, 200, 50, true, actionEvent -> {
-                    client.tradePlayer = null;
-                    client.tradeState = TradeState.NULL;
+                    client.tradeData.tradePlayer = null;
+                    client.tradeData.tradeState = TradeState.NULL;
                     Object[] array = new Object[2];
                     array[0] = TradeState.ABORT;
                     array[1] = player1;
@@ -88,7 +89,7 @@ public class ClientEvents {
                     public void run() {
                         while (!isInterrupted()) {
                             if(menu.client != client) return;
-                            if(client.tradeState != TradeState.WAIT_FOR_ACCEPT) {
+                            if(client.tradeData.tradeState != TradeState.WAIT_FOR_ACCEPT) {
                                 menu.prepareGame();
                                 return;
                             }
@@ -102,15 +103,17 @@ public class ClientEvents {
             case ACCEPT -> {
                 //Print buttons to accept or deny invite
                 if(player2 == null) return;
-                client.offer.removeAll(client.offer);
-                client.counteroffer.removeAll(client.counteroffer);
-                client.counterOfferSend = false;
-                client.tradePlayerConfirmed = false;
-                client.tradePlayer = player2;
+                client.tradeData.offerCards.removeAll(client.tradeData.offerCards);
+                client.tradeData.counterofferCards.removeAll(client.tradeData.counterofferCards);
+                client.tradeData.offerMoney = 0;
+                client.tradeData.counterOfferMoney = 0;
+                client.tradeData.counterOfferSend = false;
+                client.tradeData.tradePlayerConfirmed = false;
+                client.tradeData.tradePlayer = player2;
                 frame.add(menu.addText(player2 + " möchte mit dir handeln", 1920/2-500, 1020/2-50, 1000, 20, true), 0);
                 frame.add(menu.addButton("Angebot ablehnen", 1920/2-100-150, 1020/2+50, 200, 50, true, actionEvent -> {
-                    client.tradePlayer = null;
-                    client.tradeState = TradeState.NULL;
+                    client.tradeData.tradePlayer = null;
+                    client.tradeData.tradeState = TradeState.NULL;
                     Object[] array = new Object[2];
                     array[0] = TradeState.DENY;
                     array[1] = player1;
@@ -121,7 +124,7 @@ public class ClientEvents {
                     }
                 }), 0);
                 frame.add(menu.addButton("Angebot annehmen", 1920/2-100+150, 1020/2+50, 200, 50, true, actionEvent -> {
-                    client.tradeState = TradeState.CHANGE_OFFER;
+                    client.tradeData.tradeState = TradeState.CHANGE_OFFER;
                     Object[] array = new Object[2];
                     array[0] = TradeState.ACCEPT;
                     array[1] = player1;
@@ -136,7 +139,7 @@ public class ClientEvents {
                     public void run() {
                         while (!isInterrupted()) {
                             if(menu.client != client) return;
-                            if(client.tradeState != TradeState.ACCEPT) {
+                            if(client.tradeData.tradeState != TradeState.ACCEPT) {
                                 menu.prepareGame();
                                 return;
                             }
@@ -152,26 +155,28 @@ public class ClientEvents {
                 if(player2 == null) return;
                 frame.add(menu.addText(player2 + " hat deine Einladung abgelehnt", 1920/2-500, 1020/2-50, 1000, 20, true), 0);
                 frame.add(menu.addButton("Okay", 1920/2-100, 1020/2+50, 200, 50, true, actionEvent -> {
-                    client.tradePlayer = null;
-                    client.tradeState = TradeState.NULL;
+                    client.tradeData.tradePlayer = null;
+                    client.tradeData.tradeState = TradeState.NULL;
                     menu.prepareGame();
                 }), 0);
             }
             case ABORT -> {
+                //Print a screen that says that the trade was aborted
                 if(player2 == null) return;
                 frame.add(menu.addText(player2 + " hat den Handel abgebrochen", 1920/2-500, 1020/2-50, 1000, 20, true), 0);
                 frame.add(menu.addButton("Okay", 1920/2-100, 1020/2+50, 200, 50, true, actionEvent -> {
-                    client.tradePlayer = null;
-                    client.tradeState = TradeState.NULL;
+                    client.tradeData.tradePlayer = null;
+                    client.tradeData.tradeState = TradeState.NULL;
                     menu.prepareGame();
                 }), 0);
             }
             case IN_PROGRESS -> {
+                //Print a screen that says that the target player is already trading
                 if(player2 == null) return;
                 frame.add(menu.addText(player2 + " handelt schon", 1920/2-500, 1020/2-50, 1000, 20, true), 0);
                 frame.add(menu.addButton("Okay", 1920/2-100, 1020/2+50, 200, 50, true, actionEvent -> {
-                    client.tradePlayer = null;
-                    client.tradeState = TradeState.NULL;
+                    client.tradeData.tradePlayer = null;
+                    client.tradeData.tradeState = TradeState.NULL;
                     menu.prepareGame();
                 }), 0);
             }
@@ -183,12 +188,79 @@ public class ClientEvents {
                 frame.add(menu.addText("Angebot von dir", 0, 100, 1920/2, 20, true), 0);
                 frame.add(menu.addText("Angebot von " + player2, 1920/2, 100, 1920/2, 20, true), 0);
 
-                addTradeInfo(menu, client.counteroffer, player2, 1920/4+1920/4+1920/4-40-40-40-15-15-15-10-10, 200);
+                addTradeInfo(menu, client.tradeData.counterofferCards, player2, 1920/4+1920/4+1920/4-40-40-40-15-15-15-10-10, 200);
                 addTradeButtons(menu, client, player1, 1920/4-40-40-40-15-15-15-10-10, 200);
+                menu.frame.add(menu.addText(client.tradeData.counterOfferMoney + "€", 1920/4+1920/4+1920/4-100, 460, 200, 20, true), 0);
+                menu.frame.add(menu.addText(client.tradeData.offerMoney + "€", 1920/4-100, 460, 200, 20, true), 0);
 
-                frame.add(menu.addButton("Handel abbrechen", 1920/2-100, 1080-225, 200, 50, true, actionEvent -> {
-                    client.tradePlayer = null;
-                    client.tradeState = TradeState.NULL;
+                menu.frame.add(menu.addButton("-1", 1920/4-50-50-50, 500, 100, 25, true, actionEvent -> {
+                    if(client.tradeData.offerMoney > 0) client.tradeData.offerMoney -= 1;
+                    client.tradeData.tradeState = TradeState.SEND_OFFER;
+                }), 0);
+                menu.frame.add(menu.addButton("+1", 1920/4-50+50+50, 500, 100, 25, true, actionEvent -> {
+                    client.tradeData.offerMoney += 1; //TODO condition: player has enough money
+                    client.tradeData.tradeState = TradeState.SEND_OFFER;
+                }), 0);
+                menu.frame.add(menu.addButton("-5", 1920/4-50-50-50, 500+30, 100, 25, true, actionEvent -> {
+                    if(client.tradeData.offerMoney >= 5) client.tradeData.offerMoney -= 5;
+                    client.tradeData.tradeState = TradeState.SEND_OFFER;
+                }), 0);
+                menu.frame.add(menu.addButton("+5", 1920/4-50+50+50, 500+30, 100, 25, true, actionEvent -> {
+                    client.tradeData.offerMoney += 5; //TODO condition: player has enough money
+                    client.tradeData.tradeState = TradeState.SEND_OFFER;
+                }), 0);
+                menu.frame.add(menu.addButton("-10", 1920/4-50-50-50, 500+60, 100, 25, true, actionEvent -> {
+                    if(client.tradeData.offerMoney >= 10) client.tradeData.offerMoney -= 10;
+                    client.tradeData.tradeState = TradeState.SEND_OFFER;
+                }), 0);
+                menu.frame.add(menu.addButton("+10", 1920/4-50+50+50, 500+60, 100, 25, true, actionEvent -> {
+                    client.tradeData.offerMoney += 10; //TODO condition: player has enough money
+                    client.tradeData.tradeState = TradeState.SEND_OFFER;
+                }), 0);
+                menu.frame.add(menu.addButton("-20", 1920/4-50-50-50, 500+90, 100, 25, true, actionEvent -> {
+                    if(client.tradeData.offerMoney >= 20) client.tradeData.offerMoney -= 20;
+                    client.tradeData.tradeState = TradeState.SEND_OFFER;
+                }), 0);
+                menu.frame.add(menu.addButton("+20", 1920/4-50+50+50, 500+90, 100, 25, true, actionEvent -> {
+                    client.tradeData.offerMoney += 20; //TODO condition: player has enough money
+                    client.tradeData.tradeState = TradeState.SEND_OFFER;
+                }), 0);
+                menu.frame.add(menu.addButton("-50", 1920/4-50-50-50, 500+120, 100, 25, true, actionEvent -> {
+                    if(client.tradeData.offerMoney >= 50) client.tradeData.offerMoney -= 50;
+                    client.tradeData.tradeState = TradeState.SEND_OFFER;
+                }), 0);
+                menu.frame.add(menu.addButton("+50", 1920/4-50+50+50, 500+120, 100, 25, true, actionEvent -> {
+                    client.tradeData.offerMoney += 50; //TODO condition: player has enough money
+                    client.tradeData.tradeState = TradeState.SEND_OFFER;
+                }), 0);
+                menu.frame.add(menu.addButton("-100", 1920/4-50-50-50, 500+150, 100, 25, true, actionEvent -> {
+                    if(client.tradeData.offerMoney >= 100) client.tradeData.offerMoney -= 100;
+                    client.tradeData.tradeState = TradeState.SEND_OFFER;
+                }), 0);
+                menu.frame.add(menu.addButton("+100", 1920/4-50+50+50, 500+150, 100, 25, true, actionEvent -> {
+                    client.tradeData.offerMoney += 100; //TODO condition: player has enough money
+                    client.tradeData.tradeState = TradeState.SEND_OFFER;
+                }), 0);
+                menu.frame.add(menu.addButton("-500", 1920/4-50-50-50, 500+180, 100, 25, true, actionEvent -> {
+                    if(client.tradeData.offerMoney >= 500) client.tradeData.offerMoney -= 500;
+                    client.tradeData.tradeState = TradeState.SEND_OFFER;
+                }), 0);
+                menu.frame.add(menu.addButton("+500", 1920/4-50+50+50, 500+180, 100, 25, true, actionEvent -> {
+                    client.tradeData.offerMoney += 500; //TODO condition: player has enough money
+                    client.tradeData.tradeState = TradeState.SEND_OFFER;
+                }), 0);
+                menu.frame.add(menu.addButton("-1000", 1920/4-50-50-50, 500+210, 100, 25, true, actionEvent -> {
+                    if(client.tradeData.offerMoney >= 1000) client.tradeData.offerMoney -= 1000;
+                    client.tradeData.tradeState = TradeState.SEND_OFFER;
+                }), 0);
+                menu.frame.add(menu.addButton("+1000", 1920/4-50+50+50, 500+210, 100, 25, true, actionEvent -> {
+                    client.tradeData.offerMoney += 1000; //TODO condition: player has enough money
+                    client.tradeData.tradeState = TradeState.SEND_OFFER;
+                }), 0);
+
+                frame.add(menu.addButton("Handel abbrechen", 1920/2-100-150, 1080-150, 200, 50, true, actionEvent -> {
+                    client.tradeData.tradePlayer = null;
+                    client.tradeData.tradeState = TradeState.NULL;
                     Object[] array = new Object[2];
                     array[0] = TradeState.ABORT;
                     array[1] = player1;
@@ -198,12 +270,13 @@ public class ClientEvents {
                         client.close();
                     }
                 }), 0);
-                frame.add(menu.addButton("Angebot absenden", 1920/2-100, 1080-150, 200, 50, true, actionEvent -> {
-                    client.tradeState = TradeState.CONFIRM;
-                    Object[] array = new Object[3];
+                frame.add(menu.addButton("Angebot absenden", 1920/2-100+150, 1080-150, 200, 50, true, actionEvent -> {
+                    client.tradeData.tradeState = TradeState.CONFIRM;
+                    Object[] array = new Object[4];
                     array[0] = TradeState.SEND_OFFER;
                     array[1] = player1;
-                    array[2] = client.offer;
+                    array[2] = client.tradeData.offerCards;
+                    array[3] = client.tradeData.offerMoney;
                     try {
                         client.serverMethod().sendMessage(player2, MessageType.TRADE, array);
                     } catch (IOException e) {
@@ -216,8 +289,8 @@ public class ClientEvents {
                     public void run() {
                         while (!isInterrupted()) {
                             if(menu.client != client) return;
-                            if(client.tradeState != TradeState.CHANGE_OFFER) {
-                                if(client.tradeState == TradeState.SEND_OFFER) client.tradeState = TradeState.CHANGE_OFFER;
+                            if(client.tradeData.tradeState != TradeState.CHANGE_OFFER) {
+                                if(client.tradeData.tradeState == TradeState.SEND_OFFER) client.tradeData.tradeState = TradeState.CHANGE_OFFER;
                                 menu.prepareGame();
                                 return;
                             }
@@ -229,8 +302,9 @@ public class ClientEvents {
                 }.start();
             }
             case SEND_OFFER -> {
+                //Set the trade state to change offer
                 if(player2 == null) return;
-                client.tradeState = TradeState.CHANGE_OFFER;
+                client.tradeData.tradeState = TradeState.CHANGE_OFFER;
                 menu.prepareGame();
             }
             case CONFIRM -> {
@@ -238,12 +312,14 @@ public class ClientEvents {
                 if(player2 == null) return;
                 frame.add(menu.addText("Angebot von dir", 0, 100, 1920/2, 20, true), 0);
                 frame.add(menu.addText("Angebot von " + player2, 1920/2, 100, 1920/2, 20, true), 0);
-                addTradeInfo(menu, client.counteroffer, player2, 1920/4+1920/4+1920/4-40-40-40-15-15-15-10-10, 200);
-                addTradeInfo(menu, client.offer, player1, 1920/4-40-40-40-15-15-15-10-10, 200);
+                addTradeInfo(menu, client.tradeData.counterofferCards, player2, 1920/4+1920/4+1920/4-40-40-40-15-15-15-10-10, 200);
+                addTradeInfo(menu, client.tradeData.offerCards, player1, 1920/4-40-40-40-15-15-15-10-10, 200);
+                menu.frame.add(menu.addText(client.tradeData.counterOfferMoney + "€", 1920/4+1920/4+1920/4-100, 460, 200, 20, true), 0);
+                menu.frame.add(menu.addText(client.tradeData.offerMoney + "€", 1920/4-100, 460, 200, 20, true), 0);
 
-                frame.add(menu.addButton("Handel abbrechen", 1920/2-175, 1080-150, 200, 50, true, actionEvent -> {
-                    client.tradePlayer = null;
-                    client.tradeState = TradeState.NULL;
+                frame.add(menu.addButton("Handel abbrechen", 1920/2-100-300, 1080-150, 200, 50, true, actionEvent -> {
+                    client.tradeData.tradePlayer = null;
+                    client.tradeData.tradeState = TradeState.NULL;
                     Object[] array = new Object[2];
                     array[0] = TradeState.ABORT;
                     array[1] = player1;
@@ -253,8 +329,8 @@ public class ClientEvents {
                         client.close();
                     }
                 }), 0);
-                frame.add(menu.addButton("Angebot bearbeiten", 1920/2-100, 1080-150, 200, 50, !client.tradePlayerConfirmed, actionEvent -> {
-                    client.tradeState = TradeState.CHANGE_OFFER;
+                frame.add(menu.addButton("Angebot bearbeiten", 1920/2-100, 1080-150, 200, 50, !client.tradeData.tradePlayerConfirmed, actionEvent -> {
+                    client.tradeData.tradeState = TradeState.CHANGE_OFFER;
                     Object[] array = new Object[3];
                     array[0] = TradeState.CHANGE_OFFER;
                     array[1] = player1;
@@ -264,8 +340,8 @@ public class ClientEvents {
                         client.close();
                     }
                 }), 0);
-                frame.add(menu.addButton("Handel abschließen", 1920/2-175, 1080-225, 550, 50, client.counterOfferSend, actionEvent -> {
-                    client.tradeState = TradeState.WAIT_FOR_CONFIRM;
+                frame.add(menu.addButton("Handel abschließen", 1920/2-100+300, 1080-150, 200, 50, client.tradeData.counterOfferSend, actionEvent -> {
+                    if(client.tradeData.tradePlayerConfirmed) client.tradeData.tradeState = TradeState.PERFORM; else client.tradeData.tradeState = TradeState.WAIT_FOR_CONFIRM;
                     Object[] array = new Object[2];
                     array[0] = TradeState.WAIT_FOR_CONFIRM;
                     array[1] = player1;
@@ -281,8 +357,8 @@ public class ClientEvents {
                     public void run() {
                         while (!isInterrupted()) {
                             if(menu.client != client) return;
-                            if(client.tradeState != TradeState.CONFIRM) {
-                                if(client.tradeState == TradeState.CONFIRMED) client.tradeState = TradeState.CONFIRM;
+                            if(client.tradeData.tradeState != TradeState.CONFIRM) {
+                                if(client.tradeData.tradeState == TradeState.CONFIRMED) client.tradeData.tradeState = TradeState.CONFIRM;
                                 menu.prepareGame();
                                 return;
                             }
@@ -298,16 +374,18 @@ public class ClientEvents {
                 if(player2 == null) return;
                 frame.add(menu.addText("Warte auf " + player2 + "...", 1920/2-500, 1020/2-50, 1000, 20, true), 0);
 
-                addTradeInfo(menu, client.counteroffer, player2, 1920/4+1920/4+1920/4-40-40-40-15-15-15-10-10, 200);
-                addTradeInfo(menu, client.offer, player1, 1920/4-40-40-40-15-15-15-10-10, 200);
+                addTradeInfo(menu, client.tradeData.counterofferCards, player2, 1920/4+1920/4+1920/4-40-40-40-15-15-15-10-10, 200);
+                addTradeInfo(menu, client.tradeData.offerCards, player1, 1920/4-40-40-40-15-15-15-10-10, 200);
+                menu.frame.add(menu.addText(client.tradeData.counterOfferMoney + "€", 1920/4+1920/4+1920/4-100, 460, 200, 20, true), 0);
+                menu.frame.add(menu.addText(client.tradeData.offerMoney + "€", 1920/4-100, 460, 200, 20, true), 0);
 
                 new Thread() {
                     @Override
                     public void run() {
                         while (!isInterrupted()) {
                             if(menu.client != client) return;
-                            if(client.tradePlayerConfirmed) client.tradeState = TradeState.CONFIRMED;
-                            if(client.tradeState != TradeState.WAIT_FOR_CONFIRM) {
+                            if(client.tradeData.tradePlayerConfirmed) client.tradeData.tradeState = TradeState.PERFORM;
+                            if(client.tradeData.tradeState != TradeState.WAIT_FOR_CONFIRM) {
                                 menu.prepareGame();
                                 return;
                             }
@@ -318,12 +396,11 @@ public class ClientEvents {
                     }
                 }.start();
             }
-            case CONFIRMED -> {
+            case PERFORM -> {
                 //Perform the trade
                 if(player2 == null) return;
-                //TODO add money
-                if(client.serverMethod().trade(player1, player2, client.offer, client.counteroffer, 0, 0)) {
-                    client.tradeState = TradeState.FINISH;
+                if(client.serverMethod().trade(player1, player2, client.tradeData.offerCards, client.tradeData.counterofferCards, client.tradeData.offerMoney, client.tradeData.counterOfferMoney)) {
+                    client.tradeData.tradeState = TradeState.FINISH;
                     Object[] array = new Object[2];
                     array[0] = TradeState.FINISH;
                     array[1] = player1;
@@ -333,7 +410,7 @@ public class ClientEvents {
                         client.close();
                     }
                 } else {
-                    client.tradeState = TradeState.SERVER_FAIL;
+                    client.tradeData.tradeState = TradeState.SERVER_FAIL;
                     Object[] array = new Object[2];
                     array[0] = TradeState.SERVER_FAIL;
                     array[1] = player1;
@@ -343,32 +420,31 @@ public class ClientEvents {
                         client.close();
                     }
                 }
-
                 menu.prepareGame();
             }
             case FINISH -> {
                 //Send a message to the server and print a success screen
                 frame.add(menu.addText("Der Handel mit " + player2 + " wurder erfolgreich abgeschlossen!", 1920/2-500, 1020/2-50, 1000, 20, true), 0);
 
-                addTradeInfo(menu, client.counteroffer, player2, 1920/4+1920/4+1920/4-40-40-40-15-15-15-10-10, 200);
-                addTradeInfo(menu, client.offer, player1, 1920/4-40-40-40-15-15-15-10-10, 200);
-
                 frame.add(menu.addButton("Okay", 1920/2-100, 1020/2+50, 200, 50, true, actionEvent -> {
-                    client.tradePlayer = null;
-                    client.tradeState = TradeState.NULL;
+                    client.tradeData.tradePlayer = null;
+                    client.tradeData.tradeState = TradeState.NULL;
                     menu.prepareGame();
                 }), 0);
             }
             case SERVER_FAIL -> {
+                //Print a screen that says that the trade failed because of an error on the server
                 frame.add(menu.addText("Der Handel mit " + player2 + " konnte aus einem unbekannten Grund nich abgeschlossen werden.", 1920/2-500, 1020/2-50, 1000, 20, true), 0);
                 frame.add(menu.addText("Bitte versuche es später erneut.", 1920/2-500, 1020/2-100, 1000, 20, true), 0);
 
-                addTradeInfo(menu, client.counteroffer, player2, 1920/4+1920/4+1920/4-40-40-40-15-15-15-10-10, 200);
-                addTradeInfo(menu, client.offer, player1, 1920/4-40-40-40-15-15-15-10-10, 200);
+                addTradeInfo(menu, client.tradeData.counterofferCards, player2, 1920/4+1920/4+1920/4-40-40-40-15-15-15-10-10, 200);
+                addTradeInfo(menu, client.tradeData.offerCards, player1, 1920/4-40-40-40-15-15-15-10-10, 200);
+                menu.frame.add(menu.addText(client.tradeData.counterOfferMoney + "€", 1920/4+1920/4+1920/4-100, 460, 200, 20, true), 0);
+                menu.frame.add(menu.addText(client.tradeData.offerMoney + "€", 1920/4-100, 460, 200, 20, true), 0);
 
                 frame.add(menu.addButton("Okay", 1920/2-100, 1020/2+50, 200, 50, true, actionEvent -> {
-                    client.tradePlayer = null;
-                    client.tradeState = TradeState.NULL;
+                    client.tradeData.tradePlayer = null;
+                    client.tradeData.tradeState = TradeState.NULL;
                     menu.prepareGame();
                 }), 0);
             }
@@ -378,8 +454,6 @@ public class ClientEvents {
         }
         frame.repaint();
     }
-
-    //TODO Owner sync between client and server
 
     public static void updateAll(Client client) {
         updateOwner(client);
@@ -404,261 +478,261 @@ public class ClientEvents {
         button = new JButton();
         button.setSelectedIcon(new ImageIcon("images/kleine_karten/" + "brown" + "_filled.png"));
         button.setDisabledIcon(new ImageIcon("images/kleine_karten/disabled.png"));
-        frame.add(menu.addButton(button, "", "images/kleine_karten/" + "brown" + ".png", x+15, y, 20, 40, Street.BADSTRASSE.getOwner().equals(name), client.offer.contains(Street.BADSTRASSE), actionEvent -> {
-            if(client.offer.contains(Street.BADSTRASSE)) client.offer.remove(Street.BADSTRASSE); else client.offer.add(Street.BADSTRASSE);
-            client.tradeState = TradeState.SEND_OFFER;
+        frame.add(menu.addButton(button, "", "images/kleine_karten/" + "brown" + ".png", x+15, y, 20, 40, Street.BADSTRASSE.getOwner().equals(name), client.tradeData.offerCards.contains(Street.BADSTRASSE), actionEvent -> {
+            if(client.tradeData.offerCards.contains(Street.BADSTRASSE)) client.tradeData.offerCards.remove(Street.BADSTRASSE); else client.tradeData.offerCards.add(Street.BADSTRASSE);
+            client.tradeData.tradeState = TradeState.SEND_OFFER;
         }), 0);
         button = new JButton();
         button.setSelectedIcon(new ImageIcon("images/kleine_karten/" + "brown" + "_filled.png"));
         button.setDisabledIcon(new ImageIcon("images/kleine_karten/disabled.png"));
-        frame.add(menu.addButton(button, "", "images/kleine_karten/" + "brown" + ".png", x+45, y, 20, 40, Street.TURMSTRASSE.getOwner().equals(name), client.offer.contains(Street.TURMSTRASSE), actionEvent -> {
-            if(client.offer.contains(Street.TURMSTRASSE)) client.offer.remove(Street.TURMSTRASSE); else client.offer.add(Street.TURMSTRASSE);
-            client.tradeState = TradeState.SEND_OFFER;
+        frame.add(menu.addButton(button, "", "images/kleine_karten/" + "brown" + ".png", x+45, y, 20, 40, Street.TURMSTRASSE.getOwner().equals(name), client.tradeData.offerCards.contains(Street.TURMSTRASSE), actionEvent -> {
+            if(client.tradeData.offerCards.contains(Street.TURMSTRASSE)) client.tradeData.offerCards.remove(Street.TURMSTRASSE); else client.tradeData.offerCards.add(Street.TURMSTRASSE);
+            client.tradeData.tradeState = TradeState.SEND_OFFER;
         }), 0);
         button = new JButton();
         button.setSelectedIcon(new ImageIcon("images/kleine_karten/" + "brown" + "_filled.png"));
         button.setDisabledIcon(new ImageIcon("images/kleine_karten/disabled.png"));
-        frame.add(menu.addButton(button, "", "images/kleine_karten/" + "brown" + ".png", x+75, y, 20, 40, Street.STADIONSTRASSE.getOwner().equals(name), client.offer.contains(Street.STADIONSTRASSE), actionEvent -> {
-            if(client.offer.contains(Street.STADIONSTRASSE)) client.offer.remove(Street.STADIONSTRASSE); else client.offer.add(Street.STADIONSTRASSE);
-            client.tradeState = TradeState.SEND_OFFER;
+        frame.add(menu.addButton(button, "", "images/kleine_karten/" + "brown" + ".png", x+75, y, 20, 40, Street.STADIONSTRASSE.getOwner().equals(name), client.tradeData.offerCards.contains(Street.STADIONSTRASSE), actionEvent -> {
+            if(client.tradeData.offerCards.contains(Street.STADIONSTRASSE)) client.tradeData.offerCards.remove(Street.STADIONSTRASSE); else client.tradeData.offerCards.add(Street.STADIONSTRASSE);
+            client.tradeData.tradeState = TradeState.SEND_OFFER;
         }), 0);
         button = new JButton();
         button.setSelectedIcon(new ImageIcon("images/kleine_karten/" + "cyan" + "_filled.png"));
         button.setDisabledIcon(new ImageIcon("images/kleine_karten/disabled.png"));
-        frame.add(menu.addButton(button, "", "images/kleine_karten/" + "cyan" + ".png", x+115, y, 20, 40, Street.CHAUSSESTRASSE.getOwner().equals(name), client.offer.contains(Street.CHAUSSESTRASSE), actionEvent -> {
-            if(client.offer.contains(Street.CHAUSSESTRASSE)) client.offer.remove(Street.CHAUSSESTRASSE); else client.offer.add(Street.CHAUSSESTRASSE);
-            client.tradeState = TradeState.SEND_OFFER;
+        frame.add(menu.addButton(button, "", "images/kleine_karten/" + "cyan" + ".png", x+115, y, 20, 40, Street.CHAUSSESTRASSE.getOwner().equals(name), client.tradeData.offerCards.contains(Street.CHAUSSESTRASSE), actionEvent -> {
+            if(client.tradeData.offerCards.contains(Street.CHAUSSESTRASSE)) client.tradeData.offerCards.remove(Street.CHAUSSESTRASSE); else client.tradeData.offerCards.add(Street.CHAUSSESTRASSE);
+            client.tradeData.tradeState = TradeState.SEND_OFFER;
         }), 0);
         button = new JButton();
         button.setSelectedIcon(new ImageIcon("images/kleine_karten/" + "cyan" + "_filled.png"));
         button.setDisabledIcon(new ImageIcon("images/kleine_karten/disabled.png"));
-        frame.add(menu.addButton(button, "", "images/kleine_karten/" + "cyan" + ".png", x+145, y, 20, 40, Street.ELISENSTRASSE.getOwner().equals(name), client.offer.contains(Street.ELISENSTRASSE), actionEvent -> {
-            if(client.offer.contains(Street.ELISENSTRASSE)) client.offer.remove(Street.ELISENSTRASSE); else client.offer.add(Street.ELISENSTRASSE);
-            client.tradeState = TradeState.SEND_OFFER;
+        frame.add(menu.addButton(button, "", "images/kleine_karten/" + "cyan" + ".png", x+145, y, 20, 40, Street.ELISENSTRASSE.getOwner().equals(name), client.tradeData.offerCards.contains(Street.ELISENSTRASSE), actionEvent -> {
+            if(client.tradeData.offerCards.contains(Street.ELISENSTRASSE)) client.tradeData.offerCards.remove(Street.ELISENSTRASSE); else client.tradeData.offerCards.add(Street.ELISENSTRASSE);
+            client.tradeData.tradeState = TradeState.SEND_OFFER;
         }), 0);
         button = new JButton();
         button.setSelectedIcon(new ImageIcon("images/kleine_karten/" + "cyan" + "_filled.png"));
         button.setDisabledIcon(new ImageIcon("images/kleine_karten/disabled.png"));
-        frame.add(menu.addButton(button, "", "images/kleine_karten/" + "cyan" + ".png", x+175, y, 20, 40, Street.POSTSTRASSE.getOwner().equals(name), client.offer.contains(Street.POSTSTRASSE), actionEvent -> {
-            if(client.offer.contains(Street.POSTSTRASSE)) client.offer.remove(Street.POSTSTRASSE); else client.offer.add(Street.POSTSTRASSE);
-            client.tradeState = TradeState.SEND_OFFER;
+        frame.add(menu.addButton(button, "", "images/kleine_karten/" + "cyan" + ".png", x+175, y, 20, 40, Street.POSTSTRASSE.getOwner().equals(name), client.tradeData.offerCards.contains(Street.POSTSTRASSE), actionEvent -> {
+            if(client.tradeData.offerCards.contains(Street.POSTSTRASSE)) client.tradeData.offerCards.remove(Street.POSTSTRASSE); else client.tradeData.offerCards.add(Street.POSTSTRASSE);
+            client.tradeData.tradeState = TradeState.SEND_OFFER;
         }), 0);
         button = new JButton();
         button.setSelectedIcon(new ImageIcon("images/kleine_karten/" + "cyan" + "_filled.png"));
         button.setDisabledIcon(new ImageIcon("images/kleine_karten/disabled.png"));
-        frame.add(menu.addButton(button, "", "images/kleine_karten/" + "cyan" + ".png", x+205, y, 20, 40, Street.TIERGARTENSTRASSE.getOwner().equals(name), client.offer.contains(Street.TIERGARTENSTRASSE), actionEvent -> {
-            if(client.offer.contains(Street.TIERGARTENSTRASSE)) client.offer.remove(Street.TIERGARTENSTRASSE); else client.offer.add(Street.TIERGARTENSTRASSE);
-            client.tradeState = TradeState.SEND_OFFER;
+        frame.add(menu.addButton(button, "", "images/kleine_karten/" + "cyan" + ".png", x+205, y, 20, 40, Street.TIERGARTENSTRASSE.getOwner().equals(name), client.tradeData.offerCards.contains(Street.TIERGARTENSTRASSE), actionEvent -> {
+            if(client.tradeData.offerCards.contains(Street.TIERGARTENSTRASSE)) client.tradeData.offerCards.remove(Street.TIERGARTENSTRASSE); else client.tradeData.offerCards.add(Street.TIERGARTENSTRASSE);
+            client.tradeData.tradeState = TradeState.SEND_OFFER;
         }), 0);
         button = new JButton();
         button.setSelectedIcon(new ImageIcon("images/kleine_karten/" + "pink" + "_filled.png"));
         button.setDisabledIcon(new ImageIcon("images/kleine_karten/disabled.png"));
-        frame.add(menu.addButton(button, "", "images/kleine_karten/" + "pink" + ".png", x+245, y, 20, 40, Street.SEESTRASSE.getOwner().equals(name), client.offer.contains(Street.SEESTRASSE), actionEvent -> {
-            if(client.offer.contains(Street.SEESTRASSE)) client.offer.remove(Street.SEESTRASSE); else client.offer.add(Street.SEESTRASSE);
-            client.tradeState = TradeState.SEND_OFFER;
+        frame.add(menu.addButton(button, "", "images/kleine_karten/" + "pink" + ".png", x+245, y, 20, 40, Street.SEESTRASSE.getOwner().equals(name), client.tradeData.offerCards.contains(Street.SEESTRASSE), actionEvent -> {
+            if(client.tradeData.offerCards.contains(Street.SEESTRASSE)) client.tradeData.offerCards.remove(Street.SEESTRASSE); else client.tradeData.offerCards.add(Street.SEESTRASSE);
+            client.tradeData.tradeState = TradeState.SEND_OFFER;
         }), 0);
         button = new JButton();
         button.setSelectedIcon(new ImageIcon("images/kleine_karten/" + "pink" + "_filled.png"));
         button.setDisabledIcon(new ImageIcon("images/kleine_karten/disabled.png"));
-        frame.add(menu.addButton(button, "", "images/kleine_karten/" + "pink" + ".png", x+275, y, 20, 40, Street.HAFENSTRASSE.getOwner().equals(name), client.offer.contains(Street.HAFENSTRASSE), actionEvent -> {
-            if(client.offer.contains(Street.HAFENSTRASSE)) client.offer.remove(Street.HAFENSTRASSE); else client.offer.add(Street.HAFENSTRASSE);
-            client.tradeState = TradeState.SEND_OFFER;
+        frame.add(menu.addButton(button, "", "images/kleine_karten/" + "pink" + ".png", x+275, y, 20, 40, Street.HAFENSTRASSE.getOwner().equals(name), client.tradeData.offerCards.contains(Street.HAFENSTRASSE), actionEvent -> {
+            if(client.tradeData.offerCards.contains(Street.HAFENSTRASSE)) client.tradeData.offerCards.remove(Street.HAFENSTRASSE); else client.tradeData.offerCards.add(Street.HAFENSTRASSE);
+            client.tradeData.tradeState = TradeState.SEND_OFFER;
         }), 0);
         button = new JButton();
         button.setSelectedIcon(new ImageIcon("images/kleine_karten/" + "pink" + "_filled.png"));
         button.setDisabledIcon(new ImageIcon("images/kleine_karten/disabled.png"));
-        frame.add(menu.addButton(button, "", "images/kleine_karten/" + "pink" + ".png", x+305, y, 20, 40, Street.NEUESTRASSE.getOwner().equals(name), client.offer.contains(Street.NEUESTRASSE), actionEvent -> {
-            if(client.offer.contains(Street.NEUESTRASSE)) client.offer.remove(Street.NEUESTRASSE); else client.offer.add(Street.NEUESTRASSE);
-            client.tradeState = TradeState.SEND_OFFER;
+        frame.add(menu.addButton(button, "", "images/kleine_karten/" + "pink" + ".png", x+305, y, 20, 40, Street.NEUESTRASSE.getOwner().equals(name), client.tradeData.offerCards.contains(Street.NEUESTRASSE), actionEvent -> {
+            if(client.tradeData.offerCards.contains(Street.NEUESTRASSE)) client.tradeData.offerCards.remove(Street.NEUESTRASSE); else client.tradeData.offerCards.add(Street.NEUESTRASSE);
+            client.tradeData.tradeState = TradeState.SEND_OFFER;
         }), 0);
         button = new JButton();
         button.setSelectedIcon(new ImageIcon("images/kleine_karten/" + "pink" + "_filled.png"));
         button.setDisabledIcon(new ImageIcon("images/kleine_karten/disabled.png"));
-        frame.add(menu.addButton(button, "", "images/kleine_karten/" + "pink" + ".png", x+335, y, 20, 40, Street.MARKTPLATZ.getOwner().equals(name), client.offer.contains(Street.MARKTPLATZ), actionEvent -> {
-            if(client.offer.contains(Street.MARKTPLATZ)) client.offer.remove(Street.MARKTPLATZ); else client.offer.add(Street.MARKTPLATZ);
-            client.tradeState = TradeState.SEND_OFFER;
+        frame.add(menu.addButton(button, "", "images/kleine_karten/" + "pink" + ".png", x+335, y, 20, 40, Street.MARKTPLATZ.getOwner().equals(name), client.tradeData.offerCards.contains(Street.MARKTPLATZ), actionEvent -> {
+            if(client.tradeData.offerCards.contains(Street.MARKTPLATZ)) client.tradeData.offerCards.remove(Street.MARKTPLATZ); else client.tradeData.offerCards.add(Street.MARKTPLATZ);
+            client.tradeData.tradeState = TradeState.SEND_OFFER;
         }), 0);
         button = new JButton();
         button.setSelectedIcon(new ImageIcon("images/kleine_karten/" + "orange" + "_filled.png"));
         button.setDisabledIcon(new ImageIcon("images/kleine_karten/disabled.png"));
-        frame.add(menu.addButton(button, "", "images/kleine_karten/" + "orange" + ".png", x, y+50, 20, 40, Street.MUENCHENERSTRASSE.getOwner().equals(name), client.offer.contains(Street.MUENCHENERSTRASSE), actionEvent -> {
-            if(client.offer.contains(Street.MUENCHENERSTRASSE)) client.offer.remove(Street.MUENCHENERSTRASSE); else client.offer.add(Street.MUENCHENERSTRASSE);
-            client.tradeState = TradeState.SEND_OFFER;
+        frame.add(menu.addButton(button, "", "images/kleine_karten/" + "orange" + ".png", x, y+50, 20, 40, Street.MUENCHENERSTRASSE.getOwner().equals(name), client.tradeData.offerCards.contains(Street.MUENCHENERSTRASSE), actionEvent -> {
+            if(client.tradeData.offerCards.contains(Street.MUENCHENERSTRASSE)) client.tradeData.offerCards.remove(Street.MUENCHENERSTRASSE); else client.tradeData.offerCards.add(Street.MUENCHENERSTRASSE);
+            client.tradeData.tradeState = TradeState.SEND_OFFER;
         }), 0);
         button = new JButton();
         button.setSelectedIcon(new ImageIcon("images/kleine_karten/" + "orange" + "_filled.png"));
         button.setDisabledIcon(new ImageIcon("images/kleine_karten/disabled.png"));
-        frame.add(menu.addButton(button, "", "images/kleine_karten/" + "orange" + ".png", x+30, y+50, 20, 40, Street.WIENERSTRASSE.getOwner().equals(name), client.offer.contains(Street.WIENERSTRASSE), actionEvent -> {
-            if(client.offer.contains(Street.WIENERSTRASSE)) client.offer.remove(Street.WIENERSTRASSE); else client.offer.add(Street.WIENERSTRASSE);
-            client.tradeState = TradeState.SEND_OFFER;
+        frame.add(menu.addButton(button, "", "images/kleine_karten/" + "orange" + ".png", x+30, y+50, 20, 40, Street.WIENERSTRASSE.getOwner().equals(name), client.tradeData.offerCards.contains(Street.WIENERSTRASSE), actionEvent -> {
+            if(client.tradeData.offerCards.contains(Street.WIENERSTRASSE)) client.tradeData.offerCards.remove(Street.WIENERSTRASSE); else client.tradeData.offerCards.add(Street.WIENERSTRASSE);
+            client.tradeData.tradeState = TradeState.SEND_OFFER;
         }), 0);
         button = new JButton();
         button.setSelectedIcon(new ImageIcon("images/kleine_karten/" + "orange" + "_filled.png"));
         button.setDisabledIcon(new ImageIcon("images/kleine_karten/disabled.png"));
-        frame.add(menu.addButton(button, "", "images/kleine_karten/" + "orange" + ".png", x+60, y+50, 20, 40, Street.BERLINERSTRASSE.getOwner().equals(name), client.offer.contains(Street.BERLINERSTRASSE), actionEvent -> {
-            if(client.offer.contains(Street.BERLINERSTRASSE)) client.offer.remove(Street.BERLINERSTRASSE); else client.offer.add(Street.BERLINERSTRASSE);
-            client.tradeState = TradeState.SEND_OFFER;
+        frame.add(menu.addButton(button, "", "images/kleine_karten/" + "orange" + ".png", x+60, y+50, 20, 40, Street.BERLINERSTRASSE.getOwner().equals(name), client.tradeData.offerCards.contains(Street.BERLINERSTRASSE), actionEvent -> {
+            if(client.tradeData.offerCards.contains(Street.BERLINERSTRASSE)) client.tradeData.offerCards.remove(Street.BERLINERSTRASSE); else client.tradeData.offerCards.add(Street.BERLINERSTRASSE);
+            client.tradeData.tradeState = TradeState.SEND_OFFER;
         }), 0);
         button = new JButton();
         button.setSelectedIcon(new ImageIcon("images/kleine_karten/" + "orange" + "_filled.png"));
         button.setDisabledIcon(new ImageIcon("images/kleine_karten/disabled.png"));
-        frame.add(menu.addButton(button, "", "images/kleine_karten/" + "orange" + ".png", x+90, y+50, 20, 40, Street.HAMBURGERSTRASSE.getOwner().equals(name), client.offer.contains(Street.HAMBURGERSTRASSE), actionEvent -> {
-            if(client.offer.contains(Street.HAMBURGERSTRASSE)) client.offer.remove(Street.HAMBURGERSTRASSE); else client.offer.add(Street.HAMBURGERSTRASSE);
-            client.tradeState = TradeState.SEND_OFFER;
+        frame.add(menu.addButton(button, "", "images/kleine_karten/" + "orange" + ".png", x+90, y+50, 20, 40, Street.HAMBURGERSTRASSE.getOwner().equals(name), client.tradeData.offerCards.contains(Street.HAMBURGERSTRASSE), actionEvent -> {
+            if(client.tradeData.offerCards.contains(Street.HAMBURGERSTRASSE)) client.tradeData.offerCards.remove(Street.HAMBURGERSTRASSE); else client.tradeData.offerCards.add(Street.HAMBURGERSTRASSE);
+            client.tradeData.tradeState = TradeState.SEND_OFFER;
         }), 0);
         button = new JButton();
         button.setSelectedIcon(new ImageIcon("images/kleine_karten/" + "red" + "_filled.png"));
         button.setDisabledIcon(new ImageIcon("images/kleine_karten/disabled.png"));
-        frame.add(menu.addButton(button, "", "images/kleine_karten/" + "red" + ".png", x+130, y+50, 20, 40, Street.THEATERSTRASSE.getOwner().equals(name), client.offer.contains(Street.THEATERSTRASSE), actionEvent -> {
-            if(client.offer.contains(Street.THEATERSTRASSE)) client.offer.remove(Street.THEATERSTRASSE); else client.offer.add(Street.THEATERSTRASSE);
-            client.tradeState = TradeState.SEND_OFFER;
+        frame.add(menu.addButton(button, "", "images/kleine_karten/" + "red" + ".png", x+130, y+50, 20, 40, Street.THEATERSTRASSE.getOwner().equals(name), client.tradeData.offerCards.contains(Street.THEATERSTRASSE), actionEvent -> {
+            if(client.tradeData.offerCards.contains(Street.THEATERSTRASSE)) client.tradeData.offerCards.remove(Street.THEATERSTRASSE); else client.tradeData.offerCards.add(Street.THEATERSTRASSE);
+            client.tradeData.tradeState = TradeState.SEND_OFFER;
         }), 0);
         button = new JButton();
         button.setSelectedIcon(new ImageIcon("images/kleine_karten/" + "red" + "_filled.png"));
         button.setDisabledIcon(new ImageIcon("images/kleine_karten/disabled.png"));
-        frame.add(menu.addButton(button, "", "images/kleine_karten/" + "red" + ".png", x+160, y+50, 20, 40, Street.MUSEUMSTRASSE.getOwner().equals(name), client.offer.contains(Street.MUSEUMSTRASSE), actionEvent -> {
-            if(client.offer.contains(Street.MUSEUMSTRASSE)) client.offer.remove(Street.MUSEUMSTRASSE); else client.offer.add(Street.MUSEUMSTRASSE);
-            client.tradeState = TradeState.SEND_OFFER;
+        frame.add(menu.addButton(button, "", "images/kleine_karten/" + "red" + ".png", x+160, y+50, 20, 40, Street.MUSEUMSTRASSE.getOwner().equals(name), client.tradeData.offerCards.contains(Street.MUSEUMSTRASSE), actionEvent -> {
+            if(client.tradeData.offerCards.contains(Street.MUSEUMSTRASSE)) client.tradeData.offerCards.remove(Street.MUSEUMSTRASSE); else client.tradeData.offerCards.add(Street.MUSEUMSTRASSE);
+            client.tradeData.tradeState = TradeState.SEND_OFFER;
         }), 0);
         button = new JButton();
         button.setSelectedIcon(new ImageIcon("images/kleine_karten/" + "red" + "_filled.png"));
         button.setDisabledIcon(new ImageIcon("images/kleine_karten/disabled.png"));
-        frame.add(menu.addButton(button, "", "images/kleine_karten/" + "red" + ".png", x+190, y+50, 20, 40, Street.OPERNPLATZ.getOwner().equals(name), client.offer.contains(Street.OPERNPLATZ), actionEvent -> {
-            if(client.offer.contains(Street.OPERNPLATZ)) client.offer.remove(Street.OPERNPLATZ); else client.offer.add(Street.OPERNPLATZ);
-            client.tradeState = TradeState.SEND_OFFER;
+        frame.add(menu.addButton(button, "", "images/kleine_karten/" + "red" + ".png", x+190, y+50, 20, 40, Street.OPERNPLATZ.getOwner().equals(name), client.tradeData.offerCards.contains(Street.OPERNPLATZ), actionEvent -> {
+            if(client.tradeData.offerCards.contains(Street.OPERNPLATZ)) client.tradeData.offerCards.remove(Street.OPERNPLATZ); else client.tradeData.offerCards.add(Street.OPERNPLATZ);
+            client.tradeData.tradeState = TradeState.SEND_OFFER;
         }), 0);
         button = new JButton();
         button.setSelectedIcon(new ImageIcon("images/kleine_karten/" + "red" + "_filled.png"));
         button.setDisabledIcon(new ImageIcon("images/kleine_karten/disabled.png"));
-        frame.add(menu.addButton(button, "", "images/kleine_karten/" + "red" + ".png", x+220, y+50, 20, 40, Street.KONZERTHAUSSTRASSE.getOwner().equals(name), client.offer.contains(Street.KONZERTHAUSSTRASSE), actionEvent -> {
-            if(client.offer.contains(Street.KONZERTHAUSSTRASSE)) client.offer.remove(Street.KONZERTHAUSSTRASSE); else client.offer.add(Street.KONZERTHAUSSTRASSE);
-            client.tradeState = TradeState.SEND_OFFER;
+        frame.add(menu.addButton(button, "", "images/kleine_karten/" + "red" + ".png", x+220, y+50, 20, 40, Street.KONZERTHAUSSTRASSE.getOwner().equals(name), client.tradeData.offerCards.contains(Street.KONZERTHAUSSTRASSE), actionEvent -> {
+            if(client.tradeData.offerCards.contains(Street.KONZERTHAUSSTRASSE)) client.tradeData.offerCards.remove(Street.KONZERTHAUSSTRASSE); else client.tradeData.offerCards.add(Street.KONZERTHAUSSTRASSE);
+            client.tradeData.tradeState = TradeState.SEND_OFFER;
         }), 0);
         button = new JButton();
         button.setSelectedIcon(new ImageIcon("images/kleine_karten/" + "yellow" + "_filled.png"));
         button.setDisabledIcon(new ImageIcon("images/kleine_karten/disabled.png"));
-        frame.add(menu.addButton(button, "", "images/kleine_karten/" + "yellow" + ".png", x+260, y+50, 20, 40, Street.LESSINGSTRASSE.getOwner().equals(name), client.offer.contains(Street.LESSINGSTRASSE), actionEvent -> {
-            if(client.offer.contains(Street.LESSINGSTRASSE)) client.offer.remove(Street.LESSINGSTRASSE); else client.offer.add(Street.LESSINGSTRASSE);
-            client.tradeState = TradeState.SEND_OFFER;
+        frame.add(menu.addButton(button, "", "images/kleine_karten/" + "yellow" + ".png", x+260, y+50, 20, 40, Street.LESSINGSTRASSE.getOwner().equals(name), client.tradeData.offerCards.contains(Street.LESSINGSTRASSE), actionEvent -> {
+            if(client.tradeData.offerCards.contains(Street.LESSINGSTRASSE)) client.tradeData.offerCards.remove(Street.LESSINGSTRASSE); else client.tradeData.offerCards.add(Street.LESSINGSTRASSE);
+            client.tradeData.tradeState = TradeState.SEND_OFFER;
         }), 0);
         button = new JButton();
         button.setSelectedIcon(new ImageIcon("images/kleine_karten/" + "yellow" + "_filled.png"));
         button.setDisabledIcon(new ImageIcon("images/kleine_karten/disabled.png"));
-        frame.add(menu.addButton(button, "", "images/kleine_karten/" + "yellow" + ".png", x+290, y+50, 20, 40, Street.SCHILLERSTRASSE.getOwner().equals(name), client.offer.contains(Street.SCHILLERSTRASSE), actionEvent -> {
-            if(client.offer.contains(Street.SCHILLERSTRASSE)) client.offer.remove(Street.SCHILLERSTRASSE); else client.offer.add(Street.SCHILLERSTRASSE);
-            client.tradeState = TradeState.SEND_OFFER;
+        frame.add(menu.addButton(button, "", "images/kleine_karten/" + "yellow" + ".png", x+290, y+50, 20, 40, Street.SCHILLERSTRASSE.getOwner().equals(name), client.tradeData.offerCards.contains(Street.SCHILLERSTRASSE), actionEvent -> {
+            if(client.tradeData.offerCards.contains(Street.SCHILLERSTRASSE)) client.tradeData.offerCards.remove(Street.SCHILLERSTRASSE); else client.tradeData.offerCards.add(Street.SCHILLERSTRASSE);
+            client.tradeData.tradeState = TradeState.SEND_OFFER;
         }), 0);
         button = new JButton();
         button.setSelectedIcon(new ImageIcon("images/kleine_karten/" + "yellow" + "_filled.png"));
         button.setDisabledIcon(new ImageIcon("images/kleine_karten/disabled.png"));
-        frame.add(menu.addButton(button, "", "images/kleine_karten/" + "yellow" + ".png", x+320, y+50, 20, 40, Street.GOETHESTRASSE.getOwner().equals(name), client.offer.contains(Street.GOETHESTRASSE), actionEvent -> {
-            if(client.offer.contains(Street.GOETHESTRASSE)) client.offer.remove(Street.GOETHESTRASSE); else client.offer.add(Street.GOETHESTRASSE);
-            client.tradeState = TradeState.SEND_OFFER;
+        frame.add(menu.addButton(button, "", "images/kleine_karten/" + "yellow" + ".png", x+320, y+50, 20, 40, Street.GOETHESTRASSE.getOwner().equals(name), client.tradeData.offerCards.contains(Street.GOETHESTRASSE), actionEvent -> {
+            if(client.tradeData.offerCards.contains(Street.GOETHESTRASSE)) client.tradeData.offerCards.remove(Street.GOETHESTRASSE); else client.tradeData.offerCards.add(Street.GOETHESTRASSE);
+            client.tradeData.tradeState = TradeState.SEND_OFFER;
         }), 0);
         button = new JButton();
         button.setSelectedIcon(new ImageIcon("images/kleine_karten/" + "yellow" + "_filled.png"));
         button.setDisabledIcon(new ImageIcon("images/kleine_karten/disabled.png"));
-        frame.add(menu.addButton(button, "", "images/kleine_karten/" + "yellow" + ".png", x+350, y+50, 20, 40, Street.RILKESTRASSE.getOwner().equals(name), client.offer.contains(Street.RILKESTRASSE), actionEvent -> {
-            if(client.offer.contains(Street.RILKESTRASSE)) client.offer.remove(Street.RILKESTRASSE); else client.offer.add(Street.RILKESTRASSE);
-            client.tradeState = TradeState.SEND_OFFER;
+        frame.add(menu.addButton(button, "", "images/kleine_karten/" + "yellow" + ".png", x+350, y+50, 20, 40, Street.RILKESTRASSE.getOwner().equals(name), client.tradeData.offerCards.contains(Street.RILKESTRASSE), actionEvent -> {
+            if(client.tradeData.offerCards.contains(Street.RILKESTRASSE)) client.tradeData.offerCards.remove(Street.RILKESTRASSE); else client.tradeData.offerCards.add(Street.RILKESTRASSE);
+            client.tradeData.tradeState = TradeState.SEND_OFFER;
         }), 0);
         button = new JButton();
         button.setSelectedIcon(new ImageIcon("images/kleine_karten/" + "green" + "_filled.png"));
         button.setDisabledIcon(new ImageIcon("images/kleine_karten/disabled.png"));
-        frame.add(menu.addButton(button, "", "images/kleine_karten/" + "green" + ".png", x+80, y+100, 20, 40, Street.RATHAUSPLATZ.getOwner().equals(name), client.offer.contains(Street.RATHAUSPLATZ), actionEvent -> {
-            if(client.offer.contains(Street.RATHAUSPLATZ)) client.offer.remove(Street.RATHAUSPLATZ); else client.offer.add(Street.RATHAUSPLATZ);
-            client.tradeState = TradeState.SEND_OFFER;
+        frame.add(menu.addButton(button, "", "images/kleine_karten/" + "green" + ".png", x+80, y+100, 20, 40, Street.RATHAUSPLATZ.getOwner().equals(name), client.tradeData.offerCards.contains(Street.RATHAUSPLATZ), actionEvent -> {
+            if(client.tradeData.offerCards.contains(Street.RATHAUSPLATZ)) client.tradeData.offerCards.remove(Street.RATHAUSPLATZ); else client.tradeData.offerCards.add(Street.RATHAUSPLATZ);
+            client.tradeData.tradeState = TradeState.SEND_OFFER;
         }), 0);
         button = new JButton();
         button.setSelectedIcon(new ImageIcon("images/kleine_karten/" + "green" + "_filled.png"));
         button.setDisabledIcon(new ImageIcon("images/kleine_karten/disabled.png"));
-        frame.add(menu.addButton(button, "", "images/kleine_karten/" + "green" + ".png", x+110, y+100, 20, 40, Street.HAUPSTRASSE.getOwner().equals(name), client.offer.contains(Street.HAUPSTRASSE), actionEvent -> {
-            if(client.offer.contains(Street.HAUPSTRASSE)) client.offer.remove(Street.HAUPSTRASSE); else client.offer.add(Street.HAUPSTRASSE);
-            client.tradeState = TradeState.SEND_OFFER;
+        frame.add(menu.addButton(button, "", "images/kleine_karten/" + "green" + ".png", x+110, y+100, 20, 40, Street.HAUPSTRASSE.getOwner().equals(name), client.tradeData.offerCards.contains(Street.HAUPSTRASSE), actionEvent -> {
+            if(client.tradeData.offerCards.contains(Street.HAUPSTRASSE)) client.tradeData.offerCards.remove(Street.HAUPSTRASSE); else client.tradeData.offerCards.add(Street.HAUPSTRASSE);
+            client.tradeData.tradeState = TradeState.SEND_OFFER;
         }), 0);
         button = new JButton();
         button.setSelectedIcon(new ImageIcon("images/kleine_karten/" + "green" + "_filled.png"));
         button.setDisabledIcon(new ImageIcon("images/kleine_karten/disabled.png"));
-        frame.add(menu.addButton(button, "", "images/kleine_karten/" + "green" + ".png", x+140, y+100, 20, 40, Street.BOERSENPLATZ.getOwner().equals(name), client.offer.contains(Street.BOERSENPLATZ), actionEvent -> {
-            if(client.offer.contains(Street.BOERSENPLATZ)) client.offer.remove(Street.BOERSENPLATZ); else client.offer.add(Street.BOERSENPLATZ);
-            client.tradeState = TradeState.SEND_OFFER;
+        frame.add(menu.addButton(button, "", "images/kleine_karten/" + "green" + ".png", x+140, y+100, 20, 40, Street.BOERSENPLATZ.getOwner().equals(name), client.tradeData.offerCards.contains(Street.BOERSENPLATZ), actionEvent -> {
+            if(client.tradeData.offerCards.contains(Street.BOERSENPLATZ)) client.tradeData.offerCards.remove(Street.BOERSENPLATZ); else client.tradeData.offerCards.add(Street.BOERSENPLATZ);
+            client.tradeData.tradeState = TradeState.SEND_OFFER;
         }), 0);
         button = new JButton();
         button.setSelectedIcon(new ImageIcon("images/kleine_karten/" + "green" + "_filled.png"));
         button.setDisabledIcon(new ImageIcon("images/kleine_karten/disabled.png"));
-        frame.add(menu.addButton(button, "", "images/kleine_karten/" + "green" + ".png", x+170, y+100, 20, 40, Street.BAHNHOFSTRASSE.getOwner().equals(name), client.offer.contains(Street.BAHNHOFSTRASSE), actionEvent -> {
-            if(client.offer.contains(Street.BAHNHOFSTRASSE)) client.offer.remove(Street.BAHNHOFSTRASSE); else client.offer.add(Street.BAHNHOFSTRASSE);
-            client.tradeState = TradeState.SEND_OFFER;
+        frame.add(menu.addButton(button, "", "images/kleine_karten/" + "green" + ".png", x+170, y+100, 20, 40, Street.BAHNHOFSTRASSE.getOwner().equals(name), client.tradeData.offerCards.contains(Street.BAHNHOFSTRASSE), actionEvent -> {
+            if(client.tradeData.offerCards.contains(Street.BAHNHOFSTRASSE)) client.tradeData.offerCards.remove(Street.BAHNHOFSTRASSE); else client.tradeData.offerCards.add(Street.BAHNHOFSTRASSE);
+            client.tradeData.tradeState = TradeState.SEND_OFFER;
         }), 0);
         button = new JButton();
         button.setSelectedIcon(new ImageIcon("images/kleine_karten/" + "blue" + "_filled.png"));
         button.setDisabledIcon(new ImageIcon("images/kleine_karten/disabled.png"));
-        frame.add(menu.addButton(button, "", "images/kleine_karten/" + "blue" + ".png", x+210, y+100, 20, 40, Street.DOMPLATZ.getOwner().equals(name), client.offer.contains(Street.DOMPLATZ), actionEvent -> {
-            if(client.offer.contains(Street.DOMPLATZ)) client.offer.remove(Street.DOMPLATZ); else client.offer.add(Street.DOMPLATZ);
-            client.tradeState = TradeState.SEND_OFFER;
+        frame.add(menu.addButton(button, "", "images/kleine_karten/" + "blue" + ".png", x+210, y+100, 20, 40, Street.DOMPLATZ.getOwner().equals(name), client.tradeData.offerCards.contains(Street.DOMPLATZ), actionEvent -> {
+            if(client.tradeData.offerCards.contains(Street.DOMPLATZ)) client.tradeData.offerCards.remove(Street.DOMPLATZ); else client.tradeData.offerCards.add(Street.DOMPLATZ);
+            client.tradeData.tradeState = TradeState.SEND_OFFER;
         }), 0);
         button = new JButton();
         button.setSelectedIcon(new ImageIcon("images/kleine_karten/" + "blue" + "_filled.png"));
         button.setDisabledIcon(new ImageIcon("images/kleine_karten/disabled.png"));
-        frame.add(menu.addButton(button, "", "images/kleine_karten/" + "blue" + ".png", x+240, y+100, 20, 40, Street.PARKSTRASSE.getOwner().equals(name), client.offer.contains(Street.PARKSTRASSE), actionEvent -> {
-            if(client.offer.contains(Street.PARKSTRASSE)) client.offer.remove(Street.PARKSTRASSE); else client.offer.add(Street.PARKSTRASSE);
-            client.tradeState = TradeState.SEND_OFFER;
+        frame.add(menu.addButton(button, "", "images/kleine_karten/" + "blue" + ".png", x+240, y+100, 20, 40, Street.PARKSTRASSE.getOwner().equals(name), client.tradeData.offerCards.contains(Street.PARKSTRASSE), actionEvent -> {
+            if(client.tradeData.offerCards.contains(Street.PARKSTRASSE)) client.tradeData.offerCards.remove(Street.PARKSTRASSE); else client.tradeData.offerCards.add(Street.PARKSTRASSE);
+            client.tradeData.tradeState = TradeState.SEND_OFFER;
         }), 0);
         button = new JButton();
         button.setSelectedIcon(new ImageIcon("images/kleine_karten/" + "blue" + "_filled.png"));
         button.setDisabledIcon(new ImageIcon("images/kleine_karten/disabled.png"));
-        frame.add(menu.addButton(button, "", "images/kleine_karten/" + "blue" + ".png", x+270, y+100, 20, 40, Street.SCHLOSSALLEE.getOwner().equals(name), client.offer.contains(Street.SCHLOSSALLEE), actionEvent -> {
-            if(client.offer.contains(Street.SCHLOSSALLEE)) client.offer.remove(Street.SCHLOSSALLEE); else client.offer.add(Street.SCHLOSSALLEE);
-            client.tradeState = TradeState.SEND_OFFER;
+        frame.add(menu.addButton(button, "", "images/kleine_karten/" + "blue" + ".png", x+270, y+100, 20, 40, Street.SCHLOSSALLEE.getOwner().equals(name), client.tradeData.offerCards.contains(Street.SCHLOSSALLEE), actionEvent -> {
+            if(client.tradeData.offerCards.contains(Street.SCHLOSSALLEE)) client.tradeData.offerCards.remove(Street.SCHLOSSALLEE); else client.tradeData.offerCards.add(Street.SCHLOSSALLEE);
+            client.tradeData.tradeState = TradeState.SEND_OFFER;
         }), 0);
         button = new JButton();
         button.setSelectedIcon(new ImageIcon("images/kleine_karten/" + "train" + "_filled.png"));
         button.setDisabledIcon(new ImageIcon("images/kleine_karten/disabled.png"));
-        frame.add(menu.addButton(button, "", "images/kleine_karten/" + "train" + ".png", x+80, y+150, 20, 40, TrainStation.SUEDBAHNHOF.getOwner().equals(name), client.offer.contains(TrainStation.SUEDBAHNHOF), actionEvent -> {
-            if(client.offer.contains(TrainStation.SUEDBAHNHOF)) client.offer.remove(TrainStation.SUEDBAHNHOF); else client.offer.add(TrainStation.SUEDBAHNHOF);
-            client.tradeState = TradeState.SEND_OFFER;
+        frame.add(menu.addButton(button, "", "images/kleine_karten/" + "train" + ".png", x+80, y+150, 20, 40, TrainStation.SUEDBAHNHOF.getOwner().equals(name), client.tradeData.offerCards.contains(TrainStation.SUEDBAHNHOF), actionEvent -> {
+            if(client.tradeData.offerCards.contains(TrainStation.SUEDBAHNHOF)) client.tradeData.offerCards.remove(TrainStation.SUEDBAHNHOF); else client.tradeData.offerCards.add(TrainStation.SUEDBAHNHOF);
+            client.tradeData.tradeState = TradeState.SEND_OFFER;
         }), 0);
         button = new JButton();
         button.setSelectedIcon(new ImageIcon("images/kleine_karten/" + "train" + "_filled.png"));
         button.setDisabledIcon(new ImageIcon("images/kleine_karten/disabled.png"));
-        frame.add(menu.addButton(button, "", "images/kleine_karten/" + "train" + ".png", x+110, y+150, 20, 40, TrainStation.WESTBAHNHOF.getOwner().equals(name), client.offer.contains(TrainStation.WESTBAHNHOF), actionEvent -> {
-            if(client.offer.contains(TrainStation.WESTBAHNHOF)) client.offer.remove(TrainStation.WESTBAHNHOF); else client.offer.add(TrainStation.WESTBAHNHOF);
-            client.tradeState = TradeState.SEND_OFFER;
+        frame.add(menu.addButton(button, "", "images/kleine_karten/" + "train" + ".png", x+110, y+150, 20, 40, TrainStation.WESTBAHNHOF.getOwner().equals(name), client.tradeData.offerCards.contains(TrainStation.WESTBAHNHOF), actionEvent -> {
+            if(client.tradeData.offerCards.contains(TrainStation.WESTBAHNHOF)) client.tradeData.offerCards.remove(TrainStation.WESTBAHNHOF); else client.tradeData.offerCards.add(TrainStation.WESTBAHNHOF);
+            client.tradeData.tradeState = TradeState.SEND_OFFER;
         }), 0);
         button = new JButton();
         button.setSelectedIcon(new ImageIcon("images/kleine_karten/" + "train" + "_filled.png"));
         button.setDisabledIcon(new ImageIcon("images/kleine_karten/disabled.png"));
-        frame.add(menu.addButton(button, "", "images/kleine_karten/" + "train" + ".png", x+140, y+150, 20, 40, TrainStation.NORDBAHNHOF.getOwner().equals(name), client.offer.contains(TrainStation.NORDBAHNHOF), actionEvent -> {
-            if(client.offer.contains(TrainStation.NORDBAHNHOF)) client.offer.remove(TrainStation.NORDBAHNHOF); else client.offer.add(TrainStation.NORDBAHNHOF);
-            client.tradeState = TradeState.SEND_OFFER;
+        frame.add(menu.addButton(button, "", "images/kleine_karten/" + "train" + ".png", x+140, y+150, 20, 40, TrainStation.NORDBAHNHOF.getOwner().equals(name), client.tradeData.offerCards.contains(TrainStation.NORDBAHNHOF), actionEvent -> {
+            if(client.tradeData.offerCards.contains(TrainStation.NORDBAHNHOF)) client.tradeData.offerCards.remove(TrainStation.NORDBAHNHOF); else client.tradeData.offerCards.add(TrainStation.NORDBAHNHOF);
+            client.tradeData.tradeState = TradeState.SEND_OFFER;
         }), 0);
         button = new JButton();
         button.setSelectedIcon(new ImageIcon("images/kleine_karten/" + "train" + "_filled.png"));
         button.setDisabledIcon(new ImageIcon("images/kleine_karten/disabled.png"));
-        frame.add(menu.addButton(button, "", "images/kleine_karten/" + "train" + ".png", x+170, y+150, 20, 40, TrainStation.HAUPTBAHNHOF.getOwner().equals(name), client.offer.contains(TrainStation.HAUPTBAHNHOF), actionEvent -> {
-            if(client.offer.contains(TrainStation.HAUPTBAHNHOF)) client.offer.remove(TrainStation.HAUPTBAHNHOF); else client.offer.add(TrainStation.HAUPTBAHNHOF);
-            client.tradeState = TradeState.SEND_OFFER;
+        frame.add(menu.addButton(button, "", "images/kleine_karten/" + "train" + ".png", x+170, y+150, 20, 40, TrainStation.HAUPTBAHNHOF.getOwner().equals(name), client.tradeData.offerCards.contains(TrainStation.HAUPTBAHNHOF), actionEvent -> {
+            if(client.tradeData.offerCards.contains(TrainStation.HAUPTBAHNHOF)) client.tradeData.offerCards.remove(TrainStation.HAUPTBAHNHOF); else client.tradeData.offerCards.add(TrainStation.HAUPTBAHNHOF);
+            client.tradeData.tradeState = TradeState.SEND_OFFER;
         }), 0);
         button = new JButton();
         button.setSelectedIcon(new ImageIcon("images/kleine_karten/" + "gas" + "_filled.png"));
         button.setDisabledIcon(new ImageIcon("images/kleine_karten/disabled.png"));
-        frame.add(menu.addButton(button, "", "images/kleine_karten/" + "gas" + ".png", x+210, y+150, 20, 40, Plant.GASWERK.getOwner().equals(name), client.offer.contains(Plant.GASWERK), actionEvent -> {
-            if(client.offer.contains(Plant.GASWERK)) client.offer.remove(Plant.GASWERK); else client.offer.add(Plant.GASWERK);
-            client.tradeState = TradeState.SEND_OFFER;
+        frame.add(menu.addButton(button, "", "images/kleine_karten/" + "gas" + ".png", x+210, y+150, 20, 40, Plant.GASWERK.getOwner().equals(name), client.tradeData.offerCards.contains(Plant.GASWERK), actionEvent -> {
+            if(client.tradeData.offerCards.contains(Plant.GASWERK)) client.tradeData.offerCards.remove(Plant.GASWERK); else client.tradeData.offerCards.add(Plant.GASWERK);
+            client.tradeData.tradeState = TradeState.SEND_OFFER;
         }), 0);
         button = new JButton();
         button.setSelectedIcon(new ImageIcon("images/kleine_karten/" + "elec" + "_filled.png"));
         button.setDisabledIcon(new ImageIcon("images/kleine_karten/disabled.png"));
-        frame.add(menu.addButton(button, "", "images/kleine_karten/" + "elec" + ".png", x+240, y+150, 20, 40, Plant.ELEKTRIZITAETSWERK.getOwner().equals(name), client.offer.contains(Plant.ELEKTRIZITAETSWERK), actionEvent -> {
-            if(client.offer.contains(Plant.ELEKTRIZITAETSWERK)) client.offer.remove(Plant.ELEKTRIZITAETSWERK); else client.offer.add(Plant.ELEKTRIZITAETSWERK);
-            client.tradeState = TradeState.SEND_OFFER;
+        frame.add(menu.addButton(button, "", "images/kleine_karten/" + "elec" + ".png", x+240, y+150, 20, 40, Plant.ELEKTRIZITAETSWERK.getOwner().equals(name), client.tradeData.offerCards.contains(Plant.ELEKTRIZITAETSWERK), actionEvent -> {
+            if(client.tradeData.offerCards.contains(Plant.ELEKTRIZITAETSWERK)) client.tradeData.offerCards.remove(Plant.ELEKTRIZITAETSWERK); else client.tradeData.offerCards.add(Plant.ELEKTRIZITAETSWERK);
+            client.tradeData.tradeState = TradeState.SEND_OFFER;
         }), 0);
         button = new JButton();
         button.setSelectedIcon(new ImageIcon("images/kleine_karten/" + "water" + "_filled.png"));
         button.setDisabledIcon(new ImageIcon("images/kleine_karten/disabled.png"));
-        frame.add(menu.addButton(button, "", "images/kleine_karten/" + "water" + ".png", x+270, y+150, 20, 40, Plant.WASSERWERK.getOwner().equals(name), client.offer.contains(Plant.WASSERWERK), actionEvent -> {
-            if(client.offer.contains(Plant.WASSERWERK)) client.offer.remove(Plant.WASSERWERK); else client.offer.add(Plant.WASSERWERK);
-            client.tradeState = TradeState.SEND_OFFER;
+        frame.add(menu.addButton(button, "", "images/kleine_karten/" + "water" + ".png", x+270, y+150, 20, 40, Plant.WASSERWERK.getOwner().equals(name), client.tradeData.offerCards.contains(Plant.WASSERWERK), actionEvent -> {
+            if(client.tradeData.offerCards.contains(Plant.WASSERWERK)) client.tradeData.offerCards.remove(Plant.WASSERWERK); else client.tradeData.offerCards.add(Plant.WASSERWERK);
+            client.tradeData.tradeState = TradeState.SEND_OFFER;
         }), 0);
     }
     private static void addTradeInfo(PrototypeMenu menu, ArrayList<IPurchasable> tradeItems, String name, int x, int y) {

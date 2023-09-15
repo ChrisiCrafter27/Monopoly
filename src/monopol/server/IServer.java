@@ -12,6 +12,7 @@ import java.util.HashMap;
 public interface IServer extends Remote {
     public ServerSettings getServerSettings() throws RemoteException;
     public ArrayList<ServerPlayer> getServerPlayers() throws RemoteException;
+    public ServerPlayer getServerPlayer(String name) throws RemoteException;
     public String getIp() throws RemoteException;
     public void kick(String name, DisconnectReason reason) throws RemoteException;
     public boolean changeName(String oldName, String newName) throws RemoteException;

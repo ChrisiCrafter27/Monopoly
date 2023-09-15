@@ -293,6 +293,16 @@ public class Server extends UnicastRemoteObject implements IServer {
     }
 
     @Override
+    public ServerPlayer getServerPlayer(String name) throws RemoteException {
+        for (Map.Entry<ServerPlayer, Socket> entry : serverPlayers.entrySet()) {
+            if(entry.getKey().getName().equals(name)) {
+                return entry.getKey();
+            }
+        }
+        return null;
+    }
+
+    @Override
     public String getIp() throws RemoteException {
         return ip;
     }
@@ -364,8 +374,14 @@ public class Server extends UnicastRemoteObject implements IServer {
             purchasable.setOwner(player1);
         }
         for(ServerPlayer serverPlayer : serverPlayers.keySet()) {
-            if(serverPlayer.getName().equals(player1)) serverPlayer.contractMoney(money1);
-            if(serverPlayer.getName().equals(player2)) serverPlayer.contractMoney(money2);
+            if(serverPlayer.getName().equals(player1)) {
+                serverPlayer.contractMoney(money1);
+                serverPlayer.addMoney(money2);
+            }
+            if(serverPlayer.getName().equals(player2)) {
+                serverPlayer.contractMoney(money2);
+                serverPlayer.addMoney(money1);
+            }
         }
         return true;
     }
