@@ -624,7 +624,7 @@ public class PrototypeMenu {
                                 for(Plant value2 : Plant.values()) {
                                     if(value2.name.equals(value.name)) shouldRepaint = shouldRepaint || !(value2.getOwner().equals(value.getOwner()));
                                 }
-                            }
+                            } else System.out.println("error");
                         }
                     } catch (RemoteException e) {
                         client.close();
