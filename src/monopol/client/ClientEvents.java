@@ -193,68 +193,108 @@ public class ClientEvents {
                 menu.frame.add(menu.addText(client.tradeData.counterOfferMoney + "€", 1920/4+1920/4+1920/4-100, 460, 200, 20, true), 0);
                 menu.frame.add(menu.addText(client.tradeData.offerMoney + "€", 1920/4-100, 460, 200, 20, true), 0);
 
-                menu.frame.add(menu.addButton("-1", 1920/4-50-50-50, 500, 100, 25, true, actionEvent -> {
-                    if(client.tradeData.offerMoney > 0) client.tradeData.offerMoney -= 1;
+                menu.frame.add(menu.addButton("-1", 1920/4-50-50-50, 600, 100, 25, client.tradeData.offerMoney >= 1, actionEvent -> {
+                    if(client.tradeData.offerMoney >= 1) client.tradeData.offerMoney -= 1;
                     client.tradeData.tradeState = TradeState.SEND_OFFER;
                 }), 0);
-                menu.frame.add(menu.addButton("+1", 1920/4-50+50+50, 500, 100, 25, true, actionEvent -> {
-                    client.tradeData.offerMoney += 1; //TODO condition: player has enough money
+                menu.frame.add(menu.addButton("+1", 1920/4-50+50+50, 600, 100, 25, client.serverMethod().getServerPlayer(player1).getMoney() >= client.tradeData.offerMoney + 1, actionEvent -> {
+                    try {
+                        if(client.serverMethod().getServerPlayer(player1).getMoney() >= client.tradeData.offerMoney + 1) client.tradeData.offerMoney += 1;
+                    } catch (RemoteException e) {
+                        client.close();
+                        return;
+                    }
                     client.tradeData.tradeState = TradeState.SEND_OFFER;
                 }), 0);
-                menu.frame.add(menu.addButton("-5", 1920/4-50-50-50, 500+30, 100, 25, true, actionEvent -> {
+                menu.frame.add(menu.addButton("-5", 1920/4-50-50-50, 600+30, 100, 25, client.tradeData.offerMoney >= 5, actionEvent -> {
                     if(client.tradeData.offerMoney >= 5) client.tradeData.offerMoney -= 5;
                     client.tradeData.tradeState = TradeState.SEND_OFFER;
                 }), 0);
-                menu.frame.add(menu.addButton("+5", 1920/4-50+50+50, 500+30, 100, 25, true, actionEvent -> {
-                    client.tradeData.offerMoney += 5; //TODO condition: player has enough money
+                menu.frame.add(menu.addButton("+5", 1920/4-50+50+50, 600+30, 100, 25, client.serverMethod().getServerPlayer(player1).getMoney() >= client.tradeData.offerMoney + 5, actionEvent -> {
+                    try {
+                        if(client.serverMethod().getServerPlayer(player1).getMoney() >= client.tradeData.offerMoney + 5) client.tradeData.offerMoney += 5;
+                    } catch (RemoteException e) {
+                        client.close();
+                        return;
+                    }
                     client.tradeData.tradeState = TradeState.SEND_OFFER;
                 }), 0);
-                menu.frame.add(menu.addButton("-10", 1920/4-50-50-50, 500+60, 100, 25, true, actionEvent -> {
+                menu.frame.add(menu.addButton("-10", 1920/4-50-50-50, 600+60, 100, 25, client.tradeData.offerMoney >= 10, actionEvent -> {
                     if(client.tradeData.offerMoney >= 10) client.tradeData.offerMoney -= 10;
                     client.tradeData.tradeState = TradeState.SEND_OFFER;
                 }), 0);
-                menu.frame.add(menu.addButton("+10", 1920/4-50+50+50, 500+60, 100, 25, true, actionEvent -> {
-                    client.tradeData.offerMoney += 10; //TODO condition: player has enough money
+                menu.frame.add(menu.addButton("+10", 1920/4-50+50+50, 600+60, 100, 25, client.serverMethod().getServerPlayer(player1).getMoney() >= client.tradeData.offerMoney + 10, actionEvent -> {
+                    try {
+                        if(client.serverMethod().getServerPlayer(player1).getMoney() >= client.tradeData.offerMoney + 10) client.tradeData.offerMoney += 10;
+                    } catch (RemoteException e) {
+                        client.close();
+                        return;
+                    }
                     client.tradeData.tradeState = TradeState.SEND_OFFER;
                 }), 0);
-                menu.frame.add(menu.addButton("-20", 1920/4-50-50-50, 500+90, 100, 25, true, actionEvent -> {
+                menu.frame.add(menu.addButton("-20", 1920/4-50-50-50, 600+90, 100, 25, client.tradeData.offerMoney >= 20, actionEvent -> {
                     if(client.tradeData.offerMoney >= 20) client.tradeData.offerMoney -= 20;
                     client.tradeData.tradeState = TradeState.SEND_OFFER;
                 }), 0);
-                menu.frame.add(menu.addButton("+20", 1920/4-50+50+50, 500+90, 100, 25, true, actionEvent -> {
-                    client.tradeData.offerMoney += 20; //TODO condition: player has enough money
+                menu.frame.add(menu.addButton("+20", 1920/4-50+50+50, 600+90, 100, 25, client.serverMethod().getServerPlayer(player1).getMoney() >= client.tradeData.offerMoney + 20, actionEvent -> {
+                    try {
+                        if(client.serverMethod().getServerPlayer(player1).getMoney() >= client.tradeData.offerMoney + 20) client.tradeData.offerMoney += 20;
+                    } catch (RemoteException e) {
+                        client.close();
+                        return;
+                    }
                     client.tradeData.tradeState = TradeState.SEND_OFFER;
                 }), 0);
-                menu.frame.add(menu.addButton("-50", 1920/4-50-50-50, 500+120, 100, 25, true, actionEvent -> {
+                menu.frame.add(menu.addButton("-50", 1920/4-50-50-50, 600+120, 100, 25, client.tradeData.offerMoney >= 50, actionEvent -> {
                     if(client.tradeData.offerMoney >= 50) client.tradeData.offerMoney -= 50;
                     client.tradeData.tradeState = TradeState.SEND_OFFER;
                 }), 0);
-                menu.frame.add(menu.addButton("+50", 1920/4-50+50+50, 500+120, 100, 25, true, actionEvent -> {
-                    client.tradeData.offerMoney += 50; //TODO condition: player has enough money
+                menu.frame.add(menu.addButton("+50", 1920/4-50+50+50, 600+120, 100, 25, client.serverMethod().getServerPlayer(player1).getMoney() >= client.tradeData.offerMoney + 50, actionEvent -> {
+                    try {
+                        if(client.serverMethod().getServerPlayer(player1).getMoney() >= client.tradeData.offerMoney + 50) client.tradeData.offerMoney += 50;
+                    } catch (RemoteException e) {
+                        client.close();
+                        return;
+                    }
                     client.tradeData.tradeState = TradeState.SEND_OFFER;
                 }), 0);
-                menu.frame.add(menu.addButton("-100", 1920/4-50-50-50, 500+150, 100, 25, true, actionEvent -> {
+                menu.frame.add(menu.addButton("-100", 1920/4-50-50-50, 600+150, 100, 25, client.tradeData.offerMoney >= 100, actionEvent -> {
                     if(client.tradeData.offerMoney >= 100) client.tradeData.offerMoney -= 100;
                     client.tradeData.tradeState = TradeState.SEND_OFFER;
                 }), 0);
-                menu.frame.add(menu.addButton("+100", 1920/4-50+50+50, 500+150, 100, 25, true, actionEvent -> {
-                    client.tradeData.offerMoney += 100; //TODO condition: player has enough money
+                menu.frame.add(menu.addButton("+100", 1920/4-50+50+50, 600+150, 100, 25, client.serverMethod().getServerPlayer(player1).getMoney() >= client.tradeData.offerMoney + 100, actionEvent -> {
+                    try {
+                        if(client.serverMethod().getServerPlayer(player1).getMoney() >= client.tradeData.offerMoney + 100) client.tradeData.offerMoney += 100;
+                    } catch (RemoteException e) {
+                        client.close();
+                        return;
+                    }
                     client.tradeData.tradeState = TradeState.SEND_OFFER;
                 }), 0);
-                menu.frame.add(menu.addButton("-500", 1920/4-50-50-50, 500+180, 100, 25, true, actionEvent -> {
+                menu.frame.add(menu.addButton("-500", 1920/4-50-50-50, 600+180, 100, 25, client.tradeData.offerMoney >= 500, actionEvent -> {
                     if(client.tradeData.offerMoney >= 500) client.tradeData.offerMoney -= 500;
                     client.tradeData.tradeState = TradeState.SEND_OFFER;
                 }), 0);
-                menu.frame.add(menu.addButton("+500", 1920/4-50+50+50, 500+180, 100, 25, true, actionEvent -> {
-                    client.tradeData.offerMoney += 500; //TODO condition: player has enough money
+                menu.frame.add(menu.addButton("+500", 1920/4-50+50+50, 600+180, 100, 25, client.serverMethod().getServerPlayer(player1).getMoney() >= client.tradeData.offerMoney + 500, actionEvent -> {
+                    try {
+                        if(client.serverMethod().getServerPlayer(player1).getMoney() >= client.tradeData.offerMoney + 500) client.tradeData.offerMoney += 500;
+                    } catch (RemoteException e) {
+                        client.close();
+                        return;
+                    }
                     client.tradeData.tradeState = TradeState.SEND_OFFER;
                 }), 0);
-                menu.frame.add(menu.addButton("-1000", 1920/4-50-50-50, 500+210, 100, 25, true, actionEvent -> {
+                menu.frame.add(menu.addButton("-1000", 1920/4-50-50-50, 600+210, 100, 25, client.tradeData.offerMoney >= 1000, actionEvent -> {
                     if(client.tradeData.offerMoney >= 1000) client.tradeData.offerMoney -= 1000;
                     client.tradeData.tradeState = TradeState.SEND_OFFER;
                 }), 0);
-                menu.frame.add(menu.addButton("+1000", 1920/4-50+50+50, 500+210, 100, 25, true, actionEvent -> {
-                    client.tradeData.offerMoney += 1000; //TODO condition: player has enough money
+                menu.frame.add(menu.addButton("+1000", 1920/4-50+50+50, 600+210, 100, 25, client.serverMethod().getServerPlayer(player1).getMoney() >= client.tradeData.offerMoney + 1000, actionEvent -> {
+                    try {
+                        if(client.serverMethod().getServerPlayer(player1).getMoney() >= client.tradeData.offerMoney + 1000) client.tradeData.offerMoney += 1000;
+                    } catch (RemoteException e) {
+                        client.close();
+                        return;
+                    }
                     client.tradeData.tradeState = TradeState.SEND_OFFER;
                 }), 0);
 

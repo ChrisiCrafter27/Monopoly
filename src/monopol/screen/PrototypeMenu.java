@@ -236,12 +236,7 @@ public class PrototypeMenu {
         lobbyThread.start();
     }
 
-    Thread lobbyThread = new Thread() {
-        @Override
-        public void run() {
-            //Do nothing
-        }
-    };
+    Thread lobbyThread = new Thread(() -> {});
 
     public void prepareGame() {
         Monopoly.INSTANCE.setState(GameState.RUNNING);
@@ -351,12 +346,12 @@ public class PrototypeMenu {
         int X = 1160;
         JLabel label_moneyCommpanion = addText("----",X+95,342,200,30,false);
         JLabel busfahrkarten_Commpanion = addText("-",X-57,307,20,30,false);
-        JLabel gefängnisfreikarte_Commpanion = addText("-",X+243,315,13,24,false);
+        JLabel gefaengnisfreikarte_Commpanion = addText("-",X+243,315,13,24,false);
 
         X = 1579;
         JLabel label_moneyPlayer = addText("----",X+95,342,200,30,false);
         JLabel busfahrkarten_player = addText("-",X-57,307,20,30,false);
-        JLabel gefängnisfreikarte_player = addText("-",X+243,315,13,24,false);
+        JLabel gefaengnisfreikarte_player = addText("-",X+243,315,13,24,false);
 
         int x = 1060 + 15;
         int y = 148;
@@ -463,7 +458,8 @@ public class PrototypeMenu {
             @Override
             public void run(){
                 ServerPlayer serverPlayer;
-                ServerPlayer oldServerPlayer = null;
+                ServerPlayer oldServerPlayerSelected = null;
+                ServerPlayer oldServerPlayerPlaying = null;
                 Street street = Street.values()[0];
                 while(!interrupted()){
 
@@ -478,11 +474,12 @@ public class PrototypeMenu {
 
                     try {
                         serverPlayer = client.serverMethod().getServerPlayers().get(currentPlayer[0]);
+                        if(oldServerPlayerSelected == null) oldServerPlayerSelected = serverPlayer;
+                        if(oldServerPlayerPlaying == null) oldServerPlayerPlaying = client.serverMethod().getServerPlayer(client.player.getName());
                     } catch (RemoteException e) {
                         client.close();
                         continue;
                     }
-                    if(oldServerPlayer == null) oldServerPlayer = serverPlayer;
 
                     label_button1.setText(serverPlayer.getName());
 
@@ -494,10 +491,14 @@ public class PrototypeMenu {
 
                     try {
                         label_moneyPlayer.setText(client.serverMethod().getServerPlayer(client.player.getName()).getMoney() + "€");
+                        busfahrkarten_player.setText(client.serverMethod().getServerPlayer(client.player.getName()).getBusfahrkarten() + "");
+                        gefaengnisfreikarte_player.setText(client.serverMethod().getServerPlayer(client.player.getName()).getGefaengniskarten() + "");
                     } catch (RemoteException e) {
                         client.close();
                     }
                     label_moneyCommpanion.setText(serverPlayer.getMoney() + "€");
+                    busfahrkarten_Commpanion.setText(serverPlayer.getBusfahrkarten() + "");
+                    gefaengnisfreikarte_Commpanion.setText(serverPlayer.getGefaengniskarten() + "");
 
                     BADSTRASSE.setIcon(new ImageIcon(Street.BADSTRASSE.getOwner().equals(serverPlayer.getName()) ? "images/kleine_karten/brown_filled.png" : "images/kleine_karten/brown.png"));
                     TURMSTRASSE.setIcon(new ImageIcon(Street.TURMSTRASSE.getOwner().equals(serverPlayer.getName()) ? "images/kleine_karten/brown_filled.png" : "images/kleine_karten/brown.png"));
@@ -617,11 +618,15 @@ public class PrototypeMenu {
                         client.close();
                     }
                     if(shouldRepaint) System.out.println("Should repaint"); //Debug output
-                    if(!(serverPlayer.getBusfahrkarten() == oldServerPlayer.getBusfahrkarten() && serverPlayer.getGefaengniskarten() == oldServerPlayer.getGefaengniskarten() && serverPlayer.getMoney() == oldServerPlayer.getMoney()) || shouldRepaint) {
-                        frame.repaint();
+                    try {
+                        if (!serverPlayer.equals(oldServerPlayerSelected) || !client.serverMethod().getServerPlayer(client.player.getName()).equals(oldServerPlayerPlaying) || shouldRepaint) {
+                            frame.repaint();
+                        }
+                        oldServerPlayerSelected = serverPlayer;
+                        oldServerPlayerPlaying = client.serverMethod().getServerPlayer(client.player.getName());
+                    } catch (RemoteException e) {
+                        client.close();
                     }
-                    oldServerPlayer = serverPlayer;
-
                     try {
                         sleep(100);
                     } catch (InterruptedException ignored) {}
@@ -631,7 +636,7 @@ public class PrototypeMenu {
         };
         lobbyThread.start();
 
-        frame.add(addButton(button1,null,1060,90,400,60,true,"images/Main_pictures/Player_display.png",actionevent ->  {
+        frame.add(addButton(button1,null,1060,90,400,60,true,"images/Main_pictures/Player_display.png", actionevent ->  {
             if(currentPlayer[0] < maxplayers.length - 1){
                 currentPlayer[0] = currentPlayer[0] + 1;
             }else{
@@ -655,7 +660,7 @@ public class PrototypeMenu {
         frame.add(addImage("images/Main_pictures/gefängnisfrei_rechts.png",X+215,250,70,90),0);
         frame.add(addText("Gefängnis-",X+223,253,160,10,false),0);
         frame.add(addText("freikarte",X+223,263,160,10,false),0);
-        frame.add(gefängnisfreikarte_Commpanion,0);
+        frame.add(gefaengnisfreikarte_Commpanion,0);
 
         X = 1579;
         frame.add(addImage("images/Main_pictures/money_underlay.png",X,340,200,33),0);
@@ -667,7 +672,7 @@ public class PrototypeMenu {
         frame.add(addImage("images/Main_pictures/gefängnisfrei_rechts.png",X+215,250,70,90),0);
         frame.add(addText("Gefängnis-",X+223,253,160,10,false),0);
         frame.add(addText("freikarte",X+223,263,160,10,false),0);
-        frame.add(gefängnisfreikarte_player,0);
+        frame.add(gefaengnisfreikarte_player,0);
 
         frame.add(addButton(Würfeln,null,1060,450,400,80,true,"images/Main_pictures/3d_button.png",actionevent ->  {
             //WÜRFELN
