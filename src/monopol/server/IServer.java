@@ -23,5 +23,5 @@ public interface IServer extends Remote {
     public boolean acceptsNewClient() throws RemoteException;
     public boolean isHost(String name) throws RemoteException;
     public boolean stopped() throws RemoteException;
-    public void start(String host) throws IOException;
+    public void start() throws IOException;
 }

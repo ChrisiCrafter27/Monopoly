@@ -90,7 +90,10 @@ public class Client {
                     System.out.println("[Server]: Your ping is " + delay + "ms");
                 }
                 case NAME -> {
-                    if (player.getName() == null) player.setName((String) message.getMessage()[0]);
+                    if (player.getName() == null) {
+                        player.setName((String) message.getMessage()[0]);
+                        if(player.isHost) Monopoly.INSTANCE.setHost(player.getName());
+                    }
                 }
                 case DISCONNECT -> {
                     disconnectReason = DisconnectReason.valueOf((String) message.getMessage()[0]);

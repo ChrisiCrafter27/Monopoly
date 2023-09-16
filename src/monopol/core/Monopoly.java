@@ -35,6 +35,9 @@ public class Monopoly {
     public void openServer(ServerSettings settings) {
         server.open(settings);
     }
+    public void setHost(String name) {
+        server.setHost(name);
+    }
     public void closeServer() {
         server.close();
     }
@@ -50,10 +53,11 @@ public class Monopoly {
                 frame.setVisible(true);
 
 
-                while(!interrupted()) {
+                while (!interrupted()) {
                     try {
                         sleep(10);
-                    } catch (InterruptedException ignored) {}
+                    } catch (InterruptedException ignored) {
+                    }
                 }
             }
         };

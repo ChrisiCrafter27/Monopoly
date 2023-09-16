@@ -1,43 +1,24 @@
-[16-09-2023 18:42:15] [INFO] [Server]: Initialing server...
-[16-09-2023 18:42:18] [INFO] [Server]: Starting server...
-[16-09-2023 18:42:18] [INFO] [Server]: IP-Address: 25.65.162.162
-[16-09-2023 18:42:18] [INFO] [Server]: Listening for new clients...
-[16-09-2023 18:42:18] [INFO] [Server]: New Client accepted (Player 1)
-[16-09-2023 18:42:20] [INFO] [Server]: New Client accepted (Player 2)
-[16-09-2023 18:42:20] [INFO] [Server]: New Client accepted (Player 3)
-[16-09-2023 18:42:28] [FINE] [Server]: Message received
-[16-09-2023 18:42:28] [FINE] [Server]: Ping to Player 1 is 3ms
-[16-09-2023 18:42:28] [FINE] [Server]: Message received
-[16-09-2023 18:42:28] [FINE] [Server]: Ping to Player 2 is 4ms
-[16-09-2023 18:42:28] [FINE] [Server]: Message received
-[16-09-2023 18:42:28] [FINE] [Server]: Ping to Player 3 is 181ms
-[16-09-2023 18:42:29] [INFO] [Server]: Changed name from Player 3 to fabi
-[16-09-2023 18:42:34] [INFO] [Server]: Changed name from Player 2 to Chrisi
-[16-09-2023 18:42:38] [FINE] [Server]: Message received
-[16-09-2023 18:42:38] [FINE] [Server]: Ping to Player 1 is 0ms
-[16-09-2023 18:42:38] [FINE] [Server]: Message received
-[16-09-2023 18:42:38] [FINE] [Server]: Ping to Chrisi is 1ms
-[16-09-2023 18:42:38] [FINE] [Server]: Message received
-[16-09-2023 18:42:38] [FINE] [Server]: Ping to fabi is 124ms
-[16-09-2023 18:42:40] [INFO] [Server]: New Client accepted (Player 2)
-[16-09-2023 18:42:46] [WARN] [Server]: Kicked client
-[16-09-2023 18:42:48] [FINE] [Server]: Message received
-[16-09-2023 18:42:48] [FINE] [Server]: Ping to Player 1 is 0ms
-[16-09-2023 18:42:48] [FINE] [Server]: Message received
-[16-09-2023 18:42:48] [FINE] [Server]: Ping to Chrisi is 1ms
-[16-09-2023 18:42:48] [FINE] [Server]: Message received
-[16-09-2023 18:42:48] [FINE] [Server]: Ping to fabi is 79ms
-[16-09-2023 18:42:58] [FINE] [Server]: Message received
-[16-09-2023 18:42:58] [FINE] [Server]: Ping to Player 1 is 0ms
-[16-09-2023 18:42:58] [FINE] [Server]: Message received
-[16-09-2023 18:42:58] [FINE] [Server]: Ping to Chrisi is 0ms
-[16-09-2023 18:42:58] [FINE] [Server]: Message received
-[16-09-2023 18:42:58] [FINE] [Server]: Ping to fabi is 35ms
-[16-09-2023 18:43:02] [WARN] [Server]: Kicked client
-[16-09-2023 18:43:05] [INFO] [Server]: New Client accepted (Player 1)
-[16-09-2023 18:43:08] [FINE] [Server]: Message received
-[16-09-2023 18:43:08] [FINE] [Server]: Ping to fabi is 71ms
-[16-09-2023 18:43:08] [FINE] [Server]: Message received
-[16-09-2023 18:43:08] [FINE] [Server]: Ping to Player 1 is 71ms
-[16-09-2023 18:43:08] [FINE] [Server]: Message received
-[16-09-2023 18:43:08] [FINE] [Server]: Ping to Chrisi is 77ms
+[16-09-2023 19:05:12] [INFO] [Server]: Initialing server...
+[16-09-2023 19:05:14] [INFO] [Server]: Starting server...
+[16-09-2023 19:05:14] [INFO] [Server]: IP-Address: 25.65.162.162
+[16-09-2023 19:05:14] [INFO] [Server]: Listening for new clients...
+[16-09-2023 19:05:14] [INFO] [Server]: New Client accepted (Player 1)
+[16-09-2023 19:05:15] [INFO] [Server]: New Client accepted (Player 2)
+[16-09-2023 19:05:24] [FINE] [Server]: Message received
+[16-09-2023 19:05:24] [FINE] [Server]: Ping to Player 1 is 3ms
+[16-09-2023 19:05:24] [FINE] [Server]: Message received
+[16-09-2023 19:05:24] [FINE] [Server]: Ping to Player 2 is 4ms
+[16-09-2023 19:05:27] [INFO] [Server]: New Client accepted (Player 3)
+[16-09-2023 19:05:34] [FINE] [Server]: Message received
+[16-09-2023 19:05:34] [FINE] [Server]: Ping to Player 1 is 0ms
+[16-09-2023 19:05:34] [FINE] [Server]: Message received
+[16-09-2023 19:05:34] [FINE] [Server]: Ping to Player 2 is 1ms
+[16-09-2023 19:05:34] [FINE] [Server]: Message received
+[16-09-2023 19:05:34] [FINE] [Server]: Ping to Player 3 is 185ms
+[16-09-2023 19:05:44] [FINE] [Server]: Message received
+[16-09-2023 19:05:44] [FINE] [Server]: Ping to Player 1 is 0ms
+[16-09-2023 19:05:44] [FINE] [Server]: Message received
+[16-09-2023 19:05:44] [FINE] [Server]: Ping to Player 2 is 1ms
+[16-09-2023 19:05:44] [FINE] [Server]: Message received
+[16-09-2023 19:05:44] [FINE] [Server]: Ping to Player 3 is 284ms
+[16-09-2023 19:05:45] [INFO] [Server]: Changed name from Player 3 to fabi

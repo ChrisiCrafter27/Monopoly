@@ -281,6 +281,10 @@ public class Server extends UnicastRemoteObject implements IServer {
         }
     }
 
+    public void setHost(String host) {
+        this.host = host;
+    }
+
     @Override
     public ServerSettings getServerSettings() {
         return serverSettings;
@@ -404,9 +408,8 @@ public class Server extends UnicastRemoteObject implements IServer {
     }
 
     @Override
-    public void start(String host) throws IOException {
+    public void start() throws IOException {
         //TODO initialize the game
-        this.host = host;
         for (Map.Entry<ServerPlayer, Socket> entry : serverPlayers.entrySet()) {
             Message.send(new Message(null, MessageType.START), entry.getValue());
         }

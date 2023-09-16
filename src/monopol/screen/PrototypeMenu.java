@@ -67,6 +67,7 @@ public class PrototypeMenu {
                 clients.add(client);
                 prepareLobby();
             } catch (Exception e) {
+                e.printStackTrace();
                 JOptionPane.showMessageDialog(null, "Failed to start server. Make sure there are no other running server on your PC!", "Failed to start server", JOptionPane.WARNING_MESSAGE);
             }
         }),0);
@@ -205,7 +206,7 @@ public class PrototypeMenu {
                             }));
                             frame.add(addButton("start", 1920 - 250, 1080 - 200, 200, 50, client.player.isHost, actionEvent -> {
                                 try {
-                                    client.serverMethod().start(client.player.getName());
+                                    client.serverMethod().start();
                                 } catch (Exception ignored) {}
                             }));
                             frame.add(addText("IP-Address: " + client.serverMethod().getIp(), (1920/2)-250, 1080-70, 500, 30, true));
