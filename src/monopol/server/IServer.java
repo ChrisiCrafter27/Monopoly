@@ -21,6 +21,7 @@ public interface IServer extends Remote {
     public HashMap<IPurchasable, String> getOwnerMap() throws RemoteException;
     public boolean trade(String player1, String player2, ArrayList<IPurchasable> offer1, ArrayList<IPurchasable> offer2, int money1, int money2) throws RemoteException;
     public boolean acceptsNewClient() throws RemoteException;
+    public boolean isHost(String name) throws RemoteException;
     public boolean stopped() throws RemoteException;
-    public void start() throws IOException;
+    public void start(String host) throws IOException;
 }

@@ -36,6 +36,7 @@ public class Server extends UnicastRemoteObject implements IServer {
     public final ServerLogger logger = ServerLogger.INSTANCE;
     private boolean acceptNewClients = false;
     public ServerSettings serverSettings;
+    private String host;
 
     private final Thread connectionThread = new Thread() {
         @Override
@@ -110,7 +111,7 @@ public class Server extends UnicastRemoteObject implements IServer {
                     } catch (ConcurrentModificationException ignored) {
                     }
                     try {
-                        sleep(10);
+                        sleep(2);
                     } catch (InterruptedException e) {
                         return;
                     }
@@ -323,6 +324,7 @@ public class Server extends UnicastRemoteObject implements IServer {
         for (Map.Entry<ServerPlayer, Socket> entry : serverPlayers.entrySet()) {
             if(entry.getKey().getName().equals(oldName)) {
                 entry.getKey().setName(newName);
+                if(oldName.equals(host)) host = newName;
                 logger.getLogger().info("[Server]: Changed name from " + oldName + " to " + newName);
                 return true;
             }
@@ -392,13 +394,19 @@ public class Server extends UnicastRemoteObject implements IServer {
     }
 
     @Override
+    public boolean isHost(String name) throws RemoteException {
+        return name.equals(host);
+    }
+
+    @Override
     public boolean stopped() throws RemoteException {
         return pause;
     }
 
     @Override
-    public void start() throws IOException {
+    public void start(String host) throws IOException {
         //TODO initialize the game
+        this.host = host;
         for (Map.Entry<ServerPlayer, Socket> entry : serverPlayers.entrySet()) {
             Message.send(new Message(null, MessageType.START), entry.getValue());
         }

@@ -171,7 +171,7 @@ public class PrototypeMenu {
                             for (ServerPlayer serverPlayer : client.serverMethod().getServerPlayers()) {
                                 frame.add(addText(serverPlayer.getName(), 50, y, 500, 25));
                                 if(!serverPlayer.getName().equals(client.player.getName())) {
-                                    frame.add(addButton("Kick", 600, y, 150, 25, ableToKick, actionEvent -> {
+                                    frame.add(addButton("Kick", 600, y, 150, 25, ableToKick && !client.serverMethod().isHost(serverPlayer.getName()), actionEvent -> {
                                         try {
                                             client.serverMethod().kick(serverPlayer.getName(), DisconnectReason.KICKED);
                                         } catch (Exception ignored) {}
@@ -205,7 +205,7 @@ public class PrototypeMenu {
                             }));
                             frame.add(addButton("start", 1920 - 250, 1080 - 200, 200, 50, client.player.isHost, actionEvent -> {
                                 try {
-                                    client.serverMethod().start();
+                                    client.serverMethod().start(client.player.getName());
                                 } catch (Exception ignored) {}
                             }));
                             frame.add(addText("IP-Address: " + client.serverMethod().getIp(), (1920/2)-250, 1080-70, 500, 30, true));
