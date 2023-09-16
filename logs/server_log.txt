@@ -1,0 +1,17 @@
+[16-09-2023 13:27:14] [INFO] [Server]: Initialing server...
+[16-09-2023 13:27:17] [INFO] [Server]: Starting server...
+[16-09-2023 13:27:17] [INFO] [Server]: IP-Address: 192.168.178.44
+[16-09-2023 13:27:17] [INFO] [Server]: Listening for new clients...
+[16-09-2023 13:27:17] [INFO] [Server]: New Client accepted (Player 1)
+[16-09-2023 13:27:38] [INFO] [Server]: New Client accepted (Player 2)
+[16-09-2023 13:27:42] [INFO] [Server]: New Client accepted (Player 3)
+[16-09-2023 13:28:04] [INFO] [Server]: Changed name from Player 1 to Tradeplayer 1
+[16-09-2023 13:28:10] [INFO] [Server]: Changed name from Player 2 to Tradeplayer 2
+[16-09-2023 13:28:23] [INFO] [Server]: Changed name from Player 3 to Spectator
+[16-09-2023 13:29:37] [WARN] [Server]: Client lost connection: timed out (Spectator)
+[16-09-2023 13:29:37] [WARN] [Server]: Kicked client
+[16-09-2023 13:29:47] [WARN] [Server]: Client lost connection: timed out (Tradeplayer 1)
+[16-09-2023 13:29:47] [WARN] [Server]: Kicked client
+[16-09-2023 13:29:47] [WARN] [Server]: Client lost connection: timed out (Tradeplayer 2)
+[16-09-2023 13:29:47] [WARN] [Server]: Kicked client
+[16-09-2023 13:29:47] [WARN] [Server]: Server closed...

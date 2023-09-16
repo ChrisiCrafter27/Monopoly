@@ -474,6 +474,17 @@ public class PrototypeMenu {
 
                     try {
                         serverPlayer = client.serverMethod().getServerPlayers().get(currentPlayer[0]);
+                    } catch (IndexOutOfBoundsException | RemoteException e) {
+                        currentPlayer[0] = 0;
+                        try {
+                            serverPlayer = client.serverMethod().getServerPlayers().get(currentPlayer[0]);
+                        } catch (IndexOutOfBoundsException | RemoteException e2) {
+                            client.close();
+                            continue;
+                        }
+                    }
+
+                    try {
                         if(oldServerPlayerSelected == null) oldServerPlayerSelected = serverPlayer;
                         if(oldServerPlayerPlaying == null) oldServerPlayerPlaying = client.serverMethod().getServerPlayer(client.player.getName());
                     } catch (RemoteException e) {

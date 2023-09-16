@@ -40,8 +40,10 @@ public class Message {
     }
 
     public static void send(Message message, Socket client) throws IOException {
-        DataOutputStream output = new DataOutputStream(client.getOutputStream());
-        output.writeUTF(Json.toString(message, false));
+        try {
+            DataOutputStream output = new DataOutputStream(client.getOutputStream());
+            output.writeUTF(Json.toString(message, false));
+        } catch (NullPointerException ignored) {}
     }
 
     public static void sendPing(Socket client) throws IOException {
