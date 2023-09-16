@@ -229,7 +229,7 @@ public class PrototypeMenu {
                         return;
                     }
                     try {
-                        sleep(100);
+                        sleep(10);
                     } catch (InterruptedException ignored) {}
                 }
             }
@@ -629,6 +629,7 @@ public class PrototypeMenu {
                     } catch (RemoteException e) {
                         client.close();
                     }
+                    if(shouldRepaint) ClientEvents.updateOwner(client);
                     if(shouldRepaint) System.out.println("Should repaint"); //Debug output
                     try {
                         if (!serverPlayer.equals(oldServerPlayerSelected) || !client.serverMethod().getServerPlayer(client.player.getName()).equals(oldServerPlayerPlaying) || shouldRepaint) {
@@ -640,7 +641,7 @@ public class PrototypeMenu {
                         client.close();
                     }
                     try {
-                        sleep(100);
+                        sleep(10);
                     } catch (InterruptedException ignored) {}
                 }
 

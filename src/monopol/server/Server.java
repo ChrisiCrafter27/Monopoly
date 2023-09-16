@@ -70,7 +70,7 @@ public class Server extends UnicastRemoteObject implements IServer {
                 if (pause) acceptNewClients = false;
                 if (clients.size() >= 10) acceptNewClients = false;
                 try {
-                    sleep(100);
+                    sleep(10);
                 } catch (InterruptedException ignored) {}
             }
         }
@@ -111,7 +111,7 @@ public class Server extends UnicastRemoteObject implements IServer {
                     } catch (ConcurrentModificationException ignored) {
                     }
                     try {
-                        sleep(2);
+                        sleep(1);
                     } catch (InterruptedException e) {
                         return;
                     }
