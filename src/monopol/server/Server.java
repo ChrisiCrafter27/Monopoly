@@ -293,7 +293,7 @@ public class Server extends UnicastRemoteObject implements IServer {
     }
 
     @Override
-    public ServerPlayer getServerPlayer(String name) throws RemoteException {
+    public ServerPlayer getServerPlayer(String name) {
         for (Map.Entry<ServerPlayer, Socket> entry : serverPlayers.entrySet()) {
             if(entry.getKey().getName().equals(name)) {
                 return entry.getKey();
@@ -308,7 +308,7 @@ public class Server extends UnicastRemoteObject implements IServer {
     }
 
     @Override
-    public void kick(String name, DisconnectReason reason) throws RemoteException {
+    public void kick(String name, DisconnectReason reason) {
         for (Map.Entry<ServerPlayer, Socket> entry : serverPlayers.entrySet()) {
             if(entry.getKey().getName().equals(name)) kick(entry.getValue(), reason);
         }
