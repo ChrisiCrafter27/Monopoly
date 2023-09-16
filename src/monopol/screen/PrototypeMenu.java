@@ -245,7 +245,6 @@ public class PrototypeMenu {
     Thread lobbyThread = new Thread(() -> {});
 
     public void prepareGame() {
-        System.out.println("PREPARE GAME");
         Monopoly.INSTANCE.setState(GameState.RUNNING);
         frame.getContentPane().removeAll();
         if(lobbyThread.isAlive()) lobbyThread.interrupt();
