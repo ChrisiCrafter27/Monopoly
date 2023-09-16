@@ -131,7 +131,7 @@ public class PrototypeMenu {
                     clients.removeIf(Client::closed);
 
                     try {
-                        boolean shouldUpdate = true;
+                        boolean shouldUpdate = false;
                         for(ServerPlayer serverPlayer1 : displayedServerPlayers) {
                             String name = serverPlayer1.getName();
                             boolean okay = false;
@@ -144,7 +144,7 @@ public class PrototypeMenu {
                             if(!okay) {
                                 shouldUpdate = true;
                                 break;
-                            } else shouldUpdate = false;
+                            }
                         }
                         if(!clientsTemp.containsAll(clients) || !clients.containsAll(clientsTemp)) shouldUpdate = true;
                         clientsTemp.removeAll(clientsTemp);
