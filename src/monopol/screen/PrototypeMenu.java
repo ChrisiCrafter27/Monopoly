@@ -79,6 +79,9 @@ public class PrototypeMenu {
             try {
                 client = new Client(ip, 25565, (ip.equals("localhost")));
                 clients.add(client);
+                frame.getContentPane().removeAll();
+                frame.add(addText("Connecting to server...", (1920 / 2) - 250, 1080 / 2, 500, 25, true));
+                frame.repaint();
                 prepareLobby();
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(null, "Server not found. Make sure the IP-Address is correct!", "Server not found", JOptionPane.WARNING_MESSAGE);
@@ -832,10 +835,9 @@ public class PrototypeMenu {
             try {
                 ClientEvents.trade(this, client.tradeData.tradePlayer, client.tradeData.tradeState);
             } catch (RemoteException e) {
-                frame.repaint();
                 client.close();
             }
-        } else frame.repaint();
+        } //else frame.repaint();
     }
 
 
