@@ -1,5 +1,6 @@
 package monopol.screen;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import monopol.client.Client;
 import monopol.client.ClientEvents;
 import monopol.client.TradeState;
@@ -13,6 +14,7 @@ import monopol.server.DisconnectReason;
 import monopol.server.ServerPlayer;
 import monopol.server.ServerSettings;
 import monopol.utils.JUtils;
+import monopol.utils.Json;
 import monopol.utils.KeyHandler;
 import monopol.utils.JRotatedLabel;
 
@@ -243,6 +245,7 @@ public class PrototypeMenu {
     Thread lobbyThread = new Thread(() -> {});
 
     public void prepareGame() {
+        System.out.println("PREPARE GAME");
         Monopoly.INSTANCE.setState(GameState.RUNNING);
         frame.getContentPane().removeAll();
         if(lobbyThread.isAlive()) lobbyThread.interrupt();
@@ -635,13 +638,15 @@ public class PrototypeMenu {
                     if(shouldRepaint) ClientEvents.updateOwner(client);
                     if(shouldRepaint) System.out.println("Should repaint"); //Debug output
                     try {
-                        if (!serverPlayer.equals(oldServerPlayerSelected) || !client.serverMethod().getServerPlayer(client.player.getName()).equals(oldServerPlayerPlaying) || shouldRepaint) {
+                        if (!Json.toString(serverPlayer, false).equals(Json.toString(oldServerPlayerSelected, false)) || !Json.toString(client.serverMethod().getServerPlayer(client.player.getName()), false).equals(Json.toString(oldServerPlayerPlaying, false)) || shouldRepaint) {
                             frame.repaint();
                         }
                         oldServerPlayerSelected = serverPlayer;
                         oldServerPlayerPlaying = client.serverMethod().getServerPlayer(client.player.getName());
                     } catch (RemoteException e) {
                         client.close();
+                    } catch (JsonProcessingException e) {
+                        throw new RuntimeException(e);
                     }
                     try {
                         sleep(10);
@@ -837,7 +842,7 @@ public class PrototypeMenu {
             } catch (RemoteException e) {
                 client.close();
             }
-        } //else frame.repaint();
+        } else frame.repaint();
     }
 
 

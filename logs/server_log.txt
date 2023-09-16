@@ -1,1 +1,58 @@
-[16-09-2023 19:28:27] [INFO] [Server]: Initialing server...
+[16-09-2023 22:29:39] [INFO] [Server]: Initialing server...
+[16-09-2023 22:29:41] [INFO] [Server]: Starting server...
+[16-09-2023 22:29:41] [INFO] [Server]: IP-Address: 192.168.178.44
+[16-09-2023 22:29:41] [INFO] [Server]: Listening for new clients...
+[16-09-2023 22:29:41] [INFO] [Server]: New Client accepted (Player 1)
+[16-09-2023 22:29:42] [INFO] [Server]: New Client accepted (Player 2)
+[16-09-2023 22:29:51] [FINE] [Server]: Message received
+[16-09-2023 22:29:51] [FINE] [Server]: Ping to Player 1 is 3ms
+[16-09-2023 22:29:51] [FINE] [Server]: Message received
+[16-09-2023 22:29:51] [FINE] [Server]: Ping to Player 2 is 4ms
+[16-09-2023 22:30:01] [FINE] [Server]: Message received
+[16-09-2023 22:30:01] [FINE] [Server]: Ping to Player 1 is 0ms
+[16-09-2023 22:30:01] [FINE] [Server]: Message received
+[16-09-2023 22:30:01] [FINE] [Server]: Ping to Player 2 is 0ms
+[16-09-2023 22:30:11] [FINE] [Server]: Message received
+[16-09-2023 22:30:11] [FINE] [Server]: Ping to Player 1 is 0ms
+[16-09-2023 22:30:11] [FINE] [Server]: Message received
+[16-09-2023 22:30:11] [FINE] [Server]: Ping to Player 2 is 0ms
+[16-09-2023 22:30:21] [FINE] [Server]: Message received
+[16-09-2023 22:30:21] [FINE] [Server]: Ping to Player 1 is 0ms
+[16-09-2023 22:30:21] [FINE] [Server]: Message received
+[16-09-2023 22:30:21] [FINE] [Server]: Ping to Player 2 is 0ms
+[16-09-2023 22:30:31] [FINE] [Server]: Message received
+[16-09-2023 22:30:31] [FINE] [Server]: Ping to Player 1 is 0ms
+[16-09-2023 22:30:31] [FINE] [Server]: Message received
+[16-09-2023 22:30:31] [FINE] [Server]: Ping to Player 2 is 0ms
+[16-09-2023 22:30:41] [FINE] [Server]: Message received
+[16-09-2023 22:30:41] [FINE] [Server]: Ping to Player 1 is 0ms
+[16-09-2023 22:30:41] [FINE] [Server]: Message received
+[16-09-2023 22:30:41] [FINE] [Server]: Ping to Player 2 is 0ms
+[16-09-2023 22:30:51] [FINE] [Server]: Message received
+[16-09-2023 22:30:51] [FINE] [Server]: Ping to Player 1 is 0ms
+[16-09-2023 22:30:51] [FINE] [Server]: Message received
+[16-09-2023 22:30:51] [FINE] [Server]: Ping to Player 2 is 0ms
+[16-09-2023 22:31:01] [FINE] [Server]: Message received
+[16-09-2023 22:31:01] [FINE] [Server]: Ping to Player 1 is 0ms
+[16-09-2023 22:31:01] [FINE] [Server]: Message received
+[16-09-2023 22:31:01] [FINE] [Server]: Ping to Player 2 is 0ms
+[16-09-2023 22:31:11] [FINE] [Server]: Message received
+[16-09-2023 22:31:11] [FINE] [Server]: Ping to Player 1 is 0ms
+[16-09-2023 22:31:11] [FINE] [Server]: Message received
+[16-09-2023 22:31:11] [FINE] [Server]: Ping to Player 2 is 0ms
+[16-09-2023 22:31:21] [FINE] [Server]: Message received
+[16-09-2023 22:31:21] [FINE] [Server]: Ping to Player 1 is 0ms
+[16-09-2023 22:31:21] [FINE] [Server]: Message received
+[16-09-2023 22:31:21] [FINE] [Server]: Ping to Player 2 is 0ms
+[16-09-2023 22:31:31] [FINE] [Server]: Message received
+[16-09-2023 22:31:31] [FINE] [Server]: Ping to Player 1 is 0ms
+[16-09-2023 22:31:31] [FINE] [Server]: Message received
+[16-09-2023 22:31:31] [FINE] [Server]: Ping to Player 2 is 0ms
+[16-09-2023 22:31:41] [FINE] [Server]: Message received
+[16-09-2023 22:31:41] [FINE] [Server]: Ping to Player 1 is 0ms
+[16-09-2023 22:31:41] [FINE] [Server]: Message received
+[16-09-2023 22:31:41] [FINE] [Server]: Ping to Player 2 is 0ms
+[16-09-2023 22:31:51] [FINE] [Server]: Message received
+[16-09-2023 22:31:51] [FINE] [Server]: Ping to Player 1 is 0ms
+[16-09-2023 22:31:51] [FINE] [Server]: Message received
+[16-09-2023 22:31:51] [FINE] [Server]: Ping to Player 2 is 0ms
