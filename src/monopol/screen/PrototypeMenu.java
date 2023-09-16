@@ -131,7 +131,7 @@ public class PrototypeMenu {
                     clients.removeIf(Client::closed);
 
                     try {
-                        boolean shouldUpdate = false;
+                        boolean shouldUpdate = displayedServerPlayers.size() != client.serverMethod().getServerPlayers().size();
                         for(ServerPlayer serverPlayer1 : displayedServerPlayers) {
                             String name = serverPlayer1.getName();
                             boolean okay = false;
