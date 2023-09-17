@@ -56,7 +56,8 @@ public class Monopoly {
                 while (!interrupted()) {
                     try {
                         sleep(10);
-                    } catch (InterruptedException ignored) {
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException();
                     }
                 }
             }

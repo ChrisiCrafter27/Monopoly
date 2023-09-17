@@ -46,7 +46,9 @@ public class Client {
                 }
                 try {
                     sleep(1);
-                } catch (InterruptedException ignored) {}
+                } catch (InterruptedException e) {
+                    break;
+                }
             }
             try {
                 client.close();

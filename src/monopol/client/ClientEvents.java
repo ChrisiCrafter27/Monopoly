@@ -95,7 +95,9 @@ public class ClientEvents {
                             }
                             try {
                                 sleep(100);
-                            } catch (InterruptedException ignored) {}
+                            } catch (InterruptedException e) {
+                                return;
+                            }
                         }
                     }
                 }.start();
@@ -145,7 +147,9 @@ public class ClientEvents {
                             }
                             try {
                                 sleep(100);
-                            } catch (InterruptedException ignored) {}
+                            } catch (InterruptedException e) {
+                                return;
+                            }
                         }
                     }
                 }.start();
@@ -336,7 +340,9 @@ public class ClientEvents {
                             }
                             try {
                                 sleep(100);
-                            } catch (InterruptedException ignored) {}
+                            } catch (InterruptedException e) {
+                                return;
+                            }
                         }
                     }
                 }.start();
@@ -404,7 +410,9 @@ public class ClientEvents {
                             }
                             try {
                                 sleep(100);
-                            } catch (InterruptedException ignored) {}
+                            } catch (InterruptedException e) {
+                                return;
+                            }
                         }
                     }
                 }.start();
@@ -431,7 +439,9 @@ public class ClientEvents {
                             }
                             try {
                                 sleep(10);
-                            } catch (InterruptedException ignored) {}
+                            } catch (InterruptedException e) {
+                                return;
+                            }
                         }
                     }
                 }.start();
@@ -493,6 +503,7 @@ public class ClientEvents {
             button.setEnabled(false);
         }
         frame.repaint();
+        System.out.println("REPAINT - ClientEvents");
     }
 
     public static void updateAll(Client client) {

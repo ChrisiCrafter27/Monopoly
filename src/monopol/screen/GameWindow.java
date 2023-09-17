@@ -183,7 +183,9 @@ public class GameWindow {
                     button.setSelected(clickedButtonsMap.contains(name));
                     try {
                         sleep(10);
-                    } catch (InterruptedException ignored) {}
+                    } catch (InterruptedException e) {
+                        return;
+                    }
                 }
             }
         }.start();
@@ -248,7 +250,9 @@ public class GameWindow {
                     frame.repaint();
                     try {
                         Thread.sleep(10);
-                    } catch (InterruptedException ignored) {}
+                    } catch (InterruptedException e) {
+                        return;
+                    }
                 }
                 System.out.println(keyHandler.getString());
                 if(keyHandler.getString().length() > maxLength) {

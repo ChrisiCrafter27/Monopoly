@@ -235,19 +235,26 @@ public class PrototypeMenu {
                     }
                     try {
                         sleep(10);
-                    } catch (InterruptedException ignored) {}
+                    } catch (InterruptedException e) {
+                        return;
+                    }
                 }
             }
         };
         lobbyThread.start();
     }
 
-    Thread lobbyThread = new Thread(() -> {});
+    Thread lobbyThread = new Thread() {
+        @Override
+        public void run() {
+            while(!isInterrupted()); //TODO remove this
+        }
+    };
 
     public void prepareGame() {
         Monopoly.INSTANCE.setState(GameState.RUNNING);
         frame.getContentPane().removeAll();
-        if(lobbyThread.isAlive()) lobbyThread.interrupt();
+        lobbyThread.interrupt();
 
         for(int i = 0; i < clients.size(); i++) {
             frame.add(addPlayerButton(i));
@@ -460,23 +467,26 @@ public class PrototypeMenu {
         JLabel HAUPTBAHNHOF_Companion = addImage("images/kleine_karten/train.png",x+170,y+150,20,40);
 
 
-        lobbyThread = new Thread(){
+        lobbyThread = new Thread() {
             @Override
             public void run(){
                 ServerPlayer serverPlayer;
                 ServerPlayer oldServerPlayerSelected = null;
                 ServerPlayer oldServerPlayerPlaying = null;
                 Street street = Street.values()[0];
-                while(!interrupted()){
+                while(!isInterrupted()) {
 
                     //If the selected player disconnected, check if there is another
                     while(!isInterrupted() && client.player.getName() == null) {
+                        if(isInterrupted()) break;
                         if(client.closed()) {
                             interrupt();
                             prepareMenu();
                             return;
                         }
                     }
+
+                    if(isInterrupted()) break;
 
                     try {
                         serverPlayer = client.serverMethod().getServerPlayers().get(currentPlayer[0]);
@@ -639,6 +649,7 @@ public class PrototypeMenu {
                     try {
                         if (!Json.toString(serverPlayer, false).equals(Json.toString(oldServerPlayerSelected, false)) || !Json.toString(client.serverMethod().getServerPlayer(client.player.getName()), false).equals(Json.toString(oldServerPlayerPlaying, false)) || shouldRepaint) {
                             frame.repaint();
+                            System.out.println("REPAINT - Thread");
                         }
                         oldServerPlayerSelected = serverPlayer;
                         oldServerPlayerPlaying = client.serverMethod().getServerPlayer(client.player.getName());
@@ -647,9 +658,12 @@ public class PrototypeMenu {
                     } catch (JsonProcessingException e) {
                         throw new RuntimeException(e);
                     }
+
                     try {
-                        sleep(10);
-                    } catch (InterruptedException ignored) {}
+                        if(!isInterrupted()) sleep(10);
+                    } catch (InterruptedException e) {
+                        return;
+                    }
                 }
 
             }
@@ -841,7 +855,10 @@ public class PrototypeMenu {
             } catch (RemoteException e) {
                 client.close();
             }
-        } else frame.repaint();
+        } else {
+            frame.repaint();
+            System.out.println("REPAINT - PrototypeMenu");
+        }
     }
 
 

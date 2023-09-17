@@ -71,7 +71,9 @@ public class Server extends UnicastRemoteObject implements IServer {
                 if (clients.size() >= 10) acceptNewClients = false;
                 try {
                     sleep(10);
-                } catch (InterruptedException ignored) {}
+                } catch (InterruptedException e) {
+                    return;
+                }
             }
         }
         private ServerPlayer newServerPlayer() {
