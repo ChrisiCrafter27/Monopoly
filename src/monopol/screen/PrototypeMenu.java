@@ -244,12 +244,7 @@ public class PrototypeMenu {
         lobbyThread.start();
     }
 
-    Thread lobbyThread = new Thread() {
-        @Override
-        public void run() {
-            while(!isInterrupted()); //TODO remove this
-        }
-    };
+    Thread lobbyThread = new Thread(() -> {});
 
     public void prepareGame() {
         Monopoly.INSTANCE.setState(GameState.RUNNING);

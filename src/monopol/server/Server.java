@@ -16,7 +16,6 @@ import monopol.message.MessageType;
 
 import java.io.*;
 import java.net.*;
-import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
