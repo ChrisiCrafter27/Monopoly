@@ -1,15 +1,13 @@
-package monopol.annotations;
+package monopol.utils;
 
 import java.io.*;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.stream.Collectors;
 
-public class ClassAccessManager {
+public class AccessManager {
 
     public static ArrayList<Class> getClassesInPackage(String packageName) {
         InputStream stream = ClassLoader.getSystemClassLoader()
