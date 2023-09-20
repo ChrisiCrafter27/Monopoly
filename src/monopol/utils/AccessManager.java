@@ -1,6 +1,7 @@
 package monopol.utils;
 
 import java.io.*;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.ArrayList;
@@ -59,11 +60,15 @@ public class AccessManager {
     public static ArrayList<Method> getMethodsOfClass(Class clazz) {
         ArrayList<Method> list = new ArrayList<>(Arrays.stream(clazz.getMethods()).toList());
         list.removeIf((method) -> {
-            //System.out.println(method.getDeclaringClass());
-            //System.out.println(clazz.getName());
-            //System.out.println(method.getClass().getPackageName());
-            //System.out.println(clazz.getPackageName());
             return !method.getDeclaringClass().getName().equals(clazz.getName());
+        });
+        return list;
+    }
+
+    public static ArrayList<Field> getFieldsOfClass(Class clazz) {
+        ArrayList<Field> list = new ArrayList<>(Arrays.stream(clazz.getFields()).toList());
+        list.removeIf((field) -> {
+            return !field.getDeclaringClass().getName().equals(clazz.getName());
         });
         return list;
     }
@@ -91,6 +96,14 @@ public class AccessManager {
         return list;
     }
 
+    public static ArrayList<Field> getAllFields() throws IOException {
+        ArrayList<Field> list = new ArrayList<>();
+        for(Class clazz : getAllClasses()) {
+            list.addAll(getFieldsOfClass(clazz));
+        }
+        return list;
+    }
+
     public static void printProjectStructure() {
         try {
             for(String packageName : getAllPackages()) {
@@ -110,18 +123,27 @@ public class AccessManager {
                 if(parameterString.length() >= 2) parameterString = parameterString.substring(2);
                 System.out.println("Method detected: " + method.getDeclaringClass().getName() + "." + method.getName() + "(" + parameterString + ")");
             }
+            for(Field field : getAllFields()) {
+                System.out.println("Field detected: " + field.getType().getName() + " " + field.getDeclaringClass().getName() + ":" + field.getName());
+            }
         } catch (IOException e) {
             System.out.println("Failed to print project-structure: " + Arrays.toString(e.getStackTrace()));
         }
     }
 
-    public static void printProjectStructureInTree(boolean detailed) {
+    public static void printProjectStructureAsTree(boolean detailed) {
+        System.out.println("*********************************************************************************************************************************************************************************************************************************");
+        System.out.println("Indexing project...");
+        System.out.println("*********************************************************************************************************************************************************************************************************************************");
         if(detailed) {
             try {
                 for (String packageName : getAllPackages()) {
                     System.out.println("Package detected: " + packageName);
                     for (Class clazz : getClassesInPackage(packageName)) {
                         System.out.println("    Class detected: " + clazz.getName());
+                        for (Field field : getFieldsOfClass(clazz)) {
+                            System.out.println("        Field detected: " + field.getType().getName() + " " + clazz.getName() + "." + field.getName());
+                        }
                         for (Method method : getMethodsOfClass(clazz)) {
                             String parameterString = "";
                             for (Parameter parameter : method.getParameters()) {
@@ -144,6 +166,9 @@ public class AccessManager {
                     System.out.println("Package detected: " + packageName);
                     for (Class clazz : getClassesInPackage(packageName)) {
                         System.out.println("    Class detected: " + clazz.getSimpleName());
+                        for (Field field : getFieldsOfClass(clazz)) {
+                            System.out.println("        Field detected: " + field.getType().getSimpleName() + " " + field.getName());
+                        }
                         for (Method method : getMethodsOfClass(clazz)) {
                             String parameterString = "";
                             for (Parameter parameter : method.getParameters()) {
@@ -161,9 +186,10 @@ public class AccessManager {
                 System.out.println("Failed to print project-structure: " + Arrays.toString(e.getStackTrace()));
             }
         }
+        System.out.println("*********************************************************************************************************************************************************************************************************************************");
     }
 
     public static void main(String[] args) {
-        printProjectStructureInTree(false);
+        printProjectStructureAsTree(false);
     }
 }
