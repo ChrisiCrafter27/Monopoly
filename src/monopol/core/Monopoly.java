@@ -5,9 +5,10 @@ import monopol.annotations.Autostart;
 import monopol.screen.PrototypeMenu;
 import monopol.server.Server;
 import monopol.server.ServerSettings;
-import monopol.utils.AccessManager;
+import monopol.utils.ProjectStructure;
 
 import java.io.IOException;
+import java.rmi.RemoteException;
 
 public class Monopoly {
 
@@ -49,7 +50,12 @@ public class Monopoly {
     @Autostart
     public static void printStartupInfo() {
         System.out.println("Starting Monopoly...");
-        AccessManager.printProjectStructureAsTree(false);
+        ProjectStructure.printProjectStructureAsTree(false);
         System.out.println("Done!");
+    }
+
+    @Autostart
+    public static void test() {
+
     }
 }

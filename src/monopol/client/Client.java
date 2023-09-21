@@ -6,7 +6,6 @@ import monopol.constants.TrainStation;
 import monopol.core.GameState;
 import monopol.core.Monopoly;
 import monopol.server.DisconnectReason;
-import monopol.rules.IEvents;
 import monopol.server.IServer;
 import monopol.utils.Json;
 import monopol.message.Message;
@@ -24,7 +23,6 @@ import java.util.ArrayList;
 
 public class Client {
     private final Socket client;
-    private final IEvents eventsInterface;
     private final IServer serverInterface;
     public final ClientPlayer player;
     public DisconnectReason disconnectReason = null;
@@ -62,10 +60,8 @@ public class Client {
         try {
             this.player = new ClientPlayer(isHost);
             client = new Socket(ip, port);
-            Registry registry1 = LocateRegistry.getRegistry(ip, 1299);
-            eventsInterface = (IEvents) registry1.lookup("Events");
-            Registry registry2 = LocateRegistry.getRegistry(ip, 1199);
-            serverInterface = (IServer) registry2.lookup("Server");
+            Registry registry = LocateRegistry.getRegistry(ip, 1199);
+            serverInterface = (IServer) registry.lookup("Server");
             if(serverMethod().stopped()) {
                 System.out.println("Target server closed");
                 JOptionPane.showMessageDialog(null, "The target server is currently stopped!", "Connection failed", JOptionPane.WARNING_MESSAGE);
@@ -225,9 +221,6 @@ public class Client {
         return client.isClosed();
     }
 
-    public IEvents eventMethod() {
-        return eventsInterface;
-    }
     public IServer serverMethod() {
         return serverInterface;
     }

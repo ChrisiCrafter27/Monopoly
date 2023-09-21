@@ -1,6 +1,6 @@
 package monopol.annotations;
 
-import monopol.utils.AccessManager;
+import monopol.utils.ProjectStructure;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -13,7 +13,7 @@ public class AnnotationManager {
     private AnnotationManager() {
         //Autostart
         try {
-            for(Method method : AccessManager.getAllMethods()) {
+            for(Method method : ProjectStructure.getAllMethods()) {
                 if(method.isAnnotationPresent(Autostart.class) && Modifier.isStatic(method.getModifiers()) && Modifier.isPublic(method.getModifiers()) && method.getParameterCount() == 0) method.invoke(null);
             }
         } catch (IOException | IllegalAccessException | InvocationTargetException e) {

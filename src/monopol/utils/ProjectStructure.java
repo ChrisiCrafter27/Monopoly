@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
-public class AccessManager {
+public class ProjectStructure {
 
     public static ArrayList<Class> getClassesInPackage(String packageName) {
         InputStream stream = ClassLoader.getSystemClassLoader()
@@ -24,10 +24,10 @@ public class AccessManager {
 
     private static Class getClass(String className, String packageName) {
         try {
-            return Class.forName(packageName + "."
-                    + className.substring(0, className.lastIndexOf('.')));
-        } catch (ClassNotFoundException ignored) {}
-        return null;
+            return Class.forName(packageName + "." + className.substring(0, className.lastIndexOf('.')));
+        } catch (ClassNotFoundException ignored) {
+            return null;
+        }
     }
 
     public static ArrayList<String> getSubpackages(String basePackage) throws IOException {
@@ -187,9 +187,5 @@ public class AccessManager {
             }
         }
         System.out.println("*********************************************************************************************************************************************************************************************************************************");
-    }
-
-    public static void main(String[] args) {
-        printProjectStructureAsTree(false);
     }
 }

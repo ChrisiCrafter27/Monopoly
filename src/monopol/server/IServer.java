@@ -2,6 +2,7 @@ package monopol.server;
 
 import monopol.constants.IPurchasable;
 import monopol.message.MessageType;
+import monopol.rules.Events;
 
 import java.io.IOException;
 import java.rmi.Remote;
@@ -20,6 +21,7 @@ public interface IServer extends Remote {
     public void sendMessage(String name, MessageType type, Object value) throws IOException;
     public HashMap<IPurchasable, String> getOwnerMap() throws RemoteException;
     public boolean trade(String player1, String player2, ArrayList<IPurchasable> offer1, ArrayList<IPurchasable> offer2, int money1, int money2) throws RemoteException;
+    public boolean triggerEvent(String methodName, Object... args) throws RemoteException;
     public boolean acceptsNewClient() throws RemoteException;
     public boolean isHost(String name) throws RemoteException;
     public boolean stopped() throws RemoteException;

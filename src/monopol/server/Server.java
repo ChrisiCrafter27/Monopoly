@@ -1,5 +1,6 @@
 package monopol.server;
 
+import monopol.annotations.ServerOnly;
 import monopol.constants.IPurchasable;
 import monopol.constants.Plant;
 import monopol.constants.Street;
@@ -8,6 +9,7 @@ import monopol.core.GameState;
 import monopol.core.Monopoly;
 import monopol.log.ServerLogger;
 import monopol.rules.BuildRule;
+import monopol.rules.Events;
 import monopol.rules.OwnedCardsOfColorGroup;
 import monopol.rules.StandardEvents;
 import monopol.utils.Json;
@@ -15,6 +17,9 @@ import monopol.message.Message;
 import monopol.message.MessageType;
 
 import java.io.*;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.net.*;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -31,11 +36,11 @@ public class Server extends UnicastRemoteObject implements IServer {
     public final HashMap<Integer, Socket> clients = new HashMap<>();
     public final HashMap<Socket, Boolean> pingCheck = new HashMap<>();
     public final HashMap<ServerPlayer, Socket> serverPlayers = new HashMap<>();
-    private Registry registry1, registry2;
     public final ServerLogger logger = ServerLogger.INSTANCE;
     private boolean acceptNewClients = false;
     public ServerSettings serverSettings;
     private String host;
+    private Class<? extends Events> eventClass = StandardEvents.class;
 
     private final Thread connectionThread = new Thread() {
         @Override
@@ -166,27 +171,20 @@ public class Server extends UnicastRemoteObject implements IServer {
         pingThread.start();
 
         StandardEvents events = new StandardEvents(false, -1, false, true, true, true, 1500, 200, true, true, true, true, true, BuildRule.ON_COLOR_GROUP, OwnedCardsOfColorGroup.ONE, OwnedCardsOfColorGroup.ONE, OwnedCardsOfColorGroup.ONE, OwnedCardsOfColorGroup.ONE, OwnedCardsOfColorGroup.ALL_BUT_ONE, OwnedCardsOfColorGroup.ALL);
+        Registry registry;
         try {
-            registry1 = LocateRegistry.createRegistry(1299);
-            registry1.rebind("Events", events);
-            registry2 = LocateRegistry.createRegistry(1199);
-            registry2.rebind("Server", this);
+            registry = LocateRegistry.createRegistry(1199);
+            registry.rebind("Server", this);
         } catch(Exception ignored) {
             try {
-                registry1 = LocateRegistry.createRegistry(1299);
-                registry1.rebind("Events", events);
-                registry2 = LocateRegistry.createRegistry(1199);
-                registry2.rebind("Server", this);
+                registry = LocateRegistry.createRegistry(1199);
+                registry.rebind("Server", this);
             } catch(Exception e) {
+                logger.getLogger().severe("[Server]: Failed to start server\r\n" + e.getMessage());
                 close();
                 throw new RuntimeException(e);
             }
         }
-        /*
-        logger.getLogger().info("[Server]: Server online!");
-        logger.getLogger().severe("[Server]: Failed to start server\r\n" + e.getMessage());
-        close();
-        */
     }
 
     public void open(ServerSettings serverSettings) {
@@ -287,19 +285,19 @@ public class Server extends UnicastRemoteObject implements IServer {
     }
 
     @Override
-    public ServerSettings getServerSettings() {
+    public ServerSettings getServerSettings() throws RemoteException {
         return serverSettings;
     }
 
     @Override
-    public ArrayList<ServerPlayer> getServerPlayers() {
+    public ArrayList<ServerPlayer> getServerPlayers() throws RemoteException {
         ArrayList<ServerPlayer> list = new ArrayList<>(serverPlayers.keySet());
         list.removeIf(serverPlayer -> serverPlayers.get(serverPlayer) == null);
         return list;
     }
 
     @Override
-    public ServerPlayer getServerPlayer(String name) {
+    public ServerPlayer getServerPlayer(String name) throws RemoteException {
         for (Map.Entry<ServerPlayer, Socket> entry : serverPlayers.entrySet()) {
             if(entry.getKey().getName().equals(name)) {
                 return entry.getKey();
@@ -314,14 +312,14 @@ public class Server extends UnicastRemoteObject implements IServer {
     }
 
     @Override
-    public void kick(String name, DisconnectReason reason) {
+    public void kick(String name, DisconnectReason reason) throws RemoteException {
         for (Map.Entry<ServerPlayer, Socket> entry : serverPlayers.entrySet()) {
             if(entry.getKey().getName().equals(name)) kick(entry.getValue(), reason);
         }
     }
 
     @Override
-    public boolean changeName(String oldName, String newName) {
+    public boolean changeName(String oldName, String newName) throws RemoteException {
         if(newName.length() > 15) return false;
         for (Map.Entry<ServerPlayer, Socket> entry : serverPlayers.entrySet()) {
             if(entry.getKey().getName().equals(newName)) return false;
@@ -352,7 +350,7 @@ public class Server extends UnicastRemoteObject implements IServer {
     }
 
     @Override
-    public HashMap<IPurchasable, String> getOwnerMap() {
+    public HashMap<IPurchasable, String> getOwnerMap() throws RemoteException {
         HashMap<IPurchasable, String> ownerMap = new HashMap<>();
         for(Street street : Street.values()) {
             ownerMap.put(street, street.getOwner());
@@ -389,6 +387,23 @@ public class Server extends UnicastRemoteObject implements IServer {
                 serverPlayer.contractMoney(money2);
                 serverPlayer.addMoney(money1);
             }
+        }
+        return true;
+    }
+
+    @Override
+    public boolean triggerEvent(String methodName, Object... args) throws RemoteException {
+        //TODO add support for all classes that extend Events
+        //TODO add the object to execute the method
+        if(Modifier.isAbstract(eventClass.getModifiers())) return false;
+        try {
+            Method method = eventClass.getMethod(methodName);
+            if(method.isAnnotationPresent(ServerOnly.class)) return false;
+            if(Modifier.isStatic(method.getModifiers())) return false;
+            if(method.getParameterCount() == 0) method.invoke(null);
+            else method.invoke(null, args);
+        } catch (Exception e) {
+            return false;
         }
         return true;
     }
