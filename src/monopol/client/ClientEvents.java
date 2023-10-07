@@ -503,7 +503,6 @@ public class ClientEvents {
             button.setEnabled(false);
         }
         frame.repaint();
-        System.out.println("REPAINT - ClientEvents");
     }
 
     public static void updateAll(Client client) {
