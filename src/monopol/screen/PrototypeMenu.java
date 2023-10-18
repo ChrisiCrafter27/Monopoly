@@ -923,7 +923,7 @@ public class PrototypeMenu {
         if(noteAll == 0) return;
         x -= noteWidth / 2;
         y -= noteHeight / 2;
-        angle -= (noteAll * 5);
+        angle -= ((noteAll - 1) * 5);
         angle += rotation;
         for(int i = 0; i < note1000; i++) {
             frame.add(addImage("images/banknotes/1000_vm.png", x, y, angle, 50, 25), 0);
