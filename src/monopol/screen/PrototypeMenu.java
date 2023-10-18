@@ -123,8 +123,8 @@ public class PrototypeMenu {
 
                     //if(keyHandler.isKeyPressed(KeyEvent.VK_W)) System.out.println("HI");
 
-                    if(client.closed()) {
-                        clients.remove(client);
+                    clients.removeIf(Client::closed);
+                    if(!clients.contains(client)) {
                         if(!clients.isEmpty()) {//MonopolyScreen.png
                             client = clients.get(0);
                         } else {
@@ -133,8 +133,6 @@ public class PrototypeMenu {
                             return;
                         }
                     }
-
-                    clients.removeIf(Client::closed);
 
                     try {
                         boolean shouldUpdate = displayedServerPlayers.size() != client.serverMethod().getServerPlayers().size();
@@ -472,9 +470,11 @@ public class PrototypeMenu {
                 while(!isInterrupted()) {
 
                     //If the selected player disconnected, check if there is another
-                    while(!isInterrupted() && client.player.getName() == null) {
-                        if(isInterrupted()) break;
-                        if(client.closed()) {
+                    clients.removeIf(Client::closed);
+                    if(!clients.contains(client)) {
+                        if(!clients.isEmpty()) {//MonopolyScreen.png
+                            client = clients.get(0);
+                        } else {
                             interrupt();
                             prepareMenu();
                             return;
