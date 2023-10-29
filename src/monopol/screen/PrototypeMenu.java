@@ -312,19 +312,21 @@ public class PrototypeMenu {
         frame.add(addImage("images/felder/ins_gefaengnis.png", 930, 990));
         //no repaint
         //frame.repaint();
+        JButton Handeln = new JButton();
 
-        frame.add(addButton("Handeln", JUtils.getX(300), JUtils.getY(500), 200, 50, true, actionEvent -> {
+        frame.add(addButton(Handeln,null, JUtils.getX(1060), JUtils.getY(450+90*5), 400, 80, true,"images/Main_pictures/3d_button.png", actionEvent -> {
             try {
                 ClientEvents.trade(this, null, TradeState.CHOOSE_PLAYER);
             } catch (RemoteException ignored) {}
         }));
+        frame.add(addText("Handeln",JUtils.getX(1060), JUtils.getY(450+90*5+13),400,40,true),0);
         //frame.repaint();
-
 
         //TODO  \/  FABIANS PART  \/
 
 
         frame.add(addImage("images/Main_pictures/Background_Right.png", 1020, 60));
+        frame.add(addImage("images/Main_pictures/Monopoly_mitte.png", 90, 150));
 
         int[] currentPlayer = new int[1];
         currentPlayer[0] = 0;
@@ -347,6 +349,7 @@ public class PrototypeMenu {
         JButton haus_bauen  = new JButton();
         JButton haus_verkaufen = new JButton();
         JButton einstellungen  =new JButton();
+
 
 
         int X = 1160;
@@ -665,6 +668,8 @@ public class PrototypeMenu {
         };
         lobbyThread.start();
 
+
+
         frame.add(addButton(button1,null,1060,90,400,60,true,"images/Main_pictures/Player_display.png", actionevent ->  {
             if(currentPlayer[0] < maxplayers.length - 1){
                 currentPlayer[0] = currentPlayer[0] + 1;
@@ -684,11 +689,11 @@ public class PrototypeMenu {
         frame.add(addText("Geld: ",X+25,342,152,30,false),0);
         frame.add(label_moneyCommpanion,0);
         frame.add(addImage("images/Main_pictures/busfahrkarte_rechts.png",X-100+15,250,70,90),0);
-        frame.add(addText("Busfahrkarte",X-100+19,259,160,12,false),0);
+        frame.add(addText("Busfahrkarte",X-100+15,259,100,12,false),0);
         frame.add(busfahrkarten_Commpanion,0);
         frame.add(addImage("images/Main_pictures/gefängnisfrei_rechts.png",X+215,250,70,90),0);
-        frame.add(addText("Gefängnis-",X+223,253,160,10,false),0);
-        frame.add(addText("freikarte",X+223,263,160,10,false),0);
+        //frame.add(addText("",X+223,253,160,10,false),0);
+        frame.add(addText("Knastfreikarte",X+218,255,160,10,false),0);
         frame.add(gefaengnisfreikarte_Commpanion,0);
 
         X = 1579;
@@ -696,11 +701,11 @@ public class PrototypeMenu {
         frame.add(addText("Geld: ",X+25,342,152,30,false),0);
         frame.add(label_moneyPlayer,0);
         frame.add(addImage("images/Main_pictures/busfahrkarte_rechts.png",X-100+15,250,70,90),0);
-        frame.add(addText("Busfahrkarte",X-100+19,259,160,12,false),0);
+        frame.add(addText("Busfahrkarte",X-100+15,259,100,12,false),0);
         frame.add(busfahrkarten_player,0);
         frame.add(addImage("images/Main_pictures/gefängnisfrei_rechts.png",X+215,250,70,90),0);
-        frame.add(addText("Gefängnis-",X+223,253,160,10,false),0);
-        frame.add(addText("freikarte",X+223,263,160,10,false),0);
+        //frame.add(addText("",X+223,253,160,10,false),0);
+        frame.add(addText("Knastfreikarte",X+218,255,160,10,false),0);
         frame.add(gefaengnisfreikarte_player,0);
 
         frame.add(addButton(Würfeln,null,1060,450,400,80,true,"images/Main_pictures/3d_button.png",actionevent ->  {
@@ -740,9 +745,6 @@ public class PrototypeMenu {
             //einstellungen
         }),0);
         frame.add(addText("Einstellungen",x_actoins,y_actions+90*6+13,400,40,true),0);
-
-
-
 
 
         frame.add(BADSTRASSE,0);
@@ -998,6 +1000,12 @@ public class PrototypeMenu {
         button.setIcon(new ImageIcon(new ImageIcon(icon).getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH)));
         button.setHorizontalTextPosition(SwingConstants.CENTER);
         button.setVerticalTextPosition(SwingConstants.CENTER);
+        return button;
+    }
+
+    public JButton addButton(JButton button, String display, int x, int y, int width, int height, boolean enabled, String icon,String disabled_icon, ActionListener actionEvent) {
+        button = addButton(button,display,x,y,width,height,enabled,icon,actionEvent);
+        button.setDisabledIcon(new ImageIcon(new ImageIcon(disabled_icon).getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH)));
         return button;
     }
 
@@ -1295,7 +1303,7 @@ public class PrototypeMenu {
         height = JUtils.getY(height);
         if(centered) label = new JLabel(display, SwingConstants.CENTER); else label = new JLabel(display);
         label.setFont(new Font("Arial", Font.PLAIN, height));
-        label.setBounds(JUtils.getX(x), JUtils.getY(y), width, height);
+        label.setBounds(JUtils.getX(x), JUtils.getY(y), width, (int) ( height*1.2));
         return label;
     }
 
