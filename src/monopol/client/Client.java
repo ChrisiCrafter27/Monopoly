@@ -5,6 +5,7 @@ import monopol.constants.Street;
 import monopol.constants.TrainStation;
 import monopol.core.GameState;
 import monopol.core.Monopoly;
+import monopol.screen.PrototypeMenu;
 import monopol.server.DisconnectReason;
 import monopol.server.IServer;
 import monopol.utils.Json;
@@ -12,6 +13,7 @@ import monopol.message.Message;
 import monopol.message.MessageType;
 
 import javax.swing.*;
+import java.awt.*;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -88,7 +90,8 @@ public class Client {
                 }
                 case PING_BACK -> {
                     long delay = System.currentTimeMillis() - (long) message.getMessage()[0];
-                    System.out.println("[Server]: Your ping is " + delay + "ms");
+                    PrototypeMenu.getPingLabel().setText(Color.YELLOW + "Ping: " + delay + "ms");
+                    //System.out.println("[Server]: Your ping is " + delay + "ms");
                 }
                 case NAME -> {
                     if (player.getName() == null) {

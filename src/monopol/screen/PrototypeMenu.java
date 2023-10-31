@@ -21,6 +21,7 @@ import monopol.utils.JRotatedLabel;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Map;
@@ -36,6 +37,10 @@ public class PrototypeMenu {
     private String ip;
     private KeyHandler keyHandler = new KeyHandler();
     private IPurchasable selectedCard = Street.BADSTRASSE;
+    private static JLabel PING_LABEL = new JLabel();
+    public static JLabel getPingLabel() {
+        return PING_LABEL;
+    }
 
     public PrototypeMenu() {
         if((int) JUtils.SCREEN_WIDTH / (int) JUtils.SCREEN_HEIGHT != 16 / 9) System.err.println("[WARN]: Deine Bildschirmauflösung ist nicht 16/9. Dadurch werden einige Dinge nicht richtig angezeigt. Es ist allerdings trotzdem möglich, so zu spielen.");
@@ -49,13 +54,29 @@ public class PrototypeMenu {
         frame.addKeyListener(keyHandler);
         ImageIcon frame_icon = new ImageIcon("images/Main_pictures/frame_icon.png");
         frame.setIconImage(frame_icon.getImage());
+
+        PING_LABEL = addText("", 10, 10, 200, 50);
+        frame.add(getPingLabel());
+        new Thread() {
+            @Override
+            public void run() {
+                while (frame.isVisible()) {
+                    PING_LABEL.setVisible(keyHandler.isKeyPressed(130));
+                    try {
+                        sleep(100);
+                    } catch (InterruptedException e) {
+                        return;
+                    }
+                }
+            }
+        }.start();
     }
 
     public void prepareMenu() {
         Monopoly.INSTANCE.setState(GameState.MAIN_MENU);
         displayedServerPlayers = new ArrayList<>();
         frame.getContentPane().removeAll();
-        if(lobbyThread.isAlive()) lobbyThread.interrupt();
+        if(gameThread.isAlive()) gameThread.interrupt();
         frame.repaint();
 
         frame.add(addButton("invisible", 0, 0, 0, 0, true, actionEvent -> {}));
@@ -101,7 +122,7 @@ public class PrototypeMenu {
     public void prepareLobby() {
         Monopoly.INSTANCE.setState(GameState.LOBBY);
         frame.getContentPane().removeAll();
-        if(lobbyThread.isAlive()) lobbyThread.interrupt();
+        if(gameThread.isAlive()) gameThread.interrupt();
         frame.repaint();
 
         Thread lobbyThread = new Thread() {
@@ -242,12 +263,12 @@ public class PrototypeMenu {
         lobbyThread.start();
     }
 
-    Thread lobbyThread = new Thread(() -> {});
+    Thread gameThread = new Thread(() -> {});
 
     public void prepareGame() {
         Monopoly.INSTANCE.setState(GameState.RUNNING);
         frame.getContentPane().removeAll();
-        lobbyThread.interrupt();
+        gameThread.interrupt();
 
         for(int i = 0; i < clients.size(); i++) {
             frame.add(addPlayerButton(i));
@@ -323,18 +344,9 @@ public class PrototypeMenu {
 
         //TODO  \/  FABIANS PART  \/
 
-
         frame.add(addImage("images/Main_pictures/Background_Right.png", 1020, 60));
 
         int[] currentPlayer = new int[1];
-        currentPlayer[0] = 0;
-        int[] maxplayers;
-
-        try {
-            maxplayers = new int[client.serverMethod().getServerPlayers().size()];
-        } catch (RemoteException e) {
-            throw new RuntimeException(e);
-        }
 
         JButton button1 = new JButton();
         JButton button2 = new JButton();
@@ -409,7 +421,7 @@ public class PrototypeMenu {
         JLabel NORDBAHNHOF = addImage("images/kleine_karten/train.png",x+140,y+150,20,40);
         JLabel HAUPTBAHNHOF = addImage("images/kleine_karten/train.png",x+170,y+150,20,40);
 
-        x = 1479 +15;
+        x = 1479 + 15;
         y = 148;
 
         JLabel BADSTRASSE_Companion = addImage("images/kleine_karten/brown.png",x+15,y,20,40);
@@ -460,7 +472,7 @@ public class PrototypeMenu {
         JLabel HAUPTBAHNHOF_Companion = addImage("images/kleine_karten/train.png",x+170,y+150,20,40);
 
 
-        lobbyThread = new Thread() {
+        gameThread = new Thread() {
             @Override
             public void run(){
                 ServerPlayer serverPlayer;
@@ -663,13 +675,30 @@ public class PrototypeMenu {
 
             }
         };
-        lobbyThread.start();
+        gameThread.start();
 
         frame.add(addButton(button1,null,1060,90,400,60,true,"images/Main_pictures/Player_display.png", actionevent ->  {
-            if(currentPlayer[0] < maxplayers.length - 1){
+            int maxPlayers;
+            try {
+                //Get the amount of players on the server
+                maxPlayers = client.serverMethod().getServerPlayers().size();
+            } catch (RemoteException e) {
+                //If that's impossible, go to main menu
+                gameThread.interrupt();
+                prepareMenu();
+                return;
+            }
+
+            if(currentPlayer[0] < maxPlayers - 1){
+                //Try to switch to next player
                 currentPlayer[0] = currentPlayer[0] + 1;
-            }else{
+            } else if (maxPlayers > 0) {
+                //If there is no one set to first player
                 currentPlayer[0] = 0;
+            } else {
+                //If there is no one, go to main menu
+                gameThread.interrupt();
+                prepareMenu();
             }
         }),0);
 

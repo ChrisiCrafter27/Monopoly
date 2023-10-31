@@ -15,6 +15,11 @@ public class KeyHandler implements KeyListener {
 
     @Override
     public void keyPressed(KeyEvent e) {
+        System.out.println("-----");
+        System.out.println(e.getKeyCode());
+        System.out.println(e.getExtendedKeyCode());
+        System.out.println(e.getKeyChar());
+        System.out.println(e.getKeyLocation());
         if(!pressedKeys.contains(e.getKeyCode())) pressedKeys.add(e.getKeyCode());
         if(e.getKeyCode() == KeyEvent.VK_BACK_SPACE) {
             if (!string.isEmpty()) {
