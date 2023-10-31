@@ -47,7 +47,7 @@ public class PrototypeMenu {
         frame.setLayout(null);
         frame.setVisible(true);
         frame.addKeyListener(keyHandler);
-        ImageIcon frame_icon = new ImageIcon("images/Main_pictures/frame_icon.png");
+        ImageIcon frame_icon = new ImageIcon(new ImageIcon("images/Main_pictures/frame_icon.png").getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH));
         frame.setIconImage(frame_icon.getImage());
     }
 
@@ -326,7 +326,7 @@ public class PrototypeMenu {
 
 
         frame.add(addImage("images/Main_pictures/Background_Right.png", 1020, 60));
-        frame.add(addImage("images/Main_pictures/Monopoly_mitte.png", 90, 150));
+        frame.add(addImage("images/Main_pictures/hintergrund_links_mitte2.png", 90, 150));
 
         int[] currentPlayer = new int[1];
         currentPlayer[0] = 0;
@@ -848,7 +848,7 @@ public class PrototypeMenu {
 
         JPanel panel = new JPanel();
         //frame.add(panel, 0);
-        addFreeParkingMoney(510+50, 400, 90, frame);
+        addFreeParkingMoney(420+20, 476+90+60, 90, frame);
 
         if(client.tradeData.tradeState != TradeState.NULL) {
             try {
