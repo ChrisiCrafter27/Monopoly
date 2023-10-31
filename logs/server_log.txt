@@ -1,7 +1,31 @@
-[18-10-2023 18:45:35] [INFO] [Server]: Initialing server...
-[18-10-2023 18:45:38] [INFO] [Server]: Starting server...
-[18-10-2023 18:45:38] [INFO] [Server]: IP-Address: 192.168.178.63
-[18-10-2023 18:45:38] [INFO] [Server]: Listening for new clients...
-[18-10-2023 18:45:38] [INFO] [Server]: New Client accepted (Player 1)
-[18-10-2023 18:45:48] [FINE] [Server]: Message received
-[18-10-2023 18:45:48] [FINE] [Server]: Ping to Player 1 is 2ms
+[30-10-2023 21:24:20] [INFO] [Server]: Initialing server...
+[30-10-2023 21:24:22] [INFO] [Server]: Starting server...
+[30-10-2023 21:24:22] [INFO] [Server]: IP-Address: 192.168.179.71
+[30-10-2023 21:24:22] [INFO] [Server]: Listening for new clients...
+[30-10-2023 21:24:22] [INFO] [Server]: New Client accepted (Player 1)
+[30-10-2023 21:24:32] [FINE] [Server]: Message received
+[30-10-2023 21:24:32] [FINE] [Server]: Ping to Player 1 is 3ms
+[30-10-2023 21:24:42] [FINE] [Server]: Message received
+[30-10-2023 21:24:42] [FINE] [Server]: Ping to Player 1 is 0ms
+[30-10-2023 21:24:52] [FINE] [Server]: Message received
+[30-10-2023 21:24:52] [FINE] [Server]: Ping to Player 1 is 0ms
+[30-10-2023 21:25:02] [FINE] [Server]: Message received
+[30-10-2023 21:25:02] [FINE] [Server]: Ping to Player 1 is 0ms
+[30-10-2023 21:25:12] [FINE] [Server]: Message received
+[30-10-2023 21:25:12] [FINE] [Server]: Ping to Player 1 is 0ms
+[30-10-2023 21:25:22] [FINE] [Server]: Message received
+[30-10-2023 21:25:22] [FINE] [Server]: Ping to Player 1 is 0ms
+[30-10-2023 21:25:32] [FINE] [Server]: Message received
+[30-10-2023 21:25:32] [FINE] [Server]: Ping to Player 1 is 0ms
+[30-10-2023 21:25:42] [FINE] [Server]: Message received
+[30-10-2023 21:25:42] [FINE] [Server]: Ping to Player 1 is 0ms
+[30-10-2023 21:25:52] [FINE] [Server]: Message received
+[30-10-2023 21:25:52] [FINE] [Server]: Ping to Player 1 is 0ms
+[30-10-2023 21:26:02] [FINE] [Server]: Message received
+[30-10-2023 21:26:02] [FINE] [Server]: Ping to Player 1 is 0ms
+[30-10-2023 21:26:12] [FINE] [Server]: Message received
+[30-10-2023 21:26:12] [FINE] [Server]: Ping to Player 1 is 0ms
+[30-10-2023 21:26:22] [FINE] [Server]: Message received
+[30-10-2023 21:26:22] [FINE] [Server]: Ping to Player 1 is 0ms
+[30-10-2023 21:26:32] [FINE] [Server]: Message received
+[30-10-2023 21:26:32] [FINE] [Server]: Ping to Player 1 is 0ms
