@@ -1,10 +1,10 @@
 package monopol.server;
 
 import monopol.annotations.ServerOnly;
-import monopol.constants.IPurchasable;
-import monopol.constants.Plant;
-import monopol.constants.Street;
-import monopol.constants.TrainStation;
+import monopol.data.IPurchasable;
+import monopol.data.Plant;
+import monopol.data.Street;
+import monopol.data.TrainStation;
 import monopol.core.GameState;
 import monopol.core.Monopoly;
 import monopol.log.ServerLogger;
@@ -15,9 +15,9 @@ import monopol.rules.StandardEvents;
 import monopol.utils.Json;
 import monopol.message.Message;
 import monopol.message.MessageType;
+import monopol.utils.ProjectStructure;
 
 import java.io.*;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.net.*;
@@ -26,6 +26,7 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.*;
+import java.util.function.Consumer;
 
 public class Server extends UnicastRemoteObject implements IServer {
     public static final int CLIENT_TIMEOUT = 10000;
@@ -40,7 +41,7 @@ public class Server extends UnicastRemoteObject implements IServer {
     private boolean acceptNewClients = false;
     public ServerSettings serverSettings;
     private String host;
-    private Class<? extends Events> eventClass = StandardEvents.class;
+    private Events events = new StandardEvents(true, -1, true, false, true, true, 1000, 200, true, true, false, true, false, BuildRule.ANYWHERE, OwnedCardsOfColorGroup.NONE, OwnedCardsOfColorGroup.NONE, OwnedCardsOfColorGroup.NONE, OwnedCardsOfColorGroup.NONE, OwnedCardsOfColorGroup.ALL_BUT_ONE, OwnedCardsOfColorGroup.ALL);
 
     private final Thread connectionThread = new Thread() {
         @Override
@@ -266,11 +267,11 @@ public class Server extends UnicastRemoteObject implements IServer {
                     for(Map.Entry<ServerPlayer, Socket> entry : serverPlayers.entrySet()) {
                         if(entry.getValue() == client) name = entry.getKey().getName();
                     }
-                    logger.getLogger().fine("[Server]: Ping to " + name + " is " + delay + "ms");
+                    if(delay < 2500) logger.getLogger().fine("[Server]: Ping to " + name + " is " + delay + "ms");
+                    else logger.getLogger().warning("[Server]: Ping to " + name + " is " + delay + "ms");
                 }
                 case DISCONNECT -> kick(client, DisconnectReason.CLIENT_CLOSED);
-                case NULL -> {
-                }
+                case NULL -> {}
                 default -> throw new RuntimeException();
             }
         } catch (Exception e) {
@@ -393,15 +394,14 @@ public class Server extends UnicastRemoteObject implements IServer {
 
     @Override
     public boolean triggerEvent(String methodName, Object... args) throws RemoteException {
-        //TODO add support for all classes that extend Events
-        //TODO add the object to execute the method
-        if(Modifier.isAbstract(eventClass.getModifiers())) return false;
+        if(events == null) return false;
+        if(Modifier.isAbstract(events.getClass().getModifiers())) return false;
         try {
-            Method method = eventClass.getMethod(methodName);
-            if(method.isAnnotationPresent(ServerOnly.class)) return false;
+            Method method = events.getClass().getMethod(methodName);
+            if(ProjectStructure.isAnnotated(method, ServerOnly.class)) return false;
             if(Modifier.isStatic(method.getModifiers())) return false;
-            if(method.getParameterCount() == 0) method.invoke(null);
-            else method.invoke(null, args);
+            if(method.getParameterCount() == 0) method.invoke(events);
+            else method.invoke(events, args);
         } catch (Exception e) {
             return false;
         }

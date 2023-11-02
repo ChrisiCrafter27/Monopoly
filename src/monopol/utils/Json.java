@@ -7,7 +7,7 @@ import java.io.*;
 import java.nio.file.Files;
 
 public class Json {
-    private static ObjectMapper objectMapper = getObjectMapper();
+    private static final ObjectMapper OBJECT_MAPPER = getObjectMapper();
 
     private static ObjectMapper getObjectMapper() {
         ObjectMapper mapper = new ObjectMapper();
@@ -17,15 +17,15 @@ public class Json {
     }
 
     public static JsonNode toJson(String value) throws JsonProcessingException {
-        return objectMapper.readTree(value);
+        return OBJECT_MAPPER.readTree(value);
     }
 
     public static JsonNode toJson(Object object) {
-        return objectMapper.valueToTree(object);
+        return OBJECT_MAPPER.valueToTree(object);
     }
 
     public static String toString(JsonNode node, boolean readable) throws JsonProcessingException {
-        ObjectWriter writer = objectMapper.writer();
+        ObjectWriter writer = OBJECT_MAPPER.writer();
         if(readable) {
             writer = writer.with(SerializationFeature.INDENT_OUTPUT);
         }
@@ -41,7 +41,7 @@ public class Json {
     }
 
     public static <T> T toObject(JsonNode node, Class<T> clazz) throws JsonProcessingException {
-        return objectMapper.treeToValue(node, clazz);
+        return OBJECT_MAPPER.treeToValue(node, clazz);
     }
 
     public static <T> T toObject(File file, Class<T> clazz) throws IOException {
@@ -49,7 +49,7 @@ public class Json {
     }
 
     public static <T> T toObject(String value, Class<T> clazz) throws JsonProcessingException {
-        return objectMapper.treeToValue(toJson(value), clazz);
+        return OBJECT_MAPPER.treeToValue(toJson(value), clazz);
     }
 
     public static void saveToFile(JsonNode node, String directory, String fileName) throws IOException {

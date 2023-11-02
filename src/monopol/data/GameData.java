@@ -1,4 +1,6 @@
-package monopol.core;
+package monopol.data;
+
+import monopol.core.Monopoly;
 
 import java.util.ArrayList;
 

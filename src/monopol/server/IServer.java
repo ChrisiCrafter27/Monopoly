@@ -1,8 +1,7 @@
 package monopol.server;
 
-import monopol.constants.IPurchasable;
+import monopol.data.IPurchasable;
 import monopol.message.MessageType;
-import monopol.rules.Events;
 
 import java.io.IOException;
 import java.rmi.Remote;

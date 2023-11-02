@@ -1,4 +1,4 @@
-package monopol.constants;
+package monopol.data;
 
 import java.util.ArrayList;
 import java.util.Arrays;

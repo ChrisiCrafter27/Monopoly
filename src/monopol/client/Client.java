@@ -1,8 +1,8 @@
 package monopol.client;
 
-import monopol.constants.Plant;
-import monopol.constants.Street;
-import monopol.constants.TrainStation;
+import monopol.data.Plant;
+import monopol.data.Street;
+import monopol.data.TrainStation;
 import monopol.core.GameState;
 import monopol.core.Monopoly;
 import monopol.screen.PrototypeMenu;

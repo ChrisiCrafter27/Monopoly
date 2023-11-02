@@ -1,4 +1,4 @@
-package monopol.constants;
+package monopol.data;
 
 public enum Plant implements IPurchasable {
     GASWERK ("Gaswerk"),

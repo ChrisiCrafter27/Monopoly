@@ -9,10 +9,6 @@ public class StandardEvents extends Events {
         super(limitBusTickets, maxBusTickets, limitBuildings, tempoDice, megaBuildings, tripleTeleport, startMoney, losMoney, doubleLosMoney, freeParking, gainRentInPrison, buildEquable, reRollEventCardsAfterUse, buildRule, cardsRequiredForOneHouse, cardsRequiredForTwoHouses, cardsRequiredForThreeHouses, cardsRequiredForFourHouses, cardsRequiredForHotel, cardsRequiredForSkyscraper);
     }
 
-    public void printToConsole() {
-        System.out.println("value");
-    }
-
     @Override
     public void onGameStart() {
 

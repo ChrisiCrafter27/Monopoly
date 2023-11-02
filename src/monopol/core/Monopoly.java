@@ -2,6 +2,7 @@ package monopol.core;
 
 import monopol.annotations.AnnotationManager;
 import monopol.annotations.Autostart;
+import monopol.data.GameData;
 import monopol.screen.PrototypeMenu;
 import monopol.server.Server;
 import monopol.server.ServerPlayer;

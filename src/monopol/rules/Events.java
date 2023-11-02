@@ -50,7 +50,6 @@ public abstract class Events {
         CARDS_REQUIRED_FOR_SKYSCRAPER = cardsRequiredForSkyscraper;
     }
 
-    @ServerOnly
     public abstract void onGameStart();
     public abstract void onNextRound();
     public abstract void onPrisonerRound();

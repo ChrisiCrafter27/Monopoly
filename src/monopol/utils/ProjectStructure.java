@@ -1,6 +1,7 @@
 package monopol.utils;
 
 import java.io.*;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
@@ -9,6 +10,19 @@ import java.util.Arrays;
 import java.util.stream.Collectors;
 
 public class ProjectStructure {
+
+    public static boolean isAnnotated(Method method, Class<? extends Annotation> annotationClass) {
+        if(method.isAnnotationPresent(annotationClass)) return true;
+        while (method.getDeclaringClass().getSuperclass() != null) {
+            try {
+                method = method.getDeclaringClass().getSuperclass().getMethod(method.getName(), method.getParameterTypes());
+            } catch (NoSuchMethodException e) {
+                return false;
+            }
+            if(method.isAnnotationPresent(annotationClass)) return true;
+        }
+        return false;
+    }
 
     public static ArrayList<Class> getClassesInPackage(String packageName) {
         InputStream stream = ClassLoader.getSystemClassLoader()

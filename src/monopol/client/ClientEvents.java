@@ -1,9 +1,9 @@
 package monopol.client;
 
-import monopol.constants.IPurchasable;
-import monopol.constants.Plant;
-import monopol.constants.Street;
-import monopol.constants.TrainStation;
+import monopol.data.IPurchasable;
+import monopol.data.Plant;
+import monopol.data.Street;
+import monopol.data.TrainStation;
 import monopol.message.MessageType;
 import monopol.screen.PrototypeMenu;
 import monopol.server.ServerPlayer;

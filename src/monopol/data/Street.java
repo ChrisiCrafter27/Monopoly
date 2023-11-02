@@ -1,4 +1,4 @@
-package monopol.constants;
+package monopol.data;
 
 import monopol.rules.ColorGroup;
 
