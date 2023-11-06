@@ -90,8 +90,7 @@ public class Client {
                 }
                 case PING_BACK -> {
                     long delay = System.currentTimeMillis() - (long) message.getMessage()[0];
-                    PrototypeMenu.getPingLabel().setText(Color.YELLOW + "Ping: " + delay + "ms");
-                    //System.out.println("[Server]: Your ping is " + delay + "ms");
+                    System.out.println("[Server]: Your ping is " + delay + "ms");
                 }
                 case NAME -> {
                     if (player.getName() == null) {

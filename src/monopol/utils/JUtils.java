@@ -1,5 +1,6 @@
 package monopol.utils;
 
+import javax.swing.*;
 import java.awt.*;
 
 public class JUtils {
@@ -11,5 +12,16 @@ public class JUtils {
     }
     public static int getY(double y) {
         return (int) (y * (SCREEN_HEIGHT) / 1080d);
+    }
+
+    public static boolean hasComponent(JFrame frame, Component c)
+    {
+        Component[] components = frame.getContentPane().getComponents();
+        for (Component component : components) {
+            if (c == component) {
+                return true;
+            }
+        }
+        return false;
     }
 }

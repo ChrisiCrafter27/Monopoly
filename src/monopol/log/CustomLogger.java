@@ -10,12 +10,12 @@ import java.util.logging.Logger;
 import java.util.logging.Level;
 
 public abstract class CustomLogger {
-    private final Logger LOGGER;
+    private final Logger logger;
 
     protected CustomLogger(String logPath) {
-        LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
-        LOGGER.setLevel(Level.ALL);
-        LOGGER.setUseParentHandlers(false);
+        logger = Logger.getAnonymousLogger();
+        logger.setLevel(Level.ALL);
+        logger.setUseParentHandlers(false);
         FileHandler fileHandler;
         try {
             fileHandler = new FileHandler(logPath);
@@ -34,26 +34,26 @@ public abstract class CustomLogger {
 
                 //Type
                 if(record.getLevel().intValue() <= Level.FINE.intValue()) {
-                    result = result + " [FINE] " + this.formatMessage(record);
+                    result += " [FINE] " + formatMessage(record);
                 } else if (record.getLevel().intValue() == Level.CONFIG.intValue()) {
-                    result = result + " [CONF] " + this.formatMessage(record);
+                    result += " [CONF] " + formatMessage(record);
                 } else if(record.getLevel().intValue() == Level.INFO.intValue()) {
-                    result = result + " [INFO] " + this.formatMessage(record);
+                    result += " [INFO] " + formatMessage(record);
                 } else if(record.getLevel().intValue() == Level.WARNING.intValue()) {
-                    result = result + " [WARN] " + this.formatMessage(record);
+                    result += " [WARN] " + formatMessage(record);
                 } else if (record.getLevel().intValue() >= Level.SEVERE.intValue()) {
-                    result = result + " [FAIL] " + this.formatMessage(record);
+                    result += " [FAIL] " + formatMessage(record);
                 }
 
                 result += "\r\n";
                 return result;
             }
         });
-        LOGGER.addHandler(fileHandler);
+        logger.addHandler(fileHandler);
     }
 
-    public Logger getLogger() {
-        return LOGGER;
+    public Logger log() {
+        return logger;
     }
 
     public abstract CustomLogger getInstance();

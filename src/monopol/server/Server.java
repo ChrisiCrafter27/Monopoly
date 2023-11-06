@@ -26,7 +26,6 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.*;
-import java.util.function.Consumer;
 
 public class Server extends UnicastRemoteObject implements IServer {
     public static final int CLIENT_TIMEOUT = 10000;
@@ -55,9 +54,9 @@ public class Server extends UnicastRemoteObject implements IServer {
                         ServerPlayer serverPlayer = newServerPlayer();
                         serverPlayers.put(serverPlayer, newClient);
                         Message.send(new Message(serverPlayer.getName(), MessageType.NAME), newClient);
-                        logger.getLogger().info("[Server]: New Client accepted (" + serverPlayer.getName() + ")");
+                        logger.log().info("[Server]: New Client accepted (" + serverPlayer.getName() + ")");
                     } else {
-                        logger.getLogger().info("[Server]: New Client denied");
+                        logger.log().info("[Server]: New Client denied");
                         if (pause)
                             Message.send(new Message(DisconnectReason.SERVER_CLOSED, MessageType.DISCONNECT), newClient);
                         else if (Monopoly.INSTANCE.getState() == GameState.RUNNING)
@@ -67,7 +66,7 @@ public class Server extends UnicastRemoteObject implements IServer {
                         else Message.send(new Message(DisconnectReason.UNKNOWN, MessageType.DISCONNECT), newClient);
                     }
                 } catch (Exception e) {
-                    logger.getLogger().severe("[Server]: Server crashed due to an Exception:\r\n" + e.getMessage());
+                    logger.log().severe("[Server]: Server crashed due to an Exception:\r\n" + e.getMessage());
                     close();
                     return;
                 }
@@ -110,7 +109,7 @@ public class Server extends UnicastRemoteObject implements IServer {
                             try {
                                 DataInputStream input = new DataInputStream(client.getInputStream());
                                 String data = input.readUTF();
-                                logger.getLogger().fine("[Server]: Message received");
+                                logger.log().fine("[Server]: Message received");
                                 messageReceived(data, client);
                             } catch (IOException ignored) {
                             }
@@ -147,7 +146,7 @@ public class Server extends UnicastRemoteObject implements IServer {
                         for(Map.Entry<ServerPlayer, Socket> entry : serverPlayers.entrySet()) {
                             if(entry.getValue() == client) name = entry.getKey().getName();
                         }
-                        logger.getLogger().warning("[Server]: Client lost connection: timed out (" + name + ")");
+                        logger.log().warning("[Server]: Client lost connection: timed out (" + name + ")");
                         kick(client, DisconnectReason.CONNECTION_LOST);
                     }
                     try {
@@ -161,7 +160,7 @@ public class Server extends UnicastRemoteObject implements IServer {
     };
 
     public Server(int port) throws IOException{
-        logger.getLogger().info("[Server]: Initialing server...");
+        logger.log().info("[Server]: Initialing server...");
         server = new ServerSocket(port);
         //server.setSoTimeout(10000);
 
@@ -181,7 +180,7 @@ public class Server extends UnicastRemoteObject implements IServer {
                 registry = LocateRegistry.createRegistry(1199);
                 registry.rebind("Server", this);
             } catch(Exception e) {
-                logger.getLogger().severe("[Server]: Failed to start server\r\n" + e.getMessage());
+                logger.log().severe("[Server]: Failed to start server\r\n" + e.getMessage());
                 close();
                 throw new RuntimeException(e);
             }
@@ -190,19 +189,19 @@ public class Server extends UnicastRemoteObject implements IServer {
 
     public void open(ServerSettings serverSettings) {
         Monopoly.INSTANCE.setState(GameState.LOBBY);
-        logger.getLogger().info("[Server]: Starting server...");
+        logger.log().info("[Server]: Starting server...");
         try {
-            logger.getLogger().info("[Server]: IP-Address: " + InetAddress.getLocalHost().getHostAddress());
+            logger.log().info("[Server]: IP-Address: " + InetAddress.getLocalHost().getHostAddress());
             ip = InetAddress.getLocalHost().getHostAddress();
         } catch (UnknownHostException e) {
-            logger.getLogger().severe("[Server]: Server crashed due to an Exception:\r\n" + e.getMessage());
+            logger.log().severe("[Server]: Server crashed due to an Exception:\r\n" + e.getMessage());
             close();
             throw new RuntimeException();
         }
         this.serverSettings = serverSettings;
         pause = false;
         acceptNewClients = true;
-        logger.getLogger().info("[Server]: Listening for new clients...");
+        logger.log().info("[Server]: Listening for new clients...");
     }
 
     public void close() {
@@ -216,7 +215,7 @@ public class Server extends UnicastRemoteObject implements IServer {
             kick(client, DisconnectReason.SERVER_CLOSED);
         }
         pause = true;
-        logger.getLogger().warning("[Server]: Server closed...");
+        logger.log().warning("[Server]: Server closed...");
     }
 
     public void kick(Socket client, DisconnectReason reason) {
@@ -242,7 +241,7 @@ public class Server extends UnicastRemoteObject implements IServer {
                 break;
             }
         }
-        logger.getLogger().warning("[Server]: Kicked client");
+        logger.log().warning("[Server]: Kicked client");
         if(clients.isEmpty()) close();
     }
 
@@ -267,15 +266,15 @@ public class Server extends UnicastRemoteObject implements IServer {
                     for(Map.Entry<ServerPlayer, Socket> entry : serverPlayers.entrySet()) {
                         if(entry.getValue() == client) name = entry.getKey().getName();
                     }
-                    if(delay < 2500) logger.getLogger().fine("[Server]: Ping to " + name + " is " + delay + "ms");
-                    else logger.getLogger().warning("[Server]: Ping to " + name + " is " + delay + "ms");
+                    if(delay < 2500) logger.log().fine("[Server]: Ping to " + name + " is " + delay + "ms");
+                    else logger.log().warning("[Server]: Ping to " + name + " is " + delay + "ms");
                 }
                 case DISCONNECT -> kick(client, DisconnectReason.CLIENT_CLOSED);
                 case NULL -> {}
                 default -> throw new RuntimeException();
             }
         } catch (Exception e) {
-            logger.getLogger().severe("[Server]: Server crashed due to an Exception:\r\n" + e.getMessage());
+            logger.log().severe("[Server]: Server crashed due to an Exception:\r\n" + e.getMessage());
             close();
             throw new RuntimeException(e);
         }
@@ -329,7 +328,7 @@ public class Server extends UnicastRemoteObject implements IServer {
             if(entry.getKey().getName().equals(oldName)) {
                 entry.getKey().setName(newName);
                 if(oldName.equals(host)) host = newName;
-                logger.getLogger().info("[Server]: Changed name from " + oldName + " to " + newName);
+                logger.log().info("[Server]: Changed name from " + oldName + " to " + newName);
                 return true;
             }
         }

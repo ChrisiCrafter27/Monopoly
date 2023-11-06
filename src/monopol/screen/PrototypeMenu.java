@@ -10,9 +10,7 @@ import monopol.data.IPurchasable;
 import monopol.data.Street;
 import monopol.data.TrainStation;
 import monopol.data.Plant;
-import monopol.server.DisconnectReason;
 import monopol.server.ServerPlayer;
-import monopol.server.ServerSettings;
 import monopol.utils.JUtils;
 import monopol.utils.Json;
 import monopol.utils.KeyHandler;
@@ -32,14 +30,10 @@ public class PrototypeMenu {
     private boolean serverAcceptsNewClient;
     public Client client;
     private Client clientTemp;
-    private ArrayList<ServerPlayer> displayedServerPlayers = new ArrayList<>();
     private String ip;
     private KeyHandler keyHandler = new KeyHandler();
     private IPurchasable selectedCard = Street.BADSTRASSE;
-    private static JLabel PING_LABEL = new JLabel();
-    public static JLabel getPingLabel() {
-        return PING_LABEL;
-    }
+    private final RootPane root = new RootPane();
 
     public PrototypeMenu() {
         if((int) JUtils.SCREEN_WIDTH / (int) JUtils.SCREEN_HEIGHT != 16 / 9) System.err.println("[WARN]: Deine Bildschirmauflösung ist nicht 16/9. Dadurch werden einige Dinge nicht richtig angezeigt. Es ist allerdings trotzdem möglich, so zu spielen.");
@@ -51,208 +45,95 @@ public class PrototypeMenu {
         frame.setLayout(null);
         frame.setVisible(true);
         frame.addKeyListener(keyHandler);
-        ImageIcon frame_icon = new ImageIcon(new ImageIcon("images/Main_pictures/frame_icon.png").getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH));
-        frame.setIconImage(frame_icon.getImage());
-
-        PING_LABEL = addText("", 10, 10, 200, 50);
-        frame.add(getPingLabel());
-        new Thread() {
-            @Override
-            public void run() {
-                while (frame.isVisible()) {
-                    PING_LABEL.setVisible(keyHandler.isKeyPressed(130));
-                    try {
-                        sleep(100);
-                    } catch (InterruptedException e) {
-                        return;
-                    }
-                }
-            }
-        }.start();
+        ImageIcon icon = new ImageIcon(new ImageIcon("images/Main_pictures/icon.png").getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH));
+        frame.setIconImage(icon.getImage());
+        frame.add(root);
     }
 
     public void prepareMenu() {
         Monopoly.INSTANCE.setState(GameState.MAIN_MENU);
-        displayedServerPlayers = new ArrayList<>();
-        frame.getContentPane().removeAll();
         if(gameThread.isAlive()) gameThread.interrupt();
-        frame.repaint();
 
-        frame.add(addButton("invisible", 0, 0, 0, 0, true, actionEvent -> {}));
-        frame.add(addButton("Host game", 50, 50, 200, 50, true, actionEvent -> {
-            boolean canKick = JOptionPane.showConfirmDialog(null, "Allow all players to kick each other?", "Host game", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION;
-            boolean canSet = JOptionPane.showConfirmDialog(null, "Allow all players to access settings?", "Host game", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION;
-            try {
-                ip = "localhost";
-                Monopoly.INSTANCE.openServer(new ServerSettings(canKick, canSet));
-                client = new Client(ip, 25565, true);
-                clients.add(client);
-                prepareLobby();
-            } catch (Exception e) {
-                e.printStackTrace();
-                JOptionPane.showMessageDialog(null, "Failed to start server. Make sure there are no other running server on your PC!", "Failed to start server", JOptionPane.WARNING_MESSAGE);
-            }
-        }),0);
-        frame.add(addButton("Join game", 50, 150, 200, 50, true, actionEvent -> {
-            do {
-                ip = JOptionPane.showInputDialog(null, "Please enter the IP-Address:", "Join game", JOptionPane.QUESTION_MESSAGE);
-                if(ip == null) return;
-            } while(ip.isEmpty());
-            try {
-                client = new Client(ip, 25565, (ip.equals("localhost")));
-                clients.add(client);
-                frame.getContentPane().removeAll();
-                frame.add(addText("Connecting to server...", (1920 / 2) - 250, 1080 / 2, 500, 25, true));
-                frame.repaint();
-                prepareLobby();
-            } catch (Exception e) {
-                JOptionPane.showMessageDialog(null, "Server not found. Make sure the IP-Address is correct!", "Server not found", JOptionPane.WARNING_MESSAGE);
-            }
-        }),0);
-        frame.add(addButton("Close", 50, 250, 200, 50, true, actionEvent -> {
-            frame.setVisible(false);
-            frame.dispose();
-            System.exit(0);
-        }),0);
-        frame.add(addImage("images/Monopoly_client1.png", 0, 0, 1920, 1080));
+        root.playerPane.reset();
+
+        root.menuPane.init(clients, this::prepareLobby);
+
         frame.repaint();
     }
 
-    public void prepareLobby() {
+    public void prepareLobby(Client currentClient) {
+        client = currentClient;
+        try {
+            ip = client.serverMethod().getIp();
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
+
         Monopoly.INSTANCE.setState(GameState.LOBBY);
-        frame.getContentPane().removeAll();
         if(gameThread.isAlive()) gameThread.interrupt();
-        frame.repaint();
 
         Thread lobbyThread = new Thread() {
             @Override
             public void run() {
 
-                frame.add(addText("Connecting to server...", (1920 / 2) - 250, 1080 / 2, 500, 25, true));
-                frame.repaint();
+                //Initiate the panes
+                root.lobbyPane.init();
+                root.playerPane.init();
 
+                //Wait for the server connection
                 while(!isInterrupted() && client.player.getName() == null) {
                     if(client.closed()) {
+                        root.lobbyPane.reset();
                         interrupt();
                         prepareMenu();
                         return;
                     }
                 }
 
+                //Display server lobby
+                root.lobbyPane.onServer(ip);
+
+                //While on the server and in lobby
                 while(!isInterrupted()) {
 
-                    //if(keyHandler.isKeyPressed(KeyEvent.VK_W)) System.out.println("HI");
+                    //Get the client from the panels
+                    Client oldClient = client;
+                    if(root.lobbyPane.getClient() != null) client = root.lobbyPane.getClient();
+                    if(root.playerPane.getClient() != null && client.equals(oldClient)) client = root.playerPane.getClient();
 
+                    //Remove clients that left the game
                     clients.removeIf(Client::closed);
                     if(!clients.contains(client)) {
-                        if(!clients.isEmpty()) {//MonopolyScreen.png
+                        if(!clients.isEmpty()) {
                             client = clients.get(0);
                         } else {
+                            root.lobbyPane.reset();
                             interrupt();
                             prepareMenu();
                             return;
                         }
                     }
 
+                    //Try to get information from the server and update
                     try {
-                        boolean shouldUpdate = displayedServerPlayers.size() != client.serverMethod().getServerPlayers().size();
-                        for(ServerPlayer serverPlayer1 : displayedServerPlayers) {
-                            String name = serverPlayer1.getName();
-                            boolean okay = false;
-                            for(ServerPlayer serverPlayer2 : client.serverMethod().getServerPlayers()) {
-                                if (serverPlayer2.getName().equals(name)) {
-                                    okay = true;
-                                    break;
-                                }
-                            }
-                            if(!okay) {
-                                shouldUpdate = true;
-                                break;
-                            }
-                        }
-                        if(!clientsTemp.containsAll(clients) || !clients.containsAll(clientsTemp)) shouldUpdate = true;
-                        clientsTemp.removeAll(clientsTemp);
-                        clientsTemp.addAll(clients);
-                        if(serverAcceptsNewClient != client.serverMethod().acceptsNewClient()) shouldUpdate = true;
-                        serverAcceptsNewClient = client.serverMethod().acceptsNewClient();
-                        if(clientTemp != client) shouldUpdate = true;
-                        clientTemp = client;
-
-                        if(shouldUpdate) {
-                            boolean ableToKick;
-                            boolean ableToAccessSettings;
-                            try {
-                                if (client.player.isHost) ableToKick = true;
-                                else ableToKick = client.serverMethod().getServerSettings().allPlayersCanKick;
-                                if (client.player.isHost) ableToAccessSettings = true;
-                                else ableToAccessSettings = client.serverMethod().getServerSettings().allPlayersCanAccessSettings;
-                            } catch (RemoteException e) {
-                                ableToKick = client.player.isHost;
-                                ableToAccessSettings = client.player.isHost;
-                            }
-                            frame.getContentPane().removeAll();
-                            int y = 150;
-                            for (ServerPlayer serverPlayer : client.serverMethod().getServerPlayers()) {
-                                frame.add(addText(serverPlayer.getName(), 50, y, 500, 25));
-                                if(!serverPlayer.getName().equals(client.player.getName())) {
-                                    frame.add(addButton("Kick", 600, y, 150, 25, ableToKick && !client.serverMethod().isHost(serverPlayer.getName()), actionEvent -> {
-                                        try {
-                                            client.serverMethod().kick(serverPlayer.getName(), DisconnectReason.KICKED);
-                                        } catch (Exception ignored) {}
-                                    }));
-                                } else {
-                                    frame.add(addButton("change name", 600, y, 150, 25, true, actionEvent -> {
-                                        try {
-                                            String name = JOptionPane.showInputDialog(null, "New name:", "Change name", JOptionPane.QUESTION_MESSAGE);
-                                            if(client.serverMethod().changeName(client.player.getName(), name)) client.player.setName(name); else JOptionPane.showMessageDialog(null, "This name is either already in use or too long!", "Change name", JOptionPane.WARNING_MESSAGE);
-                                        } catch (Exception ignored) {
-                                        }
-                                    }));
-                                }
-                                y += 50;
-                            }
-                            frame.add(addButton("add player", 50, 1080 - 100, 200, 50, true, actionEvent -> {
-                                try {
-                                    if(client.serverMethod().acceptsNewClient()) {
-                                        client = new Client(ip, 25565, false);
-                                        clients.add(clients.size(), client);
-                                    }
-                                } catch (Exception ignored) {}
-                            }));
-                            frame.add(addButton("add bot", 50, 1080 - 200, 200, 50, client.player.isHost, actionEvent -> {
-                                JOptionPane.showMessageDialog(null, "This option is not possible yet", "Add bot", JOptionPane.WARNING_MESSAGE);
-                            }));
-                            frame.add(addButton("leave", 1920 - 250, 1080 - 100, 200, 50, true, actionEvent -> {
-                                try {
-                                    client.serverMethod().kick(client.player.getName(), DisconnectReason.CLIENT_CLOSED);
-                                } catch (Exception ignored) {}
-                            }));
-                            frame.add(addButton("start", 1920 - 250, 1080 - 200, 200, 50, client.player.isHost, actionEvent -> {
-                                try {
-                                    client.serverMethod().start();
-                                } catch (Exception ignored) {}
-                            }));
-                            frame.add(addText("IP-Address: " + client.serverMethod().getIp(), (1920/2)-250, 1080-70, 500, 30, true));
-                            displayedServerPlayers = client.serverMethod().getServerPlayers();
-                            for(int i = 0; i < clients.size(); i++) {
-                                frame.add(addPlayerButton(i));
-                            }
-                            frame.repaint();
-                        }
+                        root.lobbyPane.update(client.serverMethod().getServerPlayers(), client, clients, ip, false);
+                        root.playerPane.update(client, clients, root.lobbyPane.mustUpdate());
+                        frame.repaint();
                     } catch (RemoteException e) {
-                        System.err.println(e.getMessage());
+                        root.lobbyPane.reset();
                         client.close();
                         interrupt();
                         prepareMenu();
                         return;
                     }
                     if(Monopoly.INSTANCE.getState() == GameState.RUNNING) {
+                        //TODO: move game images on panels
                         interrupt();
                         prepareGame();
                         return;
                     }
                     try {
-                        sleep(10);
+                        sleep(100);
                     } catch (InterruptedException e) {
                         return;
                     }
@@ -262,16 +143,16 @@ public class PrototypeMenu {
         lobbyThread.start();
     }
 
-    Thread gameThread = new Thread(() -> {});
+    Thread gameThread = new Thread(() -> {/*do nothing*/});
 
     public void prepareGame() {
         Monopoly.INSTANCE.setState(GameState.RUNNING);
         frame.getContentPane().removeAll();
         gameThread.interrupt();
 
-        for(int i = 0; i < clients.size(); i++) {
-            frame.add(addPlayerButton(i));
-        }
+        PlayerPane playerPane = root.playerPane;
+        playerPane.update(client, clients, false);
+        client = playerPane.getClient();
 
         //LEFT
         addStreetButton(frame, Street.TIERGARTENSTRASSE, 0, 150, Direction.RIGHT);
@@ -1034,24 +915,6 @@ public class PrototypeMenu {
     public JButton addButton(JButton button, String display, int x, int y, int width, int height, boolean enabled, String icon,String disabled_icon, ActionListener actionEvent) {
         button = addButton(button,display,x,y,width,height,enabled,icon,actionEvent);
         button.setDisabledIcon(new ImageIcon(new ImageIcon(disabled_icon).getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH)));
-        return button;
-    }
-
-    private JButton addPlayerButton(int i) {
-        int step = 1920 / clients.size();
-        int[] value = {i};
-        JButton button = addButton(clients.get(i).player.getName(), i * step, 0, step, 60, true, (client == clients.get(value[0])), actionEvent -> {
-            setClient(value[0]);
-            switch (Monopoly.INSTANCE.getState()) {
-                case RUNNING -> prepareGame();
-            }
-        });
-        step = Math.max(step, 1);
-        button.setIcon(new ImageIcon(new ImageIcon("images/playerselect/playerselect_0_" + clients.size() + ".png").getImage().getScaledInstance(step, 60, Image.SCALE_SMOOTH)));
-        button.setDisabledIcon(new ImageIcon(new ImageIcon("images/playerselect/playerselect_0_" + clients.size() + ".png").getImage().getScaledInstance(step, 60, Image.SCALE_SMOOTH)));
-        button.setPressedIcon(new ImageIcon(new ImageIcon("images/playerselect/playerselect_0_" + clients.size() + ".png").getImage().getScaledInstance(step, 60, Image.SCALE_SMOOTH)));
-        button.setRolloverIcon(new ImageIcon(new ImageIcon("images/playerselect/playerselect_0_" + clients.size() + ".png").getImage().getScaledInstance(step, 60, Image.SCALE_SMOOTH)));
-        button.setSelectedIcon(new ImageIcon(new ImageIcon("images/playerselect/playerselect_0_" + clients.size() + ".png").getImage().getScaledInstance(step, 60, Image.SCALE_SMOOTH)));
         return button;
     }
 
