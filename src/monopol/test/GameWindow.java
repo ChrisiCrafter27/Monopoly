@@ -1,4 +1,4 @@
-package monopol.screen;
+package monopol.test;
 
 import monopol.utils.KeyHandler;
 
