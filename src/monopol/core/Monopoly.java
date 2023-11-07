@@ -68,9 +68,4 @@ public class Monopoly {
         ProjectStructure.printProjectStructureAsTree(false);
         System.out.println("Done!");
     }
-
-    @Autostart
-    public static void test() {
-
-    }
 }

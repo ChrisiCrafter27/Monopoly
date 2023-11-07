@@ -5,22 +5,29 @@ import monopol.log.DebugLogger;
 import monopol.server.DisconnectReason;
 import monopol.server.ServerPlayer;
 import monopol.utils.JUtils;
+import monopol.utils.KeyHandler;
 import monopol.utils.ListUtils;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class LobbyPane extends JLayeredPane {
     private Client client;
     private boolean mustUpdate;
 
     private ArrayList<ServerPlayer> memory = new ArrayList<>();
+    private boolean spaceDown = false;
+    private String ip = "";
 
     private final JLabel connecting = addText("Verbinde zum Server...", (1920 / 2) - 250, 1080 / 2, 500, 25, true);
-    private final JLabel ipAddress = addText("", (1920/2)-250, 1080-70, 500, 30, true);
+    private final JButton ipAddress = addButton((1920/2)-250, 1080-70, 500, 30, actionEvent -> {});
     private final JPanel playerList = new JPanel();
     private final JButton addPlayer = addButton("Spieler hinzufügen", 50, 1080 - 100, 200, 50, false, actionEvent -> {});
     private final JButton addBot = addButton("Bot hinzufügen", 50, 1080 - 200, 200, 50, false, actionEvent -> {});
@@ -56,7 +63,7 @@ public class LobbyPane extends JLayeredPane {
         setVisible(false);
         connecting.setVisible(false);
         ipAddress.setVisible(false);
-        ipAddress.setText("");
+        ipAddress.setFont(new Font("Arial", Font.PLAIN, 30));
         playerList.setVisible(false);
         addPlayer.setVisible(false);
         addBot.setVisible(false);
@@ -73,18 +80,7 @@ public class LobbyPane extends JLayeredPane {
         repaint();
     }
 
-    public void onServer(String ip) {
-        DebugLogger.INSTANCE.log().info("[LobbyPane] enabling lobby gui...");
-
-        ipAddress.setText("IP-Adresse: " + ip);
-        ipAddress.setVisible(true);
-    }
-
-    public void setButtons(Client currentClient, ArrayList<Client> clients, String ip) {
-        DebugLogger.INSTANCE.log().info("[LobbyPane] updating buttons...");
-
-        client = currentClient;
-
+    private void updateButtons(ArrayList<Client> clients) {
         addPlayer.setEnabled(true);
         removeActionListener(addPlayer);
         addPlayer.addActionListener(actionEvent -> {
@@ -123,50 +119,71 @@ public class LobbyPane extends JLayeredPane {
         start.setVisible(true);
     }
 
-    public void update(ArrayList<ServerPlayer> serverPlayers, Client currentClient, ArrayList<Client> clients, String ip, boolean forceUpdate) throws RemoteException {
+    private void updateList(ArrayList<ServerPlayer> serverPlayers) throws RemoteException {
+        memory = serverPlayers;
+
+        playerList.removeAll();
+        int y = 150;
+
+        boolean ableToKick;
+        try {
+            if (client.player.isHost) ableToKick = true;
+            else ableToKick = client.serverMethod().getServerSettings().allPlayersCanKick;
+        } catch (RemoteException e) {
+            ableToKick = false;
+        }
+
+        for (ServerPlayer serverPlayer : serverPlayers) {
+            playerList.add(addText(serverPlayer.getName(), 50, y, 500, 25, false));
+            if(!serverPlayer.getName().equals(client.player.getName())) {
+                playerList.add(addButton("Kick", 600, y, 150, 25, ableToKick && !client.serverMethod().isHost(serverPlayer.getName()), actionEvent -> {
+                    try {
+                        client.serverMethod().kick(serverPlayer.getName(), DisconnectReason.KICKED);
+                    } catch (Exception ignored) {}
+                }));
+            } else {
+                playerList.add(addButton("Namen ändern", 600, y, 150, 25, true, actionEvent -> {
+                    try {
+                        String name = JOptionPane.showInputDialog(null, "Neuer Name:", "Namen ändern", JOptionPane.QUESTION_MESSAGE);
+                        if(client.serverMethod().changeName(client.player.getName(), name)) {
+                            client.player.setName(name);
+                            mustUpdate = true;
+                        } else JOptionPane.showMessageDialog(null, "Dieser Name wird schon verwendet oder ist zu lang!", "Namen ändern", JOptionPane.WARNING_MESSAGE);
+                    } catch (Exception ignored) {
+                    }
+                }));
+            }
+            y += 50;
+        }
+    }
+
+    private void updateIp() {
+        ipAddress.setText(spaceDown ? "IP-Adresse: " + ip : "Klicken um IP zu kopieren");
+        removeActionListener(ipAddress);
+        ipAddress.addActionListener(actionEvent -> {
+            Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+            clipboard.setContents(new StringSelection(ip), null);
+        });
+        ipAddress.setVisible(true);
+    }
+
+    public void update(ArrayList<ServerPlayer> serverPlayers, Client currentClient, ArrayList<Client> clients, String ip, KeyHandler keyHandler, boolean forceUpdate) throws RemoteException {
         connecting.setVisible(false);
 
-        if(!ListUtils.equals(serverPlayers, memory) || !currentClient.equals(client)) {
-            DebugLogger.INSTANCE.log().info("[LobbyPane] updating list...");
-
-            memory = serverPlayers;
-
+        if(!ListUtils.equals(serverPlayers, memory) || !currentClient.equals(client) || !ip.equals(this.ip) || forceUpdate) {
+            DebugLogger.INSTANCE.log().info("[LobbyPane] updating all...");
             client = currentClient;
-            playerList.removeAll();
-            int y = 150;
-
-            boolean ableToKick;
-            try {
-                if (client.player.isHost) ableToKick = true;
-                else ableToKick = client.serverMethod().getServerSettings().allPlayersCanKick;
-            } catch (RemoteException e) {
-                ableToKick = false;
-            }
-
-            for (ServerPlayer serverPlayer : serverPlayers) {
-                playerList.add(addText(serverPlayer.getName(), 50, y, 500, 25, false));
-                if(!serverPlayer.getName().equals(client.player.getName())) {
-                    playerList.add(addButton("Kick", 600, y, 150, 25, ableToKick && !client.serverMethod().isHost(serverPlayer.getName()), actionEvent -> {
-                        try {
-                            client.serverMethod().kick(serverPlayer.getName(), DisconnectReason.KICKED);
-                        } catch (Exception ignored) {}
-                    }));
-                } else {
-                    playerList.add(addButton("Namen ändern", 600, y, 150, 25, true, actionEvent -> {
-                        try {
-                            String name = JOptionPane.showInputDialog(null, "Neuer Name:", "Namen ändern", JOptionPane.QUESTION_MESSAGE);
-                            if(client.serverMethod().changeName(client.player.getName(), name)) {
-                                client.player.setName(name);
-                                mustUpdate = true;
-                            } else JOptionPane.showMessageDialog(null, "Dieser Name wird schon verwendet oder ist zu lang!", "Namen ändern", JOptionPane.WARNING_MESSAGE);
-                        } catch (Exception ignored) {
-                        }
-                    }));
-                }
-                y += 50;
-            }
-
-            setButtons(client, clients, ip);
+            this.ip = ip;
+            updateList(serverPlayers);
+            updateButtons(clients);
+            updateIp();
+            repaint();
+        } else if(keyHandler.isKeyPressed(KeyEvent.VK_SPACE) != spaceDown) {
+            DebugLogger.INSTANCE.log().info("[LobbyPane] updating ip...");
+            spaceDown = keyHandler.isKeyPressed(KeyEvent.VK_SPACE);
+            this.ip = ip;
+            updateIp();
+            repaint();
         }
 
         playerList.setVisible(true);
@@ -208,6 +225,21 @@ public class LobbyPane extends JLayeredPane {
         if(width < 1) width = 1;
         if(height < 1) height = 1;
         button.setIcon(new ImageIcon(new ImageIcon("images/DO_NOT_CHANGE/plain_button_2.png").getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH)));
+        button.setHorizontalTextPosition(SwingConstants.CENTER);
+        button.setVerticalTextPosition(SwingConstants.CENTER);
+        return button;
+    }
+
+    public JButton addButton(int x, int y, int width, int height, ActionListener actionEvent) {
+        JButton button = new JButton("");
+        width = JUtils.getX(width);
+        height = JUtils.getY(height);
+        button.addActionListener(actionEvent);
+        button.setBounds(JUtils.getX(x), JUtils.getY(y), width, height);
+        button.setOpaque(false);
+        button.setContentAreaFilled(false);
+        button.setBorderPainted(false);
+        button.setFocusPainted(false);
         button.setHorizontalTextPosition(SwingConstants.CENTER);
         button.setVerticalTextPosition(SwingConstants.CENTER);
         return button;

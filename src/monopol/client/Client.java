@@ -29,6 +29,7 @@ public class Client {
     public final ClientPlayer player;
     public DisconnectReason disconnectReason = null;
     public final TradeData tradeData = new TradeData();
+    private long ping = -1;
 
     private final Thread clientThread = new Thread() {
         @Override
@@ -87,11 +88,12 @@ public class Client {
                     Object[] array = new Object[1];
                     array[0] = message.getMessage()[0];
                     output.writeUTF(Json.toString(new Message(array, MessageType.PING_BACK), false));
+                    ping = System.currentTimeMillis() - (long) message.getMessage()[0];
                 }
-                case PING_BACK -> {
-                    long delay = System.currentTimeMillis() - (long) message.getMessage()[0];
-                    System.out.println("[Server]: Your ping is " + delay + "ms");
-                }
+                //case PING_BACK -> {
+                //    long delay = System.currentTimeMillis() - (long) message.getMessage()[0];
+                //    System.out.println("[Server]: Your ping is " + delay + "ms");
+                //}
                 case NAME -> {
                     if (player.getName() == null) {
                         player.setName((String) message.getMessage()[0]);
@@ -210,6 +212,10 @@ public class Client {
             clientThread.interrupt();
             throw new RuntimeException(e);
         }
+    }
+
+    public long getPing() {
+        return ping;
     }
 
     public void close() {

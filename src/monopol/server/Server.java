@@ -28,7 +28,7 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.*;
 
 public class Server extends UnicastRemoteObject implements IServer {
-    public static final int CLIENT_TIMEOUT = 10000;
+    public static final int CLIENT_TIMEOUT = 5000;
 
     public ServerSocket server;
     private boolean pause = true;

@@ -7,7 +7,11 @@ import monopol.utils.JUtils;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.function.Consumer;
 
@@ -48,7 +52,11 @@ public class MenuPane extends JLayeredPane {
         }), JLayeredPane.MODAL_LAYER);
         add(addButton("Join game", 50, 150, 200, 50, true, actionEvent -> {
             do {
-                ip = JOptionPane.showInputDialog(null, "Please enter the IP-Address:", "Join game", JOptionPane.QUESTION_MESSAGE);
+                String clipboard = "";
+                try {
+                    clipboard = (String) Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null).getTransferData(DataFlavor.stringFlavor);
+                } catch (Exception ignored) {}
+                ip = (String) JOptionPane.showInputDialog(null, "Please enter the IP-Address:", "Join game", JOptionPane.QUESTION_MESSAGE, null, null, clipboard);
                 if(ip == null) return;
             } while(ip.isEmpty());
             try {

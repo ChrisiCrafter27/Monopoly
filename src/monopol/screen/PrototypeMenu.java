@@ -54,11 +54,11 @@ public class PrototypeMenu {
         Monopoly.INSTANCE.setState(GameState.MAIN_MENU);
         if(gameThread.isAlive()) gameThread.interrupt();
 
+        root.lobbyPane.reset();
+        root.pingPane.reset();
         root.playerPane.reset();
 
         root.menuPane.init(clients, this::prepareLobby);
-
-        frame.repaint();
     }
 
     public void prepareLobby(Client currentClient) {
@@ -76,22 +76,21 @@ public class PrototypeMenu {
             @Override
             public void run() {
 
-                //Initiate the panes
+                //Reset menu pane
+                root.menuPane.reset();
+
+                //Initiate panes
                 root.lobbyPane.init();
                 root.playerPane.init();
 
                 //Wait for the server connection
                 while(!isInterrupted() && client.player.getName() == null) {
                     if(client.closed()) {
-                        root.lobbyPane.reset();
                         interrupt();
                         prepareMenu();
                         return;
                     }
                 }
-
-                //Display server lobby
-                root.lobbyPane.onServer(ip);
 
                 //While on the server and in lobby
                 while(!isInterrupted()) {
@@ -107,7 +106,6 @@ public class PrototypeMenu {
                         if(!clients.isEmpty()) {
                             client = clients.get(0);
                         } else {
-                            root.lobbyPane.reset();
                             interrupt();
                             prepareMenu();
                             return;
@@ -116,18 +114,17 @@ public class PrototypeMenu {
 
                     //Try to get information from the server and update
                     try {
-                        root.lobbyPane.update(client.serverMethod().getServerPlayers(), client, clients, ip, false);
+                        root.lobbyPane.update(client.serverMethod().getServerPlayers(), client, clients, ip, keyHandler, false);
                         root.playerPane.update(client, clients, root.lobbyPane.mustUpdate());
+                        root.pingPane.update(client.getPing(), keyHandler);
                         frame.repaint();
                     } catch (RemoteException e) {
-                        root.lobbyPane.reset();
                         client.close();
                         interrupt();
                         prepareMenu();
                         return;
                     }
                     if(Monopoly.INSTANCE.getState() == GameState.RUNNING) {
-                        //TODO: move game images on panels
                         interrupt();
                         prepareGame();
                         return;
@@ -147,12 +144,11 @@ public class PrototypeMenu {
 
     public void prepareGame() {
         Monopoly.INSTANCE.setState(GameState.RUNNING);
-        frame.getContentPane().removeAll();
         gameThread.interrupt();
 
-        PlayerPane playerPane = root.playerPane;
-        playerPane.update(client, clients, false);
-        client = playerPane.getClient();
+        root.lobbyPane.reset();
+        //keep PlayerPane enabled
+        //keep PingPane enabled
 
         //LEFT
         addStreetButton(frame, Street.TIERGARTENSTRASSE, 0, 150, Direction.RIGHT);
@@ -884,10 +880,6 @@ public class PrototypeMenu {
         if(width < 1) width = 1;
         if(height < 1) height = 1;
         button.setIcon(new ImageIcon(new ImageIcon("images/DO_NOT_CHANGE/plain_button_2.png").getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH)));
-        //button.setDisabledIcon(new ImageIcon(new ImageIcon("images/DO_NOT_CHANGE/plain_button_2.png").getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH)));
-        //button.setPressedIcon(new ImageIcon(new ImageIcon("images/DO_NOT_CHANGE/plain_button_0.png").getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH)));
-        //button.setRolloverIcon(new ImageIcon(new ImageIcon("images/DO_NOT_CHANGE/plain_button_1.png").getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH)));
-        //button.setSelectedIcon(new ImageIcon(new ImageIcon("images/DO_NOT_CHANGE/plain_button_0.png").getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH)));
         button.setHorizontalTextPosition(SwingConstants.CENTER);
         button.setVerticalTextPosition(SwingConstants.CENTER);
         return button;
