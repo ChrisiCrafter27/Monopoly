@@ -25,7 +25,7 @@ public class KeyHandler implements KeyListener {
 
     @Override
     public void keyReleased(KeyEvent e) {
-        pressedKeys.remove((Object) e.getKeyCode());
+        pressedKeys.remove((Integer) e.getKeyCode());
     }
 
     public boolean isKeyPressed(int code) {

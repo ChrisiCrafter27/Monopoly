@@ -99,6 +99,7 @@ public class PrototypeMenu {
                     Client oldClient = client;
                     if(root.lobbyPane.getClient() != null) client = root.lobbyPane.getClient();
                     if(root.playerPane.getClient() != null && client.equals(oldClient)) client = root.playerPane.getClient();
+                    if(!client.equals(oldClient)) frame.requestFocus();
 
                     //Remove clients that left the game
                     clients.removeIf(Client::closed);

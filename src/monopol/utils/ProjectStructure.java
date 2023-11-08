@@ -167,7 +167,7 @@ public class ProjectStructure {
                                 parameterString += parameter.getName();
                             }
                             if (parameterString.length() >= 2) parameterString = parameterString.substring(2);
-                            System.out.println("        Method detected: " + method.getDeclaringClass().getName() + "." + method.getName() + "(" + parameterString + ")");
+                            System.out.println("        Method detected: " + method.getReturnType().getSimpleName() + " " + method.getDeclaringClass().getName() + "." + method.getName() + "(" + parameterString + ")");
                         }
                     }
                 }
@@ -192,7 +192,7 @@ public class ProjectStructure {
                                 parameterString += parameter.getName();
                             }
                             if (parameterString.length() >= 2) parameterString = parameterString.substring(2);
-                            System.out.println("        Method detected: " + method.getName() + "(" + parameterString + ")");
+                            System.out.println("        Method detected: " + method.getReturnType().getSimpleName() + " " + method.getName() + "(" + parameterString + ")");
                         }
                     }
                 }

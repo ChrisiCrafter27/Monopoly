@@ -171,14 +171,15 @@ public class LobbyPane extends JLayeredPane {
         connecting.setVisible(false);
 
         if(!ListUtils.equals(serverPlayers, memory) || !currentClient.equals(client) || !ip.equals(this.ip) || forceUpdate) {
-            DebugLogger.INSTANCE.log().info("[LobbyPane] updating all...");
+            DebugLogger.INSTANCE.log().info("[LobbyPane] updating list...");
             client = currentClient;
             this.ip = ip;
             updateList(serverPlayers);
             updateButtons(clients);
             updateIp();
             repaint();
-        } else if(keyHandler.isKeyPressed(KeyEvent.VK_SPACE) != spaceDown) {
+        }
+        if(keyHandler.isKeyPressed(KeyEvent.VK_SPACE) != spaceDown) {
             DebugLogger.INSTANCE.log().info("[LobbyPane] updating ip...");
             spaceDown = keyHandler.isKeyPressed(KeyEvent.VK_SPACE);
             this.ip = ip;
