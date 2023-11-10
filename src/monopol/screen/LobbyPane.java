@@ -134,7 +134,7 @@ public class LobbyPane extends JLayeredPane {
         }
 
         for (ServerPlayer serverPlayer : serverPlayers) {
-            playerList.add(addText(serverPlayer.getName(), 50, y, 500, 25, false));
+            playerList.add(addText(serverPlayer.getName() + (client.serverMethod().isHost(serverPlayer.getName()) ? " (Host)" : ""), 50, y, 500, 25, false));
             if(!serverPlayer.getName().equals(client.player.getName())) {
                 playerList.add(addButton("Kick", 600, y, 150, 25, ableToKick && !client.serverMethod().isHost(serverPlayer.getName()), actionEvent -> {
                     try {

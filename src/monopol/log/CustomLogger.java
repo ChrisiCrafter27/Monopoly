@@ -1,5 +1,6 @@
 package monopol.log;
 
+import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -18,6 +19,11 @@ public abstract class CustomLogger {
         logger.setUseParentHandlers(false);
         FileHandler fileHandler;
         try {
+            File file = new File("logs");
+            if(!file.exists()) {
+                file.mkdirs();
+                file.createNewFile();
+            }
             fileHandler = new FileHandler(logPath);
         } catch (IOException e) {
             throw new RuntimeException(e);

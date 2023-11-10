@@ -151,63 +151,8 @@ public class PrototypeMenu {
         //keep PlayerPane enabled
         //keep PingPane enabled
 
-        //LEFT
-        addStreetButton(frame, Street.TIERGARTENSTRASSE, 0, 150, Direction.RIGHT);
-        addStreetButton(frame, Street.POSTSTRASSE, 0, 220, Direction.RIGHT);
-        addPlantButton(frame, Plant.GASWERK, 0, 290, Direction.RIGHT);
-        addEreignisfeld(frame, 0, 360, Direction.RIGHT);
-        addStreetButton(frame, Street.ELISENSTRASSE, 0, 430, Direction.RIGHT);
-        addStreetButton(frame, Street.CHAUSSESTRASSE, 0, 500, Direction.RIGHT);
-        addTrainStationButton(frame, TrainStation.SUEDBAHNHOF, 0, 570, Direction.RIGHT);
-        addSteuerfeld(frame, 0, 640, Direction.RIGHT);
-        addStreetButton(frame, Street.STADIONSTRASSE, 0, 710, Direction.RIGHT);
-        addStreetButton(frame, Street.TURMSTRASSE, 0, 780, Direction.RIGHT);
-        addGemeinschaftsfeld(frame, 0, 850, Direction.RIGHT);
-        addStreetButton(frame, Street.BADSTRASSE, 0, 920, Direction.RIGHT);
-        //UP
-        addSpecialField(frame, 90, 60, Direction.DOWN);
-        addStreetButton(frame, Street.SEESTRASSE, 160, 60, Direction.DOWN);
-        addStreetButton(frame, Street.HAFENSTRASSE, 230, 60, Direction.DOWN);
-        addPlantButton(frame, Plant.ELEKTRIZITAETSWERK, 300, 60, Direction.DOWN);
-        addStreetButton(frame, Street.NEUESTRASSE, 370, 60, Direction.DOWN);
-        addStreetButton(frame, Street.MARKTPLATZ, 440, 60, Direction.DOWN);
-        addTrainStationButton(frame, TrainStation.WESTBAHNHOF, 510, 60, Direction.DOWN);
-        addStreetButton(frame, Street.MUENCHENERSTRASSE, 580, 60, Direction.DOWN);
-        addGemeinschaftsfeld(frame, 650, 60, Direction.DOWN);
-        addStreetButton(frame, Street.WIENERSTRASSE, 720, 60, Direction.DOWN);
-        addStreetButton(frame, Street.BERLINERSTRASSE, 790, 60, Direction.DOWN);
-        addStreetButton(frame, Street.HAMBURGERSTRASSE, 860, 60, Direction.DOWN);
-        //RIGHT
-        addStreetButton(frame, Street.THEATERSTRASSE, 930, 150, Direction.LEFT);
-        addEreignisfeld(frame, 930, 220, Direction.LEFT);
-        addStreetButton(frame, Street.MUSEUMSTRASSE, 930, 290, Direction.LEFT);
-        addStreetButton(frame, Street.OPERNPLATZ, 930, 360, Direction.LEFT);
-        addStreetButton(frame, Street.KONZERTHAUSSTRASSE, 930, 430, Direction.LEFT);
-        addSpecialField(frame, 930, 500, Direction.LEFT);
-        addTrainStationButton(frame, TrainStation.NORDBAHNHOF, 930, 570, Direction.LEFT);
-        addStreetButton(frame, Street.LESSINGSTRASSE, 930, 640, Direction.LEFT);
-        addStreetButton(frame, Street.SCHILLERSTRASSE, 930, 710, Direction.LEFT);
-        addPlantButton(frame, Plant.WASSERWERK, 930, 780, Direction.LEFT);
-        addStreetButton(frame, Street.GOETHESTRASSE, 930, 850, Direction.LEFT);
-        addStreetButton(frame, Street.RILKESTRASSE, 930, 920, Direction.LEFT);
-        //DOWN
-        addStreetButton(frame, Street.SCHLOSSALLEE, 90, 990, Direction.UP);
-        addGemeinschaftsfeld(frame, 160, 990, Direction.UP);
-        addStreetButton(frame, Street.PARKSTRASSE, 230, 990, Direction.UP);
-        addStreetButton(frame, Street.DOMPLATZ, 300, 990, Direction.UP);
-        addSpecialField(frame, 370, 990, Direction.UP);
-        addSteuerfeld(frame, 440, 990, Direction.UP);
-        addTrainStationButton(frame, TrainStation.HAUPTBAHNHOF, 510, 990, Direction.UP);
-        addStreetButton(frame, Street.BAHNHOFSTRASSE, 580, 990, Direction.UP);
-        addEreignisfeld(frame, 650, 990, Direction.UP);
-        addStreetButton(frame, Street.BOERSENPLATZ, 720, 990, Direction.UP);
-        addStreetButton(frame, Street.HAUPSTRASSE, 790, 990, Direction.UP);
-        addStreetButton(frame, Street.RATHAUSPLATZ, 860, 990, Direction.UP);
-        //CORNERS
-        frame.add(addImage("images/felder/gefaengnis.png", 0, 60));
-        frame.add(addImage("images/felder/los.png", 0, 990));
-        frame.add(addImage("images/felder/freiparken.png", 930, 60));
-        frame.add(addImage("images/felder/ins_gefaengnis.png", 930, 990));
+        root.boardPane.init();
+
         //no repaint
         //frame.repaint();
         JButton Handeln = new JButton();
@@ -216,7 +161,7 @@ public class PrototypeMenu {
             try {
                 ClientEvents.trade(this, null, TradeState.CHOOSE_PLAYER);
             } catch (RemoteException ignored) {}
-        }));
+        }), 0);
         frame.add(addText("Handeln",JUtils.getX(1060), JUtils.getY(450+90*5+13),400,40,true),0);
         //frame.repaint();
 
