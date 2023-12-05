@@ -142,6 +142,10 @@ public class PrototypeMenu {
         lobbyThread.start();
     }
 
+    public void setSelectedCard(IPurchasable card) {
+        selectedCard = card;
+    }
+
     Thread gameThread = new Thread(() -> {/*do nothing*/});
 
     public void prepareGame() {
@@ -152,18 +156,18 @@ public class PrototypeMenu {
         //keep PlayerPane enabled
         //keep PingPane enabled
 
-        root.boardPane.init();
+        root.boardPane.init(this::setSelectedCard);
 
         //no repaint
         //frame.repaint();
-        JButton Handeln = new JButton();
+        JButton handel = new JButton();
 
-        frame.add(addButton(Handeln,null, JUtils.getX(1060), JUtils.getY(450+90*5), 400, 80, true,"images/Main_pictures/3d_button.png", actionEvent -> {
+        frame.add(addButton(handel,null, JUtils.getX(1060), JUtils.getY(450+90*5), 400, 80, true,"images/Main_pictures/3d_button.png", actionEvent -> {
             try {
                 ClientEvents.trade(this, null, TradeState.CHOOSE_PLAYER);
             } catch (RemoteException ignored) {}
         }), 0);
-        frame.add(addText("Handeln",JUtils.getX(1060), JUtils.getY(450+90*5+13),400,40,true),0);
+        frame.add(addText("Handel",JUtils.getX(1060), JUtils.getY(450+90*5+13),400,40,true),0);
         //frame.repaint();
 
         //TODO  \/  FABIANS PART  \/

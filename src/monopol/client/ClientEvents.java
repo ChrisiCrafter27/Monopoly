@@ -36,8 +36,8 @@ public class ClientEvents {
         switch (state) {
             case CHOOSE_PLAYER -> {
                 //Print a list of all other players with a button to send a trade invite
-                client.tradeData.offerCards.removeAll(client.tradeData.offerCards);
-                client.tradeData.counterofferCards.removeAll(client.tradeData.counterofferCards);
+                client.tradeData.offerCards.clear();
+                client.tradeData.counterofferCards.clear();
                 client.tradeData.offerMoney = 0;
                 client.tradeData.counterOfferMoney = 0;
                 client.tradeData.counterOfferSend = false;
@@ -105,8 +105,8 @@ public class ClientEvents {
             case ACCEPT -> {
                 //Print buttons to accept or deny invite
                 if(player2 == null) return;
-                client.tradeData.offerCards.removeAll(client.tradeData.offerCards);
-                client.tradeData.counterofferCards.removeAll(client.tradeData.counterofferCards);
+                client.tradeData.offerCards.clear();
+                client.tradeData.counterofferCards.clear();
                 client.tradeData.offerMoney = 0;
                 client.tradeData.counterOfferMoney = 0;
                 client.tradeData.counterOfferSend = false;

@@ -2,6 +2,7 @@ package monopol.data;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public enum Field implements IField {
     GEMEINSCHAFTSFELD,
@@ -74,6 +75,10 @@ public enum Field implements IField {
             Field.ZUSATZSTEUER,
             Street.SCHLOSSALLEE
     ));
+
+    public static List<IField> getAll() {
+        return new ArrayList<>(fields);
+    }
 
     public static IField getField(int i) {
         if(i < 1) throw new IllegalArgumentException();

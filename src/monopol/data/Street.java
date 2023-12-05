@@ -57,7 +57,7 @@ public enum Street implements IPurchasable {
     private String owner;
     private boolean mortgaged;
 
-    private Street(String name, int price, int level, int rentNormal, int rentOneHouse, int rentTwoHouses, int rentThreeHouses, int rentFourHouses, int rentHotel, int rentSkyscraper, ColorGroup colorGroup, String owner, boolean mortgaged) {
+    Street(String name, int price, int level, int rentNormal, int rentOneHouse, int rentTwoHouses, int rentThreeHouses, int rentFourHouses, int rentHotel, int rentSkyscraper, ColorGroup colorGroup, String owner, boolean mortgaged) {
         this.name = name;
         this.price = price;
         this.level = level;
