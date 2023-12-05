@@ -9,6 +9,7 @@ public class RootPane extends JLayeredPane {
     public final LobbyPane lobbyPane = new LobbyPane();
     public final MenuPane menuPane = new MenuPane();
     public final PingPane pingPane = new PingPane();
+    public final BoardPane boardPane = new BoardPane();
 
     public RootPane() {
         super();
@@ -20,6 +21,7 @@ public class RootPane extends JLayeredPane {
         add(lobbyPane, DEFAULT_LAYER);
         add(menuPane, DEFAULT_LAYER);
         add(pingPane, POPUP_LAYER);
+        add(boardPane, MODAL_LAYER);
 
         repaint();
     }
