@@ -162,12 +162,12 @@ public class ProjectStructure {
                             String parameterString = "";
                             for (Parameter parameter : method.getParameters()) {
                                 parameterString += ", ";
-                                parameterString += parameter.getType().getSimpleName();
+                                parameterString += parameter.getType().getName();
                                 parameterString += " ";
                                 parameterString += parameter.getName();
                             }
                             if (parameterString.length() >= 2) parameterString = parameterString.substring(2);
-                            System.out.println("        Method detected: " + method.getReturnType().getSimpleName() + " " + method.getDeclaringClass().getName() + "." + method.getName() + "(" + parameterString + ")");
+                            System.out.println("        Method detected: " + method.getReturnType().getName() + " " + method.getDeclaringClass().getName() + "." + method.getName() + "(" + parameterString + ")");
                         }
                     }
                 }

@@ -45,6 +45,7 @@ public class PrototypeMenu {
         frame.setLayout(null);
         frame.setVisible(true);
         frame.addKeyListener(keyHandler);
+        frame.setFocusTraversalKeysEnabled(false);
         ImageIcon icon = new ImageIcon(new ImageIcon("images/Main_pictures/icon.png").getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH));
         frame.setIconImage(icon.getImage());
         frame.add(root);

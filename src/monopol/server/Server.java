@@ -49,7 +49,7 @@ public class Server extends UnicastRemoteObject implements IServer {
                 try {
                     Socket newClient = server.accept();
                     if (clients.containsValue(newClient)) continue;
-                    if (acceptNewClients) {
+                    if (acceptNewClients && clients.size() < 10) {
                         clients.put(clients.size() + 1, newClient);
                         ServerPlayer serverPlayer = newServerPlayer();
                         serverPlayers.put(serverPlayer, newClient);
@@ -72,7 +72,6 @@ public class Server extends UnicastRemoteObject implements IServer {
                 }
                 acceptNewClients = Monopoly.INSTANCE.getState() == GameState.LOBBY || Monopoly.INSTANCE.getState() == GameState.WAITING_FOR_PLAYER;
                 if (pause) acceptNewClients = false;
-                if (clients.size() >= 10) acceptNewClients = false;
                 try {
                     sleep(10);
                 } catch (InterruptedException e) {

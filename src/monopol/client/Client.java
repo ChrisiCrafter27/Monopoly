@@ -65,9 +65,8 @@ public class Client {
             client = new Socket(ip, port);
             Registry registry = LocateRegistry.getRegistry(ip, 1199);
             serverInterface = (IServer) registry.lookup("Server");
-            if(serverMethod().stopped()) {
-                System.out.println("Target server closed");
-                JOptionPane.showMessageDialog(null, "The target server is currently stopped!", "Connection failed", JOptionPane.WARNING_MESSAGE);
+            if(serverMethod().stopped() || !serverInterface.acceptsNewClient()) {
+                JOptionPane.showMessageDialog(null, "Beitreten nicht möglich", "Spiel beitreten", JOptionPane.WARNING_MESSAGE);
                 client.close();
                 return;
             }

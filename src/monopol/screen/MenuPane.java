@@ -32,10 +32,10 @@ public class MenuPane extends JLayeredPane {
         add(addButton("invisible", 0, 0, 0, 0, true, actionEvent -> {}));
         add(addButton("Host game", 50, 50, 200, 50, true, actionEvent -> {
             int input;
-            input = JOptionPane.showConfirmDialog(null, "Allow all players to kick each other?", "Host game", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+            input = JOptionPane.showConfirmDialog(null, "Dürfen die sich Mitspieler gegenseitig kicken?", "Spiel erstellen", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
             if(input == JOptionPane.CLOSED_OPTION) return;
             boolean canKick = input == JOptionPane.YES_OPTION;
-            input = JOptionPane.showConfirmDialog(null, "Allow all players to access settings?", "Host game", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+            input = JOptionPane.showConfirmDialog(null, "Dürfen die Mitspieler Einstellungen ändern?", "Spiel erstellen", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
             if(input == JOptionPane.CLOSED_OPTION) return;
             boolean canSet = input == JOptionPane.YES_OPTION;
             try {
@@ -47,7 +47,7 @@ public class MenuPane extends JLayeredPane {
                 prepareLobby.accept(client);
             } catch (Exception e) {
                 e.printStackTrace();
-                JOptionPane.showMessageDialog(null, "Failed to start server. Make sure there are no other running server on your PC!", "Failed to start server", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Server konnte nicht gestartet werden. Laufen andere Server auf deinem PC?", "Spiel erstellen", JOptionPane.WARNING_MESSAGE);
             }
         }), JLayeredPane.MODAL_LAYER);
         add(addButton("Join game", 50, 150, 200, 50, true, actionEvent -> {
@@ -56,7 +56,7 @@ public class MenuPane extends JLayeredPane {
                 try {
                     clipboard = (String) Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null).getTransferData(DataFlavor.stringFlavor);
                 } catch (Exception ignored) {}
-                ip = (String) JOptionPane.showInputDialog(null, "Please enter the IP-Address:", "Join game", JOptionPane.QUESTION_MESSAGE, null, null, clipboard);
+                ip = (String) JOptionPane.showInputDialog(null, "IP-Adresse eingeben:", "Spiel beitreten", JOptionPane.QUESTION_MESSAGE, null, null, clipboard);
                 if(ip == null) return;
             } while(ip.isEmpty());
             try {
@@ -65,7 +65,7 @@ public class MenuPane extends JLayeredPane {
                 reset();
                 prepareLobby.accept(client);
             } catch (Exception e) {
-                JOptionPane.showMessageDialog(null, "Server not found. Make sure the IP-Address is correct!", "Server not found", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Server nicht gefunden. Ist die IP-Adresse korrekt?", "Spiel beitreten", JOptionPane.WARNING_MESSAGE);
             }
         }), JLayeredPane.MODAL_LAYER);
         add(addButton("Close", 50, 250, 200, 50, true, actionEvent -> {
