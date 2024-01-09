@@ -49,6 +49,24 @@ public class PrototypeMenu {
         ImageIcon icon = new ImageIcon(new ImageIcon("images/Main_pictures/icon.png").getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH));
         frame.setIconImage(icon.getImage());
         frame.add(root);
+        focusThread();
+    }
+
+    private void focusThread() {
+        new Thread() {
+            @Override
+            public void run() {
+                while (!isInterrupted()) {
+                    KeyboardFocusManager kbdFocusManager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
+                    if(kbdFocusManager.getFocusOwner() != kbdFocusManager.getFocusedWindow() && kbdFocusManager.getFocusedWindow() == frame) frame.requestFocus();
+                    try {
+                        sleep(100);
+                    } catch (InterruptedException e) {
+                        return;
+                    }
+                }
+            }
+        }.start();
     }
 
     public void prepareMenu() {
@@ -100,7 +118,6 @@ public class PrototypeMenu {
                     Client oldClient = client;
                     if(root.lobbyPane.getClient() != null) client = root.lobbyPane.getClient();
                     if(root.playerPane.getClient() != null && client.equals(oldClient)) client = root.playerPane.getClient();
-                    if(!client.equals(oldClient)) frame.requestFocus();
 
                     //Remove clients that left the game
                     clients.removeIf(Client::closed);
@@ -119,7 +136,6 @@ public class PrototypeMenu {
                         root.lobbyPane.update(client.serverMethod().getServerPlayers(), client, clients, ip, keyHandler, false);
                         root.playerPane.update(client, clients, root.lobbyPane.mustUpdate());
                         root.pingPane.update(client.getPing(), keyHandler);
-                        frame.repaint();
                     } catch (RemoteException e) {
                         client.close();
                         interrupt();
@@ -158,22 +174,39 @@ public class PrototypeMenu {
 
         root.boardPane.init(this::setSelectedCard);
 
+        new Thread() {
+            @Override
+            public void run() {
+                while (!isInterrupted()) {
+                    if(root.playerPane.getClient() != null) {
+                        Client oldClient = client;
+                        client = root.playerPane.getClient();
+                        if(client != oldClient) ClientEvents.trade(() -> client, root.tradePane);
+                    }
+                    root.playerPane.update(client, clients, false);
+                    try {
+                        sleep(100);
+                    } catch (InterruptedException e) {
+                        return;
+                    }
+                }
+            }
+        }.start();
+
         //no repaint
         //frame.repaint();
         JButton handel = new JButton();
-
-        frame.add(addButton(handel,null, JUtils.getX(1060), JUtils.getY(450+90*5), 400, 80, true,"images/Main_pictures/3d_button.png", actionEvent -> {
-            try {
-                ClientEvents.trade(this, null, TradeState.CHOOSE_PLAYER);
-            } catch (RemoteException ignored) {}
+        frame.add(JUtils.addButton(handel,null, 1060, 450+90*5, 400, 80, true,"images/Main_pictures/3d_button.png", actionEvent -> {
+            client.tradeData.tradeState = TradeState.CHOOSE_PLAYER;
+            ClientEvents.trade(() -> client, root.tradePane);
         }), 0);
-        frame.add(addText("Handel",JUtils.getX(1060), JUtils.getY(450+90*5+13),400,40,true),0);
+        frame.add(JUtils.addText("Handel", 1060, 450+90*5+13,400,40,true),0);
         //frame.repaint();
 
         //TODO  \/  FABIANS PART  \/
 
-        frame.add(addImage("images/Main_pictures/Background_Right.png", 1020, 60));
-        frame.add(addImage("images/Main_pictures/hintergrund_links_mitte2.png", 90, 150));
+        frame.add(JUtils.addImage("images/Main_pictures/Background_Right.png", 1020, 60));
+        frame.add(JUtils.addImage("images/Main_pictures/hintergrund_links_mitte2.png", 90, 150));
 
         int[] currentPlayer = new int[1];
 
@@ -192,114 +225,114 @@ public class PrototypeMenu {
 
 
         int X = 1160;
-        JLabel label_moneyCommpanion = addText("----",X+95,342,200,30,false);
-        JLabel busfahrkarten_Commpanion = addText("-",X-57,307,20,30,false);
-        JLabel gefaengnisfreikarte_Commpanion = addText("-",X+243,315,13,24,false);
+        JLabel label_moneyCommpanion = JUtils.addText("----",X+95,342,200,30,false);
+        JLabel busfahrkarten_Commpanion = JUtils.addText("-",X-57,307,20,30,false);
+        JLabel gefaengnisfreikarte_Commpanion = JUtils.addText("-",X+243,315,13,24,false);
 
         X = 1579;
-        JLabel label_moneyPlayer = addText("----",X+95,342,200,30,false);
-        JLabel busfahrkarten_player = addText("-",X-57,307,20,30,false);
-        JLabel gefaengnisfreikarte_player = addText("-",X+243,315,13,24,false);
+        JLabel label_moneyPlayer = JUtils.addText("----",X+95,342,200,30,false);
+        JLabel busfahrkarten_player = JUtils.addText("-",X-57,307,20,30,false);
+        JLabel gefaengnisfreikarte_player = JUtils.addText("-",X+243,315,13,24,false);
 
         int x = 1060 + 15;
         int y = 148;
 
-        JLabel BADSTRASSE = addImage("images/kleine_karten/brown.png",x+15,y,20,40);
-        JLabel TURMSTRASSE = addImage("images/kleine_karten/brown.png",x+45,y,20,40);
-        JLabel STADIONSTRASSE = addImage("images/kleine_karten/brown.png",x+75,y,20,40);
+        JLabel BADSTRASSE = JUtils.addImage("images/kleine_karten/brown.png",x+15,y,20,40);
+        JLabel TURMSTRASSE = JUtils.addImage("images/kleine_karten/brown.png",x+45,y,20,40);
+        JLabel STADIONSTRASSE = JUtils.addImage("images/kleine_karten/brown.png",x+75,y,20,40);
 
-        JLabel CHAUSSESTRASSE = addImage("images/kleine_karten/cyan.png",x+115,y,20,40);
-        JLabel ELISENSTRASSE = addImage("images/kleine_karten/cyan.png",x+145,y,20,40);
-        JLabel POSTSTRASSE = addImage("images/kleine_karten/cyan.png",x+175,y,20,40);
-        JLabel TIERGARTENSTRASSE = addImage("images/kleine_karten/cyan.png",x+205,y,20,40);
+        JLabel CHAUSSESTRASSE = JUtils.addImage("images/kleine_karten/cyan.png",x+115,y,20,40);
+        JLabel ELISENSTRASSE = JUtils.addImage("images/kleine_karten/cyan.png",x+145,y,20,40);
+        JLabel POSTSTRASSE = JUtils.addImage("images/kleine_karten/cyan.png",x+175,y,20,40);
+        JLabel TIERGARTENSTRASSE = JUtils.addImage("images/kleine_karten/cyan.png",x+205,y,20,40);
 
-        JLabel SEESTRASSE = addImage("images/kleine_karten/pink.png",x+245,y,20,40);
-        JLabel HAFENSTRASSE = addImage("images/kleine_karten/pink.png",x+275,y,20,40);
-        JLabel NEUESTRASSE = addImage("images/kleine_karten/pink.png",x+305,y,20,40);
-        JLabel MARKTPLATZ = addImage("images/kleine_karten/pink.png",x+335,y,20,40);
+        JLabel SEESTRASSE = JUtils.addImage("images/kleine_karten/pink.png",x+245,y,20,40);
+        JLabel HAFENSTRASSE = JUtils.addImage("images/kleine_karten/pink.png",x+275,y,20,40);
+        JLabel NEUESTRASSE = JUtils.addImage("images/kleine_karten/pink.png",x+305,y,20,40);
+        JLabel MARKTPLATZ = JUtils.addImage("images/kleine_karten/pink.png",x+335,y,20,40);
 
-        JLabel MUENCHENERSTRASSE = addImage("images/kleine_karten/orange.png",x,y+50,20,40);
-        JLabel WIENERSTRASSE = addImage("images/kleine_karten/orange.png",x+30,y+50,20,40);
-        JLabel BERLINERSTRASSE = addImage("images/kleine_karten/orange.png",x+60,y+50,20,40);
-        JLabel HAMBURGERSTRASSE = addImage("images/kleine_karten/orange.png",x+90,y+50,20,40);
+        JLabel MUENCHENERSTRASSE = JUtils.addImage("images/kleine_karten/orange.png",x,y+50,20,40);
+        JLabel WIENERSTRASSE = JUtils.addImage("images/kleine_karten/orange.png",x+30,y+50,20,40);
+        JLabel BERLINERSTRASSE = JUtils.addImage("images/kleine_karten/orange.png",x+60,y+50,20,40);
+        JLabel HAMBURGERSTRASSE = JUtils.addImage("images/kleine_karten/orange.png",x+90,y+50,20,40);
 
-        JLabel THEATERSTRASSE = addImage("images/kleine_karten/red.png",x+130,y+50,20,40);
-        JLabel MUSEUMSTRASSE = addImage("images/kleine_karten/red.png",x+160,y+50,20,40);
-        JLabel OPERNPLATZ = addImage("images/kleine_karten/red.png",x+190,y+50,20,40);
-        JLabel KONZERTHAUSSTRASSE = addImage("images/kleine_karten/red.png",x+220,y+50,20,40);
+        JLabel THEATERSTRASSE = JUtils.addImage("images/kleine_karten/red.png",x+130,y+50,20,40);
+        JLabel MUSEUMSTRASSE = JUtils.addImage("images/kleine_karten/red.png",x+160,y+50,20,40);
+        JLabel OPERNPLATZ = JUtils.addImage("images/kleine_karten/red.png",x+190,y+50,20,40);
+        JLabel KONZERTHAUSSTRASSE = JUtils.addImage("images/kleine_karten/red.png",x+220,y+50,20,40);
 
-        JLabel LESSINGSTRASSE = addImage("images/kleine_karten/yellow.png",x+260,y+50,20,40);
-        JLabel SCHILLERSTRASSE = addImage("images/kleine_karten/yellow.png",x+290,y+50,20,40);
-        JLabel GOETHESTRASSE = addImage("images/kleine_karten/yellow.png",x+320,y+50,20,40);
-        JLabel RILKESTRASSE = addImage("images/kleine_karten/yellow.png",x+350,y+50,20,40);
+        JLabel LESSINGSTRASSE = JUtils.addImage("images/kleine_karten/yellow.png",x+260,y+50,20,40);
+        JLabel SCHILLERSTRASSE = JUtils.addImage("images/kleine_karten/yellow.png",x+290,y+50,20,40);
+        JLabel GOETHESTRASSE = JUtils.addImage("images/kleine_karten/yellow.png",x+320,y+50,20,40);
+        JLabel RILKESTRASSE = JUtils.addImage("images/kleine_karten/yellow.png",x+350,y+50,20,40);
 
-        JLabel RATHAUSPLATZ = addImage("images/kleine_karten/green.png",x+80,y+100,20,40);
-        JLabel HAUPSTRASSE = addImage("images/kleine_karten/green.png",x+110,y+100,20,40);
-        JLabel BOERSENPLATZ = addImage("images/kleine_karten/green.png",x+140,y+100,20,40);
-        JLabel BAHNHOFSTRASSE = addImage("images/kleine_karten/green.png",x+170,y+100,20,40);
+        JLabel RATHAUSPLATZ = JUtils.addImage("images/kleine_karten/green.png",x+80,y+100,20,40);
+        JLabel HAUPSTRASSE = JUtils.addImage("images/kleine_karten/green.png",x+110,y+100,20,40);
+        JLabel BOERSENPLATZ = JUtils.addImage("images/kleine_karten/green.png",x+140,y+100,20,40);
+        JLabel BAHNHOFSTRASSE = JUtils.addImage("images/kleine_karten/green.png",x+170,y+100,20,40);
 
-        JLabel DOMPLATZ = addImage("images/kleine_karten/blue.png",x+210,y+100,20,40);
-        JLabel PARKSTRASSE = addImage("images/kleine_karten/blue.png",x+240,y+100,20,40);
-        JLabel SCHLOSSALLEE = addImage("images/kleine_karten/blue.png",x+270,y+100,20,40);
+        JLabel DOMPLATZ = JUtils.addImage("images/kleine_karten/blue.png",x+210,y+100,20,40);
+        JLabel PARKSTRASSE = JUtils.addImage("images/kleine_karten/blue.png",x+240,y+100,20,40);
+        JLabel SCHLOSSALLEE = JUtils.addImage("images/kleine_karten/blue.png",x+270,y+100,20,40);
 
-        JLabel GASWERK = addImage("images/kleine_karten/gas.png",x+210,y+150,20,40);
-        JLabel ELEKTRIZITAETSWERK = addImage("images/kleine_karten/elec.png",x+240,y+150,20,40);
-        JLabel WASSERWERK = addImage("images/kleine_karten/water.png",x+270,y+150,20,40);
+        JLabel GASWERK = JUtils.addImage("images/kleine_karten/gas.png",x+210,y+150,20,40);
+        JLabel ELEKTRIZITAETSWERK = JUtils.addImage("images/kleine_karten/elec.png",x+240,y+150,20,40);
+        JLabel WASSERWERK = JUtils.addImage("images/kleine_karten/water.png",x+270,y+150,20,40);
 
-        JLabel SUEDBAHNHOF = addImage("images/kleine_karten/train.png",x+80,y+150,20,40);
-        JLabel WESTBAHNHOF = addImage("images/kleine_karten/train.png",x+110,y+150,20,40);
-        JLabel NORDBAHNHOF = addImage("images/kleine_karten/train.png",x+140,y+150,20,40);
-        JLabel HAUPTBAHNHOF = addImage("images/kleine_karten/train.png",x+170,y+150,20,40);
+        JLabel SUEDBAHNHOF = JUtils.addImage("images/kleine_karten/train.png",x+80,y+150,20,40);
+        JLabel WESTBAHNHOF = JUtils.addImage("images/kleine_karten/train.png",x+110,y+150,20,40);
+        JLabel NORDBAHNHOF = JUtils.addImage("images/kleine_karten/train.png",x+140,y+150,20,40);
+        JLabel HAUPTBAHNHOF = JUtils.addImage("images/kleine_karten/train.png",x+170,y+150,20,40);
 
         x = 1479 + 15;
         y = 148;
 
-        JLabel BADSTRASSE_Companion = addImage("images/kleine_karten/brown.png",x+15,y,20,40);
-        JLabel TURMSTRASSE_Companion = addImage("images/kleine_karten/brown.png",x+45,y,20,40);
-        JLabel STADIONSTRASSE_Companion = addImage("images/kleine_karten/brown.png",x+75,y,20,40);
+        JLabel BADSTRASSE_Companion = JUtils.addImage("images/kleine_karten/brown.png",x+15,y,20,40);
+        JLabel TURMSTRASSE_Companion = JUtils.addImage("images/kleine_karten/brown.png",x+45,y,20,40);
+        JLabel STADIONSTRASSE_Companion = JUtils.addImage("images/kleine_karten/brown.png",x+75,y,20,40);
 
-        JLabel CHAUSSESTRASSE_Companion = addImage("images/kleine_karten/cyan.png",x+115,y,20,40);
-        JLabel ELISENSTRASSE_Companion = addImage("images/kleine_karten/cyan.png",x+145,y,20,40);
-        JLabel POSTSTRASSE_Companion = addImage("images/kleine_karten/cyan.png",x+175,y,20,40);
-        JLabel TIERGARTENSTRASSE_Companion = addImage("images/kleine_karten/cyan.png",x+205,y,20,40);
+        JLabel CHAUSSESTRASSE_Companion = JUtils.addImage("images/kleine_karten/cyan.png",x+115,y,20,40);
+        JLabel ELISENSTRASSE_Companion = JUtils.addImage("images/kleine_karten/cyan.png",x+145,y,20,40);
+        JLabel POSTSTRASSE_Companion = JUtils.addImage("images/kleine_karten/cyan.png",x+175,y,20,40);
+        JLabel TIERGARTENSTRASSE_Companion = JUtils.addImage("images/kleine_karten/cyan.png",x+205,y,20,40);
 
-        JLabel SEESTRASSE_Companion = addImage("images/kleine_karten/pink.png",x+245,y,20,40);
-        JLabel HAFENSTRASSE_Companion = addImage("images/kleine_karten/pink.png",x+275,y,20,40);
-        JLabel NEUESTRASSE_Companion = addImage("images/kleine_karten/pink.png",x+305,y,20,40);
-        JLabel MARKTPLATZ_Companion = addImage("images/kleine_karten/pink.png",x+335,y,20,40);
+        JLabel SEESTRASSE_Companion = JUtils.addImage("images/kleine_karten/pink.png",x+245,y,20,40);
+        JLabel HAFENSTRASSE_Companion = JUtils.addImage("images/kleine_karten/pink.png",x+275,y,20,40);
+        JLabel NEUESTRASSE_Companion = JUtils.addImage("images/kleine_karten/pink.png",x+305,y,20,40);
+        JLabel MARKTPLATZ_Companion = JUtils.addImage("images/kleine_karten/pink.png",x+335,y,20,40);
 
-        JLabel MUENCHENERSTRASSE_Companion = addImage("images/kleine_karten/orange.png",x,y+50,20,40);
-        JLabel WIENERSTRASSE_Companion = addImage("images/kleine_karten/orange.png",x+30,y+50,20,40);
-        JLabel BERLINERSTRASSE_Companion = addImage("images/kleine_karten/orange.png",x+60,y+50,20,40);
-        JLabel HAMBURGERSTRASSE_Companion = addImage("images/kleine_karten/orange.png",x+90,y+50,20,40);
+        JLabel MUENCHENERSTRASSE_Companion = JUtils.addImage("images/kleine_karten/orange.png",x,y+50,20,40);
+        JLabel WIENERSTRASSE_Companion = JUtils.addImage("images/kleine_karten/orange.png",x+30,y+50,20,40);
+        JLabel BERLINERSTRASSE_Companion = JUtils.addImage("images/kleine_karten/orange.png",x+60,y+50,20,40);
+        JLabel HAMBURGERSTRASSE_Companion = JUtils.addImage("images/kleine_karten/orange.png",x+90,y+50,20,40);
 
-        JLabel THEATERSTRASSE_Companion = addImage("images/kleine_karten/red.png",x+130,y+50,20,40);
-        JLabel MUSEUMSTRASSE_Companion = addImage("images/kleine_karten/red.png",x+160,y+50,20,40);
-        JLabel OPERNPLATZ_Companion = addImage("images/kleine_karten/red.png",x+190,y+50,20,40);
-        JLabel KONZERTHAUSSTRASSE_Companion = addImage("images/kleine_karten/red.png",x+220,y+50,20,40);
+        JLabel THEATERSTRASSE_Companion = JUtils.addImage("images/kleine_karten/red.png",x+130,y+50,20,40);
+        JLabel MUSEUMSTRASSE_Companion = JUtils.addImage("images/kleine_karten/red.png",x+160,y+50,20,40);
+        JLabel OPERNPLATZ_Companion = JUtils.addImage("images/kleine_karten/red.png",x+190,y+50,20,40);
+        JLabel KONZERTHAUSSTRASSE_Companion = JUtils.addImage("images/kleine_karten/red.png",x+220,y+50,20,40);
 
-        JLabel LESSINGSTRASSE_Companion = addImage("images/kleine_karten/yellow.png",x+260,y+50,20,40);
-        JLabel SCHILLERSTRASSE_Companion = addImage("images/kleine_karten/yellow.png",x+290,y+50,20,40);
-        JLabel GOETHESTRASSE_Companion = addImage("images/kleine_karten/yellow.png",x+320,y+50,20,40);
-        JLabel RILKESTRASSE_Companion = addImage("images/kleine_karten/yellow.png",x+350,y+50,20,40);
+        JLabel LESSINGSTRASSE_Companion = JUtils.addImage("images/kleine_karten/yellow.png",x+260,y+50,20,40);
+        JLabel SCHILLERSTRASSE_Companion = JUtils.addImage("images/kleine_karten/yellow.png",x+290,y+50,20,40);
+        JLabel GOETHESTRASSE_Companion = JUtils.addImage("images/kleine_karten/yellow.png",x+320,y+50,20,40);
+        JLabel RILKESTRASSE_Companion = JUtils.addImage("images/kleine_karten/yellow.png",x+350,y+50,20,40);
 
-        JLabel RATHAUSPLATZ_Companion = addImage("images/kleine_karten/green.png",x+80,y+100,20,40);
-        JLabel HAUPSTRASSE_Companion = addImage("images/kleine_karten/green.png",x+110,y+100,20,40);
-        JLabel BOERSENPLATZ_Companion = addImage("images/kleine_karten/green.png",x+140,y+100,20,40);
-        JLabel BAHNHOFSTRASSE_Companion = addImage("images/kleine_karten/green.png",x+170,y+100,20,40);
+        JLabel RATHAUSPLATZ_Companion = JUtils.addImage("images/kleine_karten/green.png",x+80,y+100,20,40);
+        JLabel HAUPSTRASSE_Companion = JUtils.addImage("images/kleine_karten/green.png",x+110,y+100,20,40);
+        JLabel BOERSENPLATZ_Companion = JUtils.addImage("images/kleine_karten/green.png",x+140,y+100,20,40);
+        JLabel BAHNHOFSTRASSE_Companion = JUtils.addImage("images/kleine_karten/green.png",x+170,y+100,20,40);
 
-        JLabel DOMPLATZ_Companion = addImage("images/kleine_karten/blue.png",x+210,y+100,20,40);
-        JLabel PARKSTRASSE_Companion = addImage("images/kleine_karten/blue.png",x+240,y+100,20,40);
-        JLabel SCHLOSSALLEE_Companion = addImage("images/kleine_karten/blue.png",x+270,y+100,20,40);
+        JLabel DOMPLATZ_Companion = JUtils.addImage("images/kleine_karten/blue.png",x+210,y+100,20,40);
+        JLabel PARKSTRASSE_Companion = JUtils.addImage("images/kleine_karten/blue.png",x+240,y+100,20,40);
+        JLabel SCHLOSSALLEE_Companion = JUtils.addImage("images/kleine_karten/blue.png",x+270,y+100,20,40);
 
-        JLabel GASWERK_Companion = addImage("images/kleine_karten/gas.png",x+210,y+150,20,40);
-        JLabel ELEKTRIZITAETSWERK_Companion = addImage("images/kleine_karten/elec.png",x+240,y+150,20,40);
-        JLabel WASSERWERK_Companion = addImage("images/kleine_karten/water.png",x+270,y+150,20,40);
+        JLabel GASWERK_Companion = JUtils.addImage("images/kleine_karten/gas.png",x+210,y+150,20,40);
+        JLabel ELEKTRIZITAETSWERK_Companion = JUtils.addImage("images/kleine_karten/elec.png",x+240,y+150,20,40);
+        JLabel WASSERWERK_Companion = JUtils.addImage("images/kleine_karten/water.png",x+270,y+150,20,40);
 
-        JLabel SUEDBAHNHOF_Companion = addImage("images/kleine_karten/train.png",x+80,y+150,20,40);
-        JLabel WESTBAHNHOF_Companion = addImage("images/kleine_karten/train.png",x+110,y+150,20,40);
-        JLabel NORDBAHNHOF_Companion = addImage("images/kleine_karten/train.png",x+140,y+150,20,40);
-        JLabel HAUPTBAHNHOF_Companion = addImage("images/kleine_karten/train.png",x+170,y+150,20,40);
+        JLabel SUEDBAHNHOF_Companion = JUtils.addImage("images/kleine_karten/train.png",x+80,y+150,20,40);
+        JLabel WESTBAHNHOF_Companion = JUtils.addImage("images/kleine_karten/train.png",x+110,y+150,20,40);
+        JLabel NORDBAHNHOF_Companion = JUtils.addImage("images/kleine_karten/train.png",x+140,y+150,20,40);
+        JLabel HAUPTBAHNHOF_Companion = JUtils.addImage("images/kleine_karten/train.png",x+170,y+150,20,40);
 
 
         gameThread = new Thread() {
@@ -322,8 +355,6 @@ public class PrototypeMenu {
                             return;
                         }
                     }
-
-                    if(isInterrupted()) break;
 
                     try {
                         serverPlayer = client.serverMethod().getServerPlayers().get(currentPlayer[0]);
@@ -509,7 +540,7 @@ public class PrototypeMenu {
 
 
 
-        frame.add(addButton(button1,null,1060,90,400,60,true,"images/Main_pictures/Player_display.png", actionevent ->  {
+        frame.add(JUtils.addButton(button1,null,1060,90,400,60,true,"images/Main_pictures/Player_display.png", actionevent ->  {
             int maxPlayers;
             try {
                 //Get the amount of players on the server
@@ -534,73 +565,73 @@ public class PrototypeMenu {
             }
         }),0);
 
-        frame.add(addButton(button2,null,1479,90,400,60,true,"images/Main_pictures/Player_display.png",actionevent ->  {}),0);
-        frame.add(addText(label_button1,"","Arial",1060,90 + 13,400,30,true),0);
-        frame.add(addText(label_button2, client.player.getName(),"Arial",1479,90 + 13,400,30,true),0);
-        frame.add(addImage("images/Main_pictures/Player_property.png",1060,135,400,247),0);
-        frame.add(addImage("images/Main_pictures/Player_property.png",1479,135,400,247),0);
+        frame.add(JUtils.addButton(button2,null,1479,90,400,60,true,"images/Main_pictures/Player_display.png",actionevent ->  {}),0);
+        frame.add(JUtils.addText(label_button1,"","Arial",1060,90 + 13,400,30,true),0);
+        frame.add(JUtils.addText(label_button2, client.player.getName(),"Arial",1479,90 + 13,400,30,true),0);
+        frame.add(JUtils.addImage("images/Main_pictures/Player_property.png",1060,135,400,247),0);
+        frame.add(JUtils.addImage("images/Main_pictures/Player_property.png",1479,135,400,247),0);
 
         X = 1160;
-        frame.add(addImage("images/Main_pictures/money_underlay.png",X,340,200,33),0);
-        frame.add(addText("Geld: ",X+25,342,152,30,false),0);
+        frame.add(JUtils.addImage("images/Main_pictures/money_underlay.png",X,340,200,33),0);
+        frame.add(JUtils.addText("Geld: ",X+25,342,152,30,false),0);
         frame.add(label_moneyCommpanion,0);
-        frame.add(addImage("images/Main_pictures/busfahrkarte_rechts.png",X-100+15,250,70,90),0);
-        frame.add(addText("Busfahrkarte",X-100+15,259,100,12,false),0);
+        frame.add(JUtils.addImage("images/Main_pictures/busfahrkarte_rechts.png",X-100+15,250,70,90),0);
+        frame.add(JUtils.addText("Busfahrkarte",X-100+15,259,100,12,false),0);
         frame.add(busfahrkarten_Commpanion,0);
-        frame.add(addImage("images/Main_pictures/gefängnisfrei_rechts.png",X+215,250,70,90),0);
-        //frame.add(addText("",X+223,253,160,10,false),0);
-        frame.add(addText("Knastfreikarte",X+218,255,160,10,false),0);
+        frame.add(JUtils.addImage("images/Main_pictures/gefängnisfrei_rechts.png",X+215,250,70,90),0);
+        //frame.add(JUtils.addText("",X+223,253,160,10,false),0);
+        frame.add(JUtils.addText("Knastfreikarte",X+218,255,160,10,false),0);
         frame.add(gefaengnisfreikarte_Commpanion,0);
 
         X = 1579;
-        frame.add(addImage("images/Main_pictures/money_underlay.png",X,340,200,33),0);
-        frame.add(addText("Geld: ",X+25,342,152,30,false),0);
+        frame.add(JUtils.addImage("images/Main_pictures/money_underlay.png",X,340,200,33),0);
+        frame.add(JUtils.addText("Geld: ",X+25,342,152,30,false),0);
         frame.add(label_moneyPlayer,0);
-        frame.add(addImage("images/Main_pictures/busfahrkarte_rechts.png",X-100+15,250,70,90),0);
-        frame.add(addText("Busfahrkarte",X-100+15,259,100,12,false),0);
+        frame.add(JUtils.addImage("images/Main_pictures/busfahrkarte_rechts.png",X-100+15,250,70,90),0);
+        frame.add(JUtils.addText("Busfahrkarte",X-100+15,259,100,12,false),0);
         frame.add(busfahrkarten_player,0);
-        frame.add(addImage("images/Main_pictures/gefängnisfrei_rechts.png",X+215,250,70,90),0);
-        //frame.add(addText("",X+223,253,160,10,false),0);
-        frame.add(addText("Knastfreikarte",X+218,255,160,10,false),0);
+        frame.add(JUtils.addImage("images/Main_pictures/gefängnisfrei_rechts.png",X+215,250,70,90),0);
+        //frame.add(JUtils.addText("",X+223,253,160,10,false),0);
+        frame.add(JUtils.addText("Knastfreikarte",X+218,255,160,10,false),0);
         frame.add(gefaengnisfreikarte_player,0);
 
-        frame.add(addButton(Würfeln,null,1060,450,400,80,true,"images/Main_pictures/3d_button.png",actionevent ->  {
+        frame.add(JUtils.addButton(Würfeln,null,1060,450,400,80,true,"images/Main_pictures/3d_button.png",actionevent ->  {
             //WÜRFELN
         }),0);
-        frame.add(addText("Würfeln",1260-70, 463,160,40,false),0);
+        frame.add(JUtils.addText("Würfeln",1260-70, 463,160,40,false),0);
 
-        frame.add(addButton(zugbeenden,null,1479,450,400,80,true,"images/Main_pictures/3d_button.png",actionevent ->  {
+        frame.add(JUtils.addButton(zugbeenden,null,1479,450,400,80,true,"images/Main_pictures/3d_button.png",actionevent ->  {
             //zugbeenden
         }),0);
-        frame.add(addText("Zugbeenden",1679-105, 460,400,40,false),0);
+        frame.add(JUtils.addText("Zugbeenden",1679-105, 460,400,40,false),0);
 
         int x_actoins = 1060;
         int y_actions = 450;
 
-        frame.add(addButton(straße_kaufen,null,x_actoins,y_actions+90,400,80,true,"images/Main_pictures/3d_button.png",actionevent ->  {
+        frame.add(JUtils.addButton(straße_kaufen,null,x_actoins,y_actions+90,400,80,true,"images/Main_pictures/3d_button.png",actionevent ->  {
             //Straße kaufen
         }),0);
-        frame.add(addText("Straße kaufen",x_actoins,y_actions+90+13,400,40,true),0);
+        frame.add(JUtils.addText("Straße kaufen",x_actoins,y_actions+90+13,400,40,true),0);
 
-        frame.add(addButton(haus_bauen,null,x_actoins,y_actions+90*2,400,80,true,"images/Main_pictures/3d_button.png",actionevent ->  {
+        frame.add(JUtils.addButton(haus_bauen,null,x_actoins,y_actions+90*2,400,80,true,"images/Main_pictures/3d_button.png",actionevent ->  {
             //haus bauen
         }),0);
-        frame.add(addText("Haus bauen",x_actoins,y_actions+90*2+13,400,40,true),0);
+        frame.add(JUtils.addText("Haus bauen",x_actoins,y_actions+90*2+13,400,40,true),0);
 
-        frame.add(addButton(haus_verkaufen,null,x_actoins,y_actions+90*3,400,80,true,"images/Main_pictures/3d_button.png",actionevent ->  {
+        frame.add(JUtils.addButton(haus_verkaufen,null,x_actoins,y_actions+90*3,400,80,true,"images/Main_pictures/3d_button.png",actionevent ->  {
             //haus verkaufen
         }),0);
-        frame.add(addText("Haus verkaufen",x_actoins,y_actions+90*3+13,400,40,true),0);
+        frame.add(JUtils.addText("Haus verkaufen",x_actoins,y_actions+90*3+13,400,40,true),0);
 
-        frame.add(addButton(hypotheken_aufnehmen,null,x_actoins,y_actions+90*4,400,80,true,"images/Main_pictures/3d_button.png",actionevent ->  {
+        frame.add(JUtils.addButton(hypotheken_aufnehmen,null,x_actoins,y_actions+90*4,400,80,true,"images/Main_pictures/3d_button.png",actionevent ->  {
             //hypotheken_aufnehmen
         }),0);
-        frame.add(addText("hypotheken",x_actoins,y_actions+90*4+13,400,40,true),0);
+        frame.add(JUtils.addText("hypotheken",x_actoins,y_actions+90*4+13,400,40,true),0);
 
-        frame.add(addButton(einstellungen,null,x_actoins,y_actions+90*6,400,80,true,"images/Main_pictures/3d_button.png",actionevent ->  {
+        frame.add(JUtils.addButton(einstellungen,null,x_actoins,y_actions+90*6,400,80,true,"images/Main_pictures/3d_button.png",actionevent ->  {
             //einstellungen
         }),0);
-        frame.add(addText("Einstellungen",x_actoins,y_actions+90*6+13,400,40,true),0);
+        frame.add(JUtils.addText("Einstellungen",x_actoins,y_actions+90*6+13,400,40,true),0);
 
 
         frame.add(BADSTRASSE,0);
@@ -705,21 +736,7 @@ public class PrototypeMenu {
         JPanel panel = new JPanel();
         //frame.add(panel, 0);
         addFreeParkingMoney(420+20, 476+90+60, 90, frame);
-
-        if(client.tradeData.tradeState != TradeState.NULL) {
-            try {
-                ClientEvents.trade(this, client.tradeData.tradePlayer, client.tradeData.tradeState);
-            } catch (RemoteException e) {
-                client.close();
-            }
-        } else {
-            frame.repaint();
-        }
-    }
-
-
-    private void setClient(int i) {
-        client = clients.get(i);
+        frame.repaint();
     }
 
     private void addFreeParkingMoney(int x, int y, int rotation, JFrame frame) {
@@ -784,415 +801,37 @@ public class PrototypeMenu {
         angle -= ((noteAll - 1) * 5);
         angle += rotation;
         for(int i = 0; i < note1000; i++) {
-            frame.add(addImage("images/banknotes/1000_vm.png", x, y, angle, 50, 25), 0);
+            frame.add(JUtils.addImage("images/banknotes/1000_vm.png", x, y, angle, 50, 25), 0);
             angle += 10;
         }
         for(int i = 0; i < note500; i++) {
-            frame.add(addImage("images/banknotes/500_vm.png", x, y, angle, 50, 25), 0);
+            frame.add(JUtils.addImage("images/banknotes/500_vm.png", x, y, angle, 50, 25), 0);
             angle += 10;
         }
         for(int i = 0; i < note100; i++) {
-            frame.add(addImage("images/banknotes/100_vm.png", x, y, angle, 50, 25), 0);
+            frame.add(JUtils.addImage("images/banknotes/100_vm.png", x, y, angle, 50, 25), 0);
             angle += 10;
         }
         for(int i = 0; i < note50; i++) {
-            frame.add(addImage("images/banknotes/50_vm.png", x, y, angle, 50,  25), 0);
+            frame.add(JUtils.addImage("images/banknotes/50_vm.png", x, y, angle, 50,  25), 0);
             angle += 10;
         }
         for(int i = 0; i < note20; i++) {
-            frame.add(addImage("images/banknotes/20_vm.png", x, y, angle, 50, 25), 0);
+            frame.add(JUtils.addImage("images/banknotes/20_vm.png", x, y, angle, 50, 25), 0);
             angle += 10;
         }
         for(int i = 0; i < note10; i++) {
-            frame.add(addImage("images/banknotes/10_vm.png", x, y, angle, 50, 25), 0);
+            frame.add(JUtils.addImage("images/banknotes/10_vm.png", x, y, angle, 50, 25), 0);
             angle += 10;
         }
         for(int i = 0; i < note5; i++) {
-            frame.add(addImage("images/banknotes/5_vm.png", x, y, angle, 50, 25), 0);
+            frame.add(JUtils.addImage("images/banknotes/5_vm.png", x, y, angle, 50, 25), 0);
             angle += 10;
         }
         for(int i = 0; i < note1; i++) {
-            frame.add(addImage("images/banknotes/1_vm.png", x, y, angle, 50, 25), 0);
+            frame.add(JUtils.addImage("images/banknotes/1_vm.png", x, y, angle, 50, 25), 0);
             angle += 10;
         }
-    }
-
-    public JButton addButton(String display, int x, int y, int width, int height, boolean enabled, ActionListener actionEvent) {
-        JButton button = new JButton(display);
-        width = JUtils.getX(width);
-        height = JUtils.getY(height);
-        button.addActionListener(actionEvent);
-        button.setBounds(JUtils.getX(x), JUtils.getY(y), width, height);
-        button.setEnabled(enabled);
-        button.setOpaque(false);
-        button.setContentAreaFilled(false);
-        button.setBorderPainted(false);
-        button.setFocusPainted(false);
-        if(width < 1) width = 1;
-        if(height < 1) height = 1;
-        button.setIcon(new ImageIcon(new ImageIcon("images/DO_NOT_CHANGE/plain_button_2.png").getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH)));
-        button.setHorizontalTextPosition(SwingConstants.CENTER);
-        button.setVerticalTextPosition(SwingConstants.CENTER);
-        return button;
-    }
-
-    public JButton addButton(JButton button, String display, int x, int y, int width, int height, boolean enabled, String icon, ActionListener actionEvent) {
-        button.setText(display);
-        width = JUtils.getX(width);
-        height = JUtils.getY(height);
-        button.addActionListener(actionEvent);
-        button.setBounds(JUtils.getX(x), JUtils.getY(y), width, height);
-        button.setEnabled(enabled);
-        button.setOpaque(false);
-        button.setContentAreaFilled(false);
-        button.setBorderPainted(false);
-        button.setFocusPainted(false);
-        if(width < 1) width = 1;
-        if(height < 1) height = 1;
-        button.setIcon(new ImageIcon(new ImageIcon(icon).getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH)));
-        button.setHorizontalTextPosition(SwingConstants.CENTER);
-        button.setVerticalTextPosition(SwingConstants.CENTER);
-        return button;
-    }
-
-    public JButton addButton(JButton button, String display, int x, int y, int width, int height, boolean enabled, String icon,String disabled_icon, ActionListener actionEvent) {
-        button = addButton(button,display,x,y,width,height,enabled,icon,actionEvent);
-        button.setDisabledIcon(new ImageIcon(new ImageIcon(disabled_icon).getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH)));
-        return button;
-    }
-
-    private void addStreetButton(JFrame frame, Street street, int x, int y, Direction direction) {
-        JButton button;
-        JLayeredPane pane = new JLayeredPane();
-        pane.setBounds(0, 0, JUtils.getX(1920), JUtils.getY(1080));
-        switch (direction) {
-            case LEFT -> {
-                button = addButton("", x, y, 90, 70, true, actionEvent -> {
-                    selectedCard = street;
-                });
-                ImageIcon icon = new ImageIcon("images/felder/left_background.png");
-                button.setIcon(new ImageIcon(icon.getImage().getScaledInstance(button.getWidth(), button.getHeight(), Image.SCALE_SMOOTH)));
-                pane.add(addImage("images/felder/" + street.colorGroup.IMAGE + "_cardcolor.png", x+2, y+1), 2);
-                pane.add(addRotatedText(street.name, Font.BOLD, x-5, y+2,11, -90, 66), 1);
-                pane.add(addRotatedText(street.price + "€", Font.BOLD, x+45, y+2, 13, -90, 66), 1);
-            }
-            case UP -> {
-                button = addButton("", x, y, 70, 90, true, actionEvent -> {
-                    selectedCard = street;
-                });
-                ImageIcon icon = new ImageIcon("images/felder/up_background.png");
-                button.setIcon(new ImageIcon(icon.getImage().getScaledInstance(button.getWidth(), button.getHeight(), Image.SCALE_SMOOTH)));
-                pane.add(addImage("images/felder/" + street.colorGroup.IMAGE + "_cardcolor.png", x+1, y+2), 2);
-                pane.add(addRotatedText(street.name, Font.BOLD, x+2, y-5,11, 0, 66), 1);
-                pane.add(addRotatedText(street.price + "€", Font.BOLD, x+2, y+45, 13, 0, 66), 1);
-            }
-            case RIGHT -> {
-                button = addButton("", x, y, 90, 70, true, actionEvent -> {
-                    selectedCard = street;
-                });
-                ImageIcon icon = new ImageIcon("images/felder/right_background.png");
-                button.setIcon(new ImageIcon(icon.getImage().getScaledInstance(button.getWidth(), button.getHeight(), Image.SCALE_SMOOTH)));
-                pane.add(addImage("images/felder/" + street.colorGroup.IMAGE + "_cardcolor.png", x+70, y+1), 2);
-                pane.add(addRotatedText(street.name, Font.BOLD, x+28, y+2,11, 90, 66), 1);
-                pane.add(addRotatedText(street.price + "€", Font.BOLD, x-22, y+2, 13, 90, 66), 1);
-            }
-            case DOWN -> {
-                button = addButton("", x, y, 70, 90, true, actionEvent -> {
-                    selectedCard = street;
-                });
-                ImageIcon icon = new ImageIcon("images/felder/down_background.png");
-                button.setIcon(new ImageIcon(icon.getImage().getScaledInstance(button.getWidth(), button.getHeight(), Image.SCALE_SMOOTH)));
-                pane.add(addImage("images/felder/" + street.colorGroup.IMAGE + "_cardcolor.png", x+1, y+70), 2);
-                pane.add(addRotatedText(street.name, Font.BOLD, x+2, y+28,11, 180, 66), 1);
-                pane.add(addRotatedText(street.price + "€", Font.BOLD, x+2, y-22, 13, 180, 66), 1);
-            }
-            default -> throw new RuntimeException();
-        }
-        pane.add(button, 3);
-        frame.add(pane);
-    }
-
-    private void addTrainStationButton(JFrame frame, TrainStation station, int x, int y, Direction direction) {
-        JButton button;
-        JLayeredPane pane = new JLayeredPane();
-        pane.setBounds(0, 0, 1920, 1080);
-        switch (direction) {
-            case LEFT -> {
-                button = addButton("", x, y, 90, 70, true, actionEvent -> {
-                    selectedCard = station;
-                });
-                ImageIcon icon = new ImageIcon("images/felder/wide_background.png");
-                button.setIcon(new ImageIcon(icon.getImage().getScaledInstance(button.getWidth(), button.getHeight(), Image.SCALE_SMOOTH)));
-                pane.add(addImage("images/felder/left_train.png", x+25, y+10), 2);
-                pane.add(addRotatedText(station.name, Font.BOLD, x-25, y+2,11, -90, 66), 1);
-                pane.add(addRotatedText(station.price + "€", Font.BOLD, x+45, y+2, 13, -90, 66), 1);
-            }
-            case UP -> {
-                button = addButton("", x, y, 70, 90, true, actionEvent -> {
-                    selectedCard = station;
-                });
-                ImageIcon icon = new ImageIcon("images/felder/high_background.png");
-                button.setIcon(new ImageIcon(icon.getImage().getScaledInstance(button.getWidth(), button.getHeight(), Image.SCALE_SMOOTH)));
-                pane.add(addImage("images/felder/up_train.png", x+10, y+25), 2);
-                pane.add(addRotatedText(station.name, Font.BOLD, x+2, y-25,11, 0, 66), 1);
-                pane.add(addRotatedText(station.price + "€", Font.BOLD, x+2, y+45, 13, 0, 66), 1);
-            }
-            case RIGHT -> {
-                button = addButton("", x, y, 90, 70, true, actionEvent -> {
-                    selectedCard = station;
-                });
-                ImageIcon icon = new ImageIcon("images/felder/wide_background.png");
-                button.setIcon(new ImageIcon(icon.getImage().getScaledInstance(button.getWidth(), button.getHeight(), Image.SCALE_SMOOTH)));
-                pane.add(addImage("images/felder/right_train.png", x+25, y+10), 2);
-                pane.add(addRotatedText(station.name, Font.BOLD, x+48, y+2,11, 90, 66), 1);
-                pane.add(addRotatedText(station.price + "€", Font.BOLD, x-22, y+2, 13, 90, 66), 1);
-            }
-            case DOWN -> {
-                button = addButton("", x, y, 70, 90, true, actionEvent -> {
-                    selectedCard = station;
-                });
-                ImageIcon icon = new ImageIcon("images/felder/high_background.png");
-                button.setIcon(new ImageIcon(icon.getImage().getScaledInstance(button.getWidth(), button.getHeight(), Image.SCALE_SMOOTH)));
-                pane.add(addImage("images/felder/down_train.png", x+10, y+27), 2);
-                pane.add(addRotatedText(station.name, Font.BOLD, x+2, y+48,11, 180, 66), 1);
-                pane.add(addRotatedText(station.price + "€", Font.BOLD, x+2, y-22, 13, 180, 66), 1);
-            }
-            default -> throw new RuntimeException();
-        }
-        pane.add(button, 3);
-        frame.add(pane);
-    }
-
-    private void addPlantButton(JFrame frame, Plant plant, int x, int y, Direction direction) {
-        JButton button;
-        JLayeredPane pane = new JLayeredPane();
-        pane.setBounds(0, 0, 1920, 1080);
-        switch (direction) {
-            case LEFT -> {
-                button = addButton("", x, y, 90, 70, true, actionEvent -> {
-                    selectedCard = plant;
-                });
-                ImageIcon icon = new ImageIcon("images/felder/wide_background.png");
-                button.setIcon(new ImageIcon(icon.getImage().getScaledInstance(button.getWidth(), button.getHeight(), Image.SCALE_SMOOTH)));
-                pane.add(addImage("images/felder/water_icon.png", x+15, y+10), 2);
-                pane.add(addRotatedText(plant.name, Font.BOLD, x-25, y+2,11, -90, 66), 1);
-                pane.add(addRotatedText(plant.price + "€", Font.BOLD, x+45, y+2, 13, -90, 66), 1);
-            }
-            case UP -> {
-                throw new RuntimeException();
-            }
-            case RIGHT -> {
-                button = addButton("", x, y, 90, 70, true, actionEvent -> {
-                    selectedCard = plant;
-                });
-                ImageIcon icon = new ImageIcon("images/felder/wide_background.png");
-                button.setIcon(new ImageIcon(icon.getImage().getScaledInstance(button.getWidth(), button.getHeight(), Image.SCALE_SMOOTH)));
-                pane.add(addImage("images/felder/gas_icon.png", x+25, y+10), 2);
-                pane.add(addRotatedText(plant.name, Font.BOLD, x+48, y+2,11, 90, 66), 1);
-                pane.add(addRotatedText(plant.price + "€", Font.BOLD, x-22, y+2, 13, 90, 66), 1);
-            }
-            case DOWN -> {
-                button = addButton("", x, y, 70, 90, true, actionEvent -> {
-                    selectedCard = plant;
-                });
-                ImageIcon icon = new ImageIcon("images/felder/high_background.png");
-                button.setIcon(new ImageIcon(icon.getImage().getScaledInstance(button.getWidth(), button.getHeight(), Image.SCALE_SMOOTH)));
-                pane.add(addImage("images/felder/power_icon.png", x+10, y+20), 2);
-                pane.add(addRotatedText(plant.name, Font.BOLD, x+2, y+48,11, 180, 66), 1);
-                pane.add(addRotatedText(plant.price + "€", Font.BOLD, x+2, y-22, 13, 180, 66), 1);
-            }
-            default -> throw new RuntimeException();
-        }
-        pane.add(button, 3);
-        frame.add(pane);
-    }
-
-    private void addEreignisfeld(JFrame frame, int x, int y, Direction direction) {
-        JLabel label;
-        JLayeredPane pane = new JLayeredPane();
-        pane.setBounds(0, 0, 1920, 1080);
-        switch (direction) {
-            case LEFT -> {
-                label = addImage("images/felder/wide_background.png", x, y);
-                pane.add(addImage("images/felder/right_ereignis.png", x+30, y+10), 2);
-                pane.add(addRotatedText("Ereignisfeld", Font.BOLD, x-25, y+2,11, -90, 66), 1);
-            }
-            case UP -> {
-                label = addImage("images/felder/high_background.png", x, y);
-                pane.add(addImage("images/felder/down_ereignis.png", x+10, y+25), 2);
-                pane.add(addRotatedText("Ereignisfeld", Font.BOLD, x+2, y-25,11, 0, 66), 1);
-            }
-            case RIGHT -> {
-                label = addImage("images/felder/wide_background.png", x, y);
-                pane.add(addImage("images/felder/left_ereignis.png", x+10, y+10), 2);
-                pane.add(addRotatedText("Ereignisfeld", Font.BOLD, x+48, y+2,11, 90, 66), 1);
-            }
-            case DOWN -> {
-                label = addImage("images/felder/high_background.png", x, y);
-                pane.add(addImage("images/felder/up_ereignis.png", x+10, y+10), 2);
-                pane.add(addRotatedText("Ereignisfeld", Font.BOLD, x+2, y+48,11, 180, 66), 1);
-            }
-            default -> throw new RuntimeException();
-        }
-        pane.add(label, 3);
-        frame.add(pane);
-    }
-
-    private void addGemeinschaftsfeld(JFrame frame, int x, int y, Direction direction) {
-        JLabel label;
-        JLayeredPane pane = new JLayeredPane();
-        pane.setBounds(0, 0, 1920, 1080);
-        switch (direction) {
-            case LEFT -> {
-                label = addImage("images/felder/wide_background.png", x, y);
-                pane.add(addImage("images/felder/left_gemeinschaft.png", x+30, y+10), 2);
-                pane.add(addRotatedText("Gemeinschaftsfeld", Font.BOLD, x-25, y+2,11, -90, 66), 1);
-            }
-            case UP -> {
-                label = addImage("images/felder/high_background.png", x, y);
-                pane.add(addImage("images/felder/up_gemeinschaft.png", x+10, y+25), 2);
-                pane.add(addRotatedText("Gemeinschaftsfeld", Font.BOLD, x+2, y-25,11, 0, 66), 1);
-            }
-            case RIGHT -> {
-                label = addImage("images/felder/wide_background.png", x, y);
-                pane.add(addImage("images/felder/right_gemeinschaft.png", x+10, y+10), 2);
-                pane.add(addRotatedText("Gemeinschaftsfeld", Font.BOLD, x+48, y+2,11, 90, 66), 1);
-            }
-            case DOWN -> {
-                label = addImage("images/felder/high_background.png", x, y);
-                pane.add(addImage("images/felder/down_gemeinschaft.png", x+10, y+10), 2);
-                pane.add(addRotatedText("Gemeinschaftsfeld", Font.BOLD, x+2, y+48,11, 180, 66), 1);
-            }
-            default -> throw new RuntimeException();
-        }
-        pane.add(label, 3);
-        frame.add(pane);
-    }
-
-    private void addSteuerfeld(JFrame frame, int x, int y, Direction direction) {
-        JLabel label;
-        JLayeredPane pane = new JLayeredPane();
-        pane.setBounds(0, 0, 1920, 1080);
-        switch (direction) {
-            case UP -> {
-                label = addImage("images/felder/high_background.png", x, y);
-                pane.add(addImage("images/felder/down_steuer.png", x+10, y+15), 3);
-                pane.add(addRotatedText("Zusatzsteuer", Font.BOLD, x+2, y-25,11, 0, 66), 2);
-                pane.add(addRotatedText("Zahle 75€", Font.BOLD, x+2, y+45, 11, 0, 66), 1);
-            }
-            case RIGHT -> {
-                label = addImage("images/felder/wide_background.png", x, y);
-                pane.add(addImage("images/felder/left_steuer.png", x+25, y+10), 3);
-                pane.add(addRotatedText("Einkommenssteuer", Font.BOLD, x+48, y+2,11, 90, 66), 2);
-                pane.add(addRotatedText("Zahle 10%", Font.BOLD, x-15, y+2, 11, 90, 66), 1);
-                pane.add(addRotatedText("oder 200€", Font.BOLD, x-25, y+2, 11, 90, 66), 1);
-            }
-            default -> throw new RuntimeException();
-        }
-        pane.add(label, 4);
-        frame.add(pane);
-    }
-
-    private void addSpecialField(JFrame frame, int x, int y, Direction direction) {
-        JLabel label;
-        JLayeredPane pane = new JLayeredPane();
-        pane.setBounds(0, 0, 1920, 1080);
-        switch (direction) {
-            case LEFT -> {
-                label = addImage("images/felder/wide_background.png", x, y);
-                pane.add(addImage("images/felder/bus.png", x+30, y+10), 2);
-                pane.add(addRotatedText("Busfahrkarte", Font.BOLD, x-25, y+2,11, -90, 66), 1);
-            }
-            case UP -> {
-                label = addImage("images/felder/high_background.png", x, y);
-                pane.add(addImage("images/felder/geschenk.png", x+10, y+25), 2);
-                pane.add(addRotatedText("Geschenk", Font.BOLD, x+2, y-25,11, 0, 66), 1);
-            }
-            case DOWN -> {
-                label = addImage("images/felder/high_background.png", x, y);
-                pane.add(addImage("images/felder/auktion.png", x+10, y+10), 2);
-                pane.add(addRotatedText("Auktion", Font.BOLD, x+2, y+48,11, 180, 66), 1);
-            }
-            default -> throw new RuntimeException();
-        }
-        pane.add(label, 3);
-        frame.add(pane);
-    }
-
-    public JButton addButton(String display, int x, int y, int width, int height, boolean enabled, boolean selected, ActionListener actionEvent) {
-        JButton button = addButton(display, x, y, width, height, enabled, actionEvent);
-        button.setSelected(selected);
-        return button;
-    }
-
-    public JButton addButton(JButton button, String display, String icon, int x, int y, int width, int height, boolean enabled, boolean selected, ActionListener actionEvent) {
-        button = addButton(button, display, x, y, width, height, enabled, icon, actionEvent);
-        button.setSelected(selected);
-        return button;
-    }
-
-    public JLabel addText(String display, int x, int y, int width, int height, boolean centered) {
-        JLabel label;
-        width = JUtils.getX(width);
-        height = JUtils.getY(height);
-        if(centered) label = new JLabel(display, SwingConstants.CENTER); else label = new JLabel(display);
-        label.setFont(new Font("Arial", Font.PLAIN, height));
-        label.setBounds(JUtils.getX(x), JUtils.getY(y), width, (int) ( height*1.2));
-        return label;
-    }
-
-    public JLabel addText(JLabel label, String display,String font, int x, int y, int width, int height, boolean centered) {
-        width = JUtils.getX(width);
-        height = JUtils.getY(height);
-        if(centered) label.setHorizontalAlignment(SwingConstants.CENTER);
-        label.setText(display);
-        label.setFont(new Font(font, Font.PLAIN, height));
-        label.setBounds(JUtils.getX(x), JUtils.getY(y), width, height);
-        return label;
-    }
-
-    public JLabel addImage(String src, int x, int y) {
-        ImageIcon icon = new ImageIcon(src);
-        icon = new ImageIcon(icon.getImage().getScaledInstance(JUtils.getX(icon.getIconWidth()), JUtils.getY(icon.getIconHeight()), Image.SCALE_DEFAULT));
-        JLabel label = new JLabel(icon);
-        label.setBounds(JUtils.getX(x), JUtils.getY(y), icon.getIconWidth(), icon.getIconHeight());
-        return label;
-    }
-
-    public JLabel addImage(String src, int x, int y, int rotation, int rotX, int rotY) {
-        ImageIcon icon = new ImageIcon(src);
-        return new JRotatedLabel(icon, rotation, JUtils.getX(x), JUtils.getY(y), 0, rotX, rotY);
-    }
-
-    public JLabel addImage(String src, int x, int y, int width, int height) {
-        JLabel label = addImage(src, x, y);
-        width = JUtils.getX(width);
-        height = JUtils.getY(height);
-        label.setIcon(new ImageIcon(((ImageIcon) label.getIcon()).getImage().getScaledInstance(width, height, Image.SCALE_DEFAULT)));
-        label.setBounds(JUtils.getX(x), JUtils.getY(y), width, height);
-        return label;
-    }
-
-    public JLabel addText(String display, int x, int y, int width, int height) {
-        JLabel label = new JLabel(display);
-        width = JUtils.getX(width);
-        height = JUtils.getY(height);
-        label.setFont(new Font("Arial", Font.PLAIN, height));
-        label.setBounds(JUtils.getX(x), JUtils.getY(y), width, height);
-        return label;
-    }
-
-    public JLabel addRotatedText(String display, int font, int x, int y, int size, double angle, int maxLength) {
-        x = JUtils.getX(x);
-        y = JUtils.getY(y);
-        if(angle == 0 || angle == 180) {
-            maxLength = JUtils.getX(maxLength);
-            size = JUtils.getX(size);
-        } else if(angle == 90 || angle == -90) {
-            maxLength = JUtils.getY(maxLength);
-            size = JUtils.getY(size);
-        }
-        return new JRotatedLabel(display, size, font, angle, x, y, maxLength);
     }
 
     public static void main(String[] args) {

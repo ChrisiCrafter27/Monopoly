@@ -5,7 +5,6 @@ import monopol.data.Street;
 import monopol.data.TrainStation;
 import monopol.core.GameState;
 import monopol.core.Monopoly;
-import monopol.screen.PrototypeMenu;
 import monopol.server.DisconnectReason;
 import monopol.server.IServer;
 import monopol.utils.Json;
@@ -13,7 +12,6 @@ import monopol.message.Message;
 import monopol.message.MessageType;
 
 import javax.swing.*;
-import java.awt.*;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -134,9 +132,9 @@ public class Client {
                                 tradeData.tradeState = TradeState.CONFIRMED;
                             }
                         }
-                        case DENY -> {
+                        case DECLINE -> {
                             if(tradeData.tradeState != TradeState.NULL && tradeData.tradePlayer.equals(message.getMessage()[1])) {
-                                tradeData.tradeState = TradeState.DENY;
+                                tradeData.tradeState = TradeState.DECLINE;
                             }
                         }
                         case FINISH -> {

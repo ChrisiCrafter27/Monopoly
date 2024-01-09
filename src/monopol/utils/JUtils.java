@@ -81,6 +81,16 @@ public class JUtils {
         return label;
     }
 
+    public static JLabel addText(String display, int x, int y, int width, int height, int position) {
+        JLabel label;
+        width = JUtils.getX(width);
+        height = JUtils.getY(height);
+        label = new JLabel(display, position);
+        label.setFont(new Font("Arial", Font.PLAIN, height));
+        label.setBounds(JUtils.getX(x), JUtils.getY(y), width, (int) ( height*1.2));
+        return label;
+    }
+
     public static JLabel addText(JLabel label, String display,String font, int x, int y, int width, int height, boolean centered) {
         width = JUtils.getX(width);
         height = JUtils.getY(height);

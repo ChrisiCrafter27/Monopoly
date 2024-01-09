@@ -10,13 +10,13 @@ public enum ColorGroup {
     GREEN (7, 200, "green"),
     BLUE (8, 200, "blue");
 
-    public final int ID;
-    public final int UPGRADE_COST;
-    public final String IMAGE;
+    public final int id;
+    public final int upgradeCost;
+    public final String image;
 
-    ColorGroup(int ID, int UPGRADE_COST, String IMAGE) {
-        this.ID = ID;
-        this.UPGRADE_COST = UPGRADE_COST;
-        this.IMAGE = IMAGE;
+    ColorGroup(int id, int upgradeCost, String image) {
+        this.id = id;
+        this.upgradeCost = upgradeCost;
+        this.image = image;
     }
 }

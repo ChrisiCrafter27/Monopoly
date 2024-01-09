@@ -5,7 +5,7 @@ public enum TradeState {
     CHOOSE_PLAYER,
     WAIT_FOR_ACCEPT,
     ACCEPT,
-    DENY,
+    DECLINE,
     ABORT,
     CHANGE_OFFER,
     SEND_OFFER,

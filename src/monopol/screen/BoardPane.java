@@ -8,7 +8,6 @@ import monopol.utils.JUtils;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionListener;
 import java.util.function.Consumer;
 
 public class BoardPane extends JLayeredPane {
@@ -102,7 +101,7 @@ public class BoardPane extends JLayeredPane {
                 });
                 ImageIcon icon = new ImageIcon("images/felder/left_background.png");
                 button.setIcon(new ImageIcon(icon.getImage().getScaledInstance(button.getWidth(), button.getHeight(), Image.SCALE_SMOOTH)));
-                pane.add(JUtils.addImage("images/felder/" + street.colorGroup.IMAGE + "_cardcolor.png", x+2, y+1), 2);
+                pane.add(JUtils.addImage("images/felder/" + street.colorGroup.image + "_cardcolor.png", x+2, y+1), 2);
                 pane.add(JUtils.addRotatedText(street.name, Font.BOLD, x-5, y+2,11, -90, 66), 1);
                 pane.add(JUtils.addRotatedText(street.price + "€", Font.BOLD, x+45, y+2, 13, -90, 66), 1);
             }
@@ -112,7 +111,7 @@ public class BoardPane extends JLayeredPane {
                 });
                 ImageIcon icon = new ImageIcon("images/felder/up_background.png");
                 button.setIcon(new ImageIcon(icon.getImage().getScaledInstance(button.getWidth(), button.getHeight(), Image.SCALE_SMOOTH)));
-                pane.add(JUtils.addImage("images/felder/" + street.colorGroup.IMAGE + "_cardcolor.png", x+1, y+2), 2);
+                pane.add(JUtils.addImage("images/felder/" + street.colorGroup.image + "_cardcolor.png", x+1, y+2), 2);
                 pane.add(JUtils.addRotatedText(street.name, Font.BOLD, x+2, y-5,11, 0, 66), 1);
                 pane.add(JUtils.addRotatedText(street.price + "€", Font.BOLD, x+2, y+45, 13, 0, 66), 1);
             }
@@ -122,7 +121,7 @@ public class BoardPane extends JLayeredPane {
                 });
                 ImageIcon icon = new ImageIcon("images/felder/right_background.png");
                 button.setIcon(new ImageIcon(icon.getImage().getScaledInstance(button.getWidth(), button.getHeight(), Image.SCALE_SMOOTH)));
-                pane.add(JUtils.addImage("images/felder/" + street.colorGroup.IMAGE + "_cardcolor.png", x+70, y+1), 2);
+                pane.add(JUtils.addImage("images/felder/" + street.colorGroup.image + "_cardcolor.png", x+70, y+1), 2);
                 pane.add(JUtils.addRotatedText(street.name, Font.BOLD, x+28, y+2,11, 90, 66), 1);
                 pane.add(JUtils.addRotatedText(street.price + "€", Font.BOLD, x-22, y+2, 13, 90, 66), 1);
             }
@@ -132,7 +131,7 @@ public class BoardPane extends JLayeredPane {
                 });
                 ImageIcon icon = new ImageIcon("images/felder/down_background.png");
                 button.setIcon(new ImageIcon(icon.getImage().getScaledInstance(button.getWidth(), button.getHeight(), Image.SCALE_SMOOTH)));
-                pane.add(JUtils.addImage("images/felder/" + street.colorGroup.IMAGE + "_cardcolor.png", x+1, y+70), 2);
+                pane.add(JUtils.addImage("images/felder/" + street.colorGroup.image + "_cardcolor.png", x+1, y+70), 2);
                 pane.add(JUtils.addRotatedText(street.name, Font.BOLD, x+2, y+28,11, 180, 66), 1);
                 pane.add(JUtils.addRotatedText(street.price + "€", Font.BOLD, x+2, y-22, 13, 180, 66), 1);
             }

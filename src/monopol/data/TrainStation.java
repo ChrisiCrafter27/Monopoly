@@ -22,44 +22,81 @@ public enum TrainStation implements IPurchasable {
         return upgraded;
     }
 
+    @Override
     public boolean upgrade() {
         if(upgraded) return false;
         upgraded = true;
         return true;
     }
 
+    @Override
     public boolean downgrade() {
         if(!upgraded) return false;
         upgraded = false;
         return true;
     }
 
+    @Override
     public String getOwner() {
         return owner;
     }
 
+    @Override
+    public int price() {
+        return price;
+    }
+
+    @Override
+    public int getMortgage() {
+        return mortgage;
+    }
+
+    @Override
+    public boolean mortgaged() {
+        return mortgaged;
+    }
+
+    @Override
+    public int getLevel() {
+        return isUpgraded() ? 1 : 0;
+    }
+
+    @Override
     public void setOwner(String owner) {
         this.owner = owner;
     }
 
+    @Override
     public boolean isMortgaged() {
         return mortgaged;
     }
 
+    @Override
     public boolean mortgage() {
         if(mortgaged) return false;
         mortgaged = true;
         return true;
     }
 
+    @Override
     public boolean unmortgage() {
         if(!mortgaged) return false;
         mortgaged = false;
         return true;
     }
 
-    public int getRent() {
-        //TODO: Return rent
-        return -1;
+    @Override
+    public int getRent(int diceResult) {
+        int i = 0;
+        for (TrainStation station : values()) {
+            if (station.getOwner().equals(getOwner())) i++;
+        }
+        int toReturn = 25;
+        while (i > 1) {
+            toReturn *= 2;
+            i--;
+        }
+        if (isUpgraded()) toReturn *= 2;
+        return toReturn;
     }
 }

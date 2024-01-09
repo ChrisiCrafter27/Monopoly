@@ -27,7 +27,7 @@ public class PlayerPane extends JLayeredPane {
 
             removeAll();
             client = currentClient;
-            shownClients.removeAll(shownClients);
+            shownClients.clear();
             shownClients.addAll(clients);
 
             for(int i = 0; i < clients.size(); i++) {
