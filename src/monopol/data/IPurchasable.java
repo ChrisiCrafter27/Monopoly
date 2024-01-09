@@ -1,7 +1,5 @@
 package monopol.data;
 
-import monopol.rules.ColorGroup;
-
 import java.io.Serializable;
 
 public interface IPurchasable extends IField, Serializable {
@@ -18,4 +16,7 @@ public interface IPurchasable extends IField, Serializable {
     boolean mortgage();
     boolean unmortgage();
     int getRent(int diceResult);
+    String keyText(int line);
+
+    String valueText(int line);
 }

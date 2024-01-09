@@ -90,4 +90,14 @@ public enum Plant implements IPurchasable {
         };
         return toReturn * diceResult;
     }
+
+    @Override
+    public String keyText(int line) {
+        return "";
+    }
+
+    @Override
+    public String valueText(int line) {
+        return "";
+    }
 }

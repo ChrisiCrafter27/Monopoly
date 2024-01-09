@@ -150,4 +150,43 @@ public enum Street implements IPurchasable {
             default -> -1;
         };
     }
+
+    @Override
+    public String keyText(int line) {
+        return switch (line) {
+            case 0 -> "Grundstückswert";
+            case 1 -> "Grundstück allein";
+            case 2 -> "1 Haus";
+            case 3 -> "2 Häuser";
+            case 4 -> "3 Häuser";
+            case 5 -> "4 Häuser";
+            case 6 -> "Hotel";
+            case 7 -> "Wolkenkratzer"; //TODO disable when game rule is false
+            case 9 -> "Verdoppelung der Miete, wenn die Straße";
+            case 10 -> "nicht bebaut ist und du alle bis auf";
+            case 11 -> "eine Straße der Farbgruppe besitzt.";
+            case 13 -> "Verdreifachung der Miete, wenn die Straße";
+            case 14 -> "nicht bebaut ist und du alle Straßen der";
+            case 15 -> "Farbgruppe besitzt.";
+            case 17 -> "1 Upgrade kostet";
+            case 18 -> getOwner() == null || getOwner().equals("") ? "Zu Verkaufen" : "Besitzer: " + getOwner();
+            default -> "";
+        };
+    }
+
+    @Override
+    public String valueText(int line) {
+        return switch (line) {
+            case 0 -> price() + "€";
+            case 1 -> rentNormal + "€";
+            case 2 -> rentOneHouse + "€";
+            case 3 -> rentTwoHouses + "€";
+            case 4 -> rentThreeHouses + "€";
+            case 5 -> rentFourHouses + "€";
+            case 6 -> rentHotel + "€";
+            case 7 -> rentSkyscraper + "€"; //TODO disable when game rule is false
+            case 17 -> colorGroup.upgradeCost + "€";
+            default -> "";
+        };
+    }
 }

@@ -88,6 +88,7 @@ public class JUtils {
         label = new JLabel(display, position);
         label.setFont(new Font("Arial", Font.PLAIN, height));
         label.setBounds(JUtils.getX(x), JUtils.getY(y), width, (int) ( height*1.2));
+        label.setForeground(Color.BLACK);
         return label;
     }
 

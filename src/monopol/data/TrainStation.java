@@ -99,4 +99,14 @@ public enum TrainStation implements IPurchasable {
         if (isUpgraded()) toReturn *= 2;
         return toReturn;
     }
+
+    @Override
+    public String keyText(int line) {
+        return "";
+    }
+
+    @Override
+    public String valueText(int line) {
+        return "";
+    }
 }
