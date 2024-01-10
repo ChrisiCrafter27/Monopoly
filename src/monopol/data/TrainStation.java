@@ -102,11 +102,32 @@ public enum TrainStation implements IPurchasable {
 
     @Override
     public String keyText(int line) {
-        return "";
+        return switch (line) {
+            case 1 -> "Grundstückswert";
+            case 3 -> "Miete 1 Bahnhof";
+            case 4 -> "Miete 2 Bahnhöfe";
+            case 5 -> "Miete 3 Bahnhöfe";
+            case 6 -> "Miete 4 Bahnhöfe";
+            case 9 -> "Die miete erhöht sich, je mehr";
+            case 10 -> "Bahnhöfe du besitzt.";
+            case 13 -> "Ein Zugdepot verdoppelt";
+            case 14 -> "die Miete.";
+            case 17 -> "1 Upgrade kostet";
+            case 18 -> getOwner() == null || getOwner().equals("") ? "Zu Verkaufen" : "Besitzer: " + getOwner();
+            default -> "";
+        };
     }
 
     @Override
     public String valueText(int line) {
-        return "";
+        return switch (line) {
+            case 1 -> price() + "€";
+            case 3 -> "25€";
+            case 4 -> "50€";
+            case 5 -> "100€";
+            case 6 -> "200€";
+            case 17 -> "100€";
+            default -> "";
+        };
     }
 }

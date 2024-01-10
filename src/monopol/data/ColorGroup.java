@@ -1,4 +1,4 @@
-package monopol.rules;
+package monopol.data;
 
 public enum ColorGroup {
     BROWN (1, 50, "brown"),

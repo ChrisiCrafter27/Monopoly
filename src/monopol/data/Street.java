@@ -1,7 +1,5 @@
 package monopol.data;
 
-import monopol.rules.ColorGroup;
-
 public enum Street implements IPurchasable {
     BADSTRASSE ("Badstraße", 60, 0, 2, 10, 30, 90, 160, 250, 750, ColorGroup.BROWN, "", false),
     TURMSTRASSE ("Turmstraße", 60, 0, 4, 20, 60, 180, 320, 450, 950, ColorGroup.BROWN, "", false),
@@ -155,13 +153,13 @@ public enum Street implements IPurchasable {
     public String keyText(int line) {
         return switch (line) {
             case 0 -> "Grundstückswert";
-            case 1 -> "Grundstück allein";
-            case 2 -> "1 Haus";
-            case 3 -> "2 Häuser";
-            case 4 -> "3 Häuser";
-            case 5 -> "4 Häuser";
-            case 6 -> "Hotel";
-            case 7 -> "Wolkenkratzer"; //TODO disable when game rule is false
+            case 1 -> "Miete Grundstück allein";
+            case 2 -> "Miete 1 Haus";
+            case 3 -> "Miete 2 Häuser";
+            case 4 -> "Miete 3 Häuser";
+            case 5 -> "Miete 4 Häuser";
+            case 6 -> "Miete Hotel";
+            case 7 -> "Miete Wolkenkratzer"; //TODO disable when game rule is false
             case 9 -> "Verdoppelung der Miete, wenn die Straße";
             case 10 -> "nicht bebaut ist und du alle bis auf";
             case 11 -> "eine Straße der Farbgruppe besitzt.";

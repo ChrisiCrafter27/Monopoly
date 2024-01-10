@@ -5,39 +5,40 @@ import monopol.data.Street;
 import monopol.utils.JUtils;
 
 import javax.swing.*;
+import java.awt.*;
 
 public class SelectedCardPane extends JLayeredPane {
-    private final JLabel color = JUtils.addImage("images/felder/" + Street.BADSTRASSE.colorGroup.image + "_cardcolor.png", 5, 5, 334, 60);
+    private final JLabel color = JUtils.addImage("", 5, 5, 334, 60);
     private final JLabel rahmen = JUtils.addImage("images/Main_pictures/rahmensuppe.png", 5, 5, 334, 60);
-    private final JLabel name = JUtils.addText(Street.BADSTRASSE.name(), 5, 21, 334, 26, SwingConstants.CENTER);
-    private final JLabel textKey0 = JUtils.addText(Street.BADSTRASSE.keyText(0), 5, 65, 334, 20, SwingConstants.LEFT);
-    private final JLabel textKey1 = JUtils.addText(Street.BADSTRASSE.keyText(1), 5, 90, 334, 20, SwingConstants.LEFT);
-    private final JLabel textKey2 = JUtils.addText(Street.BADSTRASSE.keyText(2), 5, 115, 334, 20, SwingConstants.LEFT);
-    private final JLabel textKey3 = JUtils.addText(Street.BADSTRASSE.keyText(3), 5, 140, 334, 20, SwingConstants.LEFT);
-    private final JLabel textKey4 = JUtils.addText(Street.BADSTRASSE.keyText(4), 5, 165, 334, 20, SwingConstants.LEFT);
-    private final JLabel textKey5 = JUtils.addText(Street.BADSTRASSE.keyText(5), 5, 190, 334, 20, SwingConstants.LEFT);
-    private final JLabel textKey6 = JUtils.addText(Street.BADSTRASSE.keyText(6), 5, 215, 334, 20, SwingConstants.LEFT);
-    private final JLabel textKey7 = JUtils.addText(Street.BADSTRASSE.keyText(7), 5, 240, 334, 20, SwingConstants.LEFT);
-    private final JLabel textKey8 = JUtils.addText(Street.BADSTRASSE.keyText(8), 5, 265, 334, 15, SwingConstants.CENTER);
-    private final JLabel textKey9 = JUtils.addText(Street.BADSTRASSE.keyText(9), 5, 280, 334, 15, SwingConstants.CENTER);
-    private final JLabel textKey10 = JUtils.addText(Street.BADSTRASSE.keyText(10), 5, 300, 334, 15, SwingConstants.CENTER);
-    private final JLabel textKey11 = JUtils.addText(Street.BADSTRASSE.keyText(11), 5, 320, 334, 15, SwingConstants.CENTER);
-    private final JLabel textKey12 = JUtils.addText(Street.BADSTRASSE.keyText(12), 5, 340, 334, 15, SwingConstants.CENTER);
-    private final JLabel textKey13 = JUtils.addText(Street.BADSTRASSE.keyText(13), 5, 360, 334, 15, SwingConstants.CENTER);
-    private final JLabel textKey14 = JUtils.addText(Street.BADSTRASSE.keyText(14), 5, 380, 334, 15, SwingConstants.CENTER);
-    private final JLabel textKey15 = JUtils.addText(Street.BADSTRASSE.keyText(15), 5, 400, 334, 15, SwingConstants.CENTER);
-    private final JLabel textKey16 = JUtils.addText(Street.BADSTRASSE.keyText(16), 5, 420, 334, 15, SwingConstants.CENTER);
-    private final JLabel textKey17 = JUtils.addText(Street.BADSTRASSE.keyText(17), 5, 430, 334, 20, SwingConstants.LEFT);
-    private final JLabel textKey18 = JUtils.addText(Street.BADSTRASSE.keyText(18), 5, 465, 334, 15, SwingConstants.CENTER);
-    private final JLabel textValue0 = JUtils.addText(Street.BADSTRASSE.valueText(0), 5, 65, 334, 20, SwingConstants.RIGHT);
-    private final JLabel textValue1 = JUtils.addText(Street.BADSTRASSE.valueText(1), 5, 90, 334, 20, SwingConstants.RIGHT);
-    private final JLabel textValue2 = JUtils.addText(Street.BADSTRASSE.valueText(2), 5, 115, 334, 20, SwingConstants.RIGHT);
-    private final JLabel textValue3 = JUtils.addText(Street.BADSTRASSE.valueText(3), 5, 140, 334, 20, SwingConstants.RIGHT);
-    private final JLabel textValue4 = JUtils.addText(Street.BADSTRASSE.valueText(4), 5, 165, 334, 20, SwingConstants.RIGHT);
-    private final JLabel textValue5 = JUtils.addText(Street.BADSTRASSE.valueText(5), 5, 190, 334, 20, SwingConstants.RIGHT);
-    private final JLabel textValue6 = JUtils.addText(Street.BADSTRASSE.valueText(6), 5, 215, 334, 20, SwingConstants.RIGHT);
-    private final JLabel textValue7 = JUtils.addText(Street.BADSTRASSE.valueText(7), 5, 240, 334, 20, SwingConstants.RIGHT);
-    private final JLabel textValue17 = JUtils.addText(Street.BADSTRASSE.valueText(17), 5, 430, 334, 20, SwingConstants.RIGHT);
+    private final JLabel name = JUtils.addText("", 5, 21, 334, 26, SwingConstants.CENTER);
+    private final JLabel textKey0 = JUtils.addText("", 5, 65, 334, 20, SwingConstants.LEFT);
+    private final JLabel textKey1 = JUtils.addText("", 5, 90, 334, 20, SwingConstants.LEFT);
+    private final JLabel textKey2 = JUtils.addText("", 5, 115, 334, 20, SwingConstants.LEFT);
+    private final JLabel textKey3 = JUtils.addText("", 5, 140, 334, 20, SwingConstants.LEFT);
+    private final JLabel textKey4 = JUtils.addText("", 5, 165, 334, 20, SwingConstants.LEFT);
+    private final JLabel textKey5 = JUtils.addText("", 5, 190, 334, 20, SwingConstants.LEFT);
+    private final JLabel textKey6 = JUtils.addText("", 5, 215, 334, 20, SwingConstants.LEFT);
+    private final JLabel textKey7 = JUtils.addText("", 5, 240, 334, 20, SwingConstants.LEFT);
+    private final JLabel textKey8 = JUtils.addText("", 5, 260, 334, 15, SwingConstants.CENTER);
+    private final JLabel textKey9 = JUtils.addText("", 5, 280, 334, 15, SwingConstants.CENTER);
+    private final JLabel textKey10 = JUtils.addText("", 5, 300, 334, 15, SwingConstants.CENTER);
+    private final JLabel textKey11 = JUtils.addText("", 5, 320, 334, 15, SwingConstants.CENTER);
+    private final JLabel textKey12 = JUtils.addText("", 5, 340, 334, 15, SwingConstants.CENTER);
+    private final JLabel textKey13 = JUtils.addText("", 5, 360, 334, 15, SwingConstants.CENTER);
+    private final JLabel textKey14 = JUtils.addText("", 5, 380, 334, 15, SwingConstants.CENTER);
+    private final JLabel textKey15 = JUtils.addText("", 5, 400, 334, 15, SwingConstants.CENTER);
+    private final JLabel textKey16 = JUtils.addText("", 5, 420, 334, 15, SwingConstants.CENTER);
+    private final JLabel textKey17 = JUtils.addText("", 5, 430, 334, 20, SwingConstants.LEFT);
+    private final JLabel textKey18 = JUtils.addText("", 5, 465, 334, 15, SwingConstants.CENTER);
+    private final JLabel textValue0 = JUtils.addText("", 5, 65, 334, 20, SwingConstants.RIGHT);
+    private final JLabel textValue1 = JUtils.addText("", 5, 90, 334, 20, SwingConstants.RIGHT);
+    private final JLabel textValue2 = JUtils.addText("", 5, 115, 334, 20, SwingConstants.RIGHT);
+    private final JLabel textValue3 = JUtils.addText("", 5, 140, 334, 20, SwingConstants.RIGHT);
+    private final JLabel textValue4 = JUtils.addText("", 5, 165, 334, 20, SwingConstants.RIGHT);
+    private final JLabel textValue5 = JUtils.addText("", 5, 190, 334, 20, SwingConstants.RIGHT);
+    private final JLabel textValue6 = JUtils.addText("", 5, 215, 334, 20, SwingConstants.RIGHT);
+    private final JLabel textValue7 = JUtils.addText("", 5, 240, 334, 20, SwingConstants.RIGHT);
+    private final JLabel textValue17 = JUtils.addText("", 5, 430, 334, 20, SwingConstants.RIGHT);
 
     private IPurchasable purchasable;
 
@@ -83,29 +84,43 @@ public class SelectedCardPane extends JLayeredPane {
 
     public void init(IPurchasable purchasable) {
         this.purchasable = purchasable;
-        updateTexts();
+        update();
         setVisible(true);
     }
 
-    private void updateTexts() {
-        textKey0.setText(Street.BADSTRASSE.keyText(0));
-        textKey1.setText(Street.BADSTRASSE.keyText(0));
-        textKey2.setText(Street.BADSTRASSE.keyText(0));
-        textKey3.setText(Street.BADSTRASSE.keyText(0));
-        textKey4.setText(Street.BADSTRASSE.keyText(0));
-        textKey5.setText(Street.BADSTRASSE.keyText(0));
-        textKey6.setText(Street.BADSTRASSE.keyText(0));
-        textKey0.setText(Street.BADSTRASSE.keyText(0));
-        textKey0.setText(Street.BADSTRASSE.keyText(0));
-        textKey0.setText(Street.BADSTRASSE.keyText(0));
-        textKey0.setText(Street.BADSTRASSE.keyText(0));
-        textKey0.setText(Street.BADSTRASSE.keyText(0));
-        textKey0.setText(Street.BADSTRASSE.keyText(0));
-        textKey0.setText(Street.BADSTRASSE.keyText(0));
-        textKey0.setText(Street.BADSTRASSE.keyText(0));
-        textKey0.setText(Street.BADSTRASSE.keyText(0));
-        textKey0.setText(Street.BADSTRASSE.keyText(0));
-        textKey0.setText(Street.BADSTRASSE.keyText(0));
+    private void update() {
+        if(purchasable == null) throw new IllegalStateException("init() was not called");
+        if(purchasable instanceof Street street) color.setIcon(new ImageIcon(new ImageIcon("images/felder/" + street.colorGroup.image + "_cardcolor.png").getImage().getScaledInstance(334, 60, Image.SCALE_SMOOTH)));
+        else color.setIcon(new ImageIcon(""));
+        name.setText(purchasable.name());
+        textKey0.setText(purchasable.keyText(0));
+        textKey1.setText(purchasable.keyText(1));
+        textKey2.setText(purchasable.keyText(2));
+        textKey3.setText(purchasable.keyText(3));
+        textKey4.setText(purchasable.keyText(4));
+        textKey5.setText(purchasable.keyText(5));
+        textKey6.setText(purchasable.keyText(6));
+        textKey7.setText(purchasable.keyText(7));
+        textKey8.setText(purchasable.keyText(8));
+        textKey9.setText(purchasable.keyText(9));
+        textKey10.setText(purchasable.keyText(10));
+        textKey11.setText(purchasable.keyText(11));
+        textKey12.setText(purchasable.keyText(12));
+        textKey13.setText(purchasable.keyText(13));
+        textKey14.setText(purchasable.keyText(14));
+        textKey15.setText(purchasable.keyText(15));
+        textKey16.setText(purchasable.keyText(16));
+        textKey17.setText(purchasable.keyText(17));
+        textKey18.setText(purchasable.keyText(18));
+        textValue0.setText(purchasable.valueText(0));
+        textValue1.setText(purchasable.valueText(1));
+        textValue2.setText(purchasable.valueText(2));
+        textValue3.setText(purchasable.valueText(3));
+        textValue4.setText(purchasable.valueText(4));
+        textValue5.setText(purchasable.valueText(5));
+        textValue6.setText(purchasable.valueText(6));
+        textValue7.setText(purchasable.valueText(7));
+        textValue17.setText(purchasable.valueText(17));
     }
 
     public void reset() {

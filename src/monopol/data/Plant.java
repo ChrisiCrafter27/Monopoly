@@ -1,7 +1,5 @@
 package monopol.data;
 
-import monopol.rules.ColorGroup;
-
 public enum Plant implements IPurchasable {
     GASWERK ("Gaswerk"),
     ELEKTRIZITAETSWERK ("Elektrizitätswerk"),
@@ -93,11 +91,29 @@ public enum Plant implements IPurchasable {
 
     @Override
     public String keyText(int line) {
-        return "";
+        return switch (line) {
+            case 1 -> "Grundstückswert";
+            case 3 -> "Miete 1 Werk";
+            case 4 -> "Miete 2 Werke";
+            case 5 -> "Miete 3 Werke";
+            case 8 -> "Die miete erhöht sich, je mehr";
+            case 9 -> "Werke du besitzt.";
+            case 12 -> "Die Miete ergibt sich aus der";
+            case 13 -> "Würfelzahl der Person, die auf";
+            case 14 -> "das Feld gekommen ist.";
+            case 18 -> getOwner() == null || getOwner().equals("") ? "Zu Verkaufen" : "Besitzer: " + getOwner();
+            default -> "";
+        };
     }
 
     @Override
     public String valueText(int line) {
-        return "";
+        return switch (line) {
+            case 1 -> price() + "€";
+            case 3 -> "4€ • Wurf";
+            case 4 -> "10€ • Wurf";
+            case 5 -> "20€ • Wurf";
+            default -> "";
+        };
     }
 }

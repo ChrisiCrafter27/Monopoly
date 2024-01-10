@@ -14,11 +14,9 @@ import monopol.server.ServerPlayer;
 import monopol.utils.JUtils;
 import monopol.utils.Json;
 import monopol.utils.KeyHandler;
-import monopol.utils.JRotatedLabel;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionListener;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Map;
@@ -26,13 +24,9 @@ import java.util.Map;
 public class PrototypeMenu {
     public final JFrame frame = new JFrame("Monopoly - PrototypeWindow");
     private final ArrayList<Client> clients = new ArrayList<>();
-    private final ArrayList<Client> clientsTemp = new ArrayList<>();
-    private boolean serverAcceptsNewClient;
     public Client client;
-    private Client clientTemp;
     private String ip;
     private KeyHandler keyHandler = new KeyHandler();
-    private IPurchasable selectedCard = Street.BADSTRASSE;
     private final RootPane root = new RootPane();
 
     public PrototypeMenu() {
@@ -76,6 +70,7 @@ public class PrototypeMenu {
         root.lobbyPane.reset();
         root.pingPane.reset();
         root.playerPane.reset();
+        root.selectedCardPane.reset();
 
         root.menuPane.init(clients, this::prepareLobby);
     }
@@ -158,10 +153,6 @@ public class PrototypeMenu {
         lobbyThread.start();
     }
 
-    public void setSelectedCard(IPurchasable card) {
-        selectedCard = card;
-    }
-
     Thread gameThread = new Thread(() -> {/*do nothing*/});
 
     public void prepareGame() {
@@ -172,7 +163,7 @@ public class PrototypeMenu {
         //keep PlayerPane enabled
         //keep PingPane enabled
 
-        root.boardPane.init(this::setSelectedCard);
+        root.boardPane.init(root.selectedCardPane::init);
 
         new Thread() {
             @Override
