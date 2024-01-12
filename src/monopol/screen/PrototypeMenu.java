@@ -15,6 +15,7 @@ import monopol.utils.JUtils;
 import monopol.utils.Json;
 import monopol.utils.KeyHandler;
 
+
 import javax.swing.*;
 import java.awt.*;
 import java.rmi.RemoteException;
@@ -71,6 +72,7 @@ public class PrototypeMenu {
         root.pingPane.reset();
         root.playerPane.reset();
         root.selectedCardPane.reset();
+        root.playerDisplayPane.reset();
 
         root.menuPane.init(clients, this::prepareLobby);
     }
@@ -164,6 +166,24 @@ public class PrototypeMenu {
         //keep PingPane enabled
 
         root.boardPane.init(root.selectedCardPane::init);
+        //root.playerDisplayPane.show(0);
+
+        new Thread() {
+            @Override
+            public void run() {
+                int i = 0;
+                while (true) {
+                    //root.playerDisplayPane.show(i);
+                    i++;
+                    if(i > 13*4) i = 0;
+                    try {
+                        sleep(100);
+                    } catch (InterruptedException e) {
+                        return;
+                    }
+                }
+            }
+        }.start();
 
         new Thread() {
             @Override

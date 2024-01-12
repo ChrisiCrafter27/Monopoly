@@ -12,6 +12,7 @@ public class RootPane extends JLayeredPane {
     public final BoardPane boardPane = new BoardPane();
     public final TradePane tradePane = new TradePane();
     public final SelectedCardPane selectedCardPane = new SelectedCardPane();
+    public PlayerDisplayPane playerDisplayPane = new PlayerDisplayPane();
 
     public RootPane() {
         super();
@@ -26,6 +27,7 @@ public class RootPane extends JLayeredPane {
         add(boardPane, DEFAULT_LAYER);
         add(tradePane, MODAL_LAYER);
         add(selectedCardPane, PALETTE_LAYER);
+        add(playerDisplayPane, PALETTE_LAYER);
 
         repaint();
     }
