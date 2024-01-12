@@ -9,5 +9,5 @@ public enum MessageType {
     START,
     TRADE,
     UPDATE_OWNER,
-    NULL
+    PACKET, NULL
 }

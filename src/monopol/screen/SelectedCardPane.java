@@ -1,7 +1,9 @@
 package monopol.screen;
 
 import monopol.data.IPurchasable;
+import monopol.data.Plant;
 import monopol.data.Street;
+import monopol.data.TrainStation;
 import monopol.utils.JUtils;
 
 import javax.swing.*;
@@ -92,7 +94,7 @@ public class SelectedCardPane extends JLayeredPane {
         if(purchasable == null) throw new IllegalStateException("init() was not called");
         if(purchasable instanceof Street street) color.setIcon(new ImageIcon(new ImageIcon("images/felder/" + street.colorGroup.image + "_cardcolor.png").getImage().getScaledInstance(334, 60, Image.SCALE_SMOOTH)));
         else color.setIcon(new ImageIcon(""));
-        name.setText(purchasable.name());
+        name.setText(purchasable.getName().toUpperCase());
         textKey0.setText(purchasable.keyText(0));
         textKey1.setText(purchasable.keyText(1));
         textKey2.setText(purchasable.keyText(2));
@@ -121,6 +123,109 @@ public class SelectedCardPane extends JLayeredPane {
         textValue6.setText(purchasable.valueText(6));
         textValue7.setText(purchasable.valueText(7));
         textValue17.setText(purchasable.valueText(17));
+        for (Component component : getComponents()) {
+            if (component.getForeground() == Color.GREEN) component.setForeground(Color.BLACK);
+        }
+        if (purchasable instanceof Street street) {
+            if(street.getOwner() == null || street.getOwner().isEmpty()) {
+                textKey0.setForeground(Color.GREEN);
+                textValue0.setForeground(Color.GREEN);
+            } else {
+                switch (street.getLevel()) {
+                    case 0 -> {
+                        textKey1.setForeground(Color.GREEN);
+                        textValue1.setForeground(Color.GREEN);
+                    }
+                    case 1 -> {
+                        textKey2.setForeground(Color.GREEN);
+                        textValue2.setForeground(Color.GREEN);
+                    }
+                    case 2 -> {
+                        textKey3.setForeground(Color.GREEN);
+                        textValue3.setForeground(Color.GREEN);
+                    }
+                    case 3 -> {
+                        textKey4.setForeground(Color.GREEN);
+                        textValue4.setForeground(Color.GREEN);
+                    }
+                    case 4 -> {
+                        textKey5.setForeground(Color.GREEN);
+                        textValue5.setForeground(Color.GREEN);
+                    }
+                    case 5 -> {
+                        textKey6.setForeground(Color.GREEN);
+                        textValue6.setForeground(Color.GREEN);
+                    }
+                    case 6 -> {
+                        textKey7.setForeground(Color.GREEN);
+                        textValue7.setForeground(Color.GREEN);
+                    }
+                }
+            }
+        } else if (purchasable instanceof TrainStation trainStation) {
+            if(trainStation.getOwner() == null || trainStation.getOwner().isEmpty()) {
+                textKey1.setForeground(Color.GREEN);
+                textValue1.setForeground(Color.GREEN);
+            } else {
+                switch (trainStation.getRent(1)) {
+                    case 25 -> {
+                        textKey3.setForeground(Color.GREEN);
+                        textValue3.setForeground(Color.GREEN);
+                    }
+                    case 50 -> {
+                        if (trainStation.getLevel() == 1) {
+                            textKey3.setForeground(Color.GREEN);
+                            textValue3.setForeground(Color.GREEN);
+                        } else {
+                            textKey4.setForeground(Color.GREEN);
+                            textValue4.setForeground(Color.GREEN);
+                        }
+                    }
+                    case 100 -> {
+                        if (trainStation.getLevel() == 1) {
+                            textKey4.setForeground(Color.GREEN);
+                            textValue4.setForeground(Color.GREEN);
+                        } else {
+                            textKey5.setForeground(Color.GREEN);
+                            textValue5.setForeground(Color.GREEN);
+                        }
+                    }
+                    case 200 -> {
+                        if (trainStation.getLevel() == 1) {
+                            textKey5.setForeground(Color.GREEN);
+                            textValue5.setForeground(Color.GREEN);
+                        } else {
+                            textKey6.setForeground(Color.GREEN);
+                            textValue6.setForeground(Color.GREEN);
+                        }
+                    }
+                    case 400 -> {
+                        textKey6.setForeground(Color.GREEN);
+                        textValue6.setForeground(Color.GREEN);
+                    }
+                }
+            }
+        } else if (purchasable instanceof Plant plant) {
+            if(plant.getOwner() == null || plant.getOwner().isEmpty()) {
+                textKey1.setForeground(Color.GREEN);
+                textValue1.setForeground(Color.GREEN);
+            } else {
+                switch (plant.getRent(1)) {
+                    case 4 -> {
+                        textKey3.setForeground(Color.GREEN);
+                        textValue3.setForeground(Color.GREEN);
+                    }
+                    case 10 -> {
+                        textKey4.setForeground(Color.GREEN);
+                        textValue4.setForeground(Color.GREEN);
+                    }
+                    case 20 -> {
+                        textKey5.setForeground(Color.GREEN);
+                        textValue5.setForeground(Color.GREEN);
+                    }
+                }
+            }
+        }
     }
 
     public void reset() {

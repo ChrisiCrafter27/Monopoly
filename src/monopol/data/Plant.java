@@ -116,4 +116,9 @@ public enum Plant implements IPurchasable {
             default -> "";
         };
     }
+
+    @Override
+    public String getName() {
+        return name;
+    }
 }

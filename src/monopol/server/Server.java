@@ -8,6 +8,7 @@ import monopol.data.TrainStation;
 import monopol.core.GameState;
 import monopol.core.Monopoly;
 import monopol.log.ServerLogger;
+import monopol.message.PacketManager;
 import monopol.rules.BuildRule;
 import monopol.rules.Events;
 import monopol.rules.OwnedCardsOfColorGroup;
@@ -49,7 +50,7 @@ public class Server extends UnicastRemoteObject implements IServer {
                 try {
                     Socket newClient = server.accept();
                     if (clients.containsValue(newClient)) continue;
-                    if (acceptNewClients && clients.size() < 10) {
+                    if (acceptNewClients && clients.size() < 6) {
                         clients.put(clients.size() + 1, newClient);
                         ServerPlayer serverPlayer = newServerPlayer();
                         serverPlayers.put(serverPlayer, newClient);
@@ -249,6 +250,7 @@ public class Server extends UnicastRemoteObject implements IServer {
         try {
             message = Json.toObject(value, Message.class);
             switch (message.getMessageType()) {
+                case PACKET -> PacketManager.handle(message);
                 case PRINTLN -> System.out.println(message.getMessage()[0]);
                 case PING -> {
                     DataOutputStream output = new DataOutputStream(client.getOutputStream());

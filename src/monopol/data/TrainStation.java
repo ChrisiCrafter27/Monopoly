@@ -130,4 +130,9 @@ public enum TrainStation implements IPurchasable {
             default -> "";
         };
     }
+
+    @Override
+    public String getName() {
+        return name;
+    }
 }

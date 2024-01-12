@@ -5,6 +5,7 @@ import monopol.data.Street;
 import monopol.data.TrainStation;
 import monopol.core.GameState;
 import monopol.core.Monopoly;
+import monopol.message.PacketManager;
 import monopol.server.DisconnectReason;
 import monopol.server.IServer;
 import monopol.utils.Json;
@@ -79,6 +80,7 @@ public class Client {
         try {
             message = Json.toObject(value, Message.class);
             switch (message.getMessageType()) {
+                case PACKET -> PacketManager.handle(message);
                 case PRINTLN -> System.out.println(message.getMessage()[0]);
                 case PING -> {
                     DataOutputStream output = new DataOutputStream(client.getOutputStream());
@@ -209,6 +211,10 @@ public class Client {
             clientThread.interrupt();
             throw new RuntimeException(e);
         }
+    }
+
+    public Socket socket() {
+        return client;
     }
 
     public long getPing() {

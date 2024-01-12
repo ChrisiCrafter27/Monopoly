@@ -14,7 +14,6 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 
 public class Monopoly {
-
     public static final Monopoly INSTANCE = new Monopoly();
     public static final GameData GAME_DATA = new GameData();
     private final Server server;
@@ -50,6 +49,9 @@ public class Monopoly {
             throw new RuntimeException(e);
         }
         return list;
+    }
+    public Server server() {
+        return server;
     }
     public void closeServer() {
         server.close();

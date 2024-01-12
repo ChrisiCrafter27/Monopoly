@@ -5,7 +5,7 @@ import java.io.Serializable;
 public interface IPurchasable extends IField, Serializable {
     void setOwner(String owner);
     String getOwner();
-    String name();
+    String getName();
     int price();
     int getMortgage();
     boolean mortgaged();

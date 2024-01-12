@@ -20,7 +20,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 public class PrototypeMenu {
     public final JFrame frame = new JFrame("Monopoly - PrototypeWindow");
@@ -155,7 +157,7 @@ public class PrototypeMenu {
         lobbyThread.start();
     }
 
-    Thread gameThread = new Thread(() -> {/*do nothing*/});
+    Thread gameThread = new Thread(() -> {throw new IllegalStateException();});
 
     public void prepareGame() {
         Monopoly.INSTANCE.setState(GameState.RUNNING);
@@ -166,24 +168,27 @@ public class PrototypeMenu {
         //keep PingPane enabled
 
         root.boardPane.init(root.selectedCardPane::init);
-        //root.playerDisplayPane.show(0);
+        root.playerDisplayPane.init(Map.of("Player1", Color.YELLOW, "Player2", Color.RED, "Player3", Color.GREEN, "Player4", Color.BLUE, "Player5", Color.ORANGE, "Player6", Color.MAGENTA));
 
-        new Thread() {
-            @Override
-            public void run() {
-                int i = 0;
-                while (true) {
-                    //root.playerDisplayPane.show(i);
-                    i++;
-                    if(i > 13*4) i = 0;
-                    try {
-                        sleep(100);
-                    } catch (InterruptedException e) {
-                        return;
-                    }
+        new Thread(() -> {
+            while (true) {
+                String name = switch (new Random().nextInt(6)) {
+                    case 0 -> "Player1";
+                    case 1 -> "Player2";
+                    case 2 -> "Player3";
+                    case 3 -> "Player4";
+                    case 4 -> "Player5";
+                    case 5 -> "Player6";
+                    default -> "";
+                };
+                root.playerDisplayPane.setPos(name, root.playerDisplayPane.getPos(name) >= 13*4 ? 0 : root.playerDisplayPane.getPos(name) + 1);
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    return;
                 }
             }
-        }.start();
+        }).start();
 
         new Thread() {
             @Override

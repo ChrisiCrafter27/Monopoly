@@ -187,4 +187,8 @@ public enum Street implements IPurchasable {
             default -> "";
         };
     }
+
+    public String getName() {
+        return name;
+    }
 }
