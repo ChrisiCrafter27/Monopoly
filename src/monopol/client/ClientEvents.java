@@ -1,11 +1,11 @@
 package monopol.client;
 
-import monopol.data.IPurchasable;
-import monopol.data.Plant;
-import monopol.data.Street;
-import monopol.data.TrainStation;
-import monopol.message.MessageType;
-import monopol.screen.TradePane;
+import monopol.common.data.IPurchasable;
+import monopol.common.data.Plant;
+import monopol.common.data.Street;
+import monopol.common.data.TrainStation;
+import monopol.common.message.MessageType;
+import monopol.client.screen.TradePane;
 
 import java.io.IOException;
 import java.rmi.RemoteException;

@@ -1,6 +1,6 @@
 package monopol.client;
 
-import monopol.data.IPurchasable;
+import monopol.common.data.IPurchasable;
 
 import java.util.ArrayList;
 

@@ -1,22 +1,23 @@
 package monopol.server;
 
-import monopol.annotations.ServerOnly;
-import monopol.data.IPurchasable;
-import monopol.data.Plant;
-import monopol.data.Street;
-import monopol.data.TrainStation;
-import monopol.core.GameState;
-import monopol.core.Monopoly;
-import monopol.log.ServerLogger;
-import monopol.message.PacketManager;
-import monopol.rules.BuildRule;
-import monopol.rules.Events;
-import monopol.rules.OwnedCardsOfColorGroup;
-import monopol.rules.StandardEvents;
-import monopol.utils.Json;
-import monopol.message.Message;
-import monopol.message.MessageType;
-import monopol.utils.ProjectStructure;
+import monopol.dump.annotations.ServerOnly;
+import monopol.common.data.IPurchasable;
+import monopol.common.data.Plant;
+import monopol.common.data.Street;
+import monopol.common.data.TrainStation;
+import monopol.common.core.GameState;
+import monopol.common.core.Monopoly;
+import monopol.dump.log.ServerLogger;
+import monopol.common.packets.PacketManager;
+import monopol.common.packets.ServerSide;
+import monopol.server.rules.BuildRule;
+import monopol.server.rules.Events;
+import monopol.server.rules.OwnedCardsOfColorGroup;
+import monopol.server.rules.StandardEvents;
+import monopol.common.utils.Json;
+import monopol.common.message.Message;
+import monopol.common.message.MessageType;
+import monopol.common.utils.ProjectStructure;
 
 import java.io.*;
 import java.lang.reflect.Method;
@@ -250,7 +251,7 @@ public class Server extends UnicastRemoteObject implements IServer {
         try {
             message = Json.toObject(value, Message.class);
             switch (message.getMessageType()) {
-                case PACKET -> PacketManager.handle(message);
+                case PACKET -> PacketManager.handle(message, new ServerSide(this));
                 case PRINTLN -> System.out.println(message.getMessage()[0]);
                 case PING -> {
                     DataOutputStream output = new DataOutputStream(client.getOutputStream());

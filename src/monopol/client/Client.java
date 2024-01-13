@@ -1,16 +1,18 @@
 package monopol.client;
 
-import monopol.data.Plant;
-import monopol.data.Street;
-import monopol.data.TrainStation;
-import monopol.core.GameState;
-import monopol.core.Monopoly;
-import monopol.message.PacketManager;
+import monopol.common.data.Plant;
+import monopol.common.data.Street;
+import monopol.common.data.TrainStation;
+import monopol.common.core.GameState;
+import monopol.common.core.Monopoly;
+import monopol.common.packets.ClientSide;
+import monopol.common.packets.PacketManager;
+import monopol.client.screen.RootPane;
 import monopol.server.DisconnectReason;
 import monopol.server.IServer;
-import monopol.utils.Json;
-import monopol.message.Message;
-import monopol.message.MessageType;
+import monopol.common.utils.Json;
+import monopol.common.message.Message;
+import monopol.common.message.MessageType;
 
 import javax.swing.*;
 import java.io.DataInputStream;
@@ -26,6 +28,7 @@ public class Client {
     private final Socket client;
     private final IServer serverInterface;
     public final ClientPlayer player;
+    private final RootPane root;
     public DisconnectReason disconnectReason = null;
     public final TradeData tradeData = new TradeData();
     private long ping = -1;
@@ -58,8 +61,9 @@ public class Client {
         }
     };
 
-    public Client(String ip, int port, boolean isHost) throws NotBoundException {
+    public Client(String ip, int port, boolean isHost, RootPane root) throws NotBoundException {
         try {
+            this.root = root;
             this.player = new ClientPlayer(isHost);
             client = new Socket(ip, port);
             Registry registry = LocateRegistry.getRegistry(ip, 1199);
@@ -80,7 +84,7 @@ public class Client {
         try {
             message = Json.toObject(value, Message.class);
             switch (message.getMessageType()) {
-                case PACKET -> PacketManager.handle(message);
+                case PACKET -> PacketManager.handle(message, new ClientSide(this, root));
                 case PRINTLN -> System.out.println(message.getMessage()[0]);
                 case PING -> {
                     DataOutputStream output = new DataOutputStream(client.getOutputStream());
