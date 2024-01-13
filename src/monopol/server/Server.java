@@ -1,13 +1,12 @@
 package monopol.server;
 
-import monopol.dump.annotations.ServerOnly;
 import monopol.common.data.IPurchasable;
 import monopol.common.data.Plant;
 import monopol.common.data.Street;
 import monopol.common.data.TrainStation;
 import monopol.common.core.GameState;
 import monopol.common.core.Monopoly;
-import monopol.dump.log.ServerLogger;
+import monopol.common.log.ServerLogger;
 import monopol.common.packets.PacketManager;
 import monopol.common.packets.ServerSide;
 import monopol.server.rules.BuildRule;
@@ -389,22 +388,6 @@ public class Server extends UnicastRemoteObject implements IServer {
                 serverPlayer.contractMoney(money2);
                 serverPlayer.addMoney(money1);
             }
-        }
-        return true;
-    }
-
-    @Override
-    public boolean triggerEvent(String methodName, Object... args) throws RemoteException {
-        if(events == null) return false;
-        if(Modifier.isAbstract(events.getClass().getModifiers())) return false;
-        try {
-            Method method = events.getClass().getMethod(methodName);
-            if(ProjectStructure.isAnnotated(method, ServerOnly.class)) return false;
-            if(Modifier.isStatic(method.getModifiers())) return false;
-            if(method.getParameterCount() == 0) method.invoke(events);
-            else method.invoke(events, args);
-        } catch (Exception e) {
-            return false;
         }
         return true;
     }

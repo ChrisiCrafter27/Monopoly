@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Monopoly" type="Application" factoryName="Application">
-    <option name="MAIN_CLASS_NAME" value="monopol.core.Monopoly" />
+    <option name="MAIN_CLASS_NAME" value="monopol.common.core.Monopoly" />
     <module name="Monopoly" />
     <method v="2">
       <option name="Make" enabled="true" />

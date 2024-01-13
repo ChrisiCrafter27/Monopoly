@@ -1,7 +1,5 @@
 package monopol.common.core;
 
-import monopol.dump.annotations.AnnotationManager;
-import monopol.dump.annotations.Autostart;
 import monopol.common.data.GameData;
 import monopol.client.screen.PrototypeMenu;
 import monopol.server.Server;
@@ -59,12 +57,11 @@ public class Monopoly {
 
     public static void main(String[] args) {
         INSTANCE.state = GameState.MAIN_MENU;
-        AnnotationManager.setup();
+        printStartupInfo();
         PrototypeMenu menu = new PrototypeMenu();
         menu.prepareMenu();
     }
 
-    @Autostart
     public static void printStartupInfo() {
         System.out.println("Starting Monopoly...");
         ProjectStructure.printProjectStructureAsTree(false);

@@ -1,7 +1,7 @@
 package monopol.client.screen;
 
 import monopol.client.Client;
-import monopol.dump.log.DebugLogger;
+import monopol.common.log.DebugLogger;
 import monopol.server.DisconnectReason;
 import monopol.server.ServerPlayer;
 import monopol.common.utils.JUtils;

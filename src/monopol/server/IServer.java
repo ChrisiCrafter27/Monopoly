@@ -20,7 +20,6 @@ public interface IServer extends Remote {
     void sendMessage(String name, MessageType type, Object value) throws IOException;
     HashMap<IPurchasable, String> getOwnerMap() throws RemoteException;
     boolean trade(String player1, String player2, ArrayList<IPurchasable> offer1, ArrayList<IPurchasable> offer2, int money1, int money2) throws RemoteException;
-    boolean triggerEvent(String methodName, Object... args) throws RemoteException;
     boolean acceptsNewClient() throws RemoteException;
     boolean isHost(String name) throws RemoteException;
     boolean stopped() throws RemoteException;

@@ -1,4 +1,4 @@
-package monopol.dump.log;
+package monopol.common.log;
 
 import java.util.logging.Level;
 
