@@ -12,6 +12,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -40,11 +41,20 @@ public class PacketManager {
             try {
                 Object[] objects = message.getMessage();
                 Class<?> clazz = Class.forName((String) objects[0]);
-                List<Method> methods = Arrays.stream(clazz.getMethods()).filter(method -> method.getName().equals("deserialize")).filter(method -> Modifier.isPublic(method.getModifiers()) && Modifier.isStatic(method.getModifiers()) && method.getParameterCount() == 1).toList();
+                List<Method> methods = Arrays.stream(clazz.getMethods())
+                        .filter(method -> method.getName().equals("deserialize"))
+                        .filter(method ->
+                                Modifier.isPublic(method.getModifiers())
+                                && Modifier.isStatic(method.getModifiers())
+                                && method.getParameterCount() == 1
+                                && method.getParameterTypes()[0] == Object[].class
+                                && method.getReturnType() == clazz
+                        )
+                        .toList();
                 if (methods.size() == 1) {
                     Method method = methods.get(0);
                     ((Packet<?>) method.invoke(null, new Object[]{((List<?>) objects[1]).toArray()})).handle(side);
-                }
+                } else throw new IllegalStateException("missing deserialization method in " + clazz);
             } catch (InvocationTargetException | IllegalAccessException | ClassNotFoundException e) {
                 throw new RuntimeException(e);
             }

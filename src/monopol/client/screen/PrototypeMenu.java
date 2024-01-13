@@ -12,6 +12,7 @@ import monopol.common.data.TrainStation;
 import monopol.common.data.Plant;
 import monopol.common.packets.PacketManager;
 import monopol.common.packets.custom.InfoS2CPacket;
+import monopol.common.packets.custom.TestC2SPacket;
 import monopol.server.ServerPlayer;
 import monopol.common.utils.JUtils;
 import monopol.common.utils.Json;
@@ -190,7 +191,7 @@ public class PrototypeMenu {
                 if (keyHandler.isKeyDown(KeyEvent.VK_M)) {
                     if(!keyDown) {
                         int i = new Random().nextInt(15) + 1;
-                        PacketManager.sendS2C(new InfoS2CPacket(client.player.getName() +  " bewegt sich " + i +  " Felder"), serverPlayer -> true, e -> {});
+                        PacketManager.sendC2S(new TestC2SPacket(client.player.getName() +  " bewegt sich " + i + " Felder"), client, e -> {});
                     }
                     keyDown = true;
                 } else keyDown = false;

@@ -18,7 +18,7 @@ import java.util.function.Function;
  *
  * @param <T> the packets class
  */
-public abstract class Packet<T extends Packet<T>> {
-    public abstract Object[] serialize();
-    public abstract void handle(Side side);
+public interface Packet<T extends Packet<T>> {
+    Object[] serialize();
+    void handle(Side side);
 }

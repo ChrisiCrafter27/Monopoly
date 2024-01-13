@@ -1,6 +1,6 @@
 package monopol.common.packets;
 
-public abstract class S2CPacket<T extends S2CPacket<T>> extends Packet<T> {
+public abstract class S2CPacket<T extends S2CPacket<T>> implements Packet<T> {
     @Override
     public void handle(Side side) {
         if (side instanceof ClientSide clientSide) {
