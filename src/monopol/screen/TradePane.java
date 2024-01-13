@@ -96,7 +96,7 @@ public class TradePane extends JLayeredPane {
         setBounds(0, 0, (int) JUtils.SCREEN_WIDTH, (int) JUtils.SCREEN_HEIGHT);
         setVisible(false);
 
-        background.add(JUtils.addImage("images/global/gray_background.png", 0, 60), 0);
+        background.add(JUtils.addButton(new JButton(), null, "images/global/gray_background.png", 0, 60, 1920, 1020, true, false, actionEvent -> {}), 0);
         background.setBounds(0, 0, (int) JUtils.SCREEN_WIDTH, (int) JUtils.SCREEN_HEIGHT);
         add(background, DEFAULT_LAYER);
 
@@ -159,6 +159,7 @@ public class TradePane extends JLayeredPane {
         tradeInfoThis.setVisible(false);
         tradeInfoOther.setVisible(false);
         setVisible(false);
+
     }
 
     public void init(String player1, String player2, Supplier<Client> client) {

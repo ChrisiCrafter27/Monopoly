@@ -33,7 +33,7 @@ public class PingPane extends JLayeredPane {
         else color = Color.RED;
         label.setForeground(color);
         if(ping >= 0) label.setText("Ping: " + ping + "ms"); else label.setText("Ping: ?");
-        setVisible(keyHandler.isKeyPressed(KeyEvent.VK_TAB));
+        setVisible(keyHandler.isKeyDown(KeyEvent.VK_TAB));
         if(oldPing != ping) repaint();
         oldPing = ping;
     }

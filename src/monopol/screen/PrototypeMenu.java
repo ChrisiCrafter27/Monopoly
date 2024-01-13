@@ -10,6 +10,8 @@ import monopol.data.IPurchasable;
 import monopol.data.Street;
 import monopol.data.TrainStation;
 import monopol.data.Plant;
+import monopol.message.PacketManager;
+import monopol.message.packets.ToastPacket;
 import monopol.server.ServerPlayer;
 import monopol.utils.JUtils;
 import monopol.utils.Json;
@@ -18,9 +20,9 @@ import monopol.utils.KeyHandler;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyEvent;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -29,7 +31,7 @@ public class PrototypeMenu {
     private final ArrayList<Client> clients = new ArrayList<>();
     public Client client;
     private String ip;
-    private KeyHandler keyHandler = new KeyHandler();
+    private final KeyHandler keyHandler = new KeyHandler();
     private final RootPane root = new RootPane();
 
     public PrototypeMenu() {
@@ -181,7 +183,11 @@ public class PrototypeMenu {
                     case 5 -> "Player6";
                     default -> "";
                 };
-                root.playerDisplayPane.setPos(name, root.playerDisplayPane.getPos(name) >= 13*4 ? 0 : root.playerDisplayPane.getPos(name) + 1);
+                root.playerDisplayPane.setPos(name, root.playerDisplayPane.getPos(name) >= 13*4 - 1 ? 0 : root.playerDisplayPane.getPos(name) + 1);
+                if (keyHandler.isKeyDown(KeyEvent.VK_K)) {
+                    PacketManager.sendS2C(new ToastPacket("Hi"), serverPlayer -> true, e -> {});
+                    return;
+                }
                 try {
                     Thread.sleep(100);
                 } catch (InterruptedException e) {
@@ -213,6 +219,8 @@ public class PrototypeMenu {
         //frame.repaint();
         JButton handel = new JButton();
         frame.add(JUtils.addButton(handel,null, 1060, 450+90*5, 400, 80, true,"images/Main_pictures/3d_button.png", actionEvent -> {
+            JOptionPane.showMessageDialog(frame, "Not available. Still in development.", "Trade", JOptionPane.WARNING_MESSAGE);
+            if(true) return;
             client.tradeData.tradeState = TradeState.CHOOSE_PLAYER;
             ClientEvents.trade(() -> client, root.tradePane);
         }), 0);

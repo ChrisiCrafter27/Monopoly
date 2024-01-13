@@ -7,7 +7,6 @@ import java.awt.*;
 import java.util.*;
 import java.awt.event.ActionListener;
 import java.awt.event.*;
-import java.awt.event.MouseEvent;
 
 
 public class GameWindow {
@@ -242,7 +241,7 @@ public class GameWindow {
                 label.setBounds(labelX, labelY, width, height);
                 label.setFont(label.getFont().deriveFont(fontSize));
                 panel.add(label);
-                while (!keyHandler.isKeyPressed(KeyEvent.VK_ENTER) && !keyHandler.isKeyPressed(KeyEvent.VK_ESCAPE)) {
+                while (!keyHandler.isKeyDown(KeyEvent.VK_ENTER) && !keyHandler.isKeyDown(KeyEvent.VK_ESCAPE)) {
                     //System.out.println(keyHandler.getString());
                     label.setText(keyHandler.getString());
                     panel.repaint();
@@ -259,9 +258,9 @@ public class GameWindow {
 
                 } else if(keyHandler.getString().equals("")) {
 
-                } else if(keyHandler.isKeyPressed(KeyEvent.VK_ESCAPE)) {
+                } else if(keyHandler.isKeyDown(KeyEvent.VK_ESCAPE)) {
 
-                } else if(keyHandler.isKeyPressed(KeyEvent.VK_ENTER)) {
+                } else if(keyHandler.isKeyDown(KeyEvent.VK_ENTER)) {
 
                 }
             }

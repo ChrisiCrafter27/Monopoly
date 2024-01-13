@@ -16,7 +16,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
-import java.util.Objects;
 
 public class LobbyPane extends JLayeredPane {
     private Client client;
@@ -179,9 +178,9 @@ public class LobbyPane extends JLayeredPane {
             updateIp();
             repaint();
         }
-        if(keyHandler.isKeyPressed(KeyEvent.VK_SPACE) != spaceDown) {
+        if(keyHandler.isKeyDown(KeyEvent.VK_SPACE) != spaceDown) {
             DebugLogger.INSTANCE.log().info("[LobbyPane] updating ip...");
-            spaceDown = keyHandler.isKeyPressed(KeyEvent.VK_SPACE);
+            spaceDown = keyHandler.isKeyDown(KeyEvent.VK_SPACE);
             this.ip = ip;
             updateIp();
             repaint();

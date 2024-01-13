@@ -2,7 +2,6 @@ package monopol.utils;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.security.Key;
 import java.util.ArrayList;
 
 public class KeyHandler implements KeyListener {
@@ -28,7 +27,7 @@ public class KeyHandler implements KeyListener {
         pressedKeys.remove((Integer) e.getKeyCode());
     }
 
-    public boolean isKeyPressed(int code) {
+    public boolean isKeyDown(int code) {
         return pressedKeys.contains(code);
     }
 

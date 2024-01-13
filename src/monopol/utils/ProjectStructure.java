@@ -36,7 +36,7 @@ public class ProjectStructure {
         return list;
     }
 
-    private static Class getClass(String className, String packageName) {
+    public static Class getClass(String className, String packageName) {
         try {
             return Class.forName(packageName + "." + className.substring(0, className.lastIndexOf('.')));
         } catch (ClassNotFoundException ignored) {
