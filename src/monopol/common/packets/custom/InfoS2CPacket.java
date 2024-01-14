@@ -1,6 +1,7 @@
 package monopol.common.packets.custom;
 
-import monopol.common.packets.ClientSide;
+import monopol.client.Client;
+import monopol.client.screen.RootPane;
 import monopol.common.packets.S2CPacket;
 
 public class InfoS2CPacket extends S2CPacket<InfoS2CPacket> {
@@ -10,6 +11,7 @@ public class InfoS2CPacket extends S2CPacket<InfoS2CPacket> {
         this.text = text;
     }
 
+    @SuppressWarnings("unused")
     public static InfoS2CPacket deserialize(Object[] objects) {
         return new InfoS2CPacket((String) objects[0]);
     }
@@ -20,7 +22,7 @@ public class InfoS2CPacket extends S2CPacket<InfoS2CPacket> {
     }
 
     @Override
-    public void handleOnClient(ClientSide side) {
-        side.display.infoPane.show(text);
+    public void handleOnClient(Client client, RootPane display) {
+        display.infoPane.show(client, text);
     }
 }

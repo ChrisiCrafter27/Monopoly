@@ -8,7 +8,7 @@ import monopol.common.data.Field;
 import monopol.common.data.IPurchasable;
 import monopol.common.message.Message;
 import monopol.common.message.MessageType;
-import monopol.server.ServerPlayer;
+import monopol.common.Player;
 import monopol.common.utils.JUtils;
 
 import javax.swing.*;
@@ -422,12 +422,12 @@ public class TradePane extends JLayeredPane {
     public void resetPlayerButtons() throws RemoteException {
         playerButtons.removeAll();
         int i = 0;
-        for(ServerPlayer serverPlayer : client.get().serverMethod().getServerPlayers()) {
-            if(!player1.equals(serverPlayer.getName())) {
-                playerButtons.add(JUtils.addButton(serverPlayer.getName(), 1920 / 2 - 250, 200 + (75 * i), 500, 50, true, actionEvent -> {
-                    tradeData.get().tradePlayer = serverPlayer.getName();
+        for(Player player : client.get().serverMethod().getServerPlayers()) {
+            if(!player1.equals(player.getName())) {
+                playerButtons.add(JUtils.addButton(player.getName(), 1920 / 2 - 250, 200 + (75 * i), 500, 50, true, actionEvent -> {
+                    tradeData.get().tradePlayer = player.getName();
                     setState(TradeState.WAIT_FOR_ACCEPT);
-                    player2 = serverPlayer.getName();
+                    player2 = player.getName();
                     sendMessage.accept(new Message(new Object[]{TradeState.WAIT_FOR_ACCEPT, player1}, MessageType.TRADE));
                     ClientEvents.trade(client, this);
                 }), 0);

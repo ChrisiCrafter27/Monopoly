@@ -10,7 +10,7 @@ import java.awt.event.KeyEvent;
 public class PingPane extends JLayeredPane {
     private long oldPing;
 
-    private final JLabel label = addText("", (1920/2)-250, 70, 500, 30, true);
+    private final JLabel label = JUtils.addText("", (1920/2)-250, 70, 500, 30, true);
 
     public PingPane() {
         super();
@@ -37,15 +37,4 @@ public class PingPane extends JLayeredPane {
         if(oldPing != ping) repaint();
         oldPing = ping;
     }
-
-    private JLabel addText(String display, int x, int y, int width, int height, boolean centered) {
-        JLabel label;
-        width = JUtils.getX(width);
-        height = JUtils.getY(height);
-        if(centered) label = new JLabel(display, SwingConstants.CENTER); else label = new JLabel(display);
-        label.setFont(new Font("Arial", Font.PLAIN, height));
-        label.setBounds(JUtils.getX(x), JUtils.getY(y), width, (int) ( height*1.2));
-        return label;
-    }
-
 }

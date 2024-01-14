@@ -3,7 +3,7 @@ package monopol.common.core;
 import monopol.common.data.GameData;
 import monopol.client.screen.PrototypeMenu;
 import monopol.server.Server;
-import monopol.server.ServerPlayer;
+import monopol.common.Player;
 import monopol.server.ServerSettings;
 import monopol.common.utils.ProjectStructure;
 
@@ -40,8 +40,8 @@ public class Monopoly {
     public ArrayList<String> getAllPlayerNamesOfOwnServer() {
         ArrayList<String> list = new ArrayList<>();
         try {
-            for(ServerPlayer serverPlayer : server.getServerPlayers()) {
-                list.add(serverPlayer.getName());
+            for(Player player : server.getServerPlayers()) {
+                list.add(player.getName());
             }
         } catch (RemoteException e) {
             throw new RuntimeException(e);

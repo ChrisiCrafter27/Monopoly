@@ -43,7 +43,7 @@ public class MenuPane extends JLayeredPane {
                 reset();
                 prepareLobby.accept(client);
             } catch (Exception e) {
-                e.printStackTrace();
+                e.printStackTrace(System.err);
                 JOptionPane.showMessageDialog(null, "Server konnte nicht gestartet werden. Laufen andere Server auf deinem PC?", "Spiel erstellen", JOptionPane.WARNING_MESSAGE);
             }
         }), JLayeredPane.MODAL_LAYER);

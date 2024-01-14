@@ -3,7 +3,7 @@ package monopol.client.screen;
 import monopol.client.Client;
 import monopol.common.log.DebugLogger;
 import monopol.server.DisconnectReason;
-import monopol.server.ServerPlayer;
+import monopol.common.Player;
 import monopol.common.utils.JUtils;
 import monopol.common.utils.KeyHandler;
 import monopol.common.utils.ListUtils;
@@ -21,7 +21,7 @@ public class LobbyPane extends JLayeredPane {
     private Client client;
     private boolean mustUpdate;
 
-    private ArrayList<ServerPlayer> memory = new ArrayList<>();
+    private ArrayList<Player> memory = new ArrayList<>();
     private boolean spaceDown = false;
     private String ip = "";
 
@@ -118,8 +118,8 @@ public class LobbyPane extends JLayeredPane {
         start.setVisible(true);
     }
 
-    private void updateList(ArrayList<ServerPlayer> serverPlayers) throws RemoteException {
-        memory = serverPlayers;
+    private void updateList(ArrayList<Player> players) throws RemoteException {
+        memory = players;
 
         playerList.removeAll();
         int y = 150;
@@ -132,12 +132,12 @@ public class LobbyPane extends JLayeredPane {
             ableToKick = false;
         }
 
-        for (ServerPlayer serverPlayer : serverPlayers) {
-            playerList.add(addText(serverPlayer.getName() + (client.serverMethod().isHost(serverPlayer.getName()) ? " (Host)" : ""), 50, y, 500, 25, false));
-            if(!serverPlayer.getName().equals(client.player.getName())) {
-                playerList.add(addButton("Kick", 600, y, 150, 25, ableToKick && !client.serverMethod().isHost(serverPlayer.getName()), actionEvent -> {
+        for (Player player : players) {
+            playerList.add(addText(player.getName() + (client.serverMethod().isHost(player.getName()) ? " (Host)" : ""), 50, y, 500, 25, false));
+            if(!player.getName().equals(client.player.getName())) {
+                playerList.add(addButton("Kick", 600, y, 150, 25, ableToKick && !client.serverMethod().isHost(player.getName()), actionEvent -> {
                     try {
-                        client.serverMethod().kick(serverPlayer.getName(), DisconnectReason.KICKED);
+                        client.serverMethod().kick(player.getName(), DisconnectReason.KICKED);
                     } catch (Exception ignored) {}
                 }));
             } else {
@@ -166,14 +166,14 @@ public class LobbyPane extends JLayeredPane {
         ipAddress.setVisible(true);
     }
 
-    public void update(ArrayList<ServerPlayer> serverPlayers, Client currentClient, ArrayList<Client> clients, String ip, KeyHandler keyHandler, boolean forceUpdate, RootPane root) throws RemoteException {
+    public void update(ArrayList<Player> players, Client currentClient, ArrayList<Client> clients, String ip, KeyHandler keyHandler, boolean forceUpdate, RootPane root) throws RemoteException {
         connecting.setVisible(false);
 
-        if(!ListUtils.equals(serverPlayers, memory) || !currentClient.equals(client) || !ip.equals(this.ip) || forceUpdate) {
+        if(!ListUtils.equals(players, memory) || !currentClient.equals(client) || !ip.equals(this.ip) || forceUpdate) {
             DebugLogger.INSTANCE.log().info("[LobbyPane] updating list...");
             client = currentClient;
             this.ip = ip;
-            updateList(serverPlayers);
+            updateList(players);
             updateButtons(clients, root);
             updateIp();
             repaint();

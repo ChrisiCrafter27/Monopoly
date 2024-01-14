@@ -11,9 +11,8 @@ import monopol.common.data.Street;
 import monopol.common.data.TrainStation;
 import monopol.common.data.Plant;
 import monopol.common.packets.PacketManager;
-import monopol.common.packets.custom.InfoS2CPacket;
 import monopol.common.packets.custom.TestC2SPacket;
-import monopol.server.ServerPlayer;
+import monopol.common.Player;
 import monopol.common.utils.JUtils;
 import monopol.common.utils.Json;
 import monopol.common.utils.KeyHandler;
@@ -173,7 +172,7 @@ public class PrototypeMenu {
 
         root.boardPane.init(root.selectedCardPane::init);
         root.playerDisplayPane.init(Map.of("Player1", Color.YELLOW, "Player2", Color.RED, "Player3", Color.GREEN, "Player4", Color.BLUE, "Player5", Color.ORANGE, "Player6", Color.MAGENTA));
-        root.infoPane.init();
+        root.infoPane.init(() -> client);
 
         new Thread(() -> {
             boolean keyDown = false;
@@ -213,6 +212,7 @@ public class PrototypeMenu {
                         if(client != oldClient) ClientEvents.trade(() -> client, root.tradePane);
                     }
                     root.playerPane.update(client, clients, false);
+                    root.pingPane.update(client.getPing(), keyHandler);
                     try {
                         sleep(100);
                     } catch (InterruptedException e) {
@@ -369,9 +369,9 @@ public class PrototypeMenu {
         gameThread = new Thread() {
             @Override
             public void run(){
-                ServerPlayer serverPlayer;
-                ServerPlayer oldServerPlayerSelected = null;
-                ServerPlayer oldServerPlayerPlaying = null;
+                Player player;
+                Player oldPlayerSelected = null;
+                Player oldPlayerPlaying = null;
                 Street street = Street.values()[0];
                 while(!isInterrupted()) {
 
@@ -388,11 +388,11 @@ public class PrototypeMenu {
                     }
 
                     try {
-                        serverPlayer = client.serverMethod().getServerPlayers().get(currentPlayer[0]);
+                        player = client.serverMethod().getServerPlayers().get(currentPlayer[0]);
                     } catch (IndexOutOfBoundsException | RemoteException e) {
                         currentPlayer[0] = 0;
                         try {
-                            serverPlayer = client.serverMethod().getServerPlayers().get(currentPlayer[0]);
+                            player = client.serverMethod().getServerPlayers().get(currentPlayer[0]);
                         } catch (IndexOutOfBoundsException | RemoteException e2) {
                             client.close();
                             continue;
@@ -400,14 +400,14 @@ public class PrototypeMenu {
                     }
 
                     try {
-                        if(oldServerPlayerSelected == null) oldServerPlayerSelected = serverPlayer;
-                        if(oldServerPlayerPlaying == null) oldServerPlayerPlaying = client.serverMethod().getServerPlayer(client.player.getName());
+                        if(oldPlayerSelected == null) oldPlayerSelected = player;
+                        if(oldPlayerPlaying == null) oldPlayerPlaying = client.serverMethod().getServerPlayer(client.player.getName());
                     } catch (RemoteException e) {
                         client.close();
                         continue;
                     }
 
-                    label_button1.setText(serverPlayer.getName());
+                    label_button1.setText(player.getName());
 
                     //ClientEvents.updateOwner(client);
                     //client.player.getName()
@@ -422,56 +422,56 @@ public class PrototypeMenu {
                     } catch (RemoteException e) {
                         client.close();
                     }
-                    label_moneyCommpanion.setText(serverPlayer.getMoney() + "€");
-                    busfahrkarten_Commpanion.setText(serverPlayer.getBusfahrkarten() + "");
-                    gefaengnisfreikarte_Commpanion.setText(serverPlayer.getGefaengniskarten() + "");
+                    label_moneyCommpanion.setText(player.getMoney() + "€");
+                    busfahrkarten_Commpanion.setText(player.getBusfahrkarten() + "");
+                    gefaengnisfreikarte_Commpanion.setText(player.getGefaengniskarten() + "");
 
-                    BADSTRASSE.setIcon(new ImageIcon(Street.BADSTRASSE.getOwner().equals(serverPlayer.getName()) ? "images/kleine_karten/brown_filled.png" : "images/kleine_karten/brown.png"));
-                    TURMSTRASSE.setIcon(new ImageIcon(Street.TURMSTRASSE.getOwner().equals(serverPlayer.getName()) ? "images/kleine_karten/brown_filled.png" : "images/kleine_karten/brown.png"));
-                    STADIONSTRASSE.setIcon(new ImageIcon(Street.STADIONSTRASSE.getOwner().equals(serverPlayer.getName()) ? "images/kleine_karten/brown_filled.png" : "images/kleine_karten/brown.png"));
+                    BADSTRASSE.setIcon(new ImageIcon(Street.BADSTRASSE.getOwner().equals(player.getName()) ? "images/kleine_karten/brown_filled.png" : "images/kleine_karten/brown.png"));
+                    TURMSTRASSE.setIcon(new ImageIcon(Street.TURMSTRASSE.getOwner().equals(player.getName()) ? "images/kleine_karten/brown_filled.png" : "images/kleine_karten/brown.png"));
+                    STADIONSTRASSE.setIcon(new ImageIcon(Street.STADIONSTRASSE.getOwner().equals(player.getName()) ? "images/kleine_karten/brown_filled.png" : "images/kleine_karten/brown.png"));
 
-                    CHAUSSESTRASSE.setIcon(new ImageIcon(Street.CHAUSSESTRASSE.getOwner().equals(serverPlayer.getName()) ? "images/kleine_karten/cyan_filled.png" : "images/kleine_karten/cyan.png"));
-                    ELISENSTRASSE.setIcon(new ImageIcon(Street.ELISENSTRASSE.getOwner().equals(serverPlayer.getName()) ? "images/kleine_karten/cyan_filled.png" : "images/kleine_karten/cyan.png"));
-                    POSTSTRASSE.setIcon(new ImageIcon(Street.POSTSTRASSE.getOwner().equals(serverPlayer.getName()) ? "images/kleine_karten/cyan_filled.png" : "images/kleine_karten/cyan.png"));
-                    TIERGARTENSTRASSE.setIcon(new ImageIcon(Street.TIERGARTENSTRASSE.getOwner().equals(serverPlayer.getName()) ? "images/kleine_karten/cyan_filled.png" : "images/kleine_karten/cyan.png"));
+                    CHAUSSESTRASSE.setIcon(new ImageIcon(Street.CHAUSSESTRASSE.getOwner().equals(player.getName()) ? "images/kleine_karten/cyan_filled.png" : "images/kleine_karten/cyan.png"));
+                    ELISENSTRASSE.setIcon(new ImageIcon(Street.ELISENSTRASSE.getOwner().equals(player.getName()) ? "images/kleine_karten/cyan_filled.png" : "images/kleine_karten/cyan.png"));
+                    POSTSTRASSE.setIcon(new ImageIcon(Street.POSTSTRASSE.getOwner().equals(player.getName()) ? "images/kleine_karten/cyan_filled.png" : "images/kleine_karten/cyan.png"));
+                    TIERGARTENSTRASSE.setIcon(new ImageIcon(Street.TIERGARTENSTRASSE.getOwner().equals(player.getName()) ? "images/kleine_karten/cyan_filled.png" : "images/kleine_karten/cyan.png"));
 
-                    SEESTRASSE.setIcon(new ImageIcon(Street.SEESTRASSE.getOwner().equals(serverPlayer.getName()) ? "images/kleine_karten/pink_filled.png" : "images/kleine_karten/pink.png"));
-                    HAFENSTRASSE.setIcon(new ImageIcon(Street.HAFENSTRASSE.getOwner().equals(serverPlayer.getName()) ? "images/kleine_karten/pink_filled.png" : "images/kleine_karten/pink.png"));
-                    NEUESTRASSE.setIcon(new ImageIcon(Street.NEUESTRASSE.getOwner().equals(serverPlayer.getName()) ? "images/kleine_karten/pink_filled.png" : "images/kleine_karten/pink.png"));
-                    MARKTPLATZ.setIcon(new ImageIcon(Street.MARKTPLATZ.getOwner().equals(serverPlayer.getName()) ? "images/kleine_karten/pink_filled.png" : "images/kleine_karten/pink.png"));
+                    SEESTRASSE.setIcon(new ImageIcon(Street.SEESTRASSE.getOwner().equals(player.getName()) ? "images/kleine_karten/pink_filled.png" : "images/kleine_karten/pink.png"));
+                    HAFENSTRASSE.setIcon(new ImageIcon(Street.HAFENSTRASSE.getOwner().equals(player.getName()) ? "images/kleine_karten/pink_filled.png" : "images/kleine_karten/pink.png"));
+                    NEUESTRASSE.setIcon(new ImageIcon(Street.NEUESTRASSE.getOwner().equals(player.getName()) ? "images/kleine_karten/pink_filled.png" : "images/kleine_karten/pink.png"));
+                    MARKTPLATZ.setIcon(new ImageIcon(Street.MARKTPLATZ.getOwner().equals(player.getName()) ? "images/kleine_karten/pink_filled.png" : "images/kleine_karten/pink.png"));
 
-                    MUENCHENERSTRASSE.setIcon(new ImageIcon(Street.MUENCHENERSTRASSE.getOwner().equals(serverPlayer.getName()) ? "images/kleine_karten/orange_filled.png" : "images/kleine_karten/orange.png"));
-                    WIENERSTRASSE.setIcon(new ImageIcon(Street.WIENERSTRASSE.getOwner().equals(serverPlayer.getName()) ? "images/kleine_karten/orange_filled.png" : "images/kleine_karten/orange.png"));
-                    BERLINERSTRASSE.setIcon(new ImageIcon(Street.BERLINERSTRASSE.getOwner().equals(serverPlayer.getName()) ? "images/kleine_karten/orange_filled.png" : "images/kleine_karten/orange.png"));
-                    HAMBURGERSTRASSE.setIcon(new ImageIcon(Street.HAMBURGERSTRASSE.getOwner().equals(serverPlayer.getName()) ? "images/kleine_karten/orange_filled.png" : "images/kleine_karten/orange.png"));
+                    MUENCHENERSTRASSE.setIcon(new ImageIcon(Street.MUENCHENERSTRASSE.getOwner().equals(player.getName()) ? "images/kleine_karten/orange_filled.png" : "images/kleine_karten/orange.png"));
+                    WIENERSTRASSE.setIcon(new ImageIcon(Street.WIENERSTRASSE.getOwner().equals(player.getName()) ? "images/kleine_karten/orange_filled.png" : "images/kleine_karten/orange.png"));
+                    BERLINERSTRASSE.setIcon(new ImageIcon(Street.BERLINERSTRASSE.getOwner().equals(player.getName()) ? "images/kleine_karten/orange_filled.png" : "images/kleine_karten/orange.png"));
+                    HAMBURGERSTRASSE.setIcon(new ImageIcon(Street.HAMBURGERSTRASSE.getOwner().equals(player.getName()) ? "images/kleine_karten/orange_filled.png" : "images/kleine_karten/orange.png"));
 
-                    THEATERSTRASSE.setIcon(new ImageIcon(Street.THEATERSTRASSE.getOwner().equals(serverPlayer.getName()) ? "images/kleine_karten/red_filled.png" : "images/kleine_karten/red.png"));
-                    MUSEUMSTRASSE.setIcon(new ImageIcon(Street.MUSEUMSTRASSE.getOwner().equals(serverPlayer.getName()) ? "images/kleine_karten/red_filled.png" : "images/kleine_karten/red.png"));
-                    OPERNPLATZ.setIcon(new ImageIcon(Street.OPERNPLATZ.getOwner().equals(serverPlayer.getName()) ? "images/kleine_karten/red_filled.png" : "images/kleine_karten/red.png"));
-                    KONZERTHAUSSTRASSE.setIcon(new ImageIcon(Street.KONZERTHAUSSTRASSE.getOwner().equals(serverPlayer.getName()) ? "images/kleine_karten/red_filled.png" : "images/kleine_karten/red.png"));
+                    THEATERSTRASSE.setIcon(new ImageIcon(Street.THEATERSTRASSE.getOwner().equals(player.getName()) ? "images/kleine_karten/red_filled.png" : "images/kleine_karten/red.png"));
+                    MUSEUMSTRASSE.setIcon(new ImageIcon(Street.MUSEUMSTRASSE.getOwner().equals(player.getName()) ? "images/kleine_karten/red_filled.png" : "images/kleine_karten/red.png"));
+                    OPERNPLATZ.setIcon(new ImageIcon(Street.OPERNPLATZ.getOwner().equals(player.getName()) ? "images/kleine_karten/red_filled.png" : "images/kleine_karten/red.png"));
+                    KONZERTHAUSSTRASSE.setIcon(new ImageIcon(Street.KONZERTHAUSSTRASSE.getOwner().equals(player.getName()) ? "images/kleine_karten/red_filled.png" : "images/kleine_karten/red.png"));
 
-                    LESSINGSTRASSE.setIcon(new ImageIcon(Street.LESSINGSTRASSE.getOwner().equals(serverPlayer.getName()) ? "images/kleine_karten/yellow_filled.png" : "images/kleine_karten/yellow.png"));
-                    SCHILLERSTRASSE.setIcon(new ImageIcon(Street.SCHILLERSTRASSE.getOwner().equals(serverPlayer.getName()) ? "images/kleine_karten/yellow_filled.png" : "images/kleine_karten/yellow.png"));
-                    GOETHESTRASSE.setIcon(new ImageIcon(Street.GOETHESTRASSE.getOwner().equals(serverPlayer.getName()) ? "images/kleine_karten/yellow_filled.png" : "images/kleine_karten/yellow.png"));
-                    RILKESTRASSE.setIcon(new ImageIcon(Street.RILKESTRASSE.getOwner().equals(serverPlayer.getName()) ? "images/kleine_karten/yellow_filled.png" : "images/kleine_karten/yellow.png"));
+                    LESSINGSTRASSE.setIcon(new ImageIcon(Street.LESSINGSTRASSE.getOwner().equals(player.getName()) ? "images/kleine_karten/yellow_filled.png" : "images/kleine_karten/yellow.png"));
+                    SCHILLERSTRASSE.setIcon(new ImageIcon(Street.SCHILLERSTRASSE.getOwner().equals(player.getName()) ? "images/kleine_karten/yellow_filled.png" : "images/kleine_karten/yellow.png"));
+                    GOETHESTRASSE.setIcon(new ImageIcon(Street.GOETHESTRASSE.getOwner().equals(player.getName()) ? "images/kleine_karten/yellow_filled.png" : "images/kleine_karten/yellow.png"));
+                    RILKESTRASSE.setIcon(new ImageIcon(Street.RILKESTRASSE.getOwner().equals(player.getName()) ? "images/kleine_karten/yellow_filled.png" : "images/kleine_karten/yellow.png"));
 
-                    RATHAUSPLATZ.setIcon(new ImageIcon(Street.RATHAUSPLATZ.getOwner().equals(serverPlayer.getName()) ? "images/kleine_karten/green_filled.png" : "images/kleine_karten/green.png"));
-                    HAUPSTRASSE.setIcon(new ImageIcon(Street.HAUPSTRASSE.getOwner().equals(serverPlayer.getName()) ? "images/kleine_karten/green_filled.png" : "images/kleine_karten/green.png"));
-                    BOERSENPLATZ.setIcon(new ImageIcon(Street.BOERSENPLATZ.getOwner().equals(serverPlayer.getName()) ? "images/kleine_karten/green_filled.png" : "images/kleine_karten/green.png"));
-                    BAHNHOFSTRASSE.setIcon(new ImageIcon(Street.BAHNHOFSTRASSE.getOwner().equals(serverPlayer.getName()) ? "images/kleine_karten/green_filled.png" : "images/kleine_karten/green.png"));
+                    RATHAUSPLATZ.setIcon(new ImageIcon(Street.RATHAUSPLATZ.getOwner().equals(player.getName()) ? "images/kleine_karten/green_filled.png" : "images/kleine_karten/green.png"));
+                    HAUPSTRASSE.setIcon(new ImageIcon(Street.HAUPSTRASSE.getOwner().equals(player.getName()) ? "images/kleine_karten/green_filled.png" : "images/kleine_karten/green.png"));
+                    BOERSENPLATZ.setIcon(new ImageIcon(Street.BOERSENPLATZ.getOwner().equals(player.getName()) ? "images/kleine_karten/green_filled.png" : "images/kleine_karten/green.png"));
+                    BAHNHOFSTRASSE.setIcon(new ImageIcon(Street.BAHNHOFSTRASSE.getOwner().equals(player.getName()) ? "images/kleine_karten/green_filled.png" : "images/kleine_karten/green.png"));
 
-                    DOMPLATZ.setIcon(new ImageIcon(Street.DOMPLATZ.getOwner().equals(serverPlayer.getName()) ? "images/kleine_karten/blue_filled.png" : "images/kleine_karten/blue.png"));
-                    PARKSTRASSE.setIcon(new ImageIcon(Street.PARKSTRASSE.getOwner().equals(serverPlayer.getName()) ? "images/kleine_karten/blue_filled.png" : "images/kleine_karten/blue.png"));
-                    SCHLOSSALLEE.setIcon(new ImageIcon(Street.SCHLOSSALLEE.getOwner().equals(serverPlayer.getName()) ? "images/kleine_karten/blue_filled.png" : "images/kleine_karten/blue.png"));
+                    DOMPLATZ.setIcon(new ImageIcon(Street.DOMPLATZ.getOwner().equals(player.getName()) ? "images/kleine_karten/blue_filled.png" : "images/kleine_karten/blue.png"));
+                    PARKSTRASSE.setIcon(new ImageIcon(Street.PARKSTRASSE.getOwner().equals(player.getName()) ? "images/kleine_karten/blue_filled.png" : "images/kleine_karten/blue.png"));
+                    SCHLOSSALLEE.setIcon(new ImageIcon(Street.SCHLOSSALLEE.getOwner().equals(player.getName()) ? "images/kleine_karten/blue_filled.png" : "images/kleine_karten/blue.png"));
 
-                    GASWERK.setIcon(new ImageIcon(Plant.GASWERK.getOwner().equals(serverPlayer.getName()) ? "images/kleine_karten/gas_filled.png" : "images/kleine_karten/gas.png"));
-                    ELEKTRIZITAETSWERK.setIcon(new ImageIcon(Plant.ELEKTRIZITAETSWERK.getOwner().equals(serverPlayer.getName()) ? "images/kleine_karten/elec_filled.png" : "images/kleine_karten/elec.png"));
-                    WASSERWERK.setIcon(new ImageIcon(Plant.WASSERWERK.getOwner().equals(serverPlayer.getName()) ? "images/kleine_karten/water_filled.png" : "images/kleine_karten/water.png"));
+                    GASWERK.setIcon(new ImageIcon(Plant.GASWERK.getOwner().equals(player.getName()) ? "images/kleine_karten/gas_filled.png" : "images/kleine_karten/gas.png"));
+                    ELEKTRIZITAETSWERK.setIcon(new ImageIcon(Plant.ELEKTRIZITAETSWERK.getOwner().equals(player.getName()) ? "images/kleine_karten/elec_filled.png" : "images/kleine_karten/elec.png"));
+                    WASSERWERK.setIcon(new ImageIcon(Plant.WASSERWERK.getOwner().equals(player.getName()) ? "images/kleine_karten/water_filled.png" : "images/kleine_karten/water.png"));
 
-                    SUEDBAHNHOF.setIcon(new ImageIcon(TrainStation.SUEDBAHNHOF.getOwner().equals(serverPlayer.getName()) ? "images/kleine_karten/train_filled.png" : "images/kleine_karten/train.png"));
-                    WESTBAHNHOF.setIcon(new ImageIcon(TrainStation.WESTBAHNHOF.getOwner().equals(serverPlayer.getName()) ? "images/kleine_karten/train_filled.png" : "images/kleine_karten/train.png"));
-                    NORDBAHNHOF.setIcon(new ImageIcon(TrainStation.NORDBAHNHOF.getOwner().equals(serverPlayer.getName()) ? "images/kleine_karten/train_filled.png" : "images/kleine_karten/train.png"));
-                    HAUPTBAHNHOF.setIcon(new ImageIcon(TrainStation.HAUPTBAHNHOF.getOwner().equals(serverPlayer.getName()) ? "images/kleine_karten/train_filled.png" : "images/kleine_karten/train.png"));
+                    SUEDBAHNHOF.setIcon(new ImageIcon(TrainStation.SUEDBAHNHOF.getOwner().equals(player.getName()) ? "images/kleine_karten/train_filled.png" : "images/kleine_karten/train.png"));
+                    WESTBAHNHOF.setIcon(new ImageIcon(TrainStation.WESTBAHNHOF.getOwner().equals(player.getName()) ? "images/kleine_karten/train_filled.png" : "images/kleine_karten/train.png"));
+                    NORDBAHNHOF.setIcon(new ImageIcon(TrainStation.NORDBAHNHOF.getOwner().equals(player.getName()) ? "images/kleine_karten/train_filled.png" : "images/kleine_karten/train.png"));
+                    HAUPTBAHNHOF.setIcon(new ImageIcon(TrainStation.HAUPTBAHNHOF.getOwner().equals(player.getName()) ? "images/kleine_karten/train_filled.png" : "images/kleine_karten/train.png"));
 
 
                     BADSTRASSE_Companion.setIcon(new ImageIcon(Street.BADSTRASSE.getOwner().equals(client.player.getName()) ? "images/kleine_karten/brown_filled.png" : "images/kleine_karten/brown.png"));
@@ -547,11 +547,11 @@ public class PrototypeMenu {
                     if(shouldRepaint) ClientEvents.updateOwner(client);
                     if(shouldRepaint) System.out.println("Should repaint"); //Debug output
                     try {
-                        if (!Json.toString(serverPlayer, false).equals(Json.toString(oldServerPlayerSelected, false)) || !Json.toString(client.serverMethod().getServerPlayer(client.player.getName()), false).equals(Json.toString(oldServerPlayerPlaying, false)) || shouldRepaint) {
+                        if (!Json.toString(player, false).equals(Json.toString(oldPlayerSelected, false)) || !Json.toString(client.serverMethod().getServerPlayer(client.player.getName()), false).equals(Json.toString(oldPlayerPlaying, false)) || shouldRepaint) {
                             frame.repaint();
                         }
-                        oldServerPlayerSelected = serverPlayer;
-                        oldServerPlayerPlaying = client.serverMethod().getServerPlayer(client.player.getName());
+                        oldPlayerSelected = player;
+                        oldPlayerPlaying = client.serverMethod().getServerPlayer(client.player.getName());
                     } catch (RemoteException e) {
                         client.close();
                     } catch (JsonProcessingException e) {

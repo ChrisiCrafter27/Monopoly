@@ -11,6 +11,7 @@ public class TestC2SPacket extends C2SPacket<TestC2SPacket> {
         this.text = text;
     }
 
+    @SuppressWarnings("unused")
     public static TestC2SPacket deserialize(Object[] objects) {
         return new TestC2SPacket((String) objects[0]);
     }
@@ -22,6 +23,6 @@ public class TestC2SPacket extends C2SPacket<TestC2SPacket> {
 
     @Override
     public void handleOnServer(ServerSide side) {
-        PacketManager.sendS2C(new InfoS2CPacket(text), serverPlayer -> true, Throwable::printStackTrace);
+        PacketManager.sendS2C(new InfoS2CPacket(text), PacketManager.Restriction.all(), Throwable::printStackTrace);
     }
 }

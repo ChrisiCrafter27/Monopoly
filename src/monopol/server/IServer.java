@@ -1,5 +1,6 @@
 package monopol.server;
 
+import monopol.common.Player;
 import monopol.common.data.IPurchasable;
 import monopol.common.message.MessageType;
 
@@ -11,8 +12,8 @@ import java.util.HashMap;
 
 public interface IServer extends Remote {
     ServerSettings getServerSettings() throws RemoteException;
-    ArrayList<ServerPlayer> getServerPlayers() throws RemoteException;
-    ServerPlayer getServerPlayer(String name) throws RemoteException;
+    ArrayList<Player> getServerPlayers() throws RemoteException;
+    Player getServerPlayer(String name) throws RemoteException;
     String getIp() throws RemoteException;
     void kick(String name, DisconnectReason reason) throws RemoteException;
     boolean changeName(String oldName, String newName) throws RemoteException;

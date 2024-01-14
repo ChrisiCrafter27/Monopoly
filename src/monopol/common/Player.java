@@ -1,14 +1,14 @@
-package monopol.server;
+package monopol.common;
 
 import java.io.Serializable;
 
-public class ServerPlayer implements Serializable {
+public class Player implements Serializable {
     private String name;
     private int money = 1000;
     private int gefängniskarten = 0;
     private int busfahrkarten = 0;
 
-    public ServerPlayer(String name) {
+    public Player(String name) {
         this.name = name;
     }
 

@@ -5,22 +5,21 @@ import monopol.common.message.MessageType;
 import monopol.common.core.Monopoly;
 import monopol.common.message.Message;
 import monopol.server.Server;
-import monopol.server.ServerPlayer;
+import monopol.common.Player;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class PacketManager {
-    public static void sendS2C(S2CPacket<?> packet, Function<ServerPlayer, Boolean> targets, Consumer<Exception> catcher) {
+    public static void sendS2C(S2CPacket<?> packet, Function<Player, Boolean> targets, Consumer<Exception> catcher) {
         try {
             Server server = Monopoly.INSTANCE.server();
-            for (ServerPlayer player : server.getServerPlayers()) {
+            for (Player player : server.getServerPlayers()) {
                 if (targets.apply(player)) Message.send(new Message(new Object[]{packet.getClass().getName(), packet.serialize()}, MessageType.PACKET), server.serverPlayers.get(player));
             }
         } catch (Exception e) {
@@ -58,6 +57,16 @@ public class PacketManager {
             } catch (InvocationTargetException | IllegalAccessException | ClassNotFoundException e) {
                 throw new RuntimeException(e);
             }
+        }
+    }
+
+    public static class Restriction {
+        public static Function<Player, Boolean> all() {
+            return serverPlayer -> true;
+        }
+
+        public static Function<Player, Boolean> named(String... names) {
+            return serverPlayer -> Arrays.stream(names).anyMatch(name -> name.equals(serverPlayer.getName()));
         }
     }
 }
