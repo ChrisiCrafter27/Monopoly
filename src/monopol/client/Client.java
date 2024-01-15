@@ -1,5 +1,6 @@
 package monopol.client;
 
+import monopol.common.Player;
 import monopol.common.data.Plant;
 import monopol.common.data.Street;
 import monopol.common.data.TrainStation;
@@ -13,6 +14,7 @@ import monopol.server.IServer;
 import monopol.common.utils.Json;
 import monopol.common.message.Message;
 import monopol.common.message.MessageType;
+import monopol.server.Server;
 
 import javax.swing.*;
 import java.io.DataInputStream;
@@ -23,6 +25,8 @@ import java.rmi.NotBoundException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class Client {
     private final Socket client;
@@ -32,6 +36,7 @@ public class Client {
     public DisconnectReason disconnectReason = null;
     public final TradeData tradeData = new TradeData();
     private long ping = -1;
+    boolean received = true;
 
     private final Thread clientThread = new Thread() {
         @Override
@@ -62,6 +67,29 @@ public class Client {
         }
     };
 
+    Thread pingThread = new Thread(() -> {
+        while(!Thread.interrupted()) {
+            try {
+                Message.sendPing(socket());
+            } catch (IOException e) {
+                e.printStackTrace(System.err);
+            }
+            if (!received) {
+                try {
+                    serverMethod().kick(player().getName(), DisconnectReason.CLIENT_CLOSED);
+                } catch (Exception e) {
+                    e.printStackTrace(System.err);
+                }
+            }
+            received = false;
+            try {
+                Thread.sleep(Server.CLIENT_TIMEOUT);
+            } catch (InterruptedException e) {
+                return;
+            }
+        }
+    });
+
     public Client(String ip, int port, boolean isHost, RootPane root) throws NotBoundException {
         try {
             this.root = root;
@@ -75,6 +103,7 @@ public class Client {
                 return;
             }
             clientThread.start();
+            pingThread.start();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -92,12 +121,11 @@ public class Client {
                     Object[] array = new Object[1];
                     array[0] = message.getMessage()[0];
                     output.writeUTF(Json.toString(new Message(array, MessageType.PING_BACK), false));
-                    ping = System.currentTimeMillis() - (long) message.getMessage()[0];
                 }
-                //case PING_BACK -> {
-                //    long delay = System.currentTimeMillis() - (long) message.getMessage()[0];
-                //    System.out.println("[Server]: Your ping is " + delay + "ms");
-                //}
+                case PING_BACK -> {
+                    ping = System.currentTimeMillis() - (long) message.getMessage()[0];
+                    received = true;
+                }
                 case NAME -> {
                     if (player.getName() == null) {
                         player.setName((String) message.getMessage()[0]);
@@ -222,6 +250,10 @@ public class Client {
 
     public Socket socket() {
         return client;
+    }
+
+    private ClientPlayer player() {
+        return player;
     }
 
     public long getPing() {

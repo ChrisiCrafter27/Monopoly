@@ -1,6 +1,5 @@
 package monopol.server;
 
-import monopol.client.Client;
 import monopol.common.Player;
 import monopol.common.data.IPurchasable;
 import monopol.common.data.Plant;
@@ -165,11 +164,11 @@ public class Server extends UnicastRemoteObject implements IServer {
                     logger.log().warning("[Server]: Client lost connection: timed out (" + name + ")");
                     kick(client, DisconnectReason.CONNECTION_LOST);
                 }
-                try {
-                    Thread.sleep(Server.CLIENT_TIMEOUT);
-                } catch (InterruptedException e) {
-                    return;
-                }
+            }
+            try {
+                Thread.sleep(Server.CLIENT_TIMEOUT);
+            } catch (InterruptedException e) {
+                return;
             }
         }
     });
