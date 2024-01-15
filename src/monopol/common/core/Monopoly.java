@@ -40,7 +40,7 @@ public class Monopoly {
     public ArrayList<String> getAllPlayerNamesOfOwnServer() {
         ArrayList<String> list = new ArrayList<>();
         try {
-            for(Player player : server.getServerPlayers()) {
+            for(Player player : server.getPlayers()) {
                 list.add(player.getName());
             }
         } catch (RemoteException e) {

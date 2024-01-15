@@ -17,6 +17,7 @@ public class ClientEvents {
         try {
             trade(clientSup, clientSup.get().tradeData.tradePlayer, clientSup.get().tradeData.tradeState, display);
         } catch (RemoteException e) {
+            e.printStackTrace(System.err);
             clientSup.get().close();
         }
     }
@@ -288,6 +289,7 @@ public class ClientEvents {
                     try {
                         client.serverMethod().sendMessage(player2, MessageType.TRADE, array);
                     } catch (IOException e) {
+                        e.printStackTrace(System.err);
                         client.close();
                     }
                 } else {
@@ -298,6 +300,7 @@ public class ClientEvents {
                     try {
                         client.serverMethod().sendMessage(player2, MessageType.TRADE, array);
                     } catch (IOException e) {
+                        e.printStackTrace(System.err);
                         client.close();
                     }
                 }
@@ -360,6 +363,7 @@ public class ClientEvents {
                 else if(entry.getKey() instanceof Plant plant) plant.setOwner(entry.getValue());
             }
         } catch (RemoteException e) {
+            e.printStackTrace(System.err);
             client.close();
         }
     }

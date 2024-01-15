@@ -43,7 +43,9 @@ public class Message {
         try {
             DataOutputStream output = new DataOutputStream(client.getOutputStream());
             output.writeUTF(Json.toString(message, false));
-        } catch (NullPointerException ignored) {}
+        } catch (NullPointerException e) {
+            e.printStackTrace(System.err);
+        }
     }
 
     public static void sendPing(Socket client) throws IOException {

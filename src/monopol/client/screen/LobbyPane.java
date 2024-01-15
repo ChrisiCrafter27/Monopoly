@@ -88,7 +88,9 @@ public class LobbyPane extends JLayeredPane {
                     client = new Client(ip, 25565, false, root);
                     clients.add(clients.size(), client);
                 }
-            } catch (Exception ignored) {}
+            } catch (Exception e) {
+                e.printStackTrace(System.err);
+            }
         });
         addPlayer.setVisible(true);
 
@@ -104,7 +106,9 @@ public class LobbyPane extends JLayeredPane {
         leave.addActionListener(actionEvent -> {
             try {
                 client.serverMethod().kick(client.player.getName(), DisconnectReason.CLIENT_CLOSED);
-            } catch (Exception ignored) {}
+            } catch (Exception e) {
+                e.printStackTrace(System.err);
+            }
         });
         leave.setVisible(true);
 
@@ -113,7 +117,9 @@ public class LobbyPane extends JLayeredPane {
         start.addActionListener(actionEvent -> {
             try {
                 client.serverMethod().start();
-            } catch (Exception ignored) {}
+            } catch (Exception e) {
+                e.printStackTrace(System.err);
+            }
         });
         start.setVisible(true);
     }
@@ -129,6 +135,7 @@ public class LobbyPane extends JLayeredPane {
             if (client.player.isHost) ableToKick = true;
             else ableToKick = client.serverMethod().getServerSettings().allPlayersCanKick;
         } catch (RemoteException e) {
+            e.printStackTrace(System.err);
             ableToKick = false;
         }
 
@@ -138,7 +145,9 @@ public class LobbyPane extends JLayeredPane {
                 playerList.add(addButton("Kick", 600, y, 150, 25, ableToKick && !client.serverMethod().isHost(player.getName()), actionEvent -> {
                     try {
                         client.serverMethod().kick(player.getName(), DisconnectReason.KICKED);
-                    } catch (Exception ignored) {}
+                    } catch (Exception e) {
+                        e.printStackTrace(System.err);
+                    }
                 }));
             } else {
                 playerList.add(addButton("Namen ändern", 600, y, 150, 25, true, actionEvent -> {
@@ -148,7 +157,8 @@ public class LobbyPane extends JLayeredPane {
                             client.player.setName(name);
                             mustUpdate = true;
                         } else JOptionPane.showMessageDialog(null, "Dieser Name wird schon verwendet oder ist zu lang!", "Namen ändern", JOptionPane.WARNING_MESSAGE);
-                    } catch (Exception ignored) {
+                    } catch (Exception e) {
+                        e.printStackTrace(System.err);
                     }
                 }));
             }

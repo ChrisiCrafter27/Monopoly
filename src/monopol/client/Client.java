@@ -43,7 +43,8 @@ public class Client {
                     messageReceived(data);
                 } catch (IOException e) {
                     if(!interrupted()) {
-                        System.out.println("[Server]: Connection lost: No further information.");
+                        e.printStackTrace(System.err);
+                        System.out.println("[Client]: Connection lost: No further information.");
                         interrupt();
                     }
                 }
@@ -111,6 +112,8 @@ public class Client {
                         case SERVER_CLOSED -> System.out.println("[Client]: Connection lost: Server closed.");
                         case CLIENT_CLOSED -> System.out.println("[Client]: Connection lost: Left game");
                         case KICKED -> System.out.println("[Client]: Connection lost: Kicked by other player.");
+                        case SERVER_FULL -> System.out.println("[Client]: Connection lost: Server is full.");
+                        case GAME_RUNNING -> System.out.println("[Client]: Connection lost: A game is already running.");
                         default -> System.out.println("[Client]: Connection lost: No further information.");
                     }
                 }
@@ -211,7 +214,7 @@ public class Client {
                 default -> throw new RuntimeException();
             }
         } catch (IOException e) {
-            System.out.println("[Server]: Connection lost: No further information.");
+            System.out.println("[Client]: Connection lost: No further information.");
             clientThread.interrupt();
             throw new RuntimeException(e);
         }
@@ -228,7 +231,9 @@ public class Client {
     public void close() {
         try {
             Message.send(new Message(DisconnectReason.CLIENT_CLOSED, MessageType.DISCONNECT), client);
-        } catch (IOException ignored) {}
+        } catch (IOException e) {
+            e.printStackTrace(System.err);
+        }
         clientThread.interrupt();
     }
 

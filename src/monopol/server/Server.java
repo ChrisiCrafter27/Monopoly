@@ -1,5 +1,6 @@
 package monopol.server;
 
+import monopol.client.Client;
 import monopol.common.Player;
 import monopol.common.data.IPurchasable;
 import monopol.common.data.Plant;
@@ -10,6 +11,7 @@ import monopol.common.core.Monopoly;
 import monopol.common.log.ServerLogger;
 import monopol.common.packets.PacketManager;
 import monopol.common.packets.ServerSide;
+import monopol.common.utils.MapUtils;
 import monopol.server.rules.BuildRule;
 import monopol.server.rules.Events;
 import monopol.server.rules.OwnedCardsOfColorGroup;
@@ -34,7 +36,7 @@ public class Server extends UnicastRemoteObject implements IServer {
     private String ip;
     public final HashMap<Integer, Socket> clients = new HashMap<>();
     public final HashMap<Socket, Boolean> pingCheck = new HashMap<>();
-    public final HashMap<Player, Socket> serverPlayers = new HashMap<>();
+    public final HashMap<Player, Socket> players = new HashMap<>();
     public final ServerLogger logger = ServerLogger.INSTANCE;
     private boolean acceptNewClients = false;
     public ServerSettings serverSettings;
@@ -51,7 +53,7 @@ public class Server extends UnicastRemoteObject implements IServer {
                     if (acceptNewClients && clients.size() < 6) {
                         clients.put(clients.size() + 1, newClient);
                         Player player = newServerPlayer();
-                        serverPlayers.put(player, newClient);
+                        players.put(player, newClient);
                         Message.send(new Message(player.getName(), MessageType.NAME), newClient);
                         logger.log().info("[Server]: New Client accepted (" + player.getName() + ")");
                     } else {
@@ -65,6 +67,7 @@ public class Server extends UnicastRemoteObject implements IServer {
                         else Message.send(new Message(DisconnectReason.UNKNOWN, MessageType.DISCONNECT), newClient);
                     }
                 } catch (Exception e) {
+                    e.printStackTrace(System.err);
                     logger.log().severe("[Server]: Server crashed due to an Exception:\r\n" + e.getMessage());
                     close();
                     return;
@@ -85,7 +88,7 @@ public class Server extends UnicastRemoteObject implements IServer {
             do {
                 okay = true;
                 name = "Player " + i;
-                for (Map.Entry<Player, Socket> entry : serverPlayers.entrySet()) {
+                for (Map.Entry<Player, Socket> entry : players.entrySet()) {
                     if (entry.getKey().getName().equals(name)) {
                         okay = false;
                         break;
@@ -97,65 +100,79 @@ public class Server extends UnicastRemoteObject implements IServer {
             return player;
         }
     };
-    private final Thread requestThread = new Thread() {
-        @Override
-        public void run() {
-            while(!isInterrupted()) {
-                if(!pause) {
-                    try {
-                        clients.forEach((id, client) -> {
+    private final Thread requestThread = new Thread(() -> {
+        HashMap<Socket, Thread> threadMap = new HashMap<>();
+        while(!Thread.interrupted()) {
+            if(!pause) {
+                clients.values().forEach(socket -> {
+                    if (!threadMap.containsKey(socket)) threadMap.put(socket, new Thread(() -> {
+                        while (!Thread.interrupted()) {
                             try {
-                                DataInputStream input = new DataInputStream(client.getInputStream());
+                                DataInputStream input = new DataInputStream(socket.getInputStream());
                                 String data = input.readUTF();
                                 logger.log().fine("[Server]: Message received");
-                                messageReceived(data, client);
-                            } catch (IOException ignored) {
+                                messageReceived(data, socket);
+                            } catch (IOException e) {
+                                if(clients.containsValue(socket)) e.printStackTrace(System.err);
                             }
-                        });
-                    } catch (ConcurrentModificationException ignored) {
+                            try {
+                                Thread.sleep(1);
+                            } catch (InterruptedException e) {
+                                return;
+                            }
+                        }
+                    }));
+                });
+                List<Socket> toRemove = new ArrayList<>();
+                threadMap.keySet().forEach(socket -> {
+                    if (!clients.containsValue(socket)) {
+                        threadMap.get(socket).interrupt();
+                        toRemove.add(socket);
                     }
-                    try {
-                        sleep(1);
-                    } catch (InterruptedException e) {
-                        return;
-                    }
-                }
+                });
+                toRemove.forEach(threadMap::remove);
+                threadMap.values().forEach(thread -> {
+                    if(!thread.isAlive()) thread.start();
+                });
+            }
+            try {
+                Thread.sleep(1);
+            } catch (InterruptedException e) {
+                return;
             }
         }
-    };
+    });
 
-    private final Thread pingThread = new Thread() {
-        @Override
-        public void run() {
-            while(!isInterrupted()) {
-                if (!pause) {
-                    List<Socket> kick = new ArrayList<>();
-                    clients.forEach((id, client) -> {
-                        if (!pingCheck.containsKey(client)) pingCheck.put(client, true);
-                        if (!pingCheck.get(client)) kick.add(client);
-                        pingCheck.replace(client, false);
-                        try {
-                            Message.sendPing(client);
-                        } catch (IOException ignored) {
-                        }
-                    });
-                    for (Socket client : kick) {
-                        String name = "unknown";
-                        for(Map.Entry<Player, Socket> entry : serverPlayers.entrySet()) {
-                            if(entry.getValue() == client) name = entry.getKey().getName();
-                        }
-                        logger.log().warning("[Server]: Client lost connection: timed out (" + name + ")");
-                        kick(client, DisconnectReason.CONNECTION_LOST);
-                    }
+    private final Thread pingThread = new Thread(() -> {
+        while(!Thread.interrupted()) {
+            if (!pause) {
+                List<Socket> kick = new ArrayList<>();
+                clients.forEach((id, client) -> {
+                    if (!pingCheck.containsKey(client)) pingCheck.put(client, true);
+                    if (!pingCheck.get(client)) kick.add(client);
+                    pingCheck.replace(client, false);
                     try {
-                        sleep(Server.CLIENT_TIMEOUT);
-                    } catch (InterruptedException e) {
-                        return;
+                        Message.sendPing(client);
+                    } catch (IOException e) {
+                        e.printStackTrace(System.err);
                     }
+                });
+                for (Socket client : kick) {
+                    String name = "unknown";
+                    for(Map.Entry<Player, Socket> entry : players.entrySet()) {
+                        if(entry.getValue() == client) name = entry.getKey().getName();
+                    }
+                    logger.log().warning("[Server]: Client lost connection: timed out (" + name + ")");
+                    kick(client, DisconnectReason.CONNECTION_LOST);
+                }
+                try {
+                    Thread.sleep(Server.CLIENT_TIMEOUT);
+                } catch (InterruptedException e) {
+                    return;
                 }
             }
         }
-    };
+    });
 
     public Server(int port) throws IOException{
         logger.log().info("[Server]: Initialing server...");
@@ -192,6 +209,7 @@ public class Server extends UnicastRemoteObject implements IServer {
             logger.log().info("[Server]: IP-Address: " + InetAddress.getLocalHost().getHostAddress());
             ip = InetAddress.getLocalHost().getHostAddress();
         } catch (UnknownHostException e) {
+            e.printStackTrace(System.err);
             logger.log().severe("[Server]: Server crashed due to an Exception:\r\n" + e.getMessage());
             close();
             throw new RuntimeException();
@@ -209,7 +227,9 @@ public class Server extends UnicastRemoteObject implements IServer {
         for (Socket client : list) {
             try {
                 Message.send(new Message(DisconnectReason.SERVER_CLOSED, MessageType.DISCONNECT), client);
-            } catch (IOException ignored) {}
+            } catch (IOException e) {
+                e.printStackTrace(System.err);
+            }
             kick(client, DisconnectReason.SERVER_CLOSED);
         }
         pause = true;
@@ -217,25 +237,21 @@ public class Server extends UnicastRemoteObject implements IServer {
     }
 
     public void kick(Socket client, DisconnectReason reason) {
-        if(!clients.containsValue(client)) throw new RuntimeException();
-        final int[] idArray = new int[1];
-        clients.forEach((k, v) -> {
-            if(v == client) {
-                idArray[0] = k;
-            }
-        });
-        int id = idArray[0];
+        if(!clients.containsValue(client)) throw new IllegalStateException();
+        int id = MapUtils.key(clients, client);
         try {
             Message.send(new Message(reason, MessageType.DISCONNECT), client);
-        } catch (IOException ignored) {}
+        } catch (IOException e) {
+            e.printStackTrace(System.err);
+        }
         for(int i = id; i < clients.size(); i++) {
             clients.replace(i, clients.get(i + 1));
         }
         clients.remove(clients.size());
-        for(Map.Entry<Player, Socket> entry : serverPlayers.entrySet()) {
+        for(Map.Entry<Player, Socket> entry : players.entrySet()) {
             if(entry.getValue() == client) {
-                serverPlayers.replace(entry.getKey(), null);
-                if(Monopoly.INSTANCE.getState() == GameState.LOBBY) serverPlayers.remove(entry.getKey());
+                players.replace(entry.getKey(), null);
+                if(Monopoly.INSTANCE.getState() == GameState.LOBBY) players.remove(entry.getKey());
                 break;
             }
         }
@@ -262,7 +278,7 @@ public class Server extends UnicastRemoteObject implements IServer {
                         pingCheck.replace(client, true);
                     }
                     String name = "unknown";
-                    for(Map.Entry<Player, Socket> entry : serverPlayers.entrySet()) {
+                    for(Map.Entry<Player, Socket> entry : players.entrySet()) {
                         if(entry.getValue() == client) name = entry.getKey().getName();
                     }
                     if(delay < 2500) logger.log().fine("[Server]: Ping to " + name + " is " + delay + "ms");
@@ -273,6 +289,7 @@ public class Server extends UnicastRemoteObject implements IServer {
                 default -> throw new RuntimeException();
             }
         } catch (Exception e) {
+            e.printStackTrace(System.err);
             logger.log().severe("[Server]: Server crashed due to an Exception:\r\n" + e.getMessage());
             close();
             throw new RuntimeException(e);
@@ -289,15 +306,15 @@ public class Server extends UnicastRemoteObject implements IServer {
     }
 
     @Override
-    public ArrayList<Player> getServerPlayers() throws RemoteException {
-        ArrayList<Player> list = new ArrayList<>(serverPlayers.keySet());
-        list.removeIf(serverPlayer -> serverPlayers.get(serverPlayer) == null);
+    public ArrayList<Player> getPlayers() throws RemoteException {
+        ArrayList<Player> list = new ArrayList<>(players.keySet());
+        list.removeIf(serverPlayer -> players.get(serverPlayer) == null);
         return list;
     }
 
     @Override
     public Player getServerPlayer(String name) throws RemoteException {
-        for (Map.Entry<Player, Socket> entry : serverPlayers.entrySet()) {
+        for (Map.Entry<Player, Socket> entry : players.entrySet()) {
             if(entry.getKey().getName().equals(name)) {
                 return entry.getKey();
             }
@@ -312,18 +329,21 @@ public class Server extends UnicastRemoteObject implements IServer {
 
     @Override
     public void kick(String name, DisconnectReason reason) throws RemoteException {
-        for (Map.Entry<Player, Socket> entry : serverPlayers.entrySet()) {
-            if(entry.getKey().getName().equals(name)) kick(entry.getValue(), reason);
+        for (Map.Entry<Player, Socket> entry : players.entrySet()) {
+            if(entry.getKey().getName().equals(name)) {
+                kick(entry.getValue(), reason);
+                return;
+            }
         }
     }
 
     @Override
     public boolean changeName(String oldName, String newName) throws RemoteException {
         if(newName.length() > 15) return false;
-        for (Map.Entry<Player, Socket> entry : serverPlayers.entrySet()) {
+        for (Map.Entry<Player, Socket> entry : players.entrySet()) {
             if(entry.getKey().getName().equals(newName)) return false;
         }
-        for (Map.Entry<Player, Socket> entry : serverPlayers.entrySet()) {
+        for (Map.Entry<Player, Socket> entry : players.entrySet()) {
             if(entry.getKey().getName().equals(oldName)) {
                 entry.getKey().setName(newName);
                 if(oldName.equals(host)) host = newName;
@@ -336,14 +356,14 @@ public class Server extends UnicastRemoteObject implements IServer {
 
     @Override
     public void sendMessage(String name, MessageType type, Object[] value) throws IOException {
-        for (Map.Entry<Player, Socket> entrySet : serverPlayers.entrySet()) {
+        for (Map.Entry<Player, Socket> entrySet : players.entrySet()) {
             if(entrySet.getKey().getName().equals(name)) Message.send(new Message(value, type), entrySet.getValue());
         }
     }
 
     @Override
     public void sendMessage(String name, MessageType type, Object value) throws IOException {
-        for (Map.Entry<Player, Socket> entrySet : serverPlayers.entrySet()) {
+        for (Map.Entry<Player, Socket> entrySet : players.entrySet()) {
             if(entrySet.getKey().getName().equals(name)) Message.send(new Message(value, type), entrySet.getValue());
         }
     }
@@ -377,7 +397,7 @@ public class Server extends UnicastRemoteObject implements IServer {
         for (IPurchasable purchasable : offer2) {
             purchasable.setOwner(player1);
         }
-        for(Player player : serverPlayers.keySet()) {
+        for(Player player : players.keySet()) {
             if(player.getName().equals(player1)) {
                 player.contractMoney(money1);
                 player.addMoney(money2);
@@ -407,8 +427,7 @@ public class Server extends UnicastRemoteObject implements IServer {
 
     @Override
     public void start() throws IOException {
-        //TODO initialize the game
-        for (Map.Entry<Player, Socket> entry : serverPlayers.entrySet()) {
+        for (Map.Entry<Player, Socket> entry : players.entrySet()) {
             Message.send(new Message(null, MessageType.START), entry.getValue());
         }
     }

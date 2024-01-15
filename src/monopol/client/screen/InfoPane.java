@@ -19,11 +19,12 @@ public class InfoPane extends JLayeredPane {
     private final JLabel text4 = JUtils.addText("", 0, 60, 350, 15, SwingConstants.LEFT);
     private final JLabel text5 = JUtils.addText("", 0, 80, 350, 15, SwingConstants.LEFT);
 
-    private final Thread thread = new Thread(() -> {
+    private final Runnable task = () -> {
         Client client = clientSup.get();
         while (!Thread.interrupted()) {
             if (clientSup.get() != client) {
                 client = clientSup.get();
+                if (!texts.containsKey(client)) texts.put(client, new ArrayList<>());
                 updateTexts();
             }
             try {
@@ -32,7 +33,9 @@ public class InfoPane extends JLayeredPane {
                 return;
             }
         }
-    });
+    };
+
+    private Thread thread = new Thread(task);
 
     public InfoPane() {
         super();
@@ -48,7 +51,9 @@ public class InfoPane extends JLayeredPane {
     public void init(Supplier<Client> clientSup) {
         this.clientSup = clientSup;
         setVisible(true);
+        //thread.interrupt();
         thread.interrupt();
+        thread = new Thread(task);
         thread.start();
     }
 
@@ -59,9 +64,7 @@ public class InfoPane extends JLayeredPane {
     }
 
     public void show(Client client, String text) {
-        if (!texts.containsKey(client)) {
-            texts.put(client, new ArrayList<>());
-        }
+        if (!texts.containsKey(client)) texts.put(client, new ArrayList<>());
         List<String> list = texts.get(client);
         list.add(text);
         if(list.size() > 5) list.remove(0);

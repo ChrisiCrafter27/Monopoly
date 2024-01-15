@@ -135,10 +135,11 @@ public class PrototypeMenu {
 
                     //Try to get information from the server and update
                     try {
-                        root.lobbyPane.update(client.serverMethod().getServerPlayers(), client, clients, ip, keyHandler, false, root);
+                        root.lobbyPane.update(client.serverMethod().getPlayers(), client, clients, ip, keyHandler, false, root);
                         root.playerPane.update(client, clients, root.lobbyPane.mustUpdate());
                         root.pingPane.update(client.getPing(), keyHandler);
                     } catch (RemoteException e) {
+                        e.printStackTrace(System.err);
                         client.close();
                         interrupt();
                         prepareMenu();
@@ -388,12 +389,14 @@ public class PrototypeMenu {
                     }
 
                     try {
-                        player = client.serverMethod().getServerPlayers().get(currentPlayer[0]);
+                        player = client.serverMethod().getPlayers().get(currentPlayer[0]);
                     } catch (IndexOutOfBoundsException | RemoteException e) {
                         currentPlayer[0] = 0;
                         try {
-                            player = client.serverMethod().getServerPlayers().get(currentPlayer[0]);
+                            player = client.serverMethod().getPlayers().get(currentPlayer[0]);
                         } catch (IndexOutOfBoundsException | RemoteException e2) {
+                            e.printStackTrace(System.err);
+                            e2.printStackTrace(System.err);
                             client.close();
                             continue;
                         }
@@ -403,6 +406,7 @@ public class PrototypeMenu {
                         if(oldPlayerSelected == null) oldPlayerSelected = player;
                         if(oldPlayerPlaying == null) oldPlayerPlaying = client.serverMethod().getServerPlayer(client.player.getName());
                     } catch (RemoteException e) {
+                        e.printStackTrace(System.err);
                         client.close();
                         continue;
                     }
@@ -420,6 +424,7 @@ public class PrototypeMenu {
                         busfahrkarten_player.setText(client.serverMethod().getServerPlayer(client.player.getName()).getBusfahrkarten() + "");
                         gefaengnisfreikarte_player.setText(client.serverMethod().getServerPlayer(client.player.getName()).getGefaengniskarten() + "");
                     } catch (RemoteException e) {
+                        e.printStackTrace(System.err);
                         client.close();
                     }
                     label_moneyCommpanion.setText(player.getMoney() + "€");
@@ -541,7 +546,7 @@ public class PrototypeMenu {
                             } else System.out.println("error");
                         }
                     } catch (RemoteException e) {
-                        client.close();
+                        e.printStackTrace(System.err);
                         client.close();
                     }
                     if(shouldRepaint) ClientEvents.updateOwner(client);
@@ -553,6 +558,7 @@ public class PrototypeMenu {
                         oldPlayerSelected = player;
                         oldPlayerPlaying = client.serverMethod().getServerPlayer(client.player.getName());
                     } catch (RemoteException e) {
+                        e.printStackTrace(System.err);
                         client.close();
                     } catch (JsonProcessingException e) {
                         throw new RuntimeException(e);
@@ -575,9 +581,9 @@ public class PrototypeMenu {
             int maxPlayers;
             try {
                 //Get the amount of players on the server
-                maxPlayers = client.serverMethod().getServerPlayers().size();
+                maxPlayers = client.serverMethod().getPlayers().size();
             } catch (RemoteException e) {
-                //If that's impossible, go to main menu
+                e.printStackTrace(System.err);
                 gameThread.interrupt();
                 prepareMenu();
                 return;

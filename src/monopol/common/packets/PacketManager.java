@@ -19,8 +19,8 @@ public class PacketManager {
     public static void sendS2C(S2CPacket<?> packet, Function<Player, Boolean> targets, Consumer<Exception> catcher) {
         try {
             Server server = Monopoly.INSTANCE.server();
-            for (Player player : server.getServerPlayers()) {
-                if (targets.apply(player)) Message.send(new Message(new Object[]{packet.getClass().getName(), packet.serialize()}, MessageType.PACKET), server.serverPlayers.get(player));
+            for (Player player : server.getPlayers()) {
+                if (targets.apply(player)) Message.send(new Message(new Object[]{packet.getClass().getName(), packet.serialize()}, MessageType.PACKET), server.players.get(player));
             }
         } catch (Exception e) {
             catcher.accept(e);

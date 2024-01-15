@@ -31,6 +31,7 @@ public class TradePane extends JLayeredPane {
         try {
             client.get().serverMethod().sendMessage(player2, message.getMessageType(), message.getMessage());
         } catch (IOException e) {
+            e.printStackTrace(System.err);
             client.get().close();
         }
     };
@@ -209,6 +210,7 @@ public class TradePane extends JLayeredPane {
             try {
                 if(client.get().serverMethod().getServerPlayer(player1).getMoney() >= tradeData.get().offerMoney + 1) tradeData.get().offerMoney += 1;
             } catch (RemoteException e) {
+                e.printStackTrace(System.err);
                 client.get().close();
                 return;
             }
@@ -222,6 +224,7 @@ public class TradePane extends JLayeredPane {
             try {
                 if(client.get().serverMethod().getServerPlayer(player1).getMoney() >= tradeData.get().offerMoney + 5) tradeData.get().offerMoney += 5;
             } catch (RemoteException e) {
+                e.printStackTrace(System.err);
                 client.get().close();
                 return;
             }
@@ -235,6 +238,7 @@ public class TradePane extends JLayeredPane {
             try {
                 if(client.get().serverMethod().getServerPlayer(player1).getMoney() >= tradeData.get().offerMoney + 10) tradeData.get().offerMoney += 10;
             } catch (RemoteException e) {
+                e.printStackTrace(System.err);
                 client.get().close();
                 return;
             }
@@ -248,6 +252,7 @@ public class TradePane extends JLayeredPane {
             try {
                 if(client.get().serverMethod().getServerPlayer(player1).getMoney() >= tradeData.get().offerMoney + 20) tradeData.get().offerMoney += 20;
             } catch (RemoteException e) {
+                e.printStackTrace(System.err);
                 client.get().close();
                 return;
             }
@@ -261,6 +266,7 @@ public class TradePane extends JLayeredPane {
             try {
                 if(client.get().serverMethod().getServerPlayer(player1).getMoney() >= tradeData.get().offerMoney + 50) tradeData.get().offerMoney += 50;
             } catch (RemoteException e) {
+                e.printStackTrace(System.err);
                 client.get().close();
                 return;
             }
@@ -274,6 +280,7 @@ public class TradePane extends JLayeredPane {
             try {
                 if(client.get().serverMethod().getServerPlayer(player1).getMoney() >= tradeData.get().offerMoney + 100) tradeData.get().offerMoney += 100;
             } catch (RemoteException e) {
+                e.printStackTrace(System.err);
                 client.get().close();
                 return;
             }
@@ -287,6 +294,7 @@ public class TradePane extends JLayeredPane {
             try {
                 if(client.get().serverMethod().getServerPlayer(player1).getMoney() >= tradeData.get().offerMoney + 500) tradeData.get().offerMoney += 500;
             } catch (RemoteException e) {
+                e.printStackTrace(System.err);
                 client.get().close();
                 return;
             }
@@ -300,6 +308,7 @@ public class TradePane extends JLayeredPane {
             try {
                 if(client.get().serverMethod().getServerPlayer(player1).getMoney() >= tradeData.get().offerMoney + 1000) tradeData.get().offerMoney += 1000;
             } catch (RemoteException e) {
+                e.printStackTrace(System.err);
                 client.get().close();
                 return;
             }
@@ -422,7 +431,7 @@ public class TradePane extends JLayeredPane {
     public void resetPlayerButtons() throws RemoteException {
         playerButtons.removeAll();
         int i = 0;
-        for(Player player : client.get().serverMethod().getServerPlayers()) {
+        for(Player player : client.get().serverMethod().getPlayers()) {
             if(!player1.equals(player.getName())) {
                 playerButtons.add(JUtils.addButton(player.getName(), 1920 / 2 - 250, 200 + (75 * i), 500, 50, true, actionEvent -> {
                     tradeData.get().tradePlayer = player.getName();
