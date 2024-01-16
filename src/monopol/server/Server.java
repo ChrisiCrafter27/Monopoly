@@ -46,6 +46,7 @@ public class Server extends UnicastRemoteObject implements IServer {
     private boolean acceptNewClients = false;
     public ServerSettings serverSettings;
     private String host;
+    private boolean hostJoined = false;
     private Events events = new StandardEvents(true, -1, true, false, true, true, 1000, 200, true, true, false, true, false, BuildRule.ANYWHERE, OwnedCardsOfColorGroup.NONE, OwnedCardsOfColorGroup.NONE, OwnedCardsOfColorGroup.NONE, OwnedCardsOfColorGroup.NONE, OwnedCardsOfColorGroup.ALL_BUT_ONE, OwnedCardsOfColorGroup.ALL);
 
     private final Thread connectionThread = new Thread() {
@@ -147,6 +148,7 @@ public class Server extends UnicastRemoteObject implements IServer {
                             try {
                                 DataInputStream input = new DataInputStream(socket.getInputStream());
                                 String data = input.readUTF();
+                                if(Thread.interrupted()) return;
                                 logger.log().fine("[Server]: Message received");
                                 messageReceived(data, socket);
                             } catch (IOException e) {
@@ -180,6 +182,8 @@ public class Server extends UnicastRemoteObject implements IServer {
             if (status != waitForRejoin.size()) {
                 PacketManager.sendS2C(new RejoinStatusS2CPacket(waitForRejoin.stream().map(Player::getName).toList()), player -> true, e -> e.printStackTrace(System.err));
             }
+            if(hostJoined && players.keySet().stream().filter(player -> players.get(player) != null).map(Player::getName).noneMatch(name -> name.equals(host))) close();
+            if(players.keySet().stream().filter(player -> players.get(player) != null).map(Player::getName).anyMatch(name -> name.equals(host))) hostJoined = true;
             try {
                 Thread.sleep(1);
             } catch (InterruptedException e) {
@@ -267,6 +271,8 @@ public class Server extends UnicastRemoteObject implements IServer {
 
     public void close() {
         acceptNewClients = false;
+        hostJoined = false;
+        host = null;
         List<Socket> list = new ArrayList<>();
         clients.forEach((id, client) -> list.add(client));
         for (Socket client : list) {
@@ -302,7 +308,6 @@ public class Server extends UnicastRemoteObject implements IServer {
         clients.remove(clients.size());
         for(Map.Entry<Player, Socket> entry : players.entrySet()) {
             if(entry.getValue() == client) {
-                if(entry.getKey().getName().equals(host)) close();
                 players.replace(entry.getKey(), null);
                 if(Monopoly.INSTANCE.getState() == GameState.LOBBY) players.remove(entry.getKey());
                 break;

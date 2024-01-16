@@ -134,6 +134,7 @@ public class Client {
                     if (player.getName() == null) {
                         player.setName((String) message.getMessage()[0]);
                         if(player.isHost) Monopoly.INSTANCE.setHost(player.getName());
+                        root.playerPane.requestUpdate();
                     }
                 }
                 case DISCONNECT -> {

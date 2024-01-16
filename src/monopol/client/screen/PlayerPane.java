@@ -12,6 +12,7 @@ import java.util.ArrayList;
 public class PlayerPane extends JLayeredPane {
     private Client client;
     private ArrayList<Client> shownClients = new ArrayList<>();
+    private boolean requestUpdate = false;
 
     public PlayerPane() {
         super();
@@ -21,9 +22,14 @@ public class PlayerPane extends JLayeredPane {
         reset();
     }
 
+    public void requestUpdate() {
+        this.requestUpdate = true;
+    }
+
     public void update(Client currentClient, ArrayList<Client> clients, boolean forceUpdate) {
-        if(!clients.equals(shownClients) || !currentClient.equals(client) || forceUpdate) {
+        if(!clients.equals(shownClients) || !currentClient.equals(client) || forceUpdate || requestUpdate) {
             DebugLogger.INSTANCE.log().info("[PlayerPane] updating...");
+            requestUpdate = false;
 
             removeAll();
             client = currentClient;
