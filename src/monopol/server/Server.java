@@ -10,6 +10,10 @@ import monopol.common.core.Monopoly;
 import monopol.common.log.ServerLogger;
 import monopol.common.packets.PacketManager;
 import monopol.common.packets.ServerSide;
+import monopol.common.packets.custom.AskRejoinS2CPacket;
+import monopol.common.packets.custom.RejoinStatusS2CPacket;
+import monopol.common.packets.custom.RequestRejoinC2SPacket;
+import monopol.common.packets.custom.UpdateOwnerS2CPacket;
 import monopol.common.utils.MapUtils;
 import monopol.server.rules.BuildRule;
 import monopol.server.rules.Events;
@@ -26,12 +30,14 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Server extends UnicastRemoteObject implements IServer {
     public static final int CLIENT_TIMEOUT = 5000;
 
     public ServerSocket server;
     private boolean pause = true;
+    private final List<Player> waitForRejoin = new ArrayList<>();
     private String ip;
     public final HashMap<Integer, Socket> clients = new HashMap<>();
     public final HashMap<Socket, Boolean> pingCheck = new HashMap<>();
@@ -49,14 +55,45 @@ public class Server extends UnicastRemoteObject implements IServer {
                 try {
                     Socket newClient = server.accept();
                     if (clients.containsValue(newClient)) continue;
-                    if (acceptNewClients && clients.size() < 6) {
+                    if (!waitForRejoin.isEmpty()) {
+                        new Thread(() -> {
+                            PacketManager.send(new AskRejoinS2CPacket(waitForRejoin.stream().map(Player::getName).toList()), newClient, e -> e.printStackTrace(System.err));
+                            try {
+                                DataInputStream input = new DataInputStream(newClient.getInputStream());
+                                Message message;
+                                do {
+                                    String data = input.readUTF();
+                                    message = Json.toObject(data, Message.class);
+                                } while (message.getMessageType() != MessageType.PACKET);
+                                RequestRejoinC2SPacket packet = (RequestRejoinC2SPacket) PacketManager.packet(message.getMessage());
+                                for (Player player : waitForRejoin) {
+                                    if (player.getName().equals(packet.name())) {
+                                        clients.put(clients.size() + 1, newClient);
+                                        Message.send(new Message(player.getName(), MessageType.NAME), newClient);
+                                        Message.send(new Message(null, MessageType.START), newClient);
+                                        logger.log().info("[Server]: New Client rejoined (" + player.getName() + ")");
+                                        //TODO: send necessary information
+                                        PacketManager.sendS2C(new UpdateOwnerS2CPacket(), p -> true, e -> {});
+                                        return;
+                                    }
+                                }
+                                throw new IllegalStateException();
+                            } catch (Exception e) {
+                                try {
+                                    Message.send(new Message(DisconnectReason.SERVER_FULL, MessageType.DISCONNECT), newClient);
+                                    e.printStackTrace();
+                                } catch (IOException ignored) {}
+                            }
+                        }).start();
+                    }
+                    else if (acceptNewClients && clients.size() < 6) {
                         clients.put(clients.size() + 1, newClient);
                         Player player = newServerPlayer();
                         players.put(player, newClient);
                         Message.send(new Message(player.getName(), MessageType.NAME), newClient);
                         logger.log().info("[Server]: New Client accepted (" + player.getName() + ")");
                     } else {
-                        logger.log().info("[Server]: New Client denied");
+                        logger.log().info("[Server]: New Client declined");
                         if (pause)
                             Message.send(new Message(DisconnectReason.SERVER_CLOSED, MessageType.DISCONNECT), newClient);
                         else if (Monopoly.INSTANCE.getState() == GameState.RUNNING)
@@ -71,7 +108,7 @@ public class Server extends UnicastRemoteObject implements IServer {
                     close();
                     return;
                 }
-                acceptNewClients = Monopoly.INSTANCE.getState() == GameState.LOBBY || Monopoly.INSTANCE.getState() == GameState.WAITING_FOR_PLAYER;
+                acceptNewClients = Monopoly.INSTANCE.getState() == GameState.LOBBY;
                 if (pause) acceptNewClients = false;
                 try {
                     sleep(10);
@@ -133,6 +170,12 @@ public class Server extends UnicastRemoteObject implements IServer {
                 threadMap.values().forEach(thread -> {
                     if(!thread.isAlive()) thread.start();
                 });
+            }
+            int status = waitForRejoin.size();
+            waitForRejoin.removeIf(player -> !players.containsKey(player) || players.get(player) != null);
+            waitForRejoin.addAll(players.keySet().stream().filter(player -> !waitForRejoin.contains(player) && players.get(player) == null).toList());
+            if (status != waitForRejoin.size()) {
+                PacketManager.sendS2C(new RejoinStatusS2CPacket(waitForRejoin.stream().map(Player::getName).toList()), player -> true, e -> e.printStackTrace(System.err));
             }
             try {
                 Thread.sleep(1);
@@ -235,6 +278,13 @@ public class Server extends UnicastRemoteObject implements IServer {
         logger.log().warning("[Server]: Server closed...");
     }
 
+    public void remove(String name) {
+        List<Player> list = players.keySet().stream().filter(player -> players.get(player) == null && player.getName().equals(name)).toList();
+        if (list.size() == 1) {
+            players.remove(list.get(0));
+        }
+    }
+
     public void kick(Socket client, DisconnectReason reason) {
         if(!clients.containsValue(client)) throw new IllegalStateException();
         int id = MapUtils.key(clients, client);
@@ -249,6 +299,7 @@ public class Server extends UnicastRemoteObject implements IServer {
         clients.remove(clients.size());
         for(Map.Entry<Player, Socket> entry : players.entrySet()) {
             if(entry.getValue() == client) {
+                if(entry.getKey().getName().equals(host)) close();
                 players.replace(entry.getKey(), null);
                 if(Monopoly.INSTANCE.getState() == GameState.LOBBY) players.remove(entry.getKey());
                 break;
@@ -406,6 +457,7 @@ public class Server extends UnicastRemoteObject implements IServer {
                 player.addMoney(money1);
             }
         }
+        PacketManager.sendS2C(new UpdateOwnerS2CPacket(), player -> true, e -> {});
         return true;
     }
 
@@ -426,8 +478,9 @@ public class Server extends UnicastRemoteObject implements IServer {
 
     @Override
     public void start() throws IOException {
-        for (Map.Entry<Player, Socket> entry : players.entrySet()) {
-            Message.send(new Message(null, MessageType.START), entry.getValue());
+        for (Socket socket : players.values()) {
+            Message.send(new Message(null, MessageType.START), socket);
+            PacketManager.sendS2C(new UpdateOwnerS2CPacket(), player -> true, e -> {});
         }
     }
 }

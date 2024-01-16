@@ -1,6 +1,5 @@
 package monopol.client;
 
-import monopol.common.Player;
 import monopol.common.data.Plant;
 import monopol.common.data.Street;
 import monopol.common.data.TrainStation;
@@ -25,8 +24,6 @@ import java.rmi.NotBoundException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 public class Client {
     private final Socket client;
@@ -67,16 +64,16 @@ public class Client {
         }
     };
 
-    Thread pingThread = new Thread(() -> {
+    private final Thread pingThread = new Thread(() -> {
         while(!Thread.interrupted()) {
             try {
                 Message.sendPing(socket());
             } catch (IOException e) {
-                e.printStackTrace(System.err);
+                if(!socket().isClosed()) e.printStackTrace(System.err);
             }
             if (!received) {
                 try {
-                    serverMethod().kick(player().getName(), DisconnectReason.CLIENT_CLOSED);
+                    serverMethod().kick(player().getName(), DisconnectReason.CONNECTION_LOST);
                 } catch (Exception e) {
                     e.printStackTrace(System.err);
                 }
@@ -135,15 +132,17 @@ public class Client {
                 case DISCONNECT -> {
                     disconnectReason = DisconnectReason.valueOf((String) message.getMessage()[0]);
                     clientThread.interrupt();
-                    switch (disconnectReason) {
-                        case CONNECTION_LOST -> System.out.println("[Client]: Connection lost: Timed out.");
-                        case SERVER_CLOSED -> System.out.println("[Client]: Connection lost: Server closed.");
-                        case CLIENT_CLOSED -> System.out.println("[Client]: Connection lost: Left game");
-                        case KICKED -> System.out.println("[Client]: Connection lost: Kicked by other player.");
-                        case SERVER_FULL -> System.out.println("[Client]: Connection lost: Server is full.");
-                        case GAME_RUNNING -> System.out.println("[Client]: Connection lost: A game is already running.");
-                        default -> System.out.println("[Client]: Connection lost: No further information.");
-                    }
+                    pingThread.interrupt();
+                    String s = switch (disconnectReason) {
+                        case CONNECTION_LOST -> "Verbindung verloren: Zeitüberschreitung.";
+                        case SERVER_CLOSED -> "Verbindung verloren: Server geschlossen.";
+                        case CLIENT_CLOSED -> "Verbindung verloren: Spiel verlassen";
+                        case KICKED -> "Verbindung verloren: Von anderem Spieler gekickt";
+                        case SERVER_FULL -> "Verbindung verloren: Der Server ist voll.";
+                        case GAME_RUNNING -> "Verbindung verloren: Das Spiel wurde schon gestartet.";
+                        default -> "Verbindung verloren: Keine weiteren Informationen.";
+                    };
+                    new Thread(() -> JOptionPane.showMessageDialog(root, s, "Verbindung verloren: " + player.getName(), JOptionPane.WARNING_MESSAGE)).start();
                 }
                 case TRADE -> {
                     TradeState state = TradeState.valueOf((String) message.getMessage()[0]);
@@ -234,7 +233,7 @@ public class Client {
                     }
                 }
                 case UPDATE_OWNER -> {
-                    ClientEvents.updateOwner(this);
+                    ClientTrade.updateOwner(this);
                 }
                 case START -> Monopoly.INSTANCE.setState(GameState.RUNNING);
                 case NULL -> {
@@ -244,6 +243,7 @@ public class Client {
         } catch (IOException e) {
             System.out.println("[Client]: Connection lost: No further information.");
             clientThread.interrupt();
+            pingThread.interrupt();
             throw new RuntimeException(e);
         }
     }
@@ -267,6 +267,7 @@ public class Client {
             e.printStackTrace(System.err);
         }
         clientThread.interrupt();
+        pingThread.interrupt();
     }
 
     public boolean closed() {

@@ -1,7 +1,7 @@
 package monopol.client.screen;
 
 import monopol.client.Client;
-import monopol.client.ClientEvents;
+import monopol.client.ClientTrade;
 import monopol.client.TradeData;
 import monopol.client.TradeState;
 import monopol.common.data.Field;
@@ -438,7 +438,7 @@ public class TradePane extends JLayeredPane {
                     setState(TradeState.WAIT_FOR_ACCEPT);
                     player2 = player.getName();
                     sendMessage.accept(new Message(new Object[]{TradeState.WAIT_FOR_ACCEPT, player1}, MessageType.TRADE));
-                    ClientEvents.trade(client, this);
+                    ClientTrade.trade(client, this);
                 }), 0);
                 i += 1;
             }

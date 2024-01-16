@@ -2,7 +2,7 @@ package monopol.client.screen;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import monopol.client.Client;
-import monopol.client.ClientEvents;
+import monopol.client.ClientTrade;
 import monopol.client.TradeState;
 import monopol.common.core.GameState;
 import monopol.common.core.Monopoly;
@@ -16,6 +16,7 @@ import monopol.common.Player;
 import monopol.common.utils.JUtils;
 import monopol.common.utils.Json;
 import monopol.common.utils.KeyHandler;
+import monopol.server.DisconnectReason;
 
 
 import javax.swing.*;
@@ -78,8 +79,10 @@ public class PrototypeMenu {
         root.selectedCardPane.reset();
         root.playerDisplayPane.reset();
         root.infoPane.reset();
+        root.rejoinPane.reset();
 
         root.menuPane.init(clients, this::prepareLobby, root);
+        root.rejoinPane.init(() -> client);
     }
 
     public void prepareLobby(Client currentClient) {
@@ -137,7 +140,13 @@ public class PrototypeMenu {
                     try {
                         root.lobbyPane.update(client.serverMethod().getPlayers(), client, clients, ip, keyHandler, false, root);
                         root.playerPane.update(client, clients, root.lobbyPane.mustUpdate());
-                        root.pingPane.update(client.getPing(), keyHandler);
+                        root.pingPane.update(client.getPing(), keyHandler, root, () -> {
+                            try {
+                                client.serverMethod().kick(client.player.getName(), DisconnectReason.CLIENT_CLOSED);
+                            } catch (Exception e) {
+                                e.printStackTrace(System.err);
+                            }
+                        });
                     } catch (RemoteException e) {
                         e.printStackTrace(System.err);
                         client.close();
@@ -210,10 +219,16 @@ public class PrototypeMenu {
                     if(root.playerPane.getClient() != null) {
                         Client oldClient = client;
                         client = root.playerPane.getClient();
-                        if(client != oldClient) ClientEvents.trade(() -> client, root.tradePane);
+                        if(client != oldClient) ClientTrade.trade(() -> client, root.tradePane);
                     }
                     root.playerPane.update(client, clients, false);
-                    root.pingPane.update(client.getPing(), keyHandler);
+                    root.pingPane.update(client.getPing(), keyHandler, root, () -> {
+                        try {
+                            client.serverMethod().kick(client.player.getName(), DisconnectReason.CLIENT_CLOSED);
+                        } catch (Exception e) {
+                            e.printStackTrace(System.err);
+                        }
+                    });
                     try {
                         sleep(100);
                     } catch (InterruptedException e) {
@@ -230,7 +245,7 @@ public class PrototypeMenu {
             JOptionPane.showMessageDialog(frame, "Not available. Still in development.", "Trade", JOptionPane.WARNING_MESSAGE);
             if(true) return;
             client.tradeData.tradeState = TradeState.CHOOSE_PLAYER;
-            ClientEvents.trade(() -> client, root.tradePane);
+            ClientTrade.trade(() -> client, root.tradePane);
         }), 0);
         frame.add(JUtils.addText("Handel", 1060, 450+90*5+13,400,40,true),0);
         //frame.repaint();
@@ -549,7 +564,7 @@ public class PrototypeMenu {
                         e.printStackTrace(System.err);
                         client.close();
                     }
-                    if(shouldRepaint) ClientEvents.updateOwner(client);
+                    if(shouldRepaint) ClientTrade.updateOwner(client);
                     if(shouldRepaint) System.out.println("Should repaint"); //Debug output
                     try {
                         if (!Json.toString(player, false).equals(Json.toString(oldPlayerSelected, false)) || !Json.toString(client.serverMethod().getServerPlayer(client.player.getName()), false).equals(Json.toString(oldPlayerPlaying, false)) || shouldRepaint) {
@@ -575,7 +590,8 @@ public class PrototypeMenu {
         };
         gameThread.start();
 
-
+        frame.repaint();
+        if(true) return;
 
         frame.add(JUtils.addButton(button1,null,1060,90,400,60,true,"images/Main_pictures/Player_display.png", actionevent ->  {
             int maxPlayers;

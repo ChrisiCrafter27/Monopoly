@@ -12,7 +12,7 @@ import java.rmi.RemoteException;
 import java.util.Map;
 import java.util.function.Supplier;
 
-public class ClientEvents {
+public class ClientTrade {
     public static void trade(Supplier<Client> clientSup, TradePane display) {
         try {
             trade(clientSup, clientSup.get().tradeData.tradePlayer, clientSup.get().tradeData.tradeState, display);
@@ -99,7 +99,7 @@ public class ClientEvents {
                 }.start();
             }
             case ACCEPT -> {
-                //Print buttons to accept or deny invite
+                //Print buttons to accept or decline invite
                 if(player2 == null) return;
                 client.tradeData.offerCards.clear();
                 client.tradeData.counterofferCards.clear();
@@ -129,7 +129,7 @@ public class ClientEvents {
                 }.start();
             }
             case DECLINE -> {
-                //Print the info that the other player denied your trade invite
+                //Print the info that the other player declined your trade invite
                 if(player2 == null) return;
                 display.enableDeclinedInvitation();
                 new Thread() {
@@ -347,12 +347,6 @@ public class ClientEvents {
                 }.start();
             }
         }
-        /*
-        for(JButton button : buttonsToDisable) {
-            button.setEnabled(false);
-        }
-        */
-        //frame.repaint();
     }
 
     public static void updateOwner(Client client) {

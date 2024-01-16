@@ -8,7 +8,7 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 
 public class PingPane extends JLayeredPane {
-    private long oldPing;
+    private boolean keyDown = false;
 
     private final JLabel label = JUtils.addText("", (1920/2)-250, 70, 500, 30, true);
 
@@ -20,11 +20,11 @@ public class PingPane extends JLayeredPane {
     }
 
     public void reset() {
-        oldPing = -1;
+        keyDown = false;
         setVisible(false);
     }
 
-    public void update(long ping, KeyHandler keyHandler) {
+    public void update(long ping, KeyHandler keyHandler, Component root, Runnable kick) {
         Color color;
         if(ping < 0) color = Color.BLUE;
         else if(ping < 250) color = Color.GREEN;
@@ -34,7 +34,10 @@ public class PingPane extends JLayeredPane {
         label.setForeground(color);
         if(ping >= 0) label.setText("Ping: " + ping + "ms"); else label.setText("Ping: ?");
         setVisible(keyHandler.isKeyDown(KeyEvent.VK_TAB));
-        if(oldPing != ping) repaint();
-        oldPing = ping;
+
+        if (keyDown && !keyHandler.isKeyDown(KeyEvent.VK_ESCAPE)) {
+            if(JOptionPane.showConfirmDialog(root, "Möchtest du den Server wirklich verlassen?", "Server verlassen", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) kick.run();
+        }
+        keyDown = keyHandler.isKeyDown(KeyEvent.VK_ESCAPE);
     }
 }

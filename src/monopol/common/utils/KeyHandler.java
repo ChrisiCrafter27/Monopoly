@@ -31,6 +31,10 @@ public class KeyHandler implements KeyListener {
         return pressedKeys.contains(code);
     }
 
+    public void reset() {
+        pressedKeys.clear();
+    }
+
     public void resetString() {
         string = "";
     }

@@ -5,5 +5,4 @@ public enum GameState {
     LOBBY,
     RUNNING,
     OVER,
-    WAITING_FOR_PLAYER
 }
