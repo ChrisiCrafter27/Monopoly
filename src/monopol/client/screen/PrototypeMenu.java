@@ -397,6 +397,9 @@ public class PrototypeMenu {
 
                     //If the selected player disconnected, check if there is another
                     clients.removeIf(Client::closed);
+                    for (int i = 0; i < clients.size(); i++) {
+                        if(clients.get(i).closed()) clients.remove(clients.get(i));
+                    }
                     if(!clients.contains(client)) {
                         if(!clients.isEmpty()) {//MonopolyScreen.png
                             client = clients.get(0);
