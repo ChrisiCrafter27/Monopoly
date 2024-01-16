@@ -390,7 +390,7 @@ public class PrototypeMenu {
                 Player oldPlayerSelected = null;
                 Player oldPlayerPlaying = null;
                 Street street = Street.values()[0];
-                while(Monopoly.INSTANCE.getState() == GameState.RUNNING) {
+                while(!interrupted()) {
 
                     //If the selected player disconnected, check if there is another
                     clients.removeIf(Client::closed);
@@ -405,6 +405,12 @@ public class PrototypeMenu {
                             prepareMenu();
                             return;
                         }
+                    }
+
+                    try {
+                        if(!isInterrupted()) sleep(10);
+                    } catch (InterruptedException e) {
+                        return;
                     }
 
                     if(true) continue;
@@ -583,12 +589,6 @@ public class PrototypeMenu {
                         client.close();
                     } catch (JsonProcessingException e) {
                         throw new RuntimeException(e);
-                    }
-
-                    try {
-                        if(!isInterrupted()) sleep(10);
-                    } catch (InterruptedException e) {
-                        return;
                     }
                 }
 
