@@ -24,6 +24,7 @@ public class InfoPane extends JLayeredPane {
         while (!Thread.interrupted()) {
             if (clientSup.get() != client) {
                 client = clientSup.get();
+                System.out.println("Client is now: " + client.player.getName() + " (" + System.currentTimeMillis() + ")");
                 if (!texts.containsKey(client)) texts.put(client, new ArrayList<>());
                 updateTexts();
             }

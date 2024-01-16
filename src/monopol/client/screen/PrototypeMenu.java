@@ -80,6 +80,7 @@ public class PrototypeMenu {
         root.playerDisplayPane.reset();
         root.infoPane.reset();
         root.rejoinPane.reset();
+        root.boardPane.reset();
 
         root.menuPane.init(clients, this::prepareLobby, root);
         root.rejoinPane.init(() -> client, newClient -> {
