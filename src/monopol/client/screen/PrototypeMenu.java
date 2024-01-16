@@ -85,7 +85,6 @@ public class PrototypeMenu {
         root.menuPane.init(clients, this::prepareLobby, root);
         root.rejoinPane.init(() -> client, newClient -> {
             clients.add(clients.size(), newClient);
-            client = newClient;
         });
     }
 
@@ -98,6 +97,7 @@ public class PrototypeMenu {
         }
 
         Monopoly.INSTANCE.setState(GameState.LOBBY);
+        if(gameThread.isAlive()) gameThread.interrupt();
 
         Thread lobbyThread = new Thread() {
             @Override
@@ -176,6 +176,7 @@ public class PrototypeMenu {
 
     public void prepareGame() {
         Monopoly.INSTANCE.setState(GameState.RUNNING);
+        gameThread.interrupt();
 
         root.lobbyPane.reset();
         //keep PlayerPane enabled
@@ -187,7 +188,7 @@ public class PrototypeMenu {
 
         new Thread(() -> {
             boolean keyDown = false;
-            while (true) {
+            while (Monopoly.INSTANCE.getState() == GameState.RUNNING) {
                 String name = switch (new Random().nextInt(6)) {
                     case 0 -> "Player1";
                     case 1 -> "Player2";
@@ -213,31 +214,28 @@ public class PrototypeMenu {
             }
         }).start();
 
-        new Thread() {
-            @Override
-            public void run() {
-                while (!isInterrupted()) {
-                    if(root.playerPane.getClient() != null) {
-                        Client oldClient = client;
-                        client = root.playerPane.getClient();
-                        if(client != oldClient) ClientTrade.trade(() -> client, root.tradePane);
-                    }
-                    root.playerPane.update(client, clients, false);
-                    root.pingPane.update(client.getPing(), keyHandler, root, () -> {
-                        try {
-                            client.serverMethod().kick(client.player.getName(), DisconnectReason.CLIENT_CLOSED);
-                        } catch (Exception e) {
-                            e.printStackTrace(System.err);
-                        }
-                    });
+        new Thread(() -> {
+            while (Monopoly.INSTANCE.getState() == GameState.RUNNING) {
+                if(root.playerPane.getClient() != null) {
+                    Client oldClient = client;
+                    client = root.playerPane.getClient();
+                    if(client != oldClient) ClientTrade.trade(() -> client, root.tradePane);
+                }
+                root.playerPane.update(client, clients, false);
+                root.pingPane.update(client.getPing(), keyHandler, root, () -> {
                     try {
-                        sleep(100);
-                    } catch (InterruptedException e) {
-                        return;
+                        client.serverMethod().kick(client.player.getName(), DisconnectReason.CLIENT_CLOSED);
+                    } catch (Exception e) {
+                        e.printStackTrace(System.err);
                     }
+                });
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    return;
                 }
             }
-        }.start();
+        }).start();
 
         //no repaint
         //frame.repaint();
@@ -390,10 +388,9 @@ public class PrototypeMenu {
                 Player oldPlayerSelected = null;
                 Player oldPlayerPlaying = null;
                 Street street = Street.values()[0];
-                while(!interrupted()) {
+                while(!isInterrupted()) {
 
                     //If the selected player disconnected, check if there is another
-                    clients.removeIf(Client::closed);
                     for (int i = 0; i < clients.size(); i++) {
                         if(clients.get(i).closed()) clients.remove(clients.get(i));
                     }
@@ -405,12 +402,6 @@ public class PrototypeMenu {
                             prepareMenu();
                             return;
                         }
-                    }
-
-                    try {
-                        if(!isInterrupted()) sleep(10);
-                    } catch (InterruptedException e) {
-                        return;
                     }
 
                     if(true) continue;
@@ -589,6 +580,12 @@ public class PrototypeMenu {
                         client.close();
                     } catch (JsonProcessingException e) {
                         throw new RuntimeException(e);
+                    }
+
+                    try {
+                        if(!isInterrupted()) sleep(10);
+                    } catch (InterruptedException e) {
+                        return;
                     }
                 }
 
