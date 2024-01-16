@@ -98,7 +98,6 @@ public class PrototypeMenu {
         }
 
         Monopoly.INSTANCE.setState(GameState.LOBBY);
-        if(gameThread.isAlive()) gameThread.interrupt();
 
         Thread lobbyThread = new Thread() {
             @Override
@@ -129,7 +128,6 @@ public class PrototypeMenu {
                     if(root.playerPane.getClient() != null && client.equals(oldClient)) client = root.playerPane.getClient();
 
                     //Remove clients that left the game
-                    clients.removeIf(Client::closed);
                     if(!clients.contains(client)) {
                         if(!clients.isEmpty()) {
                             client = clients.get(0);
@@ -178,7 +176,6 @@ public class PrototypeMenu {
 
     public void prepareGame() {
         Monopoly.INSTANCE.setState(GameState.RUNNING);
-        gameThread.interrupt();
 
         root.lobbyPane.reset();
         //keep PlayerPane enabled
@@ -393,7 +390,7 @@ public class PrototypeMenu {
                 Player oldPlayerSelected = null;
                 Player oldPlayerPlaying = null;
                 Street street = Street.values()[0];
-                while(!isInterrupted()) {
+                while(Monopoly.INSTANCE.getState() == GameState.RUNNING) {
 
                     //If the selected player disconnected, check if there is another
                     clients.removeIf(Client::closed);
