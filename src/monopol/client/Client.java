@@ -34,6 +34,7 @@ public class Client {
     public final TradeData tradeData = new TradeData();
     private long ping = -1;
     boolean received = true;
+    public String requestRejoin;
 
     private final Thread clientThread = new Thread() {
         @Override
@@ -73,12 +74,13 @@ public class Client {
             }
             if (!received) {
                 try {
+                    System.out.println("[Client] Verbindung zum Server verloren");
                     serverMethod().kick(player().getName(), DisconnectReason.CONNECTION_LOST);
                 } catch (Exception e) {
                     e.printStackTrace(System.err);
                 }
             }
-            received = false;
+            if(player().getName() != null) received = false;
             try {
                 Thread.sleep(Server.CLIENT_TIMEOUT);
             } catch (InterruptedException e) {
@@ -88,9 +90,14 @@ public class Client {
     });
 
     public Client(String ip, int port, boolean isHost, RootPane root) throws NotBoundException {
+        this(ip, port, isHost, root, null);
+    }
+
+    public Client(String ip, int port, boolean isHost, RootPane root, String requestRejoin) throws NotBoundException {
         try {
             this.root = root;
             this.player = new ClientPlayer(isHost);
+            this.requestRejoin = requestRejoin;
             client = new Socket(ip, port);
             Registry registry = LocateRegistry.getRegistry(ip, 1199);
             serverInterface = (IServer) registry.lookup("Server");
@@ -246,6 +253,10 @@ public class Client {
             pingThread.interrupt();
             throw new RuntimeException(e);
         }
+    }
+
+    public String requestRejoin() {
+        return requestRejoin;
     }
 
     public Socket socket() {

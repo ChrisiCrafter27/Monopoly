@@ -26,6 +26,6 @@ public class RejoinStatusS2CPacket extends S2CPacket<RejoinStatusS2CPacket> {
     @Override
     public void handleOnClient(Client client, RootPane display) {
         if(names.isEmpty()) display.rejoinPane.reset();
-        else display.rejoinPane.setList(names);
+        else display.rejoinPane.setList(names, display);
     }
 }

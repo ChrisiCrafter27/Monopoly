@@ -69,6 +69,7 @@ public class Server extends UnicastRemoteObject implements IServer {
                                 for (Player player : waitForRejoin) {
                                     if (player.getName().equals(packet.name())) {
                                         clients.put(clients.size() + 1, newClient);
+                                        players.put(player, newClient);
                                         Message.send(new Message(player.getName(), MessageType.NAME), newClient);
                                         Message.send(new Message(null, MessageType.START), newClient);
                                         logger.log().info("[Server]: New Client rejoined (" + player.getName() + ")");
@@ -168,7 +169,9 @@ public class Server extends UnicastRemoteObject implements IServer {
                 });
                 toRemove.forEach(threadMap::remove);
                 threadMap.values().forEach(thread -> {
-                    if(!thread.isAlive()) thread.start();
+                    if(!thread.isAlive()) {
+                        thread.start();
+                    }
                 });
             }
             int status = waitForRejoin.size();
@@ -324,9 +327,7 @@ public class Server extends UnicastRemoteObject implements IServer {
                 }
                 case PING_BACK -> {
                     long delay = System.currentTimeMillis() - (long) message.getMessage()[0];
-                    if (pingCheck.containsKey(client)) {
-                        pingCheck.replace(client, true);
-                    }
+                    pingCheck.put(client, true);
                     String name = "unknown";
                     for(Map.Entry<Player, Socket> entry : players.entrySet()) {
                         if(entry.getValue() == client) name = entry.getKey().getName();
@@ -463,7 +464,7 @@ public class Server extends UnicastRemoteObject implements IServer {
 
     @Override
     public boolean acceptsNewClient() throws RemoteException {
-        return acceptNewClients;
+        return acceptNewClients || !waitForRejoin.isEmpty();
     }
 
     @Override

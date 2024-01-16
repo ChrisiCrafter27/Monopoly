@@ -28,7 +28,11 @@ public class AskRejoinS2CPacket extends S2CPacket<AskRejoinS2CPacket> {
 
     @Override
     public void handleOnClient(Client client, RootPane display) {
-        System.out.println(names.size());
+        if(client.requestRejoin != null) {
+            PacketManager.sendC2S(new RequestRejoinC2SPacket(client.requestRejoin), client, e -> e.printStackTrace(System.err));
+            client.requestRejoin = null;
+            return;
+        }
         int result1 = JOptionPane.showConfirmDialog(display, "Ein Spieler hat die Verbindung verloren.\nBist du dieser Spieler und möchtest wieder beitreten?", "Rejoin Server", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
         int result2;
         if (result1 == JOptionPane.YES_OPTION)

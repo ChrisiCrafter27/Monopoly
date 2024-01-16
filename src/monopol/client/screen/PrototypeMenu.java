@@ -82,7 +82,10 @@ public class PrototypeMenu {
         root.rejoinPane.reset();
 
         root.menuPane.init(clients, this::prepareLobby, root);
-        root.rejoinPane.init(() -> client);
+        root.rejoinPane.init(() -> client, newClient -> {
+            clients.add(clients.size(), newClient);
+            client = newClient;
+        });
     }
 
     public void prepareLobby(Client currentClient) {
@@ -438,9 +441,9 @@ public class PrototypeMenu {
                         label_moneyPlayer.setText(client.serverMethod().getServerPlayer(client.player.getName()).getMoney() + "€");
                         busfahrkarten_player.setText(client.serverMethod().getServerPlayer(client.player.getName()).getBusfahrkarten() + "");
                         gefaengnisfreikarte_player.setText(client.serverMethod().getServerPlayer(client.player.getName()).getGefaengniskarten() + "");
-                    } catch (RemoteException e) {
+                    } catch (Exception e) {
                         e.printStackTrace(System.err);
-                        client.close();
+                        //client.close();
                     }
                     label_moneyCommpanion.setText(player.getMoney() + "€");
                     busfahrkarten_Commpanion.setText(player.getBusfahrkarten() + "");
