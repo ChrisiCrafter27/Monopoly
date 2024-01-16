@@ -407,6 +407,8 @@ public class PrototypeMenu {
                         }
                     }
 
+                    if(true) continue;
+
                     try {
                         player = client.serverMethod().getPlayers().get(currentPlayer[0]);
                     } catch (IndexOutOfBoundsException | RemoteException e) {
