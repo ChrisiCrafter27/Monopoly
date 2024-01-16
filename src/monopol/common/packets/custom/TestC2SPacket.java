@@ -2,7 +2,6 @@ package monopol.common.packets.custom;
 
 import monopol.common.packets.C2SPacket;
 import monopol.common.packets.PacketManager;
-import monopol.common.packets.ServerSide;
 import monopol.server.Server;
 
 public class TestC2SPacket extends C2SPacket<TestC2SPacket> {
@@ -25,5 +24,6 @@ public class TestC2SPacket extends C2SPacket<TestC2SPacket> {
     @Override
     public void handleOnServer(Server server) {
         PacketManager.sendS2C(new InfoS2CPacket(text), PacketManager.Restriction.all(), Throwable::printStackTrace);
+        PacketManager.sendS2C(new InfoS2CPacket("hi"), PacketManager.Restriction.named("F", "C"), Throwable::printStackTrace);
     }
 }
