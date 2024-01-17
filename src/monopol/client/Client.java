@@ -274,7 +274,7 @@ public class Client {
 
     public void close() {
         try {
-            Message.send(new Message(DisconnectReason.CLIENT_CLOSED, MessageType.DISCONNECT), client);
+            Message.send(new Message(DisconnectReason.UNKNOWN, MessageType.DISCONNECT), client);
         } catch (IOException e) {
             e.printStackTrace(System.err);
         }
