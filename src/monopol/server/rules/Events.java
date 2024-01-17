@@ -2,7 +2,6 @@ package monopol.server.rules;
 
 import monopol.common.Player;
 import monopol.common.core.Monopoly;
-import monopol.server.Server;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -77,7 +76,7 @@ public abstract class Events {
     public abstract void onNextRound();
     public abstract void onPrisonerRound();
     public abstract void onDiceRoll();
-    public abstract void getBuscard();
+    public abstract void onBusCard();
     public abstract void onTryMortgage();
     public abstract void onPurchaseBuilding();
     public abstract void onSellBuilding();

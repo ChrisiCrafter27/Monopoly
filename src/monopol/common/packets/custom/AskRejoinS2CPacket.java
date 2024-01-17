@@ -29,7 +29,7 @@ public class AskRejoinS2CPacket extends S2CPacket<AskRejoinS2CPacket> {
     @Override
     public void handleOnClient(Client client, RootPane display) {
         if(client.requestRejoin != null) {
-            PacketManager.sendC2S(new RequestRejoinC2SPacket(client.requestRejoin), client, e -> e.printStackTrace(System.err));
+            PacketManager.sendC2S(new RequestRejoinC2SPacket(client.requestRejoin), client, Throwable::printStackTrace);
             client.requestRejoin = null;
             return;
         }
@@ -41,6 +41,6 @@ public class AskRejoinS2CPacket extends S2CPacket<AskRejoinS2CPacket> {
             else result2 = 0;
         else result2 = JOptionPane.CLOSED_OPTION;
         String name = result2 == JOptionPane.CLOSED_OPTION ? null : names.get(result2);
-        PacketManager.sendC2S(new RequestRejoinC2SPacket(name), client, e -> e.printStackTrace(System.err));
+        PacketManager.sendC2S(new RequestRejoinC2SPacket(name), client, Throwable::printStackTrace);
     }
 }

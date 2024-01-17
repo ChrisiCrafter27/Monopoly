@@ -14,6 +14,7 @@ import monopol.common.packets.custom.AskRejoinS2CPacket;
 import monopol.common.packets.custom.RejoinStatusS2CPacket;
 import monopol.common.packets.custom.RequestRejoinC2SPacket;
 import monopol.common.packets.custom.update.UpdateOwnerS2CPacket;
+import monopol.common.packets.custom.update.UpdatePlayerDataS2CPacket;
 import monopol.common.packets.custom.update.UpdatePositionS2CPacket;
 import monopol.common.utils.MapUtils;
 import monopol.server.rules.BuildRule;
@@ -59,7 +60,7 @@ public class Server extends UnicastRemoteObject implements IServer {
                     if (clients.containsValue(newClient)) continue;
                     if (!waitForRejoin.isEmpty()) {
                         new Thread(() -> {
-                            PacketManager.send(new AskRejoinS2CPacket(waitForRejoin.stream().map(Player::getName).toList()), newClient, e -> e.printStackTrace(System.err));
+                            PacketManager.send(new AskRejoinS2CPacket(waitForRejoin.stream().map(Player::getName).toList()), newClient, Throwable::printStackTrace);
                             try {
                                 DataInputStream input = new DataInputStream(newClient.getInputStream());
                                 Message message;
@@ -76,8 +77,9 @@ public class Server extends UnicastRemoteObject implements IServer {
                                         Message.send(new Message(null, MessageType.START), newClient);
                                         logger.log().info("[Server]: New Client rejoined (" + player.getName() + ")");
                                         //TODO: send necessary information
-                                        PacketManager.sendS2C(new UpdateOwnerS2CPacket(), p -> true, e -> {});
-                                        PacketManager.sendS2C(new UpdatePositionS2CPacket(), p -> true, e -> e.printStackTrace(System.err));
+                                        PacketManager.sendS2C(new UpdateOwnerS2CPacket(), PacketManager.Restriction.all(), Throwable::printStackTrace);
+                                        PacketManager.sendS2C(new UpdatePositionS2CPacket(), PacketManager.Restriction.all(), Throwable::printStackTrace);
+                                        PacketManager.sendS2C(new UpdatePlayerDataS2CPacket(), PacketManager.Restriction.all(), Throwable::printStackTrace);
                                         return;
                                     }
                                 }
@@ -181,7 +183,7 @@ public class Server extends UnicastRemoteObject implements IServer {
             waitForRejoin.removeIf(player -> !players.containsKey(player) || players.get(player) != null);
             waitForRejoin.addAll(players.keySet().stream().filter(player -> !waitForRejoin.contains(player) && players.get(player) == null).toList());
             if (status != waitForRejoin.size()) {
-                PacketManager.sendS2C(new RejoinStatusS2CPacket(waitForRejoin.stream().map(Player::getName).toList()), player -> true, e -> e.printStackTrace(System.err));
+                PacketManager.sendS2C(new RejoinStatusS2CPacket(waitForRejoin.stream().map(Player::getName).toList()), PacketManager.Restriction.all(), Throwable::printStackTrace);
             }
             if(hostJoined && players.keySet().stream().filter(player -> players.get(player) != null).map(Player::getName).noneMatch(name -> name.equals(host))) close();
             if(players.keySet().stream().filter(player -> players.get(player) != null).map(Player::getName).anyMatch(name -> name.equals(host))) hostJoined = true;
@@ -317,7 +319,8 @@ public class Server extends UnicastRemoteObject implements IServer {
             }
         }
         logger.log().warning("[Server]: Kicked client");
-        PacketManager.sendS2C(new UpdatePositionS2CPacket(), player -> true, e -> e.printStackTrace(System.err));
+        PacketManager.sendS2C(new UpdatePositionS2CPacket(), PacketManager.Restriction.all(), Throwable::printStackTrace);
+        PacketManager.sendS2C(new UpdatePlayerDataS2CPacket(), PacketManager.Restriction.all(), Throwable::printStackTrace);
         if(clients.isEmpty()) close();
     }
 
@@ -491,8 +494,9 @@ public class Server extends UnicastRemoteObject implements IServer {
         Monopoly.INSTANCE.setState(GameState.RUNNING);
         for (Socket socket : players.values()) {
             Message.send(new Message(null, MessageType.START), socket);
-            PacketManager.sendS2C(new UpdateOwnerS2CPacket(), player -> true, e -> {});
-            PacketManager.sendS2C(new UpdatePositionS2CPacket(), player -> true, e -> e.printStackTrace(System.err));
+            PacketManager.sendS2C(new UpdateOwnerS2CPacket(), PacketManager.Restriction.all(), Throwable::printStackTrace);
+            PacketManager.sendS2C(new UpdatePositionS2CPacket(), PacketManager.Restriction.all(), Throwable::printStackTrace);
+            PacketManager.sendS2C(new UpdatePlayerDataS2CPacket(), PacketManager.Restriction.all(), Throwable::printStackTrace);
         }
         new Thread(() -> {
             try {
@@ -503,7 +507,7 @@ public class Server extends UnicastRemoteObject implements IServer {
     }
 
     public void updatePosition() {
-        PacketManager.sendS2C(new UpdatePositionS2CPacket(), player -> true, e -> e.printStackTrace(System.err));
+        PacketManager.sendS2C(new UpdatePositionS2CPacket(), PacketManager.Restriction.all(), Throwable::printStackTrace);
     }
 
     public Events events() {

@@ -5,6 +5,8 @@ import monopol.common.core.Monopoly;
 import monopol.common.packets.PacketManager;
 import monopol.common.packets.custom.InfoS2CPacket;
 import monopol.common.packets.custom.RollDiceC2SPacket;
+import monopol.common.packets.custom.RollDiceS2CPacket;
+import monopol.common.packets.custom.update.UpdatePlayerDataS2CPacket;
 
 import java.rmi.RemoteException;
 import java.util.List;
@@ -51,23 +53,32 @@ public class StandardEvents extends Events {
     public void onDiceRoll() {
         RollDiceC2SPacket.request(null);
         Random random = new Random();
-        int result1 = random.nextInt(6) + 1;
-        int result2 = random.nextInt(6) + 1;
-        int result = result1+result2;
-        switch(random.nextInt(6)+1){
-            case 1: result ++;break;
-            case 2: result +=2;break;
-            case 3: result +=3;break;
-            case 4: getBuscard();break;
-            default: result +=0;
+        int result1 = random.nextInt(6) + 1; //dice 1
+        int result2 = random.nextInt(6) + 1; //dice 2
+        int result3 = tempoDice ? random.nextInt(6) + 1 : -1; //dice 3
+        int result = result1 + result2;
+        switch (result3) {
+            case 1 -> result += 1;
+            case 2 -> result += 2;
+            case 3 -> result += 3;
+            case 4 -> onBusCard();
+            default -> {}
         }
         player().move(result);
-        PacketManager.sendS2C(new InfoS2CPacket(player().getName() +  " bewegt sich " + result + " Felder"), PacketManager.Restriction.all(), Throwable::printStackTrace);
+        final int finalResult = result;
         new Thread(() -> {
+            PacketManager.sendS2C(new RollDiceS2CPacket(result1, result2, result3), PacketManager.Restriction.all(), Throwable::printStackTrace);
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException ignored) {}
-            if(running) onNextRound();
+            if(!running) return;
+            PacketManager.sendS2C(new InfoS2CPacket(player().getName() +  " bewegt sich " + finalResult + " Felder"), PacketManager.Restriction.all(), Throwable::printStackTrace);
+            PacketManager.sendS2C(new UpdatePlayerDataS2CPacket(), PacketManager.Restriction.all(), Throwable::printStackTrace);
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException ignored) {}
+            if(!running) return;
+            onNextRound();
         }).start();
     }
 
@@ -77,10 +88,8 @@ public class StandardEvents extends Events {
     }
 
     @Override
-    public void getBuscard() {
-        Random random = new Random();
-        int result = random.nextInt(10)+1;
-        if(result == 1){
+    public void onBusCard() {
+        if(new Random().nextInt(10) == 0){
             try {
                 Monopoly.INSTANCE.server().getPlayers().forEach(player -> player.substractBusfahrkarten(player.getBusfahrkarten()));
             } catch (RemoteException e) {
