@@ -77,6 +77,7 @@ public abstract class Events {
     public abstract void onNextRound();
     public abstract void onPrisonerRound();
     public abstract void onDiceRoll();
+    public abstract void getBuscard();
     public abstract void onTryMortgage();
     public abstract void onPurchaseBuilding();
     public abstract void onSellBuilding();
