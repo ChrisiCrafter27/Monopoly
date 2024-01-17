@@ -76,6 +76,8 @@ public class Client {
                 try {
                     System.out.println("[Client] Verbindung zum Server verloren");
                     serverMethod().kick(player().getName(), DisconnectReason.CONNECTION_LOST);
+                } catch (IllegalStateException e) {
+                    close();
                 } catch (Exception e) {
                     e.printStackTrace(System.err);
                 }

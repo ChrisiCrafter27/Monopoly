@@ -13,7 +13,7 @@ import monopol.common.packets.ServerSide;
 import monopol.common.packets.custom.AskRejoinS2CPacket;
 import monopol.common.packets.custom.RejoinStatusS2CPacket;
 import monopol.common.packets.custom.RequestRejoinC2SPacket;
-import monopol.common.packets.custom.UpdateOwnerS2CPacket;
+import monopol.common.packets.custom.update.UpdateOwnerS2CPacket;
 import monopol.common.packets.custom.update.UpdatePositionS2CPacket;
 import monopol.common.utils.MapUtils;
 import monopol.server.rules.BuildRule;
@@ -89,8 +89,7 @@ public class Server extends UnicastRemoteObject implements IServer {
                                 } catch (IOException ignored) {}
                             }
                         }).start();
-                    }
-                    else if (acceptNewClients && clients.size() < 6) {
+                    } else if (acceptNewClients && clients.size() < 6 && Monopoly.INSTANCE.getState() == GameState.LOBBY) {
                         clients.put(clients.size() + 1, newClient);
                         Player player = newServerPlayer();
                         players.put(player, newClient);
@@ -317,6 +316,7 @@ public class Server extends UnicastRemoteObject implements IServer {
             }
         }
         logger.log().warning("[Server]: Kicked client");
+        PacketManager.sendS2C(new UpdatePositionS2CPacket(), player -> true, e -> e.printStackTrace(System.err));
         if(clients.isEmpty()) close();
     }
 
@@ -487,6 +487,7 @@ public class Server extends UnicastRemoteObject implements IServer {
 
     @Override
     public void start() throws IOException {
+        Monopoly.INSTANCE.setState(GameState.RUNNING);
         for (Socket socket : players.values()) {
             Message.send(new Message(null, MessageType.START), socket);
             PacketManager.sendS2C(new UpdateOwnerS2CPacket(), player -> true, e -> {});
