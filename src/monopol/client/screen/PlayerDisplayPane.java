@@ -20,6 +20,7 @@ public class PlayerDisplayPane extends JLayeredPane {
     }
 
     public void init(Map<String, Color> map) {
+        removeAll();
         for (Map.Entry<String, Color> entry : map.entrySet()) {
             String name = entry.getKey();
             players.put(name, new Pair<>(playerButton(entry.getValue()), 0));
@@ -28,7 +29,7 @@ public class PlayerDisplayPane extends JLayeredPane {
         setVisible(true);
     }
 
-    public void check(Set<String> names) {
+    public synchronized void check(Set<String> names) {
         if(!players.keySet().containsAll(names) || !names.containsAll(players.keySet())) {
             players.clear();
             removeAll();
