@@ -128,6 +128,9 @@ public class PrototypeMenu {
                     if(root.playerPane.getClient() != null && client.equals(oldClient)) client = root.playerPane.getClient();
 
                     //Remove clients that left the game
+                    for (int i = 0; i < clients.size(); i++) {
+                        if(clients.get(i).closed()) clients.remove(clients.get(i));
+                    }
                     if(!clients.contains(client)) {
                         if(!clients.isEmpty()) {
                             client = clients.get(0);

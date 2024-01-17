@@ -270,6 +270,7 @@ public class Server extends UnicastRemoteObject implements IServer {
     }
 
     public void close() {
+        players.clear();
         acceptNewClients = false;
         hostJoined = false;
         host = null;
