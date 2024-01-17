@@ -186,7 +186,7 @@ public class PrototypeMenu {
         //keep PingPane enabled
 
         root.boardPane.init(root.selectedCardPane::init);
-        root.playerDisplayPane.init(Map.of("Player1", Color.YELLOW, "Player2", Color.RED, "Player3", Color.GREEN, "Player4", Color.BLUE, "Player5", Color.ORANGE, "Player6", Color.MAGENTA));
+        root.playerDisplayPane.init(Map.of());
         root.infoPane.init(() -> client);
 
         new Thread(() -> {
@@ -201,11 +201,11 @@ public class PrototypeMenu {
                     case 5 -> "Player6";
                     default -> "";
                 };
-                root.playerDisplayPane.setPos(name, root.playerDisplayPane.getPos(name) >= 13*4 - 1 ? 0 : root.playerDisplayPane.getPos(name) + 1);
+                //root.playerDisplayPane.setPos(name, root.playerDisplayPane.getPos(name) >= 13*4 - 1 ? 0 : root.playerDisplayPane.getPos(name) + 1);
                 if (keyHandler.isKeyDown(KeyEvent.VK_M)) {
                     if(!keyDown) {
                         int i = new Random().nextInt(15) + 1;
-                        PacketManager.sendC2S(new TestC2SPacket(client.player.getName() +  " bewegt sich " + i + " Felder"), client, e -> {});
+                        PacketManager.sendC2S(new TestC2SPacket(i, client.player.getName()), client, e -> {});
                     }
                     keyDown = true;
                 } else keyDown = false;
@@ -425,7 +425,7 @@ public class PrototypeMenu {
 
                     try {
                         if(oldPlayerSelected == null) oldPlayerSelected = player;
-                        if(oldPlayerPlaying == null) oldPlayerPlaying = client.serverMethod().getServerPlayer(client.player.getName());
+                        if(oldPlayerPlaying == null) oldPlayerPlaying = client.serverMethod().getPlayer(client.player.getName());
                     } catch (RemoteException e) {
                         e.printStackTrace(System.err);
                         client.close();
@@ -441,9 +441,9 @@ public class PrototypeMenu {
                     //System.out.println(label_moneyCommpanion.getIcon());
 
                     try {
-                        label_moneyPlayer.setText(client.serverMethod().getServerPlayer(client.player.getName()).getMoney() + "€");
-                        busfahrkarten_player.setText(client.serverMethod().getServerPlayer(client.player.getName()).getBusfahrkarten() + "");
-                        gefaengnisfreikarte_player.setText(client.serverMethod().getServerPlayer(client.player.getName()).getGefaengniskarten() + "");
+                        label_moneyPlayer.setText(client.serverMethod().getPlayer(client.player.getName()).getMoney() + "€");
+                        busfahrkarten_player.setText(client.serverMethod().getPlayer(client.player.getName()).getBusfahrkarten() + "");
+                        gefaengnisfreikarte_player.setText(client.serverMethod().getPlayer(client.player.getName()).getGefaengniskarten() + "");
                     } catch (Exception e) {
                         e.printStackTrace(System.err);
                         //client.close();
@@ -573,11 +573,11 @@ public class PrototypeMenu {
                     if(shouldRepaint) ClientTrade.updateOwner(client);
                     if(shouldRepaint) System.out.println("Should repaint"); //Debug output
                     try {
-                        if (!Json.toString(player, false).equals(Json.toString(oldPlayerSelected, false)) || !Json.toString(client.serverMethod().getServerPlayer(client.player.getName()), false).equals(Json.toString(oldPlayerPlaying, false)) || shouldRepaint) {
+                        if (!Json.toString(player, false).equals(Json.toString(oldPlayerSelected, false)) || !Json.toString(client.serverMethod().getPlayer(client.player.getName()), false).equals(Json.toString(oldPlayerPlaying, false)) || shouldRepaint) {
                             frame.repaint();
                         }
                         oldPlayerSelected = player;
-                        oldPlayerPlaying = client.serverMethod().getServerPlayer(client.player.getName());
+                        oldPlayerPlaying = client.serverMethod().getPlayer(client.player.getName());
                     } catch (RemoteException e) {
                         e.printStackTrace(System.err);
                         client.close();

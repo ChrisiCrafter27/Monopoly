@@ -14,6 +14,7 @@ import monopol.common.packets.custom.AskRejoinS2CPacket;
 import monopol.common.packets.custom.RejoinStatusS2CPacket;
 import monopol.common.packets.custom.RequestRejoinC2SPacket;
 import monopol.common.packets.custom.UpdateOwnerS2CPacket;
+import monopol.common.packets.custom.update.UpdatePositionS2CPacket;
 import monopol.common.utils.MapUtils;
 import monopol.server.rules.BuildRule;
 import monopol.server.rules.Events;
@@ -76,6 +77,7 @@ public class Server extends UnicastRemoteObject implements IServer {
                                         logger.log().info("[Server]: New Client rejoined (" + player.getName() + ")");
                                         //TODO: send necessary information
                                         PacketManager.sendS2C(new UpdateOwnerS2CPacket(), p -> true, e -> {});
+                                        PacketManager.sendS2C(new UpdatePositionS2CPacket(), p -> true, e -> e.printStackTrace(System.err));
                                         return;
                                     }
                                 }
@@ -370,7 +372,7 @@ public class Server extends UnicastRemoteObject implements IServer {
     }
 
     @Override
-    public Player getServerPlayer(String name) throws RemoteException {
+    public Player getPlayer(String name) throws RemoteException {
         for (Map.Entry<Player, Socket> entry : players.entrySet()) {
             if(entry.getKey().getName().equals(name)) {
                 return entry.getKey();
@@ -488,6 +490,11 @@ public class Server extends UnicastRemoteObject implements IServer {
         for (Socket socket : players.values()) {
             Message.send(new Message(null, MessageType.START), socket);
             PacketManager.sendS2C(new UpdateOwnerS2CPacket(), player -> true, e -> {});
+            PacketManager.sendS2C(new UpdatePositionS2CPacket(), player -> true, e -> e.printStackTrace(System.err));
         }
+    }
+
+    public void updatePosition() {
+        PacketManager.sendS2C(new UpdatePositionS2CPacket(), player -> true, e -> e.printStackTrace(System.err));
     }
 }

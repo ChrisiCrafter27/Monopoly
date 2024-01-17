@@ -8,6 +8,7 @@ import java.awt.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class PlayerDisplayPane extends JLayeredPane {
     private final Map<String, Pair<JButton, Integer>> players = new HashMap<>();
@@ -25,6 +26,28 @@ public class PlayerDisplayPane extends JLayeredPane {
             setPos(name, 0);
         }
         setVisible(true);
+    }
+
+    public void check(Set<String> names) {
+        if(!players.keySet().containsAll(names) || !names.containsAll(players.keySet())) {
+            players.clear();
+            removeAll();
+            int i = 0;
+            for(String name : names) {
+                Color color = switch (i) {
+                    case 0 -> Color.YELLOW;
+                    case 1 -> Color.RED;
+                    case 2 -> Color.BLUE;
+                    case 3 -> Color.GREEN;
+                    case 4 -> Color.ORANGE;
+                    case 5 -> Color.MAGENTA;
+                    default -> Color.WHITE;
+                };
+                players.put(name, new Pair<>(playerButton(color), 0));
+                setPos(name, 0);
+                i++;
+            }
+        }
     }
 
     private JButton playerButton(Color color) {

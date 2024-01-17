@@ -208,7 +208,7 @@ public class TradePane extends JLayeredPane {
         }), 8);
         moneyButtons.add(JUtils.addButton("+1", 1920/4-50+50+50, 600, 100, 25, false, actionEvent -> {
             try {
-                if(client.get().serverMethod().getServerPlayer(player1).getMoney() >= tradeData.get().offerMoney + 1) tradeData.get().offerMoney += 1;
+                if(client.get().serverMethod().getPlayer(player1).getMoney() >= tradeData.get().offerMoney + 1) tradeData.get().offerMoney += 1;
             } catch (RemoteException e) {
                 e.printStackTrace(System.err);
                 client.get().close();
@@ -222,7 +222,7 @@ public class TradePane extends JLayeredPane {
         }), 9);
         moneyButtons.add(JUtils.addButton("+5", 1920/4-50+50+50, 600+30, 100, 25, false, actionEvent -> {
             try {
-                if(client.get().serverMethod().getServerPlayer(player1).getMoney() >= tradeData.get().offerMoney + 5) tradeData.get().offerMoney += 5;
+                if(client.get().serverMethod().getPlayer(player1).getMoney() >= tradeData.get().offerMoney + 5) tradeData.get().offerMoney += 5;
             } catch (RemoteException e) {
                 e.printStackTrace(System.err);
                 client.get().close();
@@ -236,7 +236,7 @@ public class TradePane extends JLayeredPane {
         }), 10);
         moneyButtons.add(JUtils.addButton("+10", 1920/4-50+50+50, 600+60, 100, 25, false, actionEvent -> {
             try {
-                if(client.get().serverMethod().getServerPlayer(player1).getMoney() >= tradeData.get().offerMoney + 10) tradeData.get().offerMoney += 10;
+                if(client.get().serverMethod().getPlayer(player1).getMoney() >= tradeData.get().offerMoney + 10) tradeData.get().offerMoney += 10;
             } catch (RemoteException e) {
                 e.printStackTrace(System.err);
                 client.get().close();
@@ -250,7 +250,7 @@ public class TradePane extends JLayeredPane {
         }), 11);
         moneyButtons.add(JUtils.addButton("+20", 1920/4-50+50+50, 600+90, 100, 25, false, actionEvent -> {
             try {
-                if(client.get().serverMethod().getServerPlayer(player1).getMoney() >= tradeData.get().offerMoney + 20) tradeData.get().offerMoney += 20;
+                if(client.get().serverMethod().getPlayer(player1).getMoney() >= tradeData.get().offerMoney + 20) tradeData.get().offerMoney += 20;
             } catch (RemoteException e) {
                 e.printStackTrace(System.err);
                 client.get().close();
@@ -264,7 +264,7 @@ public class TradePane extends JLayeredPane {
         }), 12);
         moneyButtons.add(JUtils.addButton("+50", 1920/4-50+50+50, 600+120, 100, 25, false, actionEvent -> {
             try {
-                if(client.get().serverMethod().getServerPlayer(player1).getMoney() >= tradeData.get().offerMoney + 50) tradeData.get().offerMoney += 50;
+                if(client.get().serverMethod().getPlayer(player1).getMoney() >= tradeData.get().offerMoney + 50) tradeData.get().offerMoney += 50;
             } catch (RemoteException e) {
                 e.printStackTrace(System.err);
                 client.get().close();
@@ -278,7 +278,7 @@ public class TradePane extends JLayeredPane {
         }), 13);
         moneyButtons.add(JUtils.addButton("+100", 1920/4-50+50+50, 600+150, 100, 25, false, actionEvent -> {
             try {
-                if(client.get().serverMethod().getServerPlayer(player1).getMoney() >= tradeData.get().offerMoney + 100) tradeData.get().offerMoney += 100;
+                if(client.get().serverMethod().getPlayer(player1).getMoney() >= tradeData.get().offerMoney + 100) tradeData.get().offerMoney += 100;
             } catch (RemoteException e) {
                 e.printStackTrace(System.err);
                 client.get().close();
@@ -292,7 +292,7 @@ public class TradePane extends JLayeredPane {
         }), 14);
         moneyButtons.add(JUtils.addButton("+500", 1920/4-50+50+50, 600+180, 100, 25, false, actionEvent -> {
             try {
-                if(client.get().serverMethod().getServerPlayer(player1).getMoney() >= tradeData.get().offerMoney + 500) tradeData.get().offerMoney += 500;
+                if(client.get().serverMethod().getPlayer(player1).getMoney() >= tradeData.get().offerMoney + 500) tradeData.get().offerMoney += 500;
             } catch (RemoteException e) {
                 e.printStackTrace(System.err);
                 client.get().close();
@@ -306,7 +306,7 @@ public class TradePane extends JLayeredPane {
         }), 15);
         moneyButtons.add(JUtils.addButton("+1000", 1920/4-50+50+50, 600+210, 100, 25, false, actionEvent -> {
             try {
-                if(client.get().serverMethod().getServerPlayer(player1).getMoney() >= tradeData.get().offerMoney + 1000) tradeData.get().offerMoney += 1000;
+                if(client.get().serverMethod().getPlayer(player1).getMoney() >= tradeData.get().offerMoney + 1000) tradeData.get().offerMoney += 1000;
             } catch (RemoteException e) {
                 e.printStackTrace(System.err);
                 client.get().close();
@@ -503,7 +503,7 @@ public class TradePane extends JLayeredPane {
         secondMoneyOfferText.setVisible(true);
 
         for(int i = 0; i < 8; i++) {
-            if(moneyButtons.getComponent(i) instanceof JButton button) button.setEnabled(client.get().serverMethod().getServerPlayer(player1).getMoney() >= tradeData.get().offerMoney + 1);
+            if(moneyButtons.getComponent(i) instanceof JButton button) button.setEnabled(client.get().serverMethod().getPlayer(player1).getMoney() >= tradeData.get().offerMoney + 1);
         }
         for(int i = 8; i < 15; i++) {
             if(moneyButtons.getComponent(i) instanceof JButton button) button.setEnabled(tradeData.get().offerMoney >= 1);
@@ -530,7 +530,7 @@ public class TradePane extends JLayeredPane {
         tradeInfoOther.setVisible(true);
 
         for(int i = 0; i < 8; i++) {
-            if(moneyButtons.getComponent(i) instanceof JButton button) button.setEnabled(client.get().serverMethod().getServerPlayer(player1).getMoney() >= tradeData.get().offerMoney + 1);
+            if(moneyButtons.getComponent(i) instanceof JButton button) button.setEnabled(client.get().serverMethod().getPlayer(player1).getMoney() >= tradeData.get().offerMoney + 1);
         }
         for(int i = 8; i < 15; i++) {
             if(moneyButtons.getComponent(i) instanceof JButton button) button.setEnabled(tradeData.get().offerMoney >= 1);
