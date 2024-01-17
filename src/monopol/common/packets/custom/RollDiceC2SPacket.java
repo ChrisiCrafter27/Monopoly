@@ -33,7 +33,7 @@ public class RollDiceC2SPacket extends C2SPacket<RollDiceC2SPacket> {
     @Override
     public void handleOnServer(Server server) {
         if(name.equals(target)) {
-            server.events().onDiceRoll(new Random().nextInt(15) + 1);
+            server.events().onDiceRoll();
         }
     }
 }

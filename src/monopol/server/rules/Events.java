@@ -76,7 +76,7 @@ public abstract class Events {
     public abstract void onGameStart(List<String> playerNames);
     public abstract void onNextRound();
     public abstract void onPrisonerRound();
-    public abstract void onDiceRoll(int result);
+    public abstract void onDiceRoll();
     public abstract void onTryMortgage();
     public abstract void onPurchaseBuilding();
     public abstract void onSellBuilding();

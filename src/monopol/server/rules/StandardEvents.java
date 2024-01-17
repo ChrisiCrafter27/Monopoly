@@ -1,14 +1,12 @@
 package monopol.server.rules;
 
 import monopol.common.Player;
-import monopol.common.core.Monopoly;
 import monopol.common.packets.PacketManager;
 import monopol.common.packets.custom.InfoS2CPacket;
 import monopol.common.packets.custom.RollDiceC2SPacket;
-import monopol.server.Server;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class StandardEvents extends Events {
     private boolean running = false;
@@ -48,8 +46,11 @@ public class StandardEvents extends Events {
     }
 
     @Override
-    public void onDiceRoll(int result) {
+    public void onDiceRoll() {
         RollDiceC2SPacket.request(null);
+        Random random = new Random();
+        int result = random.nextInt(6) + 1 + random.nextInt(6) + 1 ;
+
         player().move(result);
         PacketManager.sendS2C(new InfoS2CPacket(player().getName() +  " bewegt sich " + result + " Felder"), PacketManager.Restriction.all(), Throwable::printStackTrace);
         new Thread(() -> {
