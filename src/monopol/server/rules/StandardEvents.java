@@ -1,20 +1,45 @@
 package monopol.server.rules;
 
-import java.rmi.RemoteException;
+import monopol.common.Player;
+import monopol.common.core.Monopoly;
+import monopol.common.packets.PacketManager;
+import monopol.common.packets.custom.InfoS2CPacket;
+import monopol.common.packets.custom.RollDiceC2SPacket;
+import monopol.server.Server;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class StandardEvents extends Events {
-    public StandardEvents(boolean limitBusTickets, int maxBusTickets, boolean limitBuildings, boolean tempoDice, boolean megaBuildings, boolean tripleTeleport, int startMoney, int losMoney, boolean doubleLosMoney, boolean freeParking, boolean gainRentInPrison, boolean buildEquable, boolean reRollEventCardsAfterUse, BuildRule buildRule, OwnedCardsOfColorGroup cardsRequiredForOneHouse, OwnedCardsOfColorGroup cardsRequiredForTwoHouses, OwnedCardsOfColorGroup cardsRequiredForThreeHouses, OwnedCardsOfColorGroup cardsRequiredForFourHouses, OwnedCardsOfColorGroup cardsRequiredForHotel, OwnedCardsOfColorGroup cardsRequiredForSkyscraper) throws RemoteException {
+    private boolean running = false;
+
+    public StandardEvents(boolean limitBusTickets, int maxBusTickets, boolean limitBuildings, boolean tempoDice, boolean megaBuildings, boolean tripleTeleport, int startMoney, int losMoney, boolean doubleLosMoney, boolean freeParking, boolean gainRentInPrison, boolean buildEquable, boolean reRollEventCardsAfterUse, BuildRule buildRule, OwnedCardsOfColorGroup cardsRequiredForOneHouse, OwnedCardsOfColorGroup cardsRequiredForTwoHouses, OwnedCardsOfColorGroup cardsRequiredForThreeHouses, OwnedCardsOfColorGroup cardsRequiredForFourHouses, OwnedCardsOfColorGroup cardsRequiredForHotel, OwnedCardsOfColorGroup cardsRequiredForSkyscraper) {
         super(limitBusTickets, maxBusTickets, limitBuildings, tempoDice, megaBuildings, tripleTeleport, startMoney, losMoney, doubleLosMoney, freeParking, gainRentInPrison, buildEquable, reRollEventCardsAfterUse, buildRule, cardsRequiredForOneHouse, cardsRequiredForTwoHouses, cardsRequiredForThreeHouses, cardsRequiredForFourHouses, cardsRequiredForHotel, cardsRequiredForSkyscraper);
     }
 
     @Override
-    public void onGameStart() {
+    public void onGameStop() {
+        players.clear();
+        currentPlayer = -1;
+        running = false;
+        RollDiceC2SPacket.request(null);
+    }
 
+    @Override
+    public void onGameStart(List<String> playerNames) {
+        players.clear();
+        players.addAll(playerNames);
+        currentPlayer = -1;
+        running = true;
+        onNextRound();
     }
 
     @Override
     public void onNextRound() {
-
+        currentPlayer++;
+        Player player = player();
+        PacketManager.sendS2C(new InfoS2CPacket(player().getName() +  " ist am Zug"), PacketManager.Restriction.all(), Throwable::printStackTrace);
+        RollDiceC2SPacket.request(player.getName());
     }
 
     @Override
@@ -23,8 +48,16 @@ public class StandardEvents extends Events {
     }
 
     @Override
-    public void onDiceRoll() {
-
+    public void onDiceRoll(int result) {
+        RollDiceC2SPacket.request(null);
+        player().move(result);
+        PacketManager.sendS2C(new InfoS2CPacket(player().getName() +  " bewegt sich " + result + " Felder"), PacketManager.Restriction.all(), Throwable::printStackTrace);
+        new Thread(() -> {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException ignored) {}
+            if(running) onNextRound();
+        }).start();
     }
 
     @Override

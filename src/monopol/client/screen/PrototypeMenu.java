@@ -11,6 +11,7 @@ import monopol.common.data.Street;
 import monopol.common.data.TrainStation;
 import monopol.common.data.Plant;
 import monopol.common.packets.PacketManager;
+import monopol.common.packets.custom.RollDiceC2SPacket;
 import monopol.common.packets.custom.TestC2SPacket;
 import monopol.common.Player;
 import monopol.common.utils.JUtils;
@@ -204,8 +205,9 @@ public class PrototypeMenu {
                 //root.playerDisplayPane.setPos(name, root.playerDisplayPane.getPos(name) >= 13*4 - 1 ? 0 : root.playerDisplayPane.getPos(name) + 1);
                 if (keyHandler.isKeyDown(KeyEvent.VK_M)) {
                     if(!keyDown) {
-                        int i = new Random().nextInt(15) + 1;
-                        PacketManager.sendC2S(new TestC2SPacket(i, client.player.getName()), client, e -> {});
+                        //int i = new Random().nextInt(15) + 1;
+                        //PacketManager.sendC2S(new TestC2SPacket(i, client.player.getName()), client, e -> {});
+                        PacketManager.sendC2S(new RollDiceC2SPacket(client.player.getName()), client, e -> {});
                     }
                     keyDown = true;
                 } else keyDown = false;

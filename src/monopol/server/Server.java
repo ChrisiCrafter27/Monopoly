@@ -271,6 +271,7 @@ public class Server extends UnicastRemoteObject implements IServer {
     }
 
     public void close() {
+        events.onGameStop();
         players.clear();
         acceptNewClients = false;
         hostJoined = false;
@@ -493,9 +494,19 @@ public class Server extends UnicastRemoteObject implements IServer {
             PacketManager.sendS2C(new UpdateOwnerS2CPacket(), player -> true, e -> {});
             PacketManager.sendS2C(new UpdatePositionS2CPacket(), player -> true, e -> e.printStackTrace(System.err));
         }
+        new Thread(() -> {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException ignored) {}
+            if(Monopoly.INSTANCE.getState() == GameState.RUNNING) events.onGameStart(players.keySet().stream().map(Player::getName).toList());
+        }).start();
     }
 
     public void updatePosition() {
         PacketManager.sendS2C(new UpdatePositionS2CPacket(), player -> true, e -> e.printStackTrace(System.err));
+    }
+
+    public Events events() {
+        return events;
     }
 }
