@@ -51,6 +51,6 @@ public class UpdatePositionS2CPacket extends S2CPacket<UpdatePositionS2CPacket> 
     @Override
     public void handleOnClient(Client client, RootPane display) {
         display.playerDisplayPane.check(positions.keySet());
-        positions.forEach(display.playerDisplayPane::setPos);
+        positions.forEach(display.playerDisplayPane::setPosWithAnim);
     }
 }

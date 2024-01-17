@@ -17,10 +17,10 @@ import monopol.common.packets.custom.update.UpdateOwnerS2CPacket;
 import monopol.common.packets.custom.update.UpdatePlayerDataS2CPacket;
 import monopol.common.packets.custom.update.UpdatePositionS2CPacket;
 import monopol.common.utils.MapUtils;
-import monopol.server.rules.BuildRule;
-import monopol.server.rules.Events;
-import monopol.server.rules.OwnedCardsOfColorGroup;
-import monopol.server.rules.StandardEvents;
+import monopol.server.events.BuildRule;
+import monopol.server.events.Events;
+import monopol.server.events.OwnedCardsOfColorGroup;
+import monopol.server.events.StandardEvents;
 import monopol.common.utils.Json;
 import monopol.common.message.Message;
 import monopol.common.message.MessageType;
@@ -32,7 +32,6 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class Server extends UnicastRemoteObject implements IServer {
     public static final int CLIENT_TIMEOUT = 5000;

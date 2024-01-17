@@ -62,6 +62,25 @@ public class PlayerDisplayPane extends JLayeredPane {
         return button;
     }
 
+    public void setPosWithAnim(String name, int pos) {
+        new Thread(() -> {
+            if(players.containsKey(name)) {
+                int oldPos = players.get(name).getRight();
+                while(isVisible() && players.containsKey(name) && players.get(name).getRight() != pos) {
+                    oldPos++;
+                    if(oldPos >= 52) oldPos = 0;
+                    setPos(name, oldPos);
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException e) {
+                        break;
+                    }
+                }
+                setPos(name, pos);
+            }
+        }).start();
+    }
+
     public void setPos(String name, int pos) {
         if (players.containsKey(name)) {
             Pair<JButton, Integer> pair = players.get(name);

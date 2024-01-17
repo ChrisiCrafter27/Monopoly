@@ -1,4 +1,4 @@
-package monopol.server.rules;
+package monopol.server.events;
 
 import monopol.common.Player;
 import monopol.common.core.Monopoly;
@@ -64,18 +64,18 @@ public class StandardEvents extends Events {
             case 4 -> onBusCard();
             default -> {}
         }
-        player().move(result);
         final int finalResult = result;
         new Thread(() -> {
             PacketManager.sendS2C(new RollDiceS2CPacket(result1, result2, result3), PacketManager.Restriction.all(), Throwable::printStackTrace);
             try {
-                Thread.sleep(1000);
+                Thread.sleep(3000);
             } catch (InterruptedException ignored) {}
             if(!running) return;
+            player().move(finalResult);
             PacketManager.sendS2C(new InfoS2CPacket(player().getName() +  " bewegt sich " + finalResult + " Felder"), PacketManager.Restriction.all(), Throwable::printStackTrace);
             PacketManager.sendS2C(new UpdatePlayerDataS2CPacket(), PacketManager.Restriction.all(), Throwable::printStackTrace);
             try {
-                Thread.sleep(1000);
+                Thread.sleep(finalResult * 100);
             } catch (InterruptedException ignored) {}
             if(!running) return;
             onNextRound();

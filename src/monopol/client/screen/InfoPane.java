@@ -51,7 +51,6 @@ public class InfoPane extends JLayeredPane {
     public void init(Supplier<Client> clientSup) {
         this.clientSup = clientSup;
         setVisible(true);
-        //thread.interrupt();
         thread.interrupt();
         thread = new Thread(task);
         thread.start();
@@ -60,6 +59,11 @@ public class InfoPane extends JLayeredPane {
     public void reset() {
         setVisible(false);
         texts.clear();
+        text1.setText("");
+        text2.setText("");
+        text3.setText("");
+        text4.setText("");
+        text5.setText("");
         thread.interrupt();
     }
 

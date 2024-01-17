@@ -1,4 +1,4 @@
-package monopol.server.rules;
+package monopol.server.events;
 
 import monopol.common.Player;
 import monopol.common.core.Monopoly;
