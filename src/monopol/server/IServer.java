@@ -4,6 +4,7 @@ import monopol.common.Player;
 import monopol.common.data.IPurchasable;
 import monopol.common.message.MessageType;
 
+import java.awt.*;
 import java.io.IOException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -17,6 +18,7 @@ public interface IServer extends Remote {
     String getIp() throws RemoteException;
     void kick(String name, DisconnectReason reason) throws RemoteException;
     boolean changeName(String oldName, String newName) throws RemoteException;
+    boolean changeColor(String name, Color color) throws RemoteException;
     void sendMessage(String name, MessageType type, Object[] value) throws IOException;
     void sendMessage(String name, MessageType type, Object value) throws IOException;
     HashMap<IPurchasable, String> getOwnerMap() throws RemoteException;

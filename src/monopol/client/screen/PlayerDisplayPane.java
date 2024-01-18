@@ -12,6 +12,7 @@ import java.util.Set;
 
 public class PlayerDisplayPane extends JLayeredPane {
     private final Map<String, Pair<JButton, Integer>> players = new HashMap<>();
+    private Thread animThread = new Thread(() -> {});
 
     public PlayerDisplayPane() {
         super();
@@ -19,12 +20,7 @@ public class PlayerDisplayPane extends JLayeredPane {
         reset();
     }
 
-    public void init(Map<String, Color> map) {
-        for (Map.Entry<String, Color> entry : map.entrySet()) {
-            String name = entry.getKey();
-            players.put(name, new Pair<>(playerButton(entry.getValue()), 0));
-            setPos(name, 0);
-        }
+    public void init() {
         setVisible(true);
     }
 
@@ -44,7 +40,7 @@ public class PlayerDisplayPane extends JLayeredPane {
                     default -> Color.WHITE;
                 };
                 players.put(name, new Pair<>(playerButton(color), 0));
-                setPos(name, 0);
+                setPos(name, 0, Color.WHITE);
                 i++;
             }
         }
@@ -62,30 +58,33 @@ public class PlayerDisplayPane extends JLayeredPane {
         return button;
     }
 
-    public void setPosWithAnim(String name, int pos) {
-        new Thread(() -> {
+    public synchronized void setPosWithAnim(String name, int pos, Color color) {
+        animThread.interrupt();
+        animThread = new Thread(() -> {
             if(players.containsKey(name)) {
                 int oldPos = players.get(name).getRight();
-                while(isVisible() && players.containsKey(name) && players.get(name).getRight() != pos) {
+                while(isVisible() && players.containsKey(name) && players.get(name).getRight() != pos && !Thread.interrupted()) {
                     oldPos++;
                     if(oldPos >= 52) oldPos = 0;
-                    setPos(name, oldPos);
+                    setPos(name, oldPos, color);
                     try {
                         Thread.sleep(250);
                     } catch (InterruptedException e) {
                         break;
                     }
                 }
-                setPos(name, pos);
+                setPos(name, pos, color);
             }
-        }).start();
+        });
+        animThread.start();
     }
 
-    public void setPos(String name, int pos) {
+    public void setPos(String name, int pos, Color color) {
         if (players.containsKey(name)) {
             Pair<JButton, Integer> pair = players.get(name);
             int oldPos = pair.getRight();
             pair.setRight(pos);
+            pair.getLeft().setBackground(color);
             List<JButton> buttons1 = playersOn(pos);
             for (int i = 0; i < buttons1.size(); i++) {
                 JButton button = buttons1.get(i);

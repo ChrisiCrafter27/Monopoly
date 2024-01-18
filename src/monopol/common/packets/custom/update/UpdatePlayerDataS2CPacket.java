@@ -25,6 +25,7 @@ public class UpdatePlayerDataS2CPacket extends S2CPacket<UpdatePlayerDataS2CPack
 
     @Override
     public void handleOnClient(Client client, RootPane display) {
+        display.lobbyPane.requestUpdate();
         //TODO: update not existing pane
     }
 }

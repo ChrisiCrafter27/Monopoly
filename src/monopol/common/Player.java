@@ -2,6 +2,7 @@ package monopol.common;
 
 import monopol.common.core.Monopoly;
 
+import java.awt.*;
 import java.io.Serializable;
 
 public class Player implements Serializable {
@@ -10,6 +11,7 @@ public class Player implements Serializable {
     private int gefängniskarten = 0;
     private int busfahrkarten = 0;
     private int position = 0;
+    private Color color = Color.WHITE;
 
     public Player(String name) {
         this.name = name;
@@ -25,6 +27,9 @@ public class Player implements Serializable {
     public int getBusfahrkarten(){ return busfahrkarten; }
     public int getPosition() {
         return position;
+    }
+    public Color getColor() {
+        return color;
     }
 
     public void setName(String name) {
@@ -46,6 +51,9 @@ public class Player implements Serializable {
     public void setPosition(int position) {
         this.position = position;
         Monopoly.INSTANCE.server().updatePosition();
+    }
+    public void setColor(Color color) {
+        this.color = color;
     }
     public void move(int range) {
         position += range;

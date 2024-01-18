@@ -1,10 +1,8 @@
 package monopol.server;
 
+import monopol.client.screen.LobbyPane;
 import monopol.common.Player;
-import monopol.common.data.IPurchasable;
-import monopol.common.data.Plant;
-import monopol.common.data.Street;
-import monopol.common.data.TrainStation;
+import monopol.common.data.*;
 import monopol.common.core.GameState;
 import monopol.common.core.Monopoly;
 import monopol.common.log.ServerLogger;
@@ -25,6 +23,7 @@ import monopol.common.utils.Json;
 import monopol.common.message.Message;
 import monopol.common.message.MessageType;
 
+import java.awt.*;
 import java.io.*;
 import java.net.*;
 import java.rmi.RemoteException;
@@ -32,6 +31,7 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.*;
+import java.util.List;
 
 public class Server extends UnicastRemoteObject implements IServer {
     public static final int CLIENT_TIMEOUT = 5000;
@@ -94,7 +94,9 @@ public class Server extends UnicastRemoteObject implements IServer {
                         clients.put(clients.size() + 1, newClient);
                         Player player = newServerPlayer();
                         players.put(player, newClient);
+                        player.setColor(LobbyPane.COLORS.keySet().stream().filter(color -> players.keySet().stream().map(Player::getColor).noneMatch(color::equals)).toList().get(0));
                         Message.send(new Message(player.getName(), MessageType.NAME), newClient);
+                        PacketManager.sendS2C(new UpdatePlayerDataS2CPacket(), PacketManager.Restriction.all(), Throwable::printStackTrace);
                         logger.log().info("[Server]: New Client accepted (" + player.getName() + ")");
                     } else {
                         logger.log().info("[Server]: New Client declined");
@@ -295,6 +297,7 @@ public class Server extends UnicastRemoteObject implements IServer {
         List<Player> list = players.keySet().stream().filter(player -> players.get(player) == null && player.getName().equals(name)).toList();
         if (list.size() == 1) {
             players.remove(list.get(0));
+            Field.getAll().stream().filter(field -> field instanceof IPurchasable).map(field -> (IPurchasable) field).filter(purchasable -> list.get(0).getName().equals(purchasable.getOwner())).forEach(purchasable -> purchasable.setOwner(null));
         }
     }
 
@@ -400,7 +403,8 @@ public class Server extends UnicastRemoteObject implements IServer {
     }
 
     @Override
-    public boolean changeName(String oldName, String newName) throws RemoteException {
+    public synchronized boolean changeName(String oldName, String newName) throws RemoteException {
+        if(Monopoly.INSTANCE.getState() != GameState.LOBBY) return false;
         if(newName.length() > 15) return false;
         for (Map.Entry<Player, Socket> entry : players.entrySet()) {
             if(entry.getKey().getName().equals(newName)) return false;
@@ -410,6 +414,22 @@ public class Server extends UnicastRemoteObject implements IServer {
                 entry.getKey().setName(newName);
                 if(oldName.equals(host)) host = newName;
                 logger.log().info("[Server]: Changed name from " + oldName + " to " + newName);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public synchronized boolean changeColor(String name, Color color) throws RemoteException {
+        if(Monopoly.INSTANCE.getState() != GameState.LOBBY) return false;
+        for (Map.Entry<Player, Socket> entry : players.entrySet()) {
+            if(entry.getKey().getColor() == color) return false;
+        }
+        for (Map.Entry<Player, Socket> entry : players.entrySet()) {
+            if(entry.getKey().getName().equals(name)) {
+                entry.getKey().setColor(color);
+                PacketManager.sendS2C(new UpdatePlayerDataS2CPacket(), PacketManager.Restriction.all(), Throwable::printStackTrace);
                 return true;
             }
         }

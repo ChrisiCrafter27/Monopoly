@@ -51,6 +51,12 @@ public class UpdatePositionS2CPacket extends S2CPacket<UpdatePositionS2CPacket> 
     @Override
     public void handleOnClient(Client client, RootPane display) {
         display.playerDisplayPane.check(positions.keySet());
-        positions.forEach(display.playerDisplayPane::setPosWithAnim);
+        positions.forEach((name, pos) -> {
+            try {
+                display.playerDisplayPane.setPosWithAnim(name, pos, client.serverMethod().getPlayer(name).getColor());
+            } catch (RemoteException e) {
+                e.printStackTrace(System.err);
+            }
+        });
     }
 }

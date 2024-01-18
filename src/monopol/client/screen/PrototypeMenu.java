@@ -187,7 +187,7 @@ public class PrototypeMenu {
         //keep PingPane enabled
 
         root.boardPane.init(root.selectedCardPane::init);
-        root.playerDisplayPane.init(Map.of());
+        root.playerDisplayPane.init();
         root.infoPane.init(() -> client);
 
         new Thread(() -> {

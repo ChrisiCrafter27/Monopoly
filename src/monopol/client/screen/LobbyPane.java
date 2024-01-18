@@ -16,10 +16,21 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class LobbyPane extends JLayeredPane {
+    public static final Map<Color, String> COLORS = new HashMap<>();
+    static {
+        COLORS.putAll(Map.of(Color.YELLOW, "<html><font color=#ffff00>■</font>", Color.ORANGE, "<html><font color=#ffc800>■</font>", Color.RED, "<html><font color=#ff0000>■</font>", Color.MAGENTA, "<html><font color=#ff00ff>■</font>", Color.PINK, "<html><font color=#ffafaf>■</font>"));
+        COLORS.putAll(Map.of(Color.CYAN, "<html><font color=#00ffff>■</font>", Color.BLUE, "<html><font color=#0000ff>■</font>", Color.GREEN, "<html><font color=#00ff00>■</font>", Color.WHITE, "<html><font color=#ffffff>■</font>", Color.LIGHT_GRAY, "<html><font color=#c0c0c0>■</font>"));
+        COLORS.putAll(Map.of(Color.GRAY, "<html><font color=#808080>■</font>", Color.DARK_GRAY, "<html><font color=#404040>■</font>", Color.BLACK, "<html><font color=#000000>■</font>"));
+    }
+    
     private Client client;
     private boolean mustUpdate;
+    private boolean requestUpdate = false;
 
     private ArrayList<Player> memory = new ArrayList<>();
     private boolean spaceDown = false;
@@ -77,6 +88,10 @@ public class LobbyPane extends JLayeredPane {
         setVisible(true);
         connecting.setVisible(true);
         repaint();
+    }
+
+    public void requestUpdate() {
+        requestUpdate = true;
     }
 
     private void updateButtons(ArrayList<Client> clients, RootPane root) {
@@ -162,8 +177,34 @@ public class LobbyPane extends JLayeredPane {
                     }
                 }));
             }
+            playerList.add(playerButton(player.getColor(), y, player.getName()));
             y += 50;
         }
+    }
+
+    private JButton playerButton(Color background, int y, String name) {
+        JButton button = JUtils.addButton("", 775, y, 25, 25, client.player.getName().equals(name), actionEvent ->  {
+            List<Color> colors = COLORS.keySet().stream().filter(color -> {
+                try {
+                    return client.serverMethod().getPlayers().stream().map(Player::getColor).noneMatch(color::equals);
+                } catch (RemoteException e) {
+                    throw new RuntimeException(e);
+                }
+            }).toList();
+            int result = JOptionPane.showOptionDialog(null, "Wähle eine neue Farbe aus oder drücke ESC", "Farbe wählen", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, colors.stream().map(COLORS::get).toArray(), null);
+            if(result != JOptionPane.CLOSED_OPTION) {
+                try {
+                    if(!client.serverMethod().changeColor(name, colors.get(result))) JOptionPane.showMessageDialog(null, "Farbe konnte nicht geändert werden.", "Farbe wählen", JOptionPane.WARNING_MESSAGE);
+                } catch (RemoteException e) {
+                    JOptionPane.showMessageDialog(null, "Farbe konnte nicht geändert werden.", "Farbe wählen", JOptionPane.WARNING_MESSAGE);
+                }
+            }
+        });
+        button.setBackground(background);
+        button.setOpaque(true);
+        button.setBorderPainted(true);
+        button.setIcon(null);
+        return button;
     }
 
     private void updateIp() {
@@ -179,7 +220,8 @@ public class LobbyPane extends JLayeredPane {
     public void update(ArrayList<Player> players, Client currentClient, ArrayList<Client> clients, String ip, KeyHandler keyHandler, boolean forceUpdate, RootPane root) throws RemoteException {
         connecting.setVisible(false);
 
-        if(!ListUtils.equals(players, memory) || !currentClient.equals(client) || !ip.equals(this.ip) || forceUpdate) {
+        if(!ListUtils.equals(players, memory) || !currentClient.equals(client) || !ip.equals(this.ip) || forceUpdate || requestUpdate) {
+            requestUpdate = false;
             DebugLogger.INSTANCE.log().info("[LobbyPane] updating list...");
             client = currentClient;
             this.ip = ip;
