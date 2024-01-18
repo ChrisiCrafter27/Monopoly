@@ -71,7 +71,7 @@ public class PlayerDisplayPane extends JLayeredPane {
                     if(oldPos >= 52) oldPos = 0;
                     setPos(name, oldPos);
                     try {
-                        Thread.sleep(100);
+                        Thread.sleep(250);
                     } catch (InterruptedException e) {
                         break;
                     }

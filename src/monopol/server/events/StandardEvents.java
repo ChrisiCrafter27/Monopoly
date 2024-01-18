@@ -61,7 +61,7 @@ public class StandardEvents extends Events {
             case 1 -> result += 1;
             case 2 -> result += 2;
             case 3 -> result += 3;
-            case 4 -> onBusCard();
+            case 4 -> onGetBusCard();
             default -> {}
         }
         final int finalResult = result;
@@ -75,7 +75,7 @@ public class StandardEvents extends Events {
             PacketManager.sendS2C(new InfoS2CPacket(player().getName() +  " bewegt sich " + finalResult + " Felder"), PacketManager.Restriction.all(), Throwable::printStackTrace);
             PacketManager.sendS2C(new UpdatePlayerDataS2CPacket(), PacketManager.Restriction.all(), Throwable::printStackTrace);
             try {
-                Thread.sleep(finalResult * 100);
+                Thread.sleep(finalResult * 250);
             } catch (InterruptedException ignored) {}
             if(!running) return;
             onNextRound();
@@ -88,7 +88,7 @@ public class StandardEvents extends Events {
     }
 
     @Override
-    public void onBusCard() {
+    public void onGetBusCard() {
         if(new Random().nextInt(10) == 0){
             try {
                 Monopoly.INSTANCE.server().getPlayers().forEach(player -> player.substractBusfahrkarten(player.getBusfahrkarten()));
