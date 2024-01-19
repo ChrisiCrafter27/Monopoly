@@ -25,6 +25,8 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.ArrayList;
 
+import static monopol.server.Server.CLIENT_TIMEOUT;
+
 public class Client {
     private final Socket client;
     private final IServer serverInterface;
@@ -44,11 +46,11 @@ public class Client {
                     DataInputStream input = new DataInputStream(client.getInputStream());
                     String data = input.readUTF();
                     messageReceived(data);
-                } catch (IOException e) {
+                } catch (Exception e) {
                     if(!interrupted()) {
                         e.printStackTrace(System.err);
                         System.out.println("[Client]: Connection lost: No further information.");
-                        interrupt();
+                        close();
                     }
                 }
                 try {
@@ -57,11 +59,7 @@ public class Client {
                     break;
                 }
             }
-            try {
-                client.close();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+            close();
         }
     };
 
@@ -70,7 +68,7 @@ public class Client {
             try {
                 Message.sendPing(socket());
             } catch (IOException e) {
-                if(!socket().isClosed()) e.printStackTrace(System.err);
+                if(!closed()) e.printStackTrace(System.err);
             }
             if (!received) {
                 try {
@@ -80,11 +78,12 @@ public class Client {
                     close();
                 } catch (Exception e) {
                     e.printStackTrace(System.err);
+                    close();
                 }
             }
             if(player().getName() != null) received = false;
             try {
-                Thread.sleep(Server.CLIENT_TIMEOUT);
+                Thread.sleep(CLIENT_TIMEOUT);
             } catch (InterruptedException e) {
                 return;
             }
@@ -248,13 +247,11 @@ public class Client {
                 case START -> Monopoly.INSTANCE.setState(GameState.RUNNING);
                 case NULL -> {
                 }
-                default -> throw new RuntimeException();
+                default -> throw new IllegalStateException();
             }
         } catch (IOException e) {
             System.out.println("[Client]: Connection lost: No further information.");
-            clientThread.interrupt();
-            pingThread.interrupt();
-            throw new RuntimeException(e);
+            close();
         }
     }
 
@@ -282,6 +279,11 @@ public class Client {
         }
         clientThread.interrupt();
         pingThread.interrupt();
+        if(!closed()) try {
+            client.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public boolean closed() {
