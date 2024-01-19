@@ -11,6 +11,7 @@ import monopol.common.packets.ServerSide;
 import monopol.common.packets.custom.AskRejoinS2CPacket;
 import monopol.common.packets.custom.RejoinStatusS2CPacket;
 import monopol.common.packets.custom.RequestRejoinC2SPacket;
+import monopol.common.packets.custom.update.UpdateFreeParkingS2CPacket;
 import monopol.common.packets.custom.update.UpdateOwnerS2CPacket;
 import monopol.common.packets.custom.update.UpdatePlayerDataS2CPacket;
 import monopol.common.packets.custom.update.UpdatePositionS2CPacket;
@@ -79,6 +80,7 @@ public class Server extends UnicastRemoteObject implements IServer {
                                         PacketManager.sendS2C(new UpdateOwnerS2CPacket(), PacketManager.Restriction.all(), Throwable::printStackTrace);
                                         PacketManager.sendS2C(new UpdatePositionS2CPacket(), PacketManager.Restriction.all(), Throwable::printStackTrace);
                                         PacketManager.sendS2C(new UpdatePlayerDataS2CPacket(), PacketManager.Restriction.all(), Throwable::printStackTrace);
+                                        PacketManager.sendS2C(new UpdateFreeParkingS2CPacket(Monopoly.GAME_DATA.getFreeParkingAmount()), PacketManager.Restriction.all(), Throwable::printStackTrace);
                                         return;
                                     }
                                 }
@@ -323,6 +325,7 @@ public class Server extends UnicastRemoteObject implements IServer {
         logger.log().warning("[Server]: Kicked client");
         PacketManager.sendS2C(new UpdatePositionS2CPacket(), PacketManager.Restriction.all(), Throwable::printStackTrace);
         PacketManager.sendS2C(new UpdatePlayerDataS2CPacket(), PacketManager.Restriction.all(), Throwable::printStackTrace);
+        PacketManager.sendS2C(new UpdateFreeParkingS2CPacket(Monopoly.GAME_DATA.getFreeParkingAmount()), PacketManager.Restriction.all(), Throwable::printStackTrace);
         if(clients.isEmpty()) close();
     }
 
@@ -516,6 +519,7 @@ public class Server extends UnicastRemoteObject implements IServer {
             PacketManager.sendS2C(new UpdateOwnerS2CPacket(), PacketManager.Restriction.all(), Throwable::printStackTrace);
             PacketManager.sendS2C(new UpdatePositionS2CPacket(), PacketManager.Restriction.all(), Throwable::printStackTrace);
             PacketManager.sendS2C(new UpdatePlayerDataS2CPacket(), PacketManager.Restriction.all(), Throwable::printStackTrace);
+            PacketManager.sendS2C(new UpdateFreeParkingS2CPacket(Monopoly.GAME_DATA.getFreeParkingAmount()), PacketManager.Restriction.all(), Throwable::printStackTrace);
         }
         new Thread(() -> {
             try {
@@ -528,6 +532,8 @@ public class Server extends UnicastRemoteObject implements IServer {
     public void updatePosition() {
         PacketManager.sendS2C(new UpdatePositionS2CPacket(), PacketManager.Restriction.all(), Throwable::printStackTrace);
     }
+
+
 
     public Events events() {
         return events;
