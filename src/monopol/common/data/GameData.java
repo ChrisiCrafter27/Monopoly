@@ -5,23 +5,21 @@ import monopol.common.core.Monopoly;
 import java.util.ArrayList;
 
 public class GameData {
-    private int freeParkingAmount = 1000+500+100+50+20+10+5+1;
-
-    public void setup() {
-        freeParkingAmount = 0;
-    }
+    private int freeParkingAmount = 0;
 
     public void addFreeParking(int amount) {
         freeParkingAmount += amount;
+        Monopoly.INSTANCE.server().updateFreeParking();
     }
 
     public int getFreeParkingAmount() {
         return freeParkingAmount;
     }
 
-    public int freeParking() {
+    public int parkForFree() {
         int value = freeParkingAmount;
         freeParkingAmount = 0;
+        Monopoly.INSTANCE.server().updateFreeParking();
         return value;
     }
 }

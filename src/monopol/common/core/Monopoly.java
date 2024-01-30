@@ -1,19 +1,14 @@
 package monopol.common.core;
 
-import monopol.common.data.GameData;
 import monopol.client.screen.PrototypeMenu;
 import monopol.server.Server;
-import monopol.common.Player;
 import monopol.server.ServerSettings;
 import monopol.common.utils.ProjectStructure;
 
 import java.io.IOException;
-import java.rmi.RemoteException;
-import java.util.ArrayList;
 
 public class Monopoly {
     public static final Monopoly INSTANCE = new Monopoly();
-    public static final GameData GAME_DATA = new GameData();
     private final Server server;
     GameState state;
 
@@ -36,17 +31,6 @@ public class Monopoly {
     }
     public void setHost(String name) {
         server.setHost(name);
-    }
-    public ArrayList<String> getAllPlayerNamesOfOwnServer() {
-        ArrayList<String> list = new ArrayList<>();
-        try {
-            for(Player player : server.getPlayers()) {
-                list.add(player.getName());
-            }
-        } catch (RemoteException e) {
-            throw new RuntimeException(e);
-        }
-        return list;
     }
     public Server server() {
         return server;

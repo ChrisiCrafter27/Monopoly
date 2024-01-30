@@ -1,9 +1,9 @@
 package monopol.server.events;
 
-import monopol.common.Player;
+import monopol.common.data.Player;
 import monopol.common.core.Monopoly;
+import monopol.common.data.IPurchasable;
 
-import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -56,27 +56,27 @@ public abstract class Events {
     }
 
     protected Player player() {
-        try {
-            Player player = null;
-            while (!players.isEmpty()) {
-                if(currentPlayer + 1 > players.size()) currentPlayer = 0;
-                String name = players.get(currentPlayer);
-                player = Monopoly.INSTANCE.server().getPlayer(name);
-                if(player == null) players.remove(name);
-                else break;
-            }
-            return player;
-        } catch (RemoteException e) {
-            throw new RuntimeException(e);
+        Player player = null;
+        while (!players.isEmpty()) {
+            if(currentPlayer + 1 > players.size()) currentPlayer = 0;
+            String name = players.get(currentPlayer);
+            player = Monopoly.INSTANCE.server().getPlayerServerSide(name);
+            if(player == null) players.remove(name);
+            else break;
         }
+        return player;
     }
 
     public abstract void onGameStop();
     public abstract void onGameStart(List<String> playerNames);
+    public abstract void onRejoin();
+    public abstract void onTryNextRound();
     public abstract void onNextRound();
     public abstract void onPrisonerRound();
     public abstract void onDiceRoll();
     public abstract void onGetBusCard();
+    public abstract void onArrivedAtField();
+    public abstract void onCommunityCardAction(String action);
     public abstract void onTryMortgage();
     public abstract void onPurchaseBuilding();
     public abstract void onSellBuilding();
@@ -85,13 +85,14 @@ public abstract class Events {
     public abstract void onArrivedAtAuction();
     public abstract void onArrivedAtBusPass();
     public abstract void onArrivedAtBirthday();
-    public abstract void onArrivedAtStreetOrFacility();
+    public abstract void onArrivedAtPurchasable(IPurchasable purchasable);
     public abstract void onArrivedAtEventField();
     public abstract void onArrivedAtCommunityField();
     public abstract void onArrivedAtFreeParking();
     public abstract void onArrivedAtGoToPrisonField();
     public abstract void onArrivedAtTaxField();
     public abstract void onArrivedAtAdditionalTaxField();
+    public abstract void onArrivedAtPrisonField();
     public abstract void onPassedLos();
     public abstract void onOfferTrade();
     public abstract void onAcceptTrade();

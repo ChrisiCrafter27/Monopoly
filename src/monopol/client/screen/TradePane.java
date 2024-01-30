@@ -8,7 +8,7 @@ import monopol.common.data.Field;
 import monopol.common.data.IPurchasable;
 import monopol.common.message.Message;
 import monopol.common.message.MessageType;
-import monopol.common.Player;
+import monopol.common.data.Player;
 import monopol.common.utils.JUtils;
 
 import javax.swing.*;

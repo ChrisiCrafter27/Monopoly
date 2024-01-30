@@ -77,6 +77,7 @@ public class InfoPane extends JLayeredPane {
 
     private void updateTexts() {
         List<String> list = texts.get(clientSup.get());
+        if(list == null) return;
         if(list.size() > 0) text1.setText(list.get(0));
         else text1.setText("");
         if(list.size() > 1) text2.setText(list.get(1));

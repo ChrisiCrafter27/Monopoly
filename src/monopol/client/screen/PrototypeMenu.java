@@ -12,8 +12,7 @@ import monopol.common.data.TrainStation;
 import monopol.common.data.Plant;
 import monopol.common.packets.PacketManager;
 import monopol.common.packets.custom.RollDiceC2SPacket;
-import monopol.common.packets.custom.TestC2SPacket;
-import monopol.common.Player;
+import monopol.common.data.Player;
 import monopol.common.utils.JUtils;
 import monopol.common.utils.Json;
 import monopol.common.utils.KeyHandler;
@@ -83,6 +82,7 @@ public class PrototypeMenu {
         root.rejoinPane.reset();
         root.boardPane.reset();
         root.freeParkingPane.reset();
+        root.playerInfoPane.reset();
 
         root.menuPane.init(clients, this::prepareLobby, root);
         root.rejoinPane.init(() -> client, newClient -> {
@@ -188,27 +188,16 @@ public class PrototypeMenu {
         //keep PingPane enabled
 
         root.boardPane.init(root.selectedCardPane::init);
-        root.playerDisplayPane.init();
+        root.playerDisplayPane.init(() -> root);
         root.infoPane.init(() -> client);
         root.freeParkingPane.init();
+        root.playerInfoPane.init(() -> client, () -> root);
 
         new Thread(() -> {
             boolean keyDown = false;
             while (Monopoly.INSTANCE.getState() == GameState.RUNNING) {
-                String name = switch (new Random().nextInt(6)) {
-                    case 0 -> "Player1";
-                    case 1 -> "Player2";
-                    case 2 -> "Player3";
-                    case 3 -> "Player4";
-                    case 4 -> "Player5";
-                    case 5 -> "Player6";
-                    default -> "";
-                };
-                //root.playerDisplayPane.setPos(name, root.playerDisplayPane.getPos(name) >= 13*4 - 1 ? 0 : root.playerDisplayPane.getPos(name) + 1);
                 if (keyHandler.isKeyDown(KeyEvent.VK_M)) {
                     if(!keyDown) {
-                        //int i = new Random().nextInt(15) + 1;
-                        //PacketManager.sendC2S(new TestC2SPacket(i, client.player.getName()), client, e -> {});
                         PacketManager.sendC2S(new RollDiceC2SPacket(client.player.getName()), client, e -> {});
                     }
                     keyDown = true;
@@ -223,6 +212,17 @@ public class PrototypeMenu {
 
         new Thread(() -> {
             while (Monopoly.INSTANCE.getState() == GameState.RUNNING) {
+                for (int i = 0; i < clients.size(); i++) {
+                    if(clients.get(i).closed()) clients.remove(clients.get(i));
+                }
+                if(!clients.contains(client)) {
+                    if(!clients.isEmpty()) {
+                        client = clients.get(0);
+                    } else {
+                        prepareMenu();
+                        return;
+                    }
+                }
                 if(root.playerPane.getClient() != null) {
                     Client oldClient = client;
                     client = root.playerPane.getClient();
@@ -246,21 +246,14 @@ public class PrototypeMenu {
 
         //no repaint
         //frame.repaint();
-        JButton handel = new JButton();
-        frame.add(JUtils.addButton(handel,null, 1060, 450+90*5, 400, 80, true,"images/Main_pictures/3d_button.png", actionEvent -> {
-            JOptionPane.showMessageDialog(frame, "Not available. Still in development.", "Trade", JOptionPane.WARNING_MESSAGE);
-            if(true) return;
-            client.tradeData.tradeState = TradeState.CHOOSE_PLAYER;
-            ClientTrade.trade(() -> client, root.tradePane);
-        }), 0);
-        frame.add(JUtils.addText("Handel", 1060, 450+90*5+13,400,40,true),0);
         //frame.repaint();
 
         //TODO  \/  FABIANS PART  \/
 
-        frame.add(JUtils.addImage("images/Main_pictures/Background_Right.png", 1020, 60));
-        frame.add(JUtils.addImage("images/Main_pictures/hintergrund_links_mitte2.png", 90, 150));
+        //frame.add(JUtils.addImage("images/Main_pictures/Background_Right.png", 1020, 60));
+        //frame.add(JUtils.addImage("images/Main_pictures/hintergrund_links_mitte2.png", 90, 150));
 
+        /*
         int[] currentPlayer = new int[1];
 
         JButton button1 = new JButton();
@@ -274,9 +267,10 @@ public class PrototypeMenu {
         JButton haus_bauen  = new JButton();
         JButton haus_verkaufen = new JButton();
         JButton einstellungen  =new JButton();
+        */
 
 
-
+        /*
         int X = 1160;
         JLabel label_moneyCommpanion = JUtils.addText("----",X+95,342,200,30,false);
         JLabel busfahrkarten_Commpanion = JUtils.addText("-",X-57,307,20,30,false);
@@ -286,7 +280,9 @@ public class PrototypeMenu {
         JLabel label_moneyPlayer = JUtils.addText("----",X+95,342,200,30,false);
         JLabel busfahrkarten_player = JUtils.addText("-",X-57,307,20,30,false);
         JLabel gefaengnisfreikarte_player = JUtils.addText("-",X+243,315,13,24,false);
+        */
 
+        /* TODO
         int x = 1060 + 15;
         int y = 148;
 
@@ -386,8 +382,9 @@ public class PrototypeMenu {
         JLabel WESTBAHNHOF_Companion = JUtils.addImage("images/kleine_karten/train.png",x+110,y+150,20,40);
         JLabel NORDBAHNHOF_Companion = JUtils.addImage("images/kleine_karten/train.png",x+140,y+150,20,40);
         JLabel HAUPTBAHNHOF_Companion = JUtils.addImage("images/kleine_karten/train.png",x+170,y+150,20,40);
+        */
 
-
+        /* TODO
         gameThread = new Thread() {
             @Override
             public void run(){
@@ -446,15 +443,15 @@ public class PrototypeMenu {
 
                     try {
                         label_moneyPlayer.setText(client.serverMethod().getPlayer(client.player.getName()).getMoney() + "€");
-                        busfahrkarten_player.setText(client.serverMethod().getPlayer(client.player.getName()).getBusfahrkarten() + "");
-                        gefaengnisfreikarte_player.setText(client.serverMethod().getPlayer(client.player.getName()).getGefaengniskarten() + "");
+                        busfahrkarten_player.setText(client.serverMethod().getPlayer(client.player.getName()).getBusCards() + "");
+                        gefaengnisfreikarte_player.setText(client.serverMethod().getPlayer(client.player.getName()).getPrisonCards() + "");
                     } catch (Exception e) {
                         e.printStackTrace(System.err);
                         //client.close();
                     }
                     label_moneyCommpanion.setText(player.getMoney() + "€");
-                    busfahrkarten_Commpanion.setText(player.getBusfahrkarten() + "");
-                    gefaengnisfreikarte_Commpanion.setText(player.getGefaengniskarten() + "");
+                    busfahrkarten_Commpanion.setText(player.getBusCards() + "");
+                    gefaengnisfreikarte_Commpanion.setText(player.getPrisonCards() + "");
 
                     BADSTRASSE.setIcon(new ImageIcon(Street.BADSTRASSE.getOwner().equals(player.getName()) ? "images/kleine_karten/brown_filled.png" : "images/kleine_karten/brown.png"));
                     TURMSTRASSE.setIcon(new ImageIcon(Street.TURMSTRASSE.getOwner().equals(player.getName()) ? "images/kleine_karten/brown_filled.png" : "images/kleine_karten/brown.png"));
@@ -599,10 +596,9 @@ public class PrototypeMenu {
             }
         };
         gameThread.start();
+        */
 
-        frame.repaint();
-        if(true) return;
-
+        /* TODO
         frame.add(JUtils.addButton(button1,null,1060,90,400,60,true,"images/Main_pictures/Player_display.png", actionevent ->  {
             int maxPlayers;
             try {
@@ -627,7 +623,9 @@ public class PrototypeMenu {
                 prepareMenu();
             }
         }),0);
+        */
 
+        /*
         frame.add(JUtils.addButton(button2,null,1479,90,400,60,true,"images/Main_pictures/Player_display.png",actionevent ->  {}),0);
         frame.add(JUtils.addText(label_button1,"","Arial",1060,90 + 13,400,30,true),0);
         frame.add(JUtils.addText(label_button2, client.player.getName(),"Arial",1479,90 + 13,400,30,true),0);
@@ -695,8 +693,9 @@ public class PrototypeMenu {
             //einstellungen
         }),0);
         frame.add(JUtils.addText("Einstellungen",x_actoins,y_actions+90*6+13,400,40,true),0);
+        */
 
-
+        /* TODO
         frame.add(BADSTRASSE,0);
         frame.add(TURMSTRASSE,0);
         frame.add(STADIONSTRASSE,0);
@@ -791,6 +790,7 @@ public class PrototypeMenu {
         frame.add(WESTBAHNHOF_Companion,0);
         frame.add(NORDBAHNHOF_Companion,0);
         frame.add(HAUPTBAHNHOF_Companion,0);
+         */
 
 
 

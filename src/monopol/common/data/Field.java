@@ -1,7 +1,6 @@
 package monopol.common.data;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public enum Field implements IField {
@@ -11,13 +10,13 @@ public enum Field implements IField {
     BUSFAHRKARTE,
     GESCHENK,
     LOS,
-    ZUBESUCH,
+    GEFAENGNIS,
     FREIPARKEN,
     INSGEFAENGNIS,
     EINKOMMENSSTEUER,
     ZUSATZSTEUER;
 
-    private static final ArrayList<IField> fields = new ArrayList<>(Arrays.asList(
+    private static final ArrayList<IField> FIELDS = new ArrayList<>(List.of(
             Field.LOS,
 
             Street.BADSTRASSE,
@@ -33,7 +32,7 @@ public enum Field implements IField {
             Street.POSTSTRASSE,
             Street.TIERGARTENSTRASSE,
 
-            Field.ZUBESUCH,
+            Field.GEFAENGNIS,
             Field.AUKTION,
             Street.SEESTRASSE,
             Street.HAFENSTRASSE,
@@ -77,14 +76,14 @@ public enum Field implements IField {
     ));
 
     public static List<IField> getAll() {
-        return new ArrayList<>(fields);
+        return new ArrayList<>(FIELDS);
     }
 
-    public static IField getField(int i) {
-        if(i < 1) throw new IllegalArgumentException();
-        while (i > 52) {
+    public static IField get(int i) {
+        if(i < 0) throw new IllegalArgumentException();
+        while (i >= 52) {
             i -= 52;
         }
-        return fields.get(i-1);
+        return FIELDS.get(i);
     }
 }

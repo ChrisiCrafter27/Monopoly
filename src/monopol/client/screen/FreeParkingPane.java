@@ -11,7 +11,7 @@ public class FreeParkingPane extends JLayeredPane {
 
     public FreeParkingPane() {
         super();
-        setBounds(1080/2 - 175, 400, 300, 100);
+        setBounds(0, 0, (int) JUtils.SCREEN_WIDTH, (int) JUtils.SCREEN_HEIGHT);
         reset();
     }
 

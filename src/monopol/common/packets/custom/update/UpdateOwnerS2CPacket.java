@@ -47,5 +47,6 @@ public class UpdateOwnerS2CPacket extends S2CPacket<UpdateOwnerS2CPacket> {
             if(!owner.containsKey(((Enum<?>) purchasable).name())) System.out.println("error");
             purchasable.setOwner(owner.get(((Enum<?>) purchasable).name()));
         }
+        display.playerInfoPane.update();
     }
 }

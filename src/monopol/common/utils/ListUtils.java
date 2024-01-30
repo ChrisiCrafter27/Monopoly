@@ -1,6 +1,6 @@
 package monopol.common.utils;
 
-import monopol.common.Player;
+import monopol.common.data.Player;
 
 import java.util.List;
 

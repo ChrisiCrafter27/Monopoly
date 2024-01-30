@@ -1,7 +1,9 @@
 package monopol.client.screen;
 
+import monopol.client.Client;
 import monopol.common.utils.JUtils;
 import monopol.common.utils.Pair;
+import monopol.common.utils.Triplet;
 
 import javax.swing.*;
 import java.awt.*;
@@ -9,10 +11,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Supplier;
 
 public class PlayerDisplayPane extends JLayeredPane {
-    private final Map<String, Pair<JButton, Integer>> players = new HashMap<>();
+    private final Map<String, Triplet<JButton, Integer, Integer>> players = new HashMap<>();
     private Thread animThread = new Thread(() -> {});
+    private Supplier<RootPane> displaySup = () -> {throw new IllegalStateException("init() was not called");};
 
     public PlayerDisplayPane() {
         super();
@@ -20,8 +24,40 @@ public class PlayerDisplayPane extends JLayeredPane {
         reset();
     }
 
-    public void init() {
+    public void init(Supplier<RootPane> displaySup) {
         setVisible(true);
+        this.displaySup = displaySup;
+        animThread.interrupt();
+        animThread = new Thread(() -> {
+            while(!Thread.interrupted()) {
+                for(String name : players.keySet()) {
+                    Triplet<JButton, Integer, Integer> triplet = players.get(name);
+                    if(triplet.getMiddle() != triplet.getRight()) {
+                        int oldPos = triplet.getRight();
+                        int pos = oldPos;
+                        pos++;
+                        if(pos >= 52) pos = 0;
+                        triplet.setRight(pos);
+                        List<JButton> buttons1 = playersOn(pos);
+                        for (int i = 0; i < buttons1.size(); i++) {
+                            JButton button = buttons1.get(i);
+                            button.setBounds(JUtils.getX(x(pos, buttons1.size(), i)-10), JUtils.getY(y(pos, buttons1.size(), i)-10), 20, 20);
+                        }
+                        List<JButton> buttons2 = playersOn(oldPos);
+                        for (int i = 0; i < buttons2.size(); i++) {
+                            JButton button = buttons2.get(i);
+                            button.setBounds(JUtils.getX(x(oldPos, buttons2.size(), i)-10), JUtils.getY(y(oldPos, buttons2.size(), i)-10), 20, 20);
+                        }
+                    }
+                }
+                try {
+                    Thread.sleep(250);
+                } catch (InterruptedException e) {
+                    return;
+                }
+            }
+        });
+        animThread.start();
     }
 
     public synchronized void check(Set<String> names) {
@@ -39,16 +75,16 @@ public class PlayerDisplayPane extends JLayeredPane {
                     case 5 -> Color.MAGENTA;
                     default -> Color.WHITE;
                 };
-                players.put(name, new Pair<>(playerButton(color), 0));
+                players.put(name, new Triplet<>(playerButton(color, name), 0, 0));
                 setPos(name, 0, Color.WHITE);
                 i++;
             }
         }
     }
 
-    private JButton playerButton(Color color) {
+    private JButton playerButton(Color color, String name) {
         JButton button = JUtils.addButton("", 0, 0, 0, 0, true, actionEvent ->  {
-            System.out.println("Spectating Player1");
+            displaySup.get().playerInfoPane.setCurrentAndUpdate(name);
         });
         button.setBackground(color);
         button.setOpaque(true);
@@ -59,32 +95,20 @@ public class PlayerDisplayPane extends JLayeredPane {
     }
 
     public synchronized void setPosWithAnim(String name, int pos, Color color) {
-        animThread.interrupt();
-        animThread = new Thread(() -> {
-            if(players.containsKey(name)) {
-                int oldPos = players.get(name).getRight();
-                while(isVisible() && players.containsKey(name) && players.get(name).getRight() != pos && !Thread.interrupted()) {
-                    oldPos++;
-                    if(oldPos >= 52) oldPos = 0;
-                    setPos(name, oldPos, color);
-                    try {
-                        Thread.sleep(250);
-                    } catch (InterruptedException e) {
-                        break;
-                    }
-                }
-                setPos(name, pos, color);
-            }
-        });
-        animThread.start();
+        if (players.containsKey(name)) {
+            Triplet<JButton, Integer, Integer> triplet = players.get(name);
+            if(color != null) triplet.getLeft().setBackground(color);
+            triplet.setMiddle(pos);
+        }
     }
 
     public void setPos(String name, int pos, Color color) {
         if (players.containsKey(name)) {
-            Pair<JButton, Integer> pair = players.get(name);
-            int oldPos = pair.getRight();
-            pair.setRight(pos);
-            pair.getLeft().setBackground(color);
+            Triplet<JButton, Integer, Integer> triplet = players.get(name);
+            int oldPos = triplet.getRight();
+            triplet.setMiddle(pos);
+            triplet.setRight(pos);
+            if(color != null) triplet.getLeft().setBackground(color);
             List<JButton> buttons1 = playersOn(pos);
             for (int i = 0; i < buttons1.size(); i++) {
                 JButton button = buttons1.get(i);
@@ -98,17 +122,14 @@ public class PlayerDisplayPane extends JLayeredPane {
         }
     }
 
-    public int getPos(String name) {
-        return players.get(name).getRight();
-    }
-
     private List<JButton> playersOn(int pos) {
-        return players.values().stream().filter(pair -> pair.getRight() == pos).map(Pair::getLeft).toList();
+        return players.values().stream().filter(pair -> pair.getRight() == pos).map(Triplet::getLeft).toList();
     }
 
     public void reset() {
         removeAll();
         setVisible(false);
+        animThread.interrupt();
     }
 
     private int x(int pos, int players, int i) {

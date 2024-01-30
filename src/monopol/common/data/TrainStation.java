@@ -13,6 +13,7 @@ public enum TrainStation implements IPurchasable {
     public final int rentNormal = 25;
     private String owner = "";
     private boolean mortgaged;
+    private boolean doubleRent;
 
     TrainStation(String name) {
         this.name = name;
@@ -20,6 +21,10 @@ public enum TrainStation implements IPurchasable {
 
     public boolean isUpgraded() {
         return upgraded;
+    }
+
+    public void setDoubleRent(boolean doubleRent) {
+        this.doubleRent = doubleRent;
     }
 
     @Override
@@ -97,6 +102,7 @@ public enum TrainStation implements IPurchasable {
             i--;
         }
         if (isUpgraded()) toReturn *= 2;
+        if (doubleRent) toReturn *= 2;
         return toReturn;
     }
 

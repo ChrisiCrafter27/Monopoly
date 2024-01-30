@@ -71,6 +71,12 @@ public class JUtils {
         return button;
     }
 
+    public static JButton addButton(String display, String icon, int x, int y, int width, int height, boolean enabled, boolean selected, ActionListener actionEvent) {
+        JButton button = addButton(new JButton(), display, x, y, width, height, enabled, icon, actionEvent);
+        button.setSelected(selected);
+        return button;
+    }
+
     public static JLabel addText(String display, int x, int y, int width, int height, boolean centered) {
         JLabel label;
         width = JUtils.getX(width);

@@ -5,7 +5,7 @@ import monopol.common.message.MessageType;
 import monopol.common.core.Monopoly;
 import monopol.common.message.Message;
 import monopol.server.Server;
-import monopol.common.Player;
+import monopol.common.data.Player;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -20,7 +20,7 @@ public class PacketManager {
     public static void sendS2C(S2CPacket<?> packet, Function<Player, Boolean> targets, Consumer<Exception> catcher) {
         try {
             Server server = Monopoly.INSTANCE.server();
-            for (Player player : server.getPlayers()) {
+            for (Player player : server.getPlayersServerSide()) {
                 if (targets.apply(player)) Message.send(new Message(new Object[]{packet.getClass().getName(), packet.serialize()}, MessageType.PACKET), server.players.get(player));
             }
         } catch (Exception e) {

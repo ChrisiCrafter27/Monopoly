@@ -9,11 +9,10 @@ import monopol.common.packets.ClientSide;
 import monopol.common.packets.PacketManager;
 import monopol.client.screen.RootPane;
 import monopol.server.DisconnectReason;
-import monopol.server.IServer;
+import monopol.common.message.IServer;
 import monopol.common.utils.Json;
 import monopol.common.message.Message;
 import monopol.common.message.MessageType;
-import monopol.server.Server;
 
 import javax.swing.*;
 import java.io.DataInputStream;
@@ -273,7 +272,7 @@ public class Client {
 
     public void close() {
         try {
-            Message.send(new Message(DisconnectReason.UNKNOWN, MessageType.DISCONNECT), client);
+            Message.send(new Message(DisconnectReason.CLIENT_CLOSED, MessageType.DISCONNECT), client);
         } catch (IOException e) {
             e.printStackTrace(System.err);
         }

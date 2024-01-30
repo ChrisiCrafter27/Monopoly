@@ -16,7 +16,8 @@ public class BoardPane extends JLayeredPane {
     public BoardPane() {
         super();
         setBounds(0, 0, (int) JUtils.SCREEN_WIDTH, (int) JUtils.SCREEN_HEIGHT);
-        //add(label, DEFAULT_LAYER);
+        add(JUtils.addImage("images/Main_pictures/Background_Right.png", 1020, 60), DEFAULT_LAYER);
+        add(JUtils.addImage("images/Main_pictures/hintergrund_links_mitte2.png", 90, 150), DEFAULT_LAYER);
         addButtons();
         reset();
     }
@@ -84,10 +85,10 @@ public class BoardPane extends JLayeredPane {
         addStreetButton(Street.HAUPSTRASSE, 790, 990, Direction.UP);
         addStreetButton(Street.RATHAUSPLATZ, 860, 990, Direction.UP);
         //CORNERS
-        add(JUtils.addImage("images/felder/gefaengnis.png", 0, 60));
-        add(JUtils.addImage("images/felder/los.png", 0, 990));
-        add(JUtils.addImage("images/felder/freiparken.png", 930, 60));
-        add(JUtils.addImage("images/felder/ins_gefaengnis.png", 930, 990));
+        add(JUtils.addImage("images/felder/gefaengnis.png", 0, 60), PALETTE_LAYER);
+        add(JUtils.addImage("images/felder/los.png", 0, 990), PALETTE_LAYER);
+        add(JUtils.addImage("images/felder/freiparken.png", 930, 60), PALETTE_LAYER);
+        add(JUtils.addImage("images/felder/ins_gefaengnis.png", 930, 990), PALETTE_LAYER);
     }
 
     private void addStreetButton(Street street, int x, int y, Direction direction) {
@@ -138,7 +139,7 @@ public class BoardPane extends JLayeredPane {
             default -> throw new RuntimeException();
         }
         pane.add(button, 3);
-        add(pane);
+        add(pane, PALETTE_LAYER);
     }
 
     private void addTrainStationButton(TrainStation station, int x, int y, Direction direction) {
@@ -189,7 +190,7 @@ public class BoardPane extends JLayeredPane {
             default -> throw new RuntimeException();
         }
         pane.add(button, 3);
-        add(pane);
+        add(pane, PALETTE_LAYER);
     }
 
     private void addPlantButton(Plant plant, int x, int y, Direction direction) {
@@ -233,7 +234,7 @@ public class BoardPane extends JLayeredPane {
             default -> throw new RuntimeException();
         }
         pane.add(button, 3);
-        add(pane);
+        add(pane, PALETTE_LAYER);
     }
 
     private void addEreignisfeld(int x, int y, Direction direction) {
@@ -264,7 +265,7 @@ public class BoardPane extends JLayeredPane {
             default -> throw new RuntimeException();
         }
         pane.add(label, 3);
-        add(pane);
+        add(pane, PALETTE_LAYER);
     }
 
     private void addGemeinschaftsfeld(int x, int y, Direction direction) {
@@ -295,7 +296,7 @@ public class BoardPane extends JLayeredPane {
             default -> throw new RuntimeException();
         }
         pane.add(label, 3);
-        add(pane);
+        add(pane, PALETTE_LAYER);
     }
 
     private void addSteuerfeld(int x, int y, Direction direction) {
@@ -319,7 +320,7 @@ public class BoardPane extends JLayeredPane {
             default -> throw new RuntimeException();
         }
         pane.add(label, 4);
-        add(pane);
+        add(pane, PALETTE_LAYER);
     }
 
     private void addSpecialField(int x, int y, Direction direction) {
@@ -345,6 +346,6 @@ public class BoardPane extends JLayeredPane {
             default -> throw new RuntimeException();
         }
         pane.add(label, 3);
-        add(pane);
+        add(pane, PALETTE_LAYER);
     }
 }

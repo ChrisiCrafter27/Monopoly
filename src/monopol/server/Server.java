@@ -1,14 +1,16 @@
 package monopol.server;
 
 import monopol.client.screen.LobbyPane;
-import monopol.common.Player;
+import monopol.common.data.Player;
 import monopol.common.data.*;
 import monopol.common.core.GameState;
 import monopol.common.core.Monopoly;
 import monopol.common.log.ServerLogger;
+import monopol.common.message.IServer;
 import monopol.common.packets.PacketManager;
 import monopol.common.packets.ServerSide;
 import monopol.common.packets.custom.AskRejoinS2CPacket;
+import monopol.common.packets.custom.CommunityCardS2CPacket;
 import monopol.common.packets.custom.RejoinStatusS2CPacket;
 import monopol.common.packets.custom.RequestRejoinC2SPacket;
 import monopol.common.packets.custom.update.UpdateFreeParkingS2CPacket;
@@ -16,10 +18,7 @@ import monopol.common.packets.custom.update.UpdateOwnerS2CPacket;
 import monopol.common.packets.custom.update.UpdatePlayerDataS2CPacket;
 import monopol.common.packets.custom.update.UpdatePositionS2CPacket;
 import monopol.common.utils.MapUtils;
-import monopol.server.events.BuildRule;
-import monopol.server.events.Events;
-import monopol.server.events.OwnedCardsOfColorGroup;
-import monopol.server.events.StandardEvents;
+import monopol.server.events.*;
 import monopol.common.utils.Json;
 import monopol.common.message.Message;
 import monopol.common.message.MessageType;
@@ -50,7 +49,8 @@ public class Server extends UnicastRemoteObject implements IServer {
     private String host;
     private boolean hostJoined = false;
     private Events events = new StandardEvents(true, -1, true, false, true, true, 1000, 200, true, true, false, true, false, BuildRule.ANYWHERE, OwnedCardsOfColorGroup.NONE, OwnedCardsOfColorGroup.NONE, OwnedCardsOfColorGroup.NONE, OwnedCardsOfColorGroup.NONE, OwnedCardsOfColorGroup.ALL_BUT_ONE, OwnedCardsOfColorGroup.ALL);
-
+    private GameData gameData;
+    
     private final Thread connectionThread = new Thread() {
         @Override
         public void run() {
@@ -78,9 +78,10 @@ public class Server extends UnicastRemoteObject implements IServer {
                                         logger.log().info("[Server]: New Client rejoined (" + player.getName() + ")");
                                         //TODO: send necessary information
                                         PacketManager.sendS2C(new UpdateOwnerS2CPacket(), PacketManager.Restriction.all(), Throwable::printStackTrace);
-                                        PacketManager.sendS2C(new UpdatePositionS2CPacket(), PacketManager.Restriction.all(), Throwable::printStackTrace);
+                                        PacketManager.sendS2C(new UpdatePositionS2CPacket(false), PacketManager.Restriction.all(), Throwable::printStackTrace);
                                         PacketManager.sendS2C(new UpdatePlayerDataS2CPacket(), PacketManager.Restriction.all(), Throwable::printStackTrace);
-                                        PacketManager.sendS2C(new UpdateFreeParkingS2CPacket(Monopoly.GAME_DATA.getFreeParkingAmount()), PacketManager.Restriction.all(), Throwable::printStackTrace);
+                                        PacketManager.sendS2C(new UpdateFreeParkingS2CPacket(gameData.getFreeParkingAmount()), PacketManager.Restriction.all(), Throwable::printStackTrace);
+                                        events.onRejoin();
                                         return;
                                     }
                                 }
@@ -304,12 +305,12 @@ public class Server extends UnicastRemoteObject implements IServer {
     }
 
     public void kick(Socket client, DisconnectReason reason) {
-        if(!clients.containsValue(client)) throw new IllegalStateException();
+        if(!clients.containsValue(client)) return;
         int id = MapUtils.key(clients, client);
         try {
             Message.send(new Message(reason, MessageType.DISCONNECT), client);
         } catch (IOException e) {
-            e.printStackTrace(System.err);
+            if(reason != DisconnectReason.UNKNOWN) e.printStackTrace(System.err);
         }
         for(int i = id; i < clients.size(); i++) {
             clients.replace(i, clients.get(i + 1));
@@ -323,9 +324,9 @@ public class Server extends UnicastRemoteObject implements IServer {
             }
         }
         logger.log().warning("[Server]: Kicked client");
-        PacketManager.sendS2C(new UpdatePositionS2CPacket(), PacketManager.Restriction.all(), Throwable::printStackTrace);
+        PacketManager.sendS2C(new UpdatePositionS2CPacket(false), PacketManager.Restriction.all(), Throwable::printStackTrace);
         PacketManager.sendS2C(new UpdatePlayerDataS2CPacket(), PacketManager.Restriction.all(), Throwable::printStackTrace);
-        PacketManager.sendS2C(new UpdateFreeParkingS2CPacket(Monopoly.GAME_DATA.getFreeParkingAmount()), PacketManager.Restriction.all(), Throwable::printStackTrace);
+        PacketManager.sendS2C(new UpdateFreeParkingS2CPacket(gameData.getFreeParkingAmount()), PacketManager.Restriction.all(), Throwable::printStackTrace);
         if(clients.isEmpty()) close();
     }
 
@@ -373,11 +374,26 @@ public class Server extends UnicastRemoteObject implements IServer {
         return serverSettings;
     }
 
+    public ArrayList<Player> getPlayersServerSide() {
+        ArrayList<Player> list = new ArrayList<>(players.keySet());
+        list.removeIf(serverPlayer -> players.get(serverPlayer) == null);
+        return list;
+    }
+
     @Override
     public ArrayList<Player> getPlayers() throws RemoteException {
         ArrayList<Player> list = new ArrayList<>(players.keySet());
         list.removeIf(serverPlayer -> players.get(serverPlayer) == null);
         return list;
+    }
+
+    public Player getPlayerServerSide(String name) {
+        for (Map.Entry<Player, Socket> entry : players.entrySet()) {
+            if(entry.getKey().getName().equals(name)) {
+                return entry.getKey();
+            }
+        }
+        return null;
     }
 
     @Override
@@ -514,12 +530,14 @@ public class Server extends UnicastRemoteObject implements IServer {
     @Override
     public void start() throws IOException {
         Monopoly.INSTANCE.setState(GameState.RUNNING);
+        gameData = new GameData();
         for (Socket socket : players.values()) {
             Message.send(new Message(null, MessageType.START), socket);
             PacketManager.sendS2C(new UpdateOwnerS2CPacket(), PacketManager.Restriction.all(), Throwable::printStackTrace);
-            PacketManager.sendS2C(new UpdatePositionS2CPacket(), PacketManager.Restriction.all(), Throwable::printStackTrace);
+            PacketManager.sendS2C(new UpdatePositionS2CPacket(false), PacketManager.Restriction.all(), Throwable::printStackTrace);
             PacketManager.sendS2C(new UpdatePlayerDataS2CPacket(), PacketManager.Restriction.all(), Throwable::printStackTrace);
-            PacketManager.sendS2C(new UpdateFreeParkingS2CPacket(Monopoly.GAME_DATA.getFreeParkingAmount()), PacketManager.Restriction.all(), Throwable::printStackTrace);
+            PacketManager.sendS2C(new UpdateFreeParkingS2CPacket(gameData.getFreeParkingAmount()), PacketManager.Restriction.all(), Throwable::printStackTrace);
+            PacketManager.sendS2C(new CommunityCardS2CPacket(null, new ArrayList<>(), new ArrayList<>(), CommunityCard.unusedSize()), PacketManager.Restriction.all(), Throwable::printStackTrace);
         }
         new Thread(() -> {
             try {
@@ -529,13 +547,23 @@ public class Server extends UnicastRemoteObject implements IServer {
         }).start();
     }
 
-    public void updatePosition() {
-        PacketManager.sendS2C(new UpdatePositionS2CPacket(), PacketManager.Restriction.all(), Throwable::printStackTrace);
+    public void updatePosition(boolean anim) {
+        PacketManager.sendS2C(new UpdatePositionS2CPacket(anim), PacketManager.Restriction.all(), Throwable::printStackTrace);
     }
 
+    public void updateFreeParking() {
+        PacketManager.sendS2C(new UpdateFreeParkingS2CPacket(gameData.getFreeParkingAmount()), PacketManager.Restriction.all(), Throwable::printStackTrace);
+    }
 
+    public void updatePlayerData() {
+        PacketManager.sendS2C(new UpdatePlayerDataS2CPacket(), PacketManager.Restriction.all(), Throwable::printStackTrace);
+    }
 
     public Events events() {
         return events;
+    }
+
+    public GameData gameData() {
+        return gameData;
     }
 }

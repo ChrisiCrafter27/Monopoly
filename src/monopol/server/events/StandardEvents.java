@@ -1,14 +1,17 @@
 package monopol.server.events;
 
-import monopol.common.Player;
+import monopol.common.data.Player;
 import monopol.common.core.Monopoly;
+import monopol.common.data.Field;
+import monopol.common.data.IField;
+import monopol.common.data.IPurchasable;
 import monopol.common.packets.PacketManager;
+import monopol.common.packets.custom.CommunityCardS2CPacket;
 import monopol.common.packets.custom.InfoS2CPacket;
 import monopol.common.packets.custom.RollDiceC2SPacket;
 import monopol.common.packets.custom.RollDiceS2CPacket;
-import monopol.common.packets.custom.update.UpdatePlayerDataS2CPacket;
 
-import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -29,11 +32,25 @@ public class StandardEvents extends Events {
 
     @Override
     public void onGameStart(List<String> playerNames) {
+        CommunityCard.setCurrent(null);
+        CommunityCard.resetUnused();
         players.clear();
         players.addAll(playerNames);
-        currentPlayer = -1;
+        currentPlayer = new Random().nextInt(players.size()) - 1;
         running = true;
         onNextRound();
+    }
+
+    @Override
+    public void onRejoin() {
+        if(CommunityCard.getCurrent() != null)
+            CommunityCard.getCurrent().activate(player());
+        else PacketManager.sendS2C(new CommunityCardS2CPacket(null, new ArrayList<>(), new ArrayList<>(), CommunityCard.unusedSize()), PacketManager.Restriction.all(), Throwable::printStackTrace);
+    }
+
+    @Override
+    public void onTryNextRound() {
+        if(CommunityCard.getCurrent() == null) onNextRound();
     }
 
     @Override
@@ -53,6 +70,7 @@ public class StandardEvents extends Events {
     public void onDiceRoll() {
         RollDiceC2SPacket.request(null);
         Random random = new Random();
+
         int result1 = random.nextInt(6) + 1; //dice 1
         int result2 = random.nextInt(6) + 1; //dice 2
         int result3 = tempoDice ? random.nextInt(6) + 1 : -1; //dice 3
@@ -73,13 +91,42 @@ public class StandardEvents extends Events {
             if(!running) return;
             player().move(finalResult);
             PacketManager.sendS2C(new InfoS2CPacket(player().getName() +  " bewegt sich " + finalResult + " Felder"), PacketManager.Restriction.all(), Throwable::printStackTrace);
-            PacketManager.sendS2C(new UpdatePlayerDataS2CPacket(), PacketManager.Restriction.all(), Throwable::printStackTrace);
+            Monopoly.INSTANCE.server().updatePlayerData();
             try {
                 Thread.sleep(finalResult * 250);
             } catch (InterruptedException ignored) {}
             if(!running) return;
+            onArrivedAtField();
             onNextRound();
         }).start();
+    }
+
+    @Override
+    public void onArrivedAtField() {
+        IField field = Field.get(player().getPosition());
+        if(field instanceof IPurchasable purchasable) onArrivedAtPurchasable(purchasable);
+        else if(field == Field.GEMEINSCHAFTSFELD) onArrivedAtCommunityField();
+        else if(field == Field.EREIGNISFELD) onArrivedAtEventField();
+        else if(field == Field.AUKTION) onArrivedAtAuction();
+        else if(field == Field.BUSFAHRKARTE) onArrivedAtBusPass();
+        else if(field == Field.GESCHENK) onArrivedAtBirthday();
+        else if(field == Field.LOS) onArrivedAtLos();
+        else if(field == Field.GEFAENGNIS) onArrivedAtPrisonField();
+        else if(field == Field.FREIPARKEN) onArrivedAtFreeParking();
+        else if(field == Field.INSGEFAENGNIS) onArrivedAtGoToPrisonField();
+        else if(field == Field.EINKOMMENSSTEUER) onArrivedAtTaxField();
+        else if(field == Field.ZUSATZSTEUER) onArrivedAtAdditionalTaxField();
+        else throw new IllegalStateException("Player arrived at unregistered field");
+    }
+
+    @Override
+    public void onCommunityCardAction(String action) {
+        CommunityCard card = CommunityCard.getCurrent();
+        if(card != null && card.actions().containsKey(action)) {
+            card.actions().get(action).act(Monopoly.INSTANCE.server(), player());
+            CommunityCard.setCurrent(null);
+            PacketManager.sendS2C(new CommunityCardS2CPacket(null, new ArrayList<>(), new ArrayList<>(), CommunityCard.unusedSize()), PacketManager.Restriction.all(), Throwable::printStackTrace);
+        }
     }
 
     @Override
@@ -89,14 +136,10 @@ public class StandardEvents extends Events {
 
     @Override
     public void onGetBusCard() {
-        if(new Random().nextInt(10) == 0){
-            try {
-                Monopoly.INSTANCE.server().getPlayers().forEach(player -> player.substractBusfahrkarten(player.getBusfahrkarten()));
-            } catch (RemoteException e) {
-                throw new RuntimeException(e);
-            }
+        if(new Random().nextInt(10) == 0) {
+            Monopoly.INSTANCE.server().getPlayersServerSide().forEach(Player::removeBusCards);
         }
-        player().addBusfahrkarten(1);
+        player().addBusCard();
     }
 
     @Override
@@ -126,7 +169,7 @@ public class StandardEvents extends Events {
 
     @Override
     public void onArrivedAtBusPass() {
-
+        onGetBusCard();
     }
 
     @Override
@@ -135,7 +178,7 @@ public class StandardEvents extends Events {
     }
 
     @Override
-    public void onArrivedAtStreetOrFacility() {
+    public void onArrivedAtPurchasable(IPurchasable purchasable) {
 
     }
 
@@ -146,12 +189,14 @@ public class StandardEvents extends Events {
 
     @Override
     public void onArrivedAtCommunityField() {
-
+        CommunityCard card = CommunityCard.getUnused();
+        CommunityCard.setCurrent(card);
+        card.activate(player());
     }
 
     @Override
     public void onArrivedAtFreeParking() {
-
+        player().addMoney(Monopoly.INSTANCE.server().gameData().parkForFree());
     }
 
     @Override
@@ -166,6 +211,11 @@ public class StandardEvents extends Events {
 
     @Override
     public void onArrivedAtAdditionalTaxField() {
+
+    }
+
+    @Override
+    public void onArrivedAtPrisonField() {
 
     }
 

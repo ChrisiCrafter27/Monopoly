@@ -27,12 +27,8 @@ public class TestC2SPacket extends C2SPacket<TestC2SPacket> {
 
     @Override
     public void handleOnServer(Server server) {
-        try {
-            server.getPlayer(name).move(i);
-            PacketManager.sendS2C(new InfoS2CPacket(name +  " bewegt sich " + i + " Felder"), PacketManager.Restriction.all(), Throwable::printStackTrace);
-            PacketManager.sendS2C(new InfoS2CPacket("hi"), PacketManager.Restriction.named("F", "C"), Throwable::printStackTrace);
-        } catch (RemoteException e) {
-            throw new RuntimeException(e);
-        }
+        server.getPlayerServerSide(name).move(i);
+        PacketManager.sendS2C(new InfoS2CPacket(name +  " bewegt sich " + i + " Felder"), PacketManager.Restriction.all(), Throwable::printStackTrace);
+        PacketManager.sendS2C(new InfoS2CPacket("hi"), PacketManager.Restriction.named("F", "C"), Throwable::printStackTrace);
     }
 }
