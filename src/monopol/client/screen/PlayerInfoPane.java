@@ -1,10 +1,13 @@
 package monopol.client.screen;
 
 import monopol.client.Client;
+import monopol.common.data.Field;
+import monopol.common.data.IPurchasable;
 import monopol.common.data.Player;
 import monopol.common.utils.JUtils;
 
 import javax.swing.*;
+import java.awt.*;
 import java.rmi.RemoteException;
 import java.util.List;
 import java.util.function.Supplier;
@@ -18,6 +21,8 @@ public class PlayerInfoPane extends JLayeredPane {
     private final JLayeredPane topLeft = new JLayeredPane();
     private final JLayeredPane topRight = new JLayeredPane();
     private final JLayeredPane bottom = new JLayeredPane();
+    private final JLayeredPane purchasableThis = new JLayeredPane();
+    private final JLayeredPane purchasableOther = new JLayeredPane();
 
     private final JButton buttonL = JUtils.addButton(null,"images/Main_pictures/Player_display.png", 1060,90,400,60,true,false, actionevent -> {});
     private final JLabel nameL = JUtils.addText("-",1060,90 + 13,400,30, SwingConstants.CENTER);
@@ -109,6 +114,12 @@ public class PlayerInfoPane extends JLayeredPane {
         topRight.setBounds(0, 0, (int) JUtils.SCREEN_WIDTH, (int) JUtils.SCREEN_HEIGHT);
         addTopRight();
         add(topRight, DEFAULT_LAYER);
+        purchasableThis.setBounds(0, 0, (int) JUtils.SCREEN_WIDTH, (int) JUtils.SCREEN_HEIGHT);
+        addPurchasableThis();
+        add(purchasableThis, PALETTE_LAYER);
+        purchasableOther.setBounds(0, 0, (int) JUtils.SCREEN_WIDTH, (int) JUtils.SCREEN_HEIGHT);
+        addPurchasableOther();
+        add(purchasableOther, PALETTE_LAYER);
         bottom.setBounds(0, 0, (int) JUtils.SCREEN_WIDTH, (int) JUtils.SCREEN_HEIGHT);
         addBottom();
         add(bottom, DEFAULT_LAYER);
@@ -150,6 +161,7 @@ public class PlayerInfoPane extends JLayeredPane {
         if(!isVisible()) return;
         updateTexts();
         updateImages();
+        updateImages();
     }
 
     private void updateTexts() {
@@ -174,7 +186,18 @@ public class PlayerInfoPane extends JLayeredPane {
     }
 
     private void updateImages() {
-
+        List<IPurchasable> cards = Field.getAll().stream().filter(card -> card instanceof IPurchasable).map(card -> ((IPurchasable) card)).toList();
+        for(int i = 1; i <= cards.size(); i++) {
+            IPurchasable card = cards.get(i-1);
+            if(purchasableThis.getComponent(i-1) instanceof JLabel label) {
+                ImageIcon icon = new ImageIcon(card.getOwner().equals(clientSup.get().player.getName()) ? "images/kleine_karten/" + getColor(i) + "_filled.png" : "images/kleine_karten/" + getColor(i) + ".png");
+                label.setIcon(new ImageIcon(icon.getImage().getScaledInstance(JUtils.getX(icon.getIconWidth()), JUtils.getY(icon.getIconHeight()), Image.SCALE_DEFAULT)));
+            }
+            if(purchasableOther.getComponent(i-1) instanceof JLabel label) {
+                ImageIcon icon = new ImageIcon(card.getOwner().equals(currentPlayer) ? "images/kleine_karten/" + getColor(i) + "_filled.png" : "images/kleine_karten/" + getColor(i) + ".png");
+                label.setIcon(new ImageIcon(icon.getImage().getScaledInstance(JUtils.getX(icon.getIconWidth()), JUtils.getY(icon.getIconHeight()), Image.SCALE_DEFAULT)));
+            }
+        }
     }
 
     private void addTopLeft() {
@@ -222,5 +245,93 @@ public class PlayerInfoPane extends JLayeredPane {
         bottom.add(tradeL, PALETTE_LAYER);
         bottom.add(leaveB, DEFAULT_LAYER);
         bottom.add(leaveL, PALETTE_LAYER);
+    }
+
+    private void addPurchasableThis() {
+        List<IPurchasable> cards = Field.getAll().stream().filter(card -> card instanceof IPurchasable).map(card -> ((IPurchasable) card)).toList();
+        for(int i = 1; i <= cards.size(); i++) {
+            purchasableThis.add(JUtils.addImage("images/kleine_karten/disabled.png", 1075 + getX(i), 148 + getY(i)), i-1);
+        }
+    }
+
+    private void addPurchasableOther() {
+        List<IPurchasable> cards = Field.getAll().stream().filter(card -> card instanceof IPurchasable).map(card -> ((IPurchasable) card)).toList();
+        for(int i = 1; i <= cards.size(); i++) {
+            purchasableOther.add(JUtils.addImage("images/kleine_karten/disabled.png", 1494 + getX(i), 148 + getY(i)), i-1);
+        }
+    }
+
+    private String getColor(int id) {
+        if(id <= 3) {
+            return "brown";
+        } else if(id <= 7) {
+            return "cyan";
+        } else if(id <= 11) {
+            return "pink";
+        } else if(id <= 15) {
+            return "orange";
+        } else if(id <= 19) {
+            return "red";
+        } else if(id <= 23) {
+            return "yellow";
+        } else if(id <= 27) {
+            return "green";
+        } else if(id <= 30) {
+            return "blue";
+        } else if(id <= 34) {
+            return "train";
+        } else if(id == 35) {
+            return "gas";
+        } else if(id == 36) {
+            return "elec";
+        } else if(id == 37) {
+            return "water";
+        } else return "";
+    }
+
+    private int getX(int id) {
+        int toReturn;
+        if (id <= 11) {
+            toReturn = 30 * (id);
+        } else if (id <= 23) {
+            toReturn = 30 * (id-12);
+        } else if (id <= 30) {
+            toReturn = 30 * (id-24);
+        } else {
+            toReturn = 30 * (id-31);
+        }
+        if(id <= 3) {
+            return toReturn - 15;
+        } else if(id <= 7) {
+            return toReturn - 15 + 10;
+        } else if(id <= 11) {
+            return toReturn - 15 + 20;
+        } else if(id <= 15) {
+            return toReturn;
+        } else if(id <= 19) {
+            return toReturn + 10;
+        } else if(id <= 23) {
+            return toReturn + 20;
+        } else if(id <= 27) {
+            return toReturn + 80;
+        } else if(id <= 30) {
+            return toReturn + 80 + 10;
+        } else if(id <= 34) {
+            return toReturn + 80;
+        } else if(id <= 37) {
+            return toReturn + 80 + 10;
+        } else return 0;
+    }
+
+    private int getY(int id) {
+        if(id <= 11) {
+            return 5;
+        } else if(id <= 23) {
+            return 53;
+        } else if(id <= 30) {
+            return 99;
+        } else if(id <= 37) {
+            return 147;
+        } else return 0;
     }
 }

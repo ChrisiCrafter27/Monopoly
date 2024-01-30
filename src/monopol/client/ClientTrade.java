@@ -1,15 +1,10 @@
 package monopol.client;
 
-import monopol.common.data.IPurchasable;
-import monopol.common.data.Plant;
-import monopol.common.data.Street;
-import monopol.common.data.TrainStation;
 import monopol.common.message.MessageType;
 import monopol.client.screen.TradePane;
 
 import java.io.IOException;
 import java.rmi.RemoteException;
-import java.util.Map;
 import java.util.function.Supplier;
 
 public class ClientTrade {
@@ -31,16 +26,6 @@ public class ClientTrade {
         display.init(player1, player2, () -> client);
 
         client.tradeData.tradeState = state;
-
-        /*
-        ArrayList<JButton> buttonsToDisable = new ArrayList<>();
-        for(Component component : frame.getContentPane().getComponents()) {
-            if(component instanceof JButton button) {
-                if(button.getY() != 0) buttonsToDisable.add(button);
-            }
-        }
-        */
-        //display.disableButtons(); TODO
 
         if(state != TradeState.NULL) display.darken();
 
@@ -190,7 +175,6 @@ public class ClientTrade {
             }
             case CHANGE_OFFER -> {
                 //Print the trade offers and buttons to change offer
-                updateOwner(client);
                 if(player2 == null) return;
                 display.enableOfferTexts();
                 display.enableChangeOfferButtons();
@@ -346,19 +330,6 @@ public class ClientTrade {
                     }
                 }.start();
             }
-        }
-    }
-
-    public static void updateOwner(Client client) {
-        try {
-            for (Map.Entry<IPurchasable, String> entry : client.serverMethod().getOwnerMap().entrySet()) {
-                if(entry.getKey() instanceof Street street) street.setOwner(entry.getValue());
-                else if(entry.getKey() instanceof TrainStation trainStation) trainStation.setOwner(entry.getValue());
-                else if(entry.getKey() instanceof Plant plant) plant.setOwner(entry.getValue());
-            }
-        } catch (RemoteException e) {
-            e.printStackTrace(System.err);
-            client.close();
         }
     }
 }

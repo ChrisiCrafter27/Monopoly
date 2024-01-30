@@ -240,9 +240,6 @@ public class Client {
                         }
                     }
                 }
-                case UPDATE_OWNER -> {
-                    ClientTrade.updateOwner(this);
-                }
                 case START -> Monopoly.INSTANCE.setState(GameState.RUNNING);
                 case NULL -> {
                 }

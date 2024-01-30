@@ -21,7 +21,7 @@ public enum Street implements IPurchasable {
     HAMBURGERSTRASSE ("Hamburgerstraße", 200, 0, 16, 80, 220, 600, 800, 1000, 1500, ColorGroup.ORANGE, "", false),
 
     THEATERSTRASSE ("Theaterstraße", 220, 0, 18, 90, 250, 700, 875, 1050, 2050, ColorGroup.RED, "", false),
-    MUSEUMSTRASSE ("Museumsstra0e", 220, 0, 18, 90, 250, 700, 875, 1050, 2050, ColorGroup.RED, "", false),
+    MUSEUMSTRASSE ("Museumsstraße", 220, 0, 18, 90, 250, 700, 875, 1050, 2050, ColorGroup.RED, "", false),
     OPERNPLATZ ("Opernplatz", 240, 0, 20, 100, 300, 750, 925, 1100, 2100, ColorGroup.RED, "", false),
     KONZERTHAUSSTRASSE ("Konzerthausstraße", 240, 0, 20, 100, 300, 750, 925, 1100, 2100, ColorGroup.RED, "", false),
 

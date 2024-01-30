@@ -248,8 +248,6 @@ public class PrototypeMenu {
         //frame.repaint();
         //frame.repaint();
 
-        //TODO  \/  FABIANS PART  \/
-
         //frame.add(JUtils.addImage("images/Main_pictures/Background_Right.png", 1020, 60));
         //frame.add(JUtils.addImage("images/Main_pictures/hintergrund_links_mitte2.png", 90, 150));
 
@@ -384,7 +382,7 @@ public class PrototypeMenu {
         JLabel HAUPTBAHNHOF_Companion = JUtils.addImage("images/kleine_karten/train.png",x+170,y+150,20,40);
         */
 
-        /* TODO
+        /*
         gameThread = new Thread() {
             @Override
             public void run(){
@@ -598,7 +596,7 @@ public class PrototypeMenu {
         gameThread.start();
         */
 
-        /* TODO
+        /*
         frame.add(JUtils.addButton(button1,null,1060,90,400,60,true,"images/Main_pictures/Player_display.png", actionevent ->  {
             int maxPlayers;
             try {
@@ -802,11 +800,10 @@ public class PrototypeMenu {
     }
 
     public static void main(String[] args) {
-        PrototypeMenu menu = new PrototypeMenu();
-        menu.prepareMenu();
-        for(Street street : Street.values()) street.setOwner("Player 1");
-        for(TrainStation trainStation : TrainStation.values()) trainStation.setOwner("Player 1");
-        for(Plant plant : Plant.values()) plant.setOwner("Player 1");
+        for(Street street : Street.values()) street.setOwner("Spieler 1");
+        for(TrainStation trainStation : TrainStation.values()) trainStation.setOwner("Spieler 1");
+        for(Plant plant : Plant.values()) plant.setOwner("Spieler 1");
+        Monopoly.main(args);
     }
 }
 

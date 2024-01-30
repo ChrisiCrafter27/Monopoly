@@ -88,10 +88,18 @@ public class ProjectStructure {
     }
 
     public static ArrayList<String> getAllPackages() throws IOException {
-        ArrayList<String> list = new ArrayList<>();
-        list.add("monopol");
-        list.addAll(getSubpackages("monopol"));
-        return list;
+        ArrayList<String> toReturn = new ArrayList<>();
+        ArrayList<String> toCheck = new ArrayList<>();
+        toCheck.add("monopol");
+        while (!toCheck.isEmpty()) {
+            toReturn.addAll(toCheck);
+            ArrayList<String> temp = new ArrayList<>(toCheck);
+            for(String s : temp) {
+                toCheck.addAll(getSubpackages(s));
+            }
+            toCheck.removeAll(temp);
+        }
+        return toReturn;
     }
 
     public static ArrayList<Class> getAllClasses() throws IOException {
@@ -153,7 +161,7 @@ public class ProjectStructure {
             try {
                 for (String packageName : getAllPackages()) {
                     System.out.println("Package detected: " + packageName);
-                    for (Class clazz : getClassesInPackage(packageName)) {
+                    for (Class<?> clazz : getClassesInPackage(packageName)) {
                         System.out.println("    Class detected: " + clazz.getName());
                         for (Field field : getFieldsOfClass(clazz)) {
                             System.out.println("        Field detected: " + field.getType().getName() + " " + clazz.getName() + "." + field.getName());

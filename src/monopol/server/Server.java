@@ -132,7 +132,7 @@ public class Server extends UnicastRemoteObject implements IServer {
             boolean okay;
             do {
                 okay = true;
-                name = "Player " + i;
+                name = "Spieler " + i;
                 for (Map.Entry<Player, Socket> entry : players.entrySet()) {
                     if (entry.getKey().getName().equals(name)) {
                         okay = false;

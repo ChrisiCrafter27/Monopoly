@@ -8,6 +8,6 @@ public enum MessageType {
     NAME,
     START,
     TRADE,
-    UPDATE_OWNER,
-    PACKET, NULL
+    PACKET,
+    NULL
 }
