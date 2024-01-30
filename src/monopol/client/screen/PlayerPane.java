@@ -41,9 +41,11 @@ public class PlayerPane extends JLayeredPane {
                 final int value = i;
                 JButton button = addButton(clients.get(i).player.getName(), i * step, 0, step, 60, true, (client == clients.get(value)), actionEvent -> {
                     client = clients.get(value);
+                    update(client, clients, true);
                 });
                 step = Math.max(step, 1);
-                button.setIcon(new ImageIcon(new ImageIcon("images/playerselect/playerselect_0_" + clients.size() + ".png").getImage().getScaledInstance(step, 60, Image.SCALE_SMOOTH)));
+                button.setIcon(new ImageIcon(new ImageIcon("images/playerselect/playerselect_" + clients.size() + ".png").getImage().getScaledInstance(step, 60, Image.SCALE_SMOOTH)));
+                button.setSelectedIcon(new ImageIcon(new ImageIcon("images/playerselect/playerselect_" + clients.size() + "_selected.png").getImage().getScaledInstance(step, 60, Image.SCALE_SMOOTH)));
                 add(button, JLayeredPane.DEFAULT_LAYER);
             }
 
