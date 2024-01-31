@@ -1,6 +1,4 @@
-package monopol.server;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
+package monopol.common.message;
 
 public enum DisconnectReason {
     SERVER_CLOSED,

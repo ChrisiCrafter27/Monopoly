@@ -2,10 +2,7 @@ package monopol.client.screen;
 
 import monopol.client.Client;
 import monopol.common.core.Monopoly;
-import monopol.common.packets.PacketManager;
-import monopol.common.packets.custom.RequestRejoinC2SPacket;
 import monopol.common.utils.JUtils;
-import monopol.server.DisconnectReason;
 
 import javax.swing.*;
 import java.rmi.NotBoundException;

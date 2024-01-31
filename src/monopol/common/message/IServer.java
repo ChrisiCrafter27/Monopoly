@@ -2,9 +2,7 @@ package monopol.common.message;
 
 import monopol.common.data.Player;
 import monopol.common.data.IPurchasable;
-import monopol.common.message.MessageType;
-import monopol.server.DisconnectReason;
-import monopol.server.ServerSettings;
+import monopol.common.utils.ServerSettings;
 
 import java.awt.*;
 import java.io.IOException;

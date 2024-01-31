@@ -8,7 +8,7 @@ import monopol.common.core.Monopoly;
 import monopol.common.packets.ClientSide;
 import monopol.common.packets.PacketManager;
 import monopol.client.screen.RootPane;
-import monopol.server.DisconnectReason;
+import monopol.common.message.DisconnectReason;
 import monopol.common.message.IServer;
 import monopol.common.utils.Json;
 import monopol.common.message.Message;
@@ -24,9 +24,8 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.ArrayList;
 
-import static monopol.server.Server.CLIENT_TIMEOUT;
-
 public class Client {
+    public static final int CLIENT_TIMEOUT = 5000;
     private final Socket client;
     private final IServer serverInterface;
     public final ClientPlayer player;

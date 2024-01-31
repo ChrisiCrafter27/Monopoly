@@ -1,8 +1,9 @@
 package monopol.client.screen;
 
-import monopol.client.Client;
+import monopol.common.data.Field;
+import monopol.common.data.IField;
+import monopol.common.data.IPurchasable;
 import monopol.common.utils.JUtils;
-import monopol.common.utils.Pair;
 import monopol.common.utils.Triplet;
 
 import javax.swing.*;
@@ -48,6 +49,8 @@ public class PlayerDisplayPane extends JLayeredPane {
                             JButton button = buttons2.get(i);
                             button.setBounds(JUtils.getX(x(oldPos, buttons2.size(), i)-10), JUtils.getY(y(oldPos, buttons2.size(), i)-10), 20, 20);
                         }
+                        List<IField> list = Field.getAll();
+                        if(pos == triplet.getMiddle() && list.size() > pos && list.get(pos) instanceof IPurchasable purchasable) displaySup.get().selectedCardPane.init(purchasable);
                     }
                 }
                 try {
@@ -119,6 +122,8 @@ public class PlayerDisplayPane extends JLayeredPane {
                 JButton button = buttons2.get(i);
                 button.setBounds(JUtils.getX(x(oldPos, buttons2.size(), i)-10), JUtils.getY(y(oldPos, buttons2.size(), i)-10), 20, 20);
             }
+            List<IField> list = Field.getAll();
+            if(list.size() > pos && list.get(pos) instanceof IPurchasable purchasable) displaySup.get().selectedCardPane.init(purchasable);
         }
     }
 

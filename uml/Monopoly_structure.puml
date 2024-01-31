@@ -1,0 +1,1390 @@
+@startuml
+
+/' diagram meta data start
+config=StructureConfiguration;
+{
+  "projectClassification": {
+    "searchMode": "OpenProject", // OpenProject, AllProjects
+    "includedProjects": "",
+    "pathEndKeywords": "*.iml",
+    "isClientPath": "",
+    "isClientName": "",
+    "isTestPath": "",
+    "isTestName": "",
+    "isMappingPath": "",
+    "isMappingName": "",
+    "isDataAccessPath": "",
+    "isDataAccessName": "",
+    "isDataStructurePath": "",
+    "isDataStructureName": "",
+    "isInterfaceStructuresPath": "",
+    "isInterfaceStructuresName": "",
+    "isEntryPointPath": "",
+    "isEntryPointName": "",
+    "treatFinalFieldsAsMandatory": false
+  },
+  "graphRestriction": {
+    "classPackageExcludeFilter": "",
+    "classPackageIncludeFilter": "",
+    "classNameExcludeFilter": "",
+    "classNameIncludeFilter": "",
+    "methodNameExcludeFilter": "",
+    "methodNameIncludeFilter": "",
+    "removeByInheritance": "", // inheritance/annotation based filtering is done in a second step
+    "removeByAnnotation": "",
+    "removeByClassPackage": "", // cleanup the graph after inheritance/annotation based filtering is done
+    "removeByClassName": "",
+    "cutMappings": false,
+    "cutEnum": true,
+    "cutTests": true,
+    "cutClient": true,
+    "cutDataAccess": false,
+    "cutInterfaceStructures": false,
+    "cutDataStructures": false,
+    "cutGetterAndSetter": true,
+    "cutConstructors": true
+  },
+  "graphTraversal": {
+    "forwardDepth": 6,
+    "backwardDepth": 6,
+    "classPackageExcludeFilter": "",
+    "classPackageIncludeFilter": "",
+    "classNameExcludeFilter": "",
+    "classNameIncludeFilter": "",
+    "methodNameExcludeFilter": "",
+    "methodNameIncludeFilter": "",
+    "hideMappings": false,
+    "hideDataStructures": false,
+    "hidePrivateMethods": true,
+    "hideInterfaceCalls": true, // indirection: implementation -> interface (is hidden) -> implementation
+    "onlyShowApplicationEntryPoints": false, // root node is included
+    "useMethodCallsForStructureDiagram": "ForwardOnly" // ForwardOnly, BothDirections, No
+  },
+  "details": {
+    "aggregation": "GroupByClass", // ByClass, GroupByClass, None
+    "showClassGenericTypes": true,
+    "showMethods": true,
+    "showMethodParameterNames": true,
+    "showMethodParameterTypes": true,
+    "showMethodReturnType": true,
+    "showPackageLevels": 2,
+    "showDetailedClassStructure": true
+  },
+  "rootClass": "monopol.common.core.Monopoly",
+  "extensionCallbackMethod": "" // qualified.class.name#methodName - signature: public static String method(String)
+}
+diagram meta data end '/
+
+
+
+digraph g {
+    rankdir="TB"
+    splines=polyline
+    
+
+'nodes 
+subgraph cluster_1354814997 { 
+   	label=common
+	labeljust=l
+	fillcolor="#ececec"
+	style=filled
+   
+   subgraph cluster_1183369409 { 
+   	label=log
+	labeljust=l
+	fillcolor="#d8d8d8"
+	style=filled
+   
+   CustomLogger285189285[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)CustomLogger</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >-   logger: Logger [0..1]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ log(): Logger</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+ServerLogger285189285[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)ServerLogger</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+} 
+
+subgraph cluster_1959566360 { 
+   	label=packets
+	labeljust=l
+	fillcolor="#d8d8d8"
+	style=filled
+   
+   AskRejoinS2CPacket1900455379[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)AskRejoinS2CPacket</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >-   names: List&lt;String&gt; [0..*]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ deserialize(objects: Object[]): AskRejoinS2CPacket</TD></TR>
+<TR><TD ALIGN="LEFT" >+ handleOnClient(client: Client, display: RootPane)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ serialize(): Object[]</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+C2SPacket1162980812[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)C2SPacket&lt;T extends C2SPacket&lt;T&gt;&gt;</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ handle(side: Side)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ handleOnServer(side: Server)</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+CommunityCardC2SPacket1900455379[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)CommunityCardC2SPacket</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >-   button: String [0..1]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ deserialize(objects: Object[]): CommunityCardC2SPacket</TD></TR>
+<TR><TD ALIGN="LEFT" >+ handleOnServer(server: Server)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ serialize(): Object[]</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+CommunityCardS2CPacket1900455379[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)CommunityCardS2CPacket</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >-   buttons: List&lt;String&gt; [0..*]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   descriptions: List&lt;String&gt; [0..*]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   player: String [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   size: int [1]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ deserialize(objects: Object[]): CommunityCardS2CPacket</TD></TR>
+<TR><TD ALIGN="LEFT" >+ handleOnClient(client: Client, display: RootPane)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ serialize(): Object[]</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+InfoS2CPacket1900455379[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)InfoS2CPacket</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >-   text: String [0..1]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ deserialize(objects: Object[]): InfoS2CPacket</TD></TR>
+<TR><TD ALIGN="LEFT" >+ handleOnClient(client: Client, display: RootPane)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ serialize(): Object[]</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+PacketManager1162980812[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)PacketManager</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ handle(message: Message, side: Side)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ packet(message: Object[]): Packet&lt;?&gt;</TD></TR>
+<TR><TD ALIGN="LEFT" >+ send(packet: Packet&lt;?&gt;, target: Socket, catcher: Consumer&lt;Exception&gt;)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ sendC2S(packet: C2SPacket&lt;?&gt;, client: Client, catcher: Consumer&lt;Exception&gt;)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ sendS2C(packet: S2CPacket&lt;?&gt;, targets: Function&lt;Player, Boolean&gt;, catcher: Consumer&lt;Exception&gt;)</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+RejoinStatusS2CPacket1900455379[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)RejoinStatusS2CPacket</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >-   names: List&lt;String&gt; [0..*]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ deserialize(objects: Object[]): RejoinStatusS2CPacket</TD></TR>
+<TR><TD ALIGN="LEFT" >+ handleOnClient(client: Client, display: RootPane)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ serialize(): Object[]</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+RequestRejoinC2SPacket1900455379[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)RequestRejoinC2SPacket</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >-   name: String [0..1]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ deserialize(objects: Object[]): RequestRejoinC2SPacket</TD></TR>
+<TR><TD ALIGN="LEFT" >+ handleOnServer(server: Server)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ name(): String</TD></TR>
+<TR><TD ALIGN="LEFT" >+ serialize(): Object[]</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+Restriction478104253[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)Restriction</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ all(): Function&lt;Player, Boolean&gt;</TD></TR>
+<TR><TD ALIGN="LEFT" >+ named(names: String...): Function&lt;Player, Boolean&gt;</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+RollDiceC2SPacket1900455379[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)RollDiceC2SPacket</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >-   name: String [0..1]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ deserialize(objects: Object[]): RollDiceC2SPacket</TD></TR>
+<TR><TD ALIGN="LEFT" >+ handleOnServer(server: Server)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ request(target: String)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ serialize(): Object[]</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+RollDiceS2CPacket1900455379[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)RollDiceS2CPacket</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >-   dice1: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   dice2: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   tempoDice: int [1]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ deserialize(objects: Object[]): RollDiceS2CPacket</TD></TR>
+<TR><TD ALIGN="LEFT" >+ handleOnClient(client: Client, display: RootPane)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ serialize(): Object[]</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+S2CPacket1162980812[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)S2CPacket&lt;T extends S2CPacket&lt;T&gt;&gt;</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ handle(side: Side)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ handleOnClient(client: Client, display: RootPane)</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+TestC2SPacket1900455379[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)TestC2SPacket</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >-   i: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   name: String [0..1]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ deserialize(objects: Object[]): TestC2SPacket</TD></TR>
+<TR><TD ALIGN="LEFT" >+ handleOnServer(server: Server)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ serialize(): Object[]</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+UpdateFreeParkingS2CPacket1008954044[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)UpdateFreeParkingS2CPacket</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >-   money: int [1]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ deserialize(objects: Object[]): UpdateFreeParkingS2CPacket</TD></TR>
+<TR><TD ALIGN="LEFT" >+ handleOnClient(client: Client, display: RootPane)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ serialize(): Object[]</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+UpdateOwnerS2CPacket1008954044[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)UpdateOwnerS2CPacket</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >-   owner: Map&lt;String, String&gt; [0..*]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ deserialize(objects: Object[]): UpdateOwnerS2CPacket</TD></TR>
+<TR><TD ALIGN="LEFT" >+ handleOnClient(client: Client, display: RootPane)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ serialize(): Object[]</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+UpdatePlayerDataS2CPacket1008954044[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)UpdatePlayerDataS2CPacket</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ deserialize(objects: Object[]): UpdatePlayerDataS2CPacket</TD></TR>
+<TR><TD ALIGN="LEFT" >+ handleOnClient(client: Client, display: RootPane)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ serialize(): Object[]</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+UpdatePositionS2CPacket1008954044[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)UpdatePositionS2CPacket</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >-   anim: boolean [1]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ deserialize(objects: Object[]): UpdatePositionS2CPacket</TD></TR>
+<TR><TD ALIGN="LEFT" >+ handleOnClient(client: Client, display: RootPane)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ serialize(): Object[]</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+} 
+
+subgraph cluster_1970505267 { 
+   	label=data
+	labeljust=l
+	fillcolor="#d8d8d8"
+	style=filled
+   
+   GameData250681961[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)GameData</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >-   freeParkingAmount: int [1]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ addFreeParking(amount: int)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ parkForFree(): int</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+Player250681961[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)Player</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >-   busCards: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   color: Color [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   inPrison: boolean [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   money: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   name: String [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   position: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   prisonCards: int [1]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ addBusCard()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ addMoney(money: int)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ addPrisonCard()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ contractMoney(money: int)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ enoughMoney(): boolean</TD></TR>
+<TR><TD ALIGN="LEFT" >+ inPrison(): boolean</TD></TR>
+<TR><TD ALIGN="LEFT" >+ move(range: int)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ removeBusCards()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ useBusCard()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ usePrisonCards(): boolean</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+} 
+
+subgraph cluster_1970521662 { 
+   	label=core
+	labeljust=l
+	fillcolor="#d8d8d8"
+	style=filled
+   
+   Monopoly250665566[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)Monopoly</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >-   server: Server [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   state: GameState [0..1]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ closeServer()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ main(args: String[])</TD></TR>
+<TR><TD ALIGN="LEFT" >+ openServer(settings: ServerSettings)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ printStartupInfo()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ server(): Server</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+} 
+
+subgraph cluster_197583100 { 
+   	label=message
+	labeljust=l
+	fillcolor="#d8d8d8"
+	style=filled
+   
+   Message1370003224[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)Message</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+   messageType: MessageType [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   objects: Object[] [0..*]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ send(message: Message, client: Socket)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ sendPing(client: Socket)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ sendString(value: String, messageType: MessageType, client: Socket)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ sendTypeOnly(messageType: MessageType, client: Socket)</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+} 
+
+subgraph cluster_939865362 { 
+   	label=utils
+	labeljust=l
+	fillcolor="#d8d8d8"
+	style=filled
+   
+   JUtils802538030[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)JUtils</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ addButton(display: String, x: int, y: int, width: int, height: int, enabled: boolean, actionEvent: ActionListener): JButton</TD></TR>
+<TR><TD ALIGN="LEFT" >+ addButton(button: JButton, display: String, x: int, y: int, width: int, height: int, enabled: boolean, icon: String, actionEvent: ActionListener): JButton</TD></TR>
+<TR><TD ALIGN="LEFT" >+ addButton(button: JButton, display: String, x: int, y: int, width: int, height: int, enabled: boolean, icon: String, disabled_icon: String, actionEvent: ActionListener): JButton</TD></TR>
+<TR><TD ALIGN="LEFT" >+ addButton(display: String, x: int, y: int, width: int, height: int, enabled: boolean, selected: boolean, actionEvent: ActionListener): JButton</TD></TR>
+<TR><TD ALIGN="LEFT" >+ addButton(button: JButton, display: String, icon: String, x: int, y: int, width: int, height: int, enabled: boolean, selected: boolean, actionEvent: ActionListener): JButton</TD></TR>
+<TR><TD ALIGN="LEFT" >+ addButton(display: String, icon: String, x: int, y: int, width: int, height: int, enabled: boolean, selected: boolean, actionEvent: ActionListener): JButton</TD></TR>
+<TR><TD ALIGN="LEFT" >+ addImage(src: String, x: int, y: int): JLabel</TD></TR>
+<TR><TD ALIGN="LEFT" >+ addImage(src: String, x: int, y: int, rotation: int, rotX: int, rotY: int): JLabel</TD></TR>
+<TR><TD ALIGN="LEFT" >+ addImage(src: String, x: int, y: int, width: int, height: int): JLabel</TD></TR>
+<TR><TD ALIGN="LEFT" >+ addRotatedText(display: String, font: int, x: int, y: int, size: int, angle: double, maxLength: int): JLabel</TD></TR>
+<TR><TD ALIGN="LEFT" >+ addText(display: String, x: int, y: int, width: int, height: int, centered: boolean): JLabel</TD></TR>
+<TR><TD ALIGN="LEFT" >+ addText(display: String, x: int, y: int, width: int, height: int, position: int): JLabel</TD></TR>
+<TR><TD ALIGN="LEFT" >+ addText(label: JLabel, display: String, font: String, x: int, y: int, width: int, height: int, centered: boolean): JLabel</TD></TR>
+<TR><TD ALIGN="LEFT" >+ addText(display: String, x: int, y: int, width: int, height: int): JLabel</TD></TR>
+<TR><TD ALIGN="LEFT" >+ getX(x: double): int</TD></TR>
+<TR><TD ALIGN="LEFT" >+ getY(y: double): int</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+Json802538030[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)Json</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ saveToFile(node: JsonNode, directory: String, fileName: String)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ saveToFile(object: Object, directory: String, fileName: String)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ toJson(value: String): JsonNode</TD></TR>
+<TR><TD ALIGN="LEFT" >+ toJson(object: Object): JsonNode</TD></TR>
+<TR><TD ALIGN="LEFT" >+ toObject(node: JsonNode, clazz: Class&lt;T&gt;): T</TD></TR>
+<TR><TD ALIGN="LEFT" >+ toObject(file: File, clazz: Class&lt;T&gt;): T</TD></TR>
+<TR><TD ALIGN="LEFT" >+ toObject(value: String, clazz: Class&lt;T&gt;): T</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+KeyHandler802538030[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)KeyHandler</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >-   pressedKeys: ArrayList&lt;Integer&gt; [0..*]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   string: String [0..1]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ isKeyDown(code: int): boolean</TD></TR>
+<TR><TD ALIGN="LEFT" >+ keyPressed(e: KeyEvent)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ keyReleased(e: KeyEvent)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ keyTyped(e: KeyEvent)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ reset()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ resetString()</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+MapUtils802538030[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)MapUtils</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ key(map: Map&lt;K, V&gt;, value: V): K</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+ProjectStructure802538030[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)ProjectStructure</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ getClassesInPackage(packageName: String): ArrayList&lt;Class&gt;</TD></TR>
+<TR><TD ALIGN="LEFT" >+ getFieldsOfClass(clazz: Class): ArrayList&lt;Field&gt;</TD></TR>
+<TR><TD ALIGN="LEFT" >+ getMethodsOfClass(clazz: Class): ArrayList&lt;Method&gt;</TD></TR>
+<TR><TD ALIGN="LEFT" >+ getSubpackages(basePackage: String): ArrayList&lt;String&gt;</TD></TR>
+<TR><TD ALIGN="LEFT" >+ isAnnotated(method: Method, annotationClass: Class&lt;? extends Annotation&gt;): boolean</TD></TR>
+<TR><TD ALIGN="LEFT" >+ printProjectStructure()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ printProjectStructureAsTree(detailed: boolean)</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+ServerSettings802538030[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)ServerSettings</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+   allPlayersCanAccessSettings: boolean [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   allPlayersCanKick: boolean [1]</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+} 
+} 
+
+subgraph cluster_1357712437 { 
+   	label=client
+	labeljust=l
+	fillcolor="#ececec"
+	style=filled
+   
+   Client1594138193[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)Client</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >-   client: Socket [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   clientThread: Thread [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   disconnectReason: DisconnectReason [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   ping: long [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   pingThread: Thread [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   player: ClientPlayer [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   received: boolean [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   requestRejoin: String [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   root: RootPane [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   serverInterface: IServer [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   tradeData: TradeData [0..1]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ close()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ closed(): boolean</TD></TR>
+<TR><TD ALIGN="LEFT" >- messageReceived(value: String)</TD></TR>
+<TR><TD ALIGN="LEFT" >- player(): ClientPlayer</TD></TR>
+<TR><TD ALIGN="LEFT" >+ requestRejoin(): String</TD></TR>
+<TR><TD ALIGN="LEFT" >+ serverMethod(): IServer</TD></TR>
+<TR><TD ALIGN="LEFT" >+ socket(): Socket</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+ClientPlayer1594138193[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)ClientPlayer</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+   isHost: boolean [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   name: String [0..1]</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+ClientTrade1594138193[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)ClientTrade</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ trade(clientSup: Supplier&lt;Client&gt;, display: TradePane)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ trade(clientSup: Supplier&lt;Client&gt;, player2: String, state: TradeState, display: TradePane)</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+TradeData1594138193[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)TradeData</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+   counterOfferMoney: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   counterOfferSend: boolean [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   counterofferCards: ArrayList&lt;IPurchasable&gt; [0..*]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   offerCards: ArrayList&lt;IPurchasable&gt; [0..*]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   offerMoney: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   tradePlayer: String [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   tradePlayerConfirmed: boolean [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   tradeState: TradeState [0..1]</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+subgraph cluster_18393071 { 
+   	label=screen
+	labeljust=l
+	fillcolor="#d8d8d8"
+	style=filled
+   
+   BoardPane19426933[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)BoardPane</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >#   selectCard: Consumer&lt;IPurchasable&gt; [0..1]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ addButtons()</TD></TR>
+<TR><TD ALIGN="LEFT" >- addEreignisfeld(x: int, y: int, direction: Direction)</TD></TR>
+<TR><TD ALIGN="LEFT" >- addGemeinschaftsfeld(x: int, y: int, direction: Direction)</TD></TR>
+<TR><TD ALIGN="LEFT" >- addPlantButton(plant: Plant, x: int, y: int, direction: Direction)</TD></TR>
+<TR><TD ALIGN="LEFT" >- addSpecialField(x: int, y: int, direction: Direction)</TD></TR>
+<TR><TD ALIGN="LEFT" >- addSteuerfeld(x: int, y: int, direction: Direction)</TD></TR>
+<TR><TD ALIGN="LEFT" >- addStreetButton(street: Street, x: int, y: int, direction: Direction)</TD></TR>
+<TR><TD ALIGN="LEFT" >- addTrainStationButton(station: TrainStation, x: int, y: int, direction: Direction)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ init(selectCard: Consumer&lt;IPurchasable&gt;)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ reset()</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+FreeParkingPane19426933[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)FreeParkingPane</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >-   money: int [1]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >- addFreeParkingMoney()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ init()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ reset()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ update(money: int)</TD></TR>
+<TR><TD ALIGN="LEFT" >- updateImages()</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+InfoPane19426933[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)InfoPane</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >-   clientSup: Supplier&lt;Client&gt; [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   task: Runnable [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   text1: JLabel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   text2: JLabel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   text3: JLabel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   text4: JLabel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   text5: JLabel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   texts: HashMap&lt;Client, List&lt;String&gt;&gt; [0..*]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   thread: Thread [0..1]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ init(clientSup: Supplier&lt;Client&gt;)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ reset()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ show(client: Client, text: String)</TD></TR>
+<TR><TD ALIGN="LEFT" >- updateTexts()</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+LobbyPane19426933[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)LobbyPane</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >-   addBot: JButton [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   addPlayer: JButton [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   client: Client [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   connecting: JLabel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   ip: String [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   ipAddress: JButton [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   leave: JButton [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   memory: ArrayList&lt;Player&gt; [0..*]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   mustUpdate: boolean [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   playerList: JPanel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   requestUpdate: boolean [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   spaceDown: boolean [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   start: JButton [0..1]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >- addButton(display: String, x: int, y: int, width: int, height: int, enabled: boolean, actionEvent: ActionListener): JButton</TD></TR>
+<TR><TD ALIGN="LEFT" >+ addButton(x: int, y: int, width: int, height: int, actionEvent: ActionListener): JButton</TD></TR>
+<TR><TD ALIGN="LEFT" >- addText(display: String, x: int, y: int, width: int, height: int, centered: boolean): JLabel</TD></TR>
+<TR><TD ALIGN="LEFT" >+ init()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ mustUpdate(): boolean</TD></TR>
+<TR><TD ALIGN="LEFT" >- playerButton(background: Color, y: int, name: String): JButton</TD></TR>
+<TR><TD ALIGN="LEFT" >- removeActionListener(button: JButton)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ requestUpdate()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ reset()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ update(players: ArrayList&lt;Player&gt;, currentClient: Client, clients: ArrayList&lt;Client&gt;, ip: String, keyHandler: KeyHandler, forceUpdate: boolean, root: RootPane)</TD></TR>
+<TR><TD ALIGN="LEFT" >- updateButtons(clients: ArrayList&lt;Client&gt;, root: RootPane)</TD></TR>
+<TR><TD ALIGN="LEFT" >- updateIp()</TD></TR>
+<TR><TD ALIGN="LEFT" >- updateList(players: ArrayList&lt;Player&gt;)</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+MenuPane19426933[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)MenuPane</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >-   client: Client [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   ip: String [0..1]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >- addButton(display: String, x: int, y: int, width: int, height: int, enabled: boolean, actionEvent: ActionListener): JButton</TD></TR>
+<TR><TD ALIGN="LEFT" >+ addImage(src: String, x: int, y: int, width: int, height: int): JLabel</TD></TR>
+<TR><TD ALIGN="LEFT" >+ addImage(src: String, x: int, y: int): JLabel</TD></TR>
+<TR><TD ALIGN="LEFT" >+ init(clients: ArrayList&lt;Client&gt;, prepareLobby: Consumer&lt;Client&gt;, root: RootPane)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ reset()</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+PingPane19426933[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)PingPane</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >-   keyDown: boolean [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   label: JLabel [0..1]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ reset()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ update(ping: long, keyHandler: KeyHandler, root: Component, kick: Runnable)</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+PlayerDisplayPane19426933[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)PlayerDisplayPane</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >-   animThread: Thread [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   displaySup: Supplier&lt;RootPane&gt; [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   players: Map&lt;String, Triplet&lt;JButton, Integer, Integer&gt;&gt; [0..*]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ check(names: Set&lt;String&gt;)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ init(displaySup: Supplier&lt;RootPane&gt;)</TD></TR>
+<TR><TD ALIGN="LEFT" >- playerButton(color: Color, name: String): JButton</TD></TR>
+<TR><TD ALIGN="LEFT" >- playersOn(pos: int): List&lt;JButton&gt;</TD></TR>
+<TR><TD ALIGN="LEFT" >+ reset()</TD></TR>
+<TR><TD ALIGN="LEFT" >- simpleX(pos: int): int</TD></TR>
+<TR><TD ALIGN="LEFT" >- simpleY(pos: int): int</TD></TR>
+<TR><TD ALIGN="LEFT" >- x(pos: int, players: int, i: int): int</TD></TR>
+<TR><TD ALIGN="LEFT" >- y(pos: int, players: int, i: int): int</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+PlayerInfoPane19426933[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)PlayerInfoPane</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >-   action1B: JButton [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   action1L: JLabel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   action2B: JButton [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   action2L: JLabel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   bottom: JLayeredPane [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   busL: JLabel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   busR: JLabel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   buttonL: JButton [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   buttonR: JButton [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   clientSup: Supplier&lt;Client&gt; [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   currentPlayer: String [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   displaySup: Supplier&lt;RootPane&gt; [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   downgradeB: JButton [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   downgradeL: JLabel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   freiL: JLabel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   freiR: JLabel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   leaveB: JButton [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   leaveL: JLabel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   moneyL: JLabel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   moneyR: JLabel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   mortgageB: JButton [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   mortgageL: JLabel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   nameL: JLabel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   nameR: JLabel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   purchasableB: JButton [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   purchasableL: JLabel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   purchasableOther: JLayeredPane [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   purchasableThis: JLayeredPane [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   task: Runnable [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   thread: Thread [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   topLeft: JLayeredPane [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   topRight: JLayeredPane [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   tradeB: JButton [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   tradeL: JLabel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   upgradeB: JButton [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   upgradeL: JLabel [0..1]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >- addBottom()</TD></TR>
+<TR><TD ALIGN="LEFT" >- addPurchasableOther()</TD></TR>
+<TR><TD ALIGN="LEFT" >- addPurchasableThis()</TD></TR>
+<TR><TD ALIGN="LEFT" >- addTopLeft()</TD></TR>
+<TR><TD ALIGN="LEFT" >- addTopRight()</TD></TR>
+<TR><TD ALIGN="LEFT" >- getColor(id: int): String</TD></TR>
+<TR><TD ALIGN="LEFT" >- getX(id: int): int</TD></TR>
+<TR><TD ALIGN="LEFT" >- getY(id: int): int</TD></TR>
+<TR><TD ALIGN="LEFT" >+ init(clientSup: Supplier&lt;Client&gt;, displaySup: Supplier&lt;RootPane&gt;)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ reset()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ update()</TD></TR>
+<TR><TD ALIGN="LEFT" >- updateImages()</TD></TR>
+<TR><TD ALIGN="LEFT" >- updateTexts()</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+PlayerPane19426933[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)PlayerPane</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >-   client: Client [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   requestUpdate: boolean [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   shownClients: ArrayList&lt;Client&gt; [0..*]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >- addButton(display: String, x: int, y: int, width: int, height: int, enabled: boolean, selected: boolean, actionEvent: ActionListener): JButton</TD></TR>
+<TR><TD ALIGN="LEFT" >+ init()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ requestUpdate()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ reset()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ update(currentClient: Client, clients: ArrayList&lt;Client&gt;, forceUpdate: boolean)</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+PrototypeMenu19426933[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)PrototypeMenu</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+   client: Client [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   clients: ArrayList&lt;Client&gt; [0..*]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   frame: JFrame [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   gameThread: Thread [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   ip: String [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   keyHandler: KeyHandler [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   root: RootPane [0..1]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >- focusThread()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ main(args: String[])</TD></TR>
+<TR><TD ALIGN="LEFT" >+ prepareGame()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ prepareLobby(currentClient: Client)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ prepareMenu()</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+RejoinPane19426933[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)RejoinPane</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >-   clientSup: Supplier&lt;Client&gt; [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   players: JLayeredPane [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   rejoin: Consumer&lt;Client&gt; [0..1]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ init(clientSup: Supplier&lt;Client&gt;, rejoin: Consumer&lt;Client&gt;)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ reset()</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+RootPane19426933[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)RootPane</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+   boardPane: BoardPane [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   freeParkingPane: FreeParkingPane [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   infoPane: InfoPane [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   lobbyPane: LobbyPane [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   menuPane: MenuPane [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   pingPane: PingPane [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   playerDisplayPane: PlayerDisplayPane [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   playerInfoPane: PlayerInfoPane [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   playerPane: PlayerPane [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   rejoinPane: RejoinPane [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   selectedCardPane: SelectedCardPane [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   tradePane: TradePane [0..1]</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+SelectedCardPane19426933[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)SelectedCardPane</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >-   color: JLabel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   name: JLabel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   purchasable: IPurchasable [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   rahmen: JLabel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   textKey0: JLabel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   textKey1: JLabel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   textKey10: JLabel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   textKey11: JLabel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   textKey12: JLabel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   textKey13: JLabel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   textKey14: JLabel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   textKey15: JLabel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   textKey16: JLabel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   textKey17: JLabel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   textKey18: JLabel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   textKey2: JLabel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   textKey3: JLabel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   textKey4: JLabel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   textKey5: JLabel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   textKey6: JLabel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   textKey7: JLabel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   textKey8: JLabel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   textKey9: JLabel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   textValue0: JLabel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   textValue1: JLabel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   textValue17: JLabel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   textValue2: JLabel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   textValue3: JLabel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   textValue4: JLabel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   textValue5: JLabel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   textValue6: JLabel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   textValue7: JLabel [0..1]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ init(purchasable: IPurchasable)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ reset()</TD></TR>
+<TR><TD ALIGN="LEFT" >- update()</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+TradePane19426933[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)TradePane</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >-   abortButton: JButton [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   abortedTradeText: JLabel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   acceptTradeButton: JButton [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   alreadyTradingText: JLabel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   background: JLayeredPane [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   buttons: JLayeredPane [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   changeOfferButton: JButton [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   client: Supplier&lt;Client&gt; [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   confirmTradeButton: JButton [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   declineTradeButton: JButton [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   declinedTradeText: JLabel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   firstMoneyOfferText: JLabel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   firstOfferText: JLabel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   moneyButtons: JLayeredPane [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   okayButton: JButton [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   player1: String [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   player2: String [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   playerButtons: JLayeredPane [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   secondMoneyOfferText: JLabel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   secondOfferText: JLabel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   selected1: Supplier&lt;List&lt;IPurchasable&gt;&gt; [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   selected2: Supplier&lt;List&lt;IPurchasable&gt;&gt; [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   sendMessage: Consumer&lt;Message&gt; [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   sendOfferButton: JButton [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   texts: JLayeredPane [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   tradeButtons: JLayeredPane [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   tradeCompleteText: JLabel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   tradeData: Supplier&lt;TradeData&gt; [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   tradeFailed1Text: JLabel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   tradeFailed2Text: JLabel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   tradeInfoOther: JLayeredPane [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   tradeInfoThis: JLayeredPane [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   tradeRequestText: JLabel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   waitText: JLabel [0..1]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >- addMoneyButtons()</TD></TR>
+<TR><TD ALIGN="LEFT" >- addTradeButtons()</TD></TR>
+<TR><TD ALIGN="LEFT" >- addTradeInfoOther()</TD></TR>
+<TR><TD ALIGN="LEFT" >- addTradeInfoThis()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ darken()</TD></TR>
+<TR><TD ALIGN="LEFT" >- deselect(card: IPurchasable)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ enableAbortButton(x: int, y: int)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ enableAlreadyTrading()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ enableChangeOfferButtons()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ enableConfirmButtons()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ enableDeclinedInvitation()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ enableInvitationExpired()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ enableOfferTexts()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ enablePlayerButtons()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ enableShowTradeFailed()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ enableTradeComplete()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ enableTradeInfo()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ enableTradeRequest()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ enableWaitText(x: int, y: int)</TD></TR>
+<TR><TD ALIGN="LEFT" >- getColor(id: int): String</TD></TR>
+<TR><TD ALIGN="LEFT" >- getX(id: int): int</TD></TR>
+<TR><TD ALIGN="LEFT" >- getY(id: int): int</TD></TR>
+<TR><TD ALIGN="LEFT" >+ init(player1: String, player2: String, client: Supplier&lt;Client&gt;)</TD></TR>
+<TR><TD ALIGN="LEFT" >- isOwner(card: IPurchasable): boolean</TD></TR>
+<TR><TD ALIGN="LEFT" >- otherIsOwner(card: IPurchasable): boolean</TD></TR>
+<TR><TD ALIGN="LEFT" >- otherSelected(card: IPurchasable): boolean</TD></TR>
+<TR><TD ALIGN="LEFT" >+ reset()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ resetPlayerButtons()</TD></TR>
+<TR><TD ALIGN="LEFT" >- select(card: IPurchasable)</TD></TR>
+<TR><TD ALIGN="LEFT" >- selected(card: IPurchasable): boolean</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+} 
+} 
+
+subgraph cluster_905826493 { 
+   	label=server
+	labeljust=l
+	fillcolor="#ececec"
+	style=filled
+   
+   Server1142252249[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)Server</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >-   acceptNewClients: boolean [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   clients: HashMap&lt;Integer, Socket&gt; [0..*]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   connectionThread: Thread [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   events: Events [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   gameData: GameData [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   host: String [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   hostJoined: boolean [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   ip: String [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   logger: ServerLogger [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   pause: boolean [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   pingCheck: HashMap&lt;Socket, Boolean&gt; [0..*]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   pingThread: Thread [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   players: HashMap&lt;Player, Socket&gt; [0..*]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   requestThread: Thread [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   server: ServerSocket [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   serverSettings: ServerSettings [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   waitForRejoin: List&lt;Player&gt; [0..*]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ acceptsNewClient(): boolean</TD></TR>
+<TR><TD ALIGN="LEFT" >+ changeColor(name: String, color: Color): boolean</TD></TR>
+<TR><TD ALIGN="LEFT" >+ changeName(oldName: String, newName: String): boolean</TD></TR>
+<TR><TD ALIGN="LEFT" >+ close()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ events(): Events</TD></TR>
+<TR><TD ALIGN="LEFT" >+ gameData(): GameData</TD></TR>
+<TR><TD ALIGN="LEFT" >+ getPlayer(name: String): Player</TD></TR>
+<TR><TD ALIGN="LEFT" >+ getPlayerServerSide(name: String): Player</TD></TR>
+<TR><TD ALIGN="LEFT" >+ isHost(name: String): boolean</TD></TR>
+<TR><TD ALIGN="LEFT" >+ kick(client: Socket, reason: DisconnectReason)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ kick(name: String, reason: DisconnectReason)</TD></TR>
+<TR><TD ALIGN="LEFT" >- messageReceived(value: String, client: Socket)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ open(serverSettings: ServerSettings)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ remove(name: String)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ sendMessage(name: String, type: MessageType, value: Object[])</TD></TR>
+<TR><TD ALIGN="LEFT" >+ sendMessage(name: String, type: MessageType, value: Object)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ start()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ stopped(): boolean</TD></TR>
+<TR><TD ALIGN="LEFT" >+ trade(player1: String, player2: String, offer1: ArrayList&lt;IPurchasable&gt;, offer2: ArrayList&lt;IPurchasable&gt;, money1: int, money2: int): boolean</TD></TR>
+<TR><TD ALIGN="LEFT" >+ updateFreeParking()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ updatePlayerData()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ updatePosition(anim: boolean)</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+subgraph cluster_189806116 { 
+   	label=events
+	labeljust=l
+	fillcolor="#d8d8d8"
+	style=filled
+   
+   CommunityCard151986112[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)CommunityCard</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >-   actions: Map&lt;String, CommunityCardAction&gt; [0..*]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   description: List&lt;String&gt; [0..*]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ actions(): Map&lt;String, CommunityCardAction&gt;</TD></TR>
+<TR><TD ALIGN="LEFT" >+ activate(player: Player)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ resetUnused()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ unusedSize(): int</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+Events151986112[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)Events</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+   buildEquable: boolean [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   buildRule: BuildRule [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   cardsRequiredForFourHouses: OwnedCardsOfColorGroup [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   cardsRequiredForHotel: OwnedCardsOfColorGroup [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   cardsRequiredForOneHouse: OwnedCardsOfColorGroup [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   cardsRequiredForSkyscraper: OwnedCardsOfColorGroup [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   cardsRequiredForThreeHouses: OwnedCardsOfColorGroup [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   cardsRequiredForTwoHouses: OwnedCardsOfColorGroup [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   currentPlayer: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   doubleLosMoney: boolean [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   freeParking: boolean [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   gainRentInPrison: boolean [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   limitBuildings: boolean [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   limitBusTickets: boolean [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   losMoney: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   maxBusTickets: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   megaBuildings: boolean [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   players: List&lt;String&gt; [0..*]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   reRollEventCardsAfterUse: boolean [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   startMoney: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   tempoDice: boolean [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   tripleTeleport: boolean [1]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ onAcceptTrade()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ onArrivedAtAdditionalTaxField()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ onArrivedAtAuction()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ onArrivedAtBirthday()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ onArrivedAtBusPass()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ onArrivedAtCommunityField()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ onArrivedAtEventField()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ onArrivedAtField()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ onArrivedAtFreeParking()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ onArrivedAtGoToPrisonField()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ onArrivedAtLos()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ onArrivedAtPrisonField()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ onArrivedAtPurchasable(purchasable: IPurchasable)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ onArrivedAtTaxField()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ onCommunityCardAction(action: String)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ onDiceRoll()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ onGameStart(playerNames: List&lt;String&gt;)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ onGameStop()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ onGetBusCard()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ onGoBankrupt()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ onNextRound()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ onOfferTrade()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ onPassedLos()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ onPrisonerRound()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ onPurchaseBuilding()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ onPurchaseCard()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ onRejoin()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ onSellBuilding()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ onTryMortgage()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ onTryNextRound()</TD></TR>
+<TR><TD ALIGN="LEFT" ># player(): Player</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+} 
+} 
+
+'edges    
+C2SPacket1162980812 -> CommunityCardC2SPacket1900455379[arrowhead=none, arrowtail=empty, dir=both];
+C2SPacket1162980812 -> RequestRejoinC2SPacket1900455379[arrowhead=none, arrowtail=empty, dir=both];
+C2SPacket1162980812 -> RollDiceC2SPacket1900455379[arrowhead=none, arrowtail=empty, dir=both];
+C2SPacket1162980812 -> TestC2SPacket1900455379[arrowhead=none, arrowtail=empty, dir=both];
+Client1594138193 -> ClientPlayer1594138193[label="player
+[0..1]"];
+Client1594138193 -> Json802538030[label="messageReceived() -> toObject()"];
+Client1594138193 -> Message1370003224[label="close() -> send()"];
+Client1594138193 -> PacketManager1162980812[label="messageReceived() -> handle()"];
+Client1594138193 -> PlayerPane19426933[label="messageReceived() -> requestUpdate()"];
+Client1594138193 -> RootPane19426933[label="root
+[0..1]"];
+Client1594138193 -> Server1142252249[arrowhead=none];
+Client1594138193 -> TradeData1594138193[label="tradeData
+[0..1]"];
+CommunityCardC2SPacket1900455379 -> Events151986112[label="handleOnServer() -> onCommunityCardAction()"];
+CommunityCardC2SPacket1900455379 -> Server1142252249[label="handleOnServer() -> events()"];
+Monopoly250665566 -> ProjectStructure802538030[label="printStartupInfo() -> printProjectStructureAsTree()"];
+Monopoly250665566 -> PrototypeMenu19426933[label="main() -> prepareMenu()"];
+Monopoly250665566 -> Server1142252249[label="server
+[0..1]"];
+PacketManager1162980812 -> AskRejoinS2CPacket1900455379[label="serialize() -> serialize()", arrowhead=none];
+PacketManager1162980812 -> C2SPacket1162980812[arrowhead=none];
+PacketManager1162980812 -> Client1594138193[label="sendC2S() -> socket()"];
+PacketManager1162980812 -> CommunityCardC2SPacket1900455379[label="serialize() -> serialize()", arrowhead=none];
+PacketManager1162980812 -> CommunityCardS2CPacket1900455379[label="serialize() -> serialize()", arrowhead=none];
+PacketManager1162980812 -> InfoS2CPacket1900455379[label="serialize() -> serialize()", arrowhead=none];
+PacketManager1162980812 -> Monopoly250665566[label="sendS2C() -> server()"];
+PacketManager1162980812 -> RejoinStatusS2CPacket1900455379[label="serialize() -> serialize()", arrowhead=none];
+PacketManager1162980812 -> RequestRejoinC2SPacket1900455379[label="serialize() -> serialize()", arrowhead=none];
+PacketManager1162980812 -> RollDiceC2SPacket1900455379[label="serialize() -> serialize()", arrowhead=none];
+PacketManager1162980812 -> RollDiceS2CPacket1900455379[label="serialize() -> serialize()", arrowhead=none];
+PacketManager1162980812 -> S2CPacket1162980812[arrowhead=none];
+PacketManager1162980812 -> TestC2SPacket1900455379[label="serialize() -> serialize()", arrowhead=none];
+PacketManager1162980812 -> UpdateFreeParkingS2CPacket1008954044[label="serialize() -> serialize()", arrowhead=none];
+PacketManager1162980812 -> UpdateOwnerS2CPacket1008954044[label="serialize() -> serialize()", arrowhead=none];
+PacketManager1162980812 -> UpdatePlayerDataS2CPacket1008954044[label="serialize() -> serialize()", arrowhead=none];
+PacketManager1162980812 -> UpdatePositionS2CPacket1008954044[label="serialize() -> serialize()", arrowhead=none];
+PlayerPane19426933 -> Client1594138193[label="client
+[0..1]"];
+PlayerPane19426933 -> Client1594138193[label="shownClients
+[0..*]"];
+PrototypeMenu19426933 -> Client1594138193[label="client
+[0..1]"];
+PrototypeMenu19426933 -> Client1594138193[label="clients
+[0..*]"];
+PrototypeMenu19426933 -> ClientTrade1594138193[label="prepareGame() -> trade()"];
+PrototypeMenu19426933 -> KeyHandler802538030[label="keyHandler
+[0..1]"];
+PrototypeMenu19426933 -> Monopoly250665566[label="main() -> main()"];
+PrototypeMenu19426933 -> PacketManager1162980812[label="prepareGame() -> sendC2S()"];
+PrototypeMenu19426933 -> RootPane19426933[label="root
+[0..1]"];
+PrototypeMenu19426933 -> SelectedCardPane19426933[label="prepareMenu() -> reset()"];
+RootPane19426933 -> BoardPane19426933[label="boardPane
+[0..1]"];
+RootPane19426933 -> FreeParkingPane19426933[label="freeParkingPane
+[0..1]"];
+RootPane19426933 -> InfoPane19426933[label="infoPane
+[0..1]"];
+RootPane19426933 -> LobbyPane19426933[label="lobbyPane
+[0..1]"];
+RootPane19426933 -> MenuPane19426933[label="menuPane
+[0..1]"];
+RootPane19426933 -> PingPane19426933[label="pingPane
+[0..1]"];
+RootPane19426933 -> PlayerDisplayPane19426933[label="playerDisplayPane
+[0..1]"];
+RootPane19426933 -> PlayerInfoPane19426933[label="playerInfoPane
+[0..1]"];
+RootPane19426933 -> PlayerPane19426933[label="playerPane
+[0..1]"];
+RootPane19426933 -> RejoinPane19426933[label="rejoinPane
+[0..1]"];
+RootPane19426933 -> SelectedCardPane19426933[label="selectedCardPane
+[0..1]"];
+RootPane19426933 -> TradePane19426933[label="tradePane
+[0..1]"];
+S2CPacket1162980812 -> AskRejoinS2CPacket1900455379[arrowhead=none, arrowtail=empty, dir=both];
+S2CPacket1162980812 -> CommunityCardS2CPacket1900455379[arrowhead=none, arrowtail=empty, dir=both];
+S2CPacket1162980812 -> InfoS2CPacket1900455379[arrowhead=none, arrowtail=empty, dir=both];
+S2CPacket1162980812 -> RejoinStatusS2CPacket1900455379[arrowhead=none, arrowtail=empty, dir=both];
+S2CPacket1162980812 -> RollDiceS2CPacket1900455379[arrowhead=none, arrowtail=empty, dir=both];
+S2CPacket1162980812 -> UpdateFreeParkingS2CPacket1008954044[arrowhead=none, arrowtail=empty, dir=both];
+S2CPacket1162980812 -> UpdateOwnerS2CPacket1008954044[arrowhead=none, arrowtail=empty, dir=both];
+S2CPacket1162980812 -> UpdatePlayerDataS2CPacket1008954044[arrowhead=none, arrowtail=empty, dir=both];
+S2CPacket1162980812 -> UpdatePositionS2CPacket1008954044[arrowhead=none, arrowtail=empty, dir=both];
+Server1142252249 -> CommunityCard151986112[label="start() -> unusedSize()"];
+Server1142252249 -> Events151986112[label="events
+[0..1]"];
+Server1142252249 -> GameData250681961[label="gameData
+[0..1]"];
+Server1142252249 -> Json802538030[label="messageReceived() -> toObject()"];
+Server1142252249 -> MapUtils802538030[label="kick() -> key()"];
+Server1142252249 -> Player250681961[label="players
+[0..*]"];
+Server1142252249 -> Player250681961[label="waitForRejoin
+[0..*]"];
+Server1142252249 -> ServerLogger285189285[label="logger
+[0..1]"];
+Server1142252249 -> ServerSettings802538030[label="serverSettings
+[0..1]"];
+    
+}
+@enduml

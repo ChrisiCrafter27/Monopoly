@@ -2,7 +2,7 @@ package monopol.client.screen;
 
 import monopol.client.Client;
 import monopol.common.log.DebugLogger;
-import monopol.server.DisconnectReason;
+import monopol.common.message.DisconnectReason;
 import monopol.common.data.Player;
 import monopol.common.utils.JUtils;
 import monopol.common.utils.KeyHandler;

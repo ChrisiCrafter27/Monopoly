@@ -1,11 +1,11 @@
 package monopol.server;
 
-import monopol.client.screen.LobbyPane;
 import monopol.common.data.Player;
 import monopol.common.data.*;
 import monopol.common.core.GameState;
 import monopol.common.core.Monopoly;
 import monopol.common.log.ServerLogger;
+import monopol.common.message.DisconnectReason;
 import monopol.common.message.IServer;
 import monopol.common.packets.PacketManager;
 import monopol.common.packets.ServerSide;
@@ -18,6 +18,7 @@ import monopol.common.packets.custom.update.UpdateOwnerS2CPacket;
 import monopol.common.packets.custom.update.UpdatePlayerDataS2CPacket;
 import monopol.common.packets.custom.update.UpdatePositionS2CPacket;
 import monopol.common.utils.MapUtils;
+import monopol.common.utils.ServerSettings;
 import monopol.server.events.*;
 import monopol.common.utils.Json;
 import monopol.common.message.Message;
@@ -35,6 +36,12 @@ import java.util.List;
 
 public class Server extends UnicastRemoteObject implements IServer {
     public static final int CLIENT_TIMEOUT = 5000;
+    public static final Map<Color, String> COLORS = new HashMap<>();
+    static {
+        COLORS.putAll(Map.of(Color.YELLOW, "<html><font color=#ffff00>■</font>", Color.ORANGE, "<html><font color=#ffc800>■</font>", Color.RED, "<html><font color=#ff0000>■</font>", Color.MAGENTA, "<html><font color=#ff00ff>■</font>", Color.PINK, "<html><font color=#ffafaf>■</font>"));
+        COLORS.putAll(Map.of(Color.CYAN, "<html><font color=#00ffff>■</font>", Color.BLUE, "<html><font color=#0000ff>■</font>", Color.GREEN, "<html><font color=#00ff00>■</font>", Color.WHITE, "<html><font color=#ffffff>■</font>", Color.LIGHT_GRAY, "<html><font color=#c0c0c0>■</font>"));
+        COLORS.putAll(Map.of(Color.GRAY, "<html><font color=#808080>■</font>", Color.DARK_GRAY, "<html><font color=#404040>■</font>", Color.BLACK, "<html><font color=#000000>■</font>"));
+    }
 
     public ServerSocket server;
     private boolean pause = true;
@@ -97,7 +104,7 @@ public class Server extends UnicastRemoteObject implements IServer {
                         clients.put(clients.size() + 1, newClient);
                         Player player = newServerPlayer();
                         players.put(player, newClient);
-                        player.setColor(LobbyPane.COLORS.keySet().stream().filter(color -> players.keySet().stream().map(Player::getColor).noneMatch(color::equals)).toList().get(0));
+                        player.setColor(COLORS.keySet().stream().filter(color -> players.keySet().stream().map(Player::getColor).noneMatch(color::equals)).toList().get(0));
                         Message.send(new Message(player.getName(), MessageType.NAME), newClient);
                         PacketManager.sendS2C(new UpdatePlayerDataS2CPacket(), PacketManager.Restriction.all(), Throwable::printStackTrace);
                         logger.log().info("[Server]: New Client accepted (" + player.getName() + ")");
@@ -334,6 +341,7 @@ public class Server extends UnicastRemoteObject implements IServer {
         Message message;
         try {
             message = Json.toObject(value, Message.class);
+            //System.out.println(Json.toString(Json.toJson(value), true));
             switch (message.getMessageType()) {
                 case PACKET -> PacketManager.handle(message, new ServerSide(this));
                 case PRINTLN -> System.out.println(message.getMessage()[0]);
