@@ -1,11 +1,7 @@
 package monopol.common.packets.custom;
 
 import monopol.common.packets.C2SPacket;
-import monopol.common.packets.PacketManager;
 import monopol.server.Server;
-
-import java.rmi.RemoteException;
-import java.util.Random;
 
 public class RollDiceC2SPacket extends C2SPacket<RollDiceC2SPacket> {
     private static String target = null;

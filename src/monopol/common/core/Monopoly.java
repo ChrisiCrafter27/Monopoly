@@ -2,7 +2,7 @@ package monopol.common.core;
 
 import monopol.client.screen.PrototypeMenu;
 import monopol.server.Server;
-import monopol.server.ServerSettings;
+import monopol.common.utils.ServerSettings;
 import monopol.common.utils.ProjectStructure;
 
 import java.io.IOException;

@@ -2,7 +2,7 @@ package monopol.client.screen;
 
 import monopol.client.Client;
 import monopol.common.core.Monopoly;
-import monopol.server.ServerSettings;
+import monopol.common.utils.ServerSettings;
 import monopol.common.utils.JUtils;
 
 import javax.swing.*;

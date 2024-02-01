@@ -1,4 +1,4 @@
-package monopol.server;
+package monopol.common.utils;
 
 import java.io.Serializable;
 
