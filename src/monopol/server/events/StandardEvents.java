@@ -90,7 +90,7 @@ public class StandardEvents extends Events {
             } catch (InterruptedException ignored) {}
             if(!running) return;
             player().move(finalResult);
-            PacketManager.sendS2C(new InfoS2CPacket(player().getName() +  " bewegt sich " + finalResult + " Felder"), PacketManager.Restriction.all(), Throwable::printStackTrace);
+            PacketManager.sendS2C(new InfoS2CPacket(player().getName() +  " bewegt sich "), PacketManager.Restriction.all(), Throwable::printStackTrace);
             Monopoly.INSTANCE.server().updatePlayerData();
             try {
                 Thread.sleep(finalResult * 250);
