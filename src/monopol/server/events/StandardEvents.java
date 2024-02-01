@@ -86,7 +86,7 @@ public class StandardEvents extends Events {
         new Thread(() -> {
             PacketManager.sendS2C(new RollDiceS2CPacket(result1, result2, result3), PacketManager.Restriction.all(), Throwable::printStackTrace);
             try {
-                Thread.sleep(3000);
+                Thread.sleep(6000);
             } catch (InterruptedException ignored) {}
             if(!running) return;
             player().move(finalResult);

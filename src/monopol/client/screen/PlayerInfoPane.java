@@ -1,21 +1,28 @@
 package monopol.client.screen;
 
 import monopol.client.Client;
-import monopol.common.data.Field;
-import monopol.common.data.IPurchasable;
-import monopol.common.data.Player;
+import monopol.common.data.*;
+import monopol.common.packets.PacketManager;
+import monopol.common.packets.custom.RollDiceC2SPacket;
 import monopol.common.utils.JUtils;
 
 import javax.swing.*;
 import java.awt.*;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
 public class PlayerInfoPane extends JLayeredPane {
+    private static final List<IPurchasable> PURCHASABLES;
+    static {
+        PURCHASABLES = new ArrayList<>();
+        PURCHASABLES.addAll(List.of(Street.values()));
+        PURCHASABLES.addAll(List.of(TrainStation.values()));
+        PURCHASABLES.addAll(List.of(Plant.values()));
+    }
 
     private Supplier<Client> clientSup = () -> {throw new IllegalStateException("init()  was not called");};
-    private Supplier<RootPane> displaySup = () -> {throw new IllegalStateException("init()  was not called");};
     private String currentPlayer = null;
 
     private final JLayeredPane topLeft = new JLayeredPane();
@@ -54,7 +61,7 @@ public class PlayerInfoPane extends JLayeredPane {
 
     private final JLabel action1L = JUtils.addText("Würfeln",1260-70, 463,160,40,false);
     private final JButton action1B = JUtils.addButton(null,"images/Main_pictures/3d_button.png", 1060, 450, 400, 80, true, false, actionevent ->  {
-        //würfeln
+        PacketManager.sendC2S(new RollDiceC2SPacket(clientSup.get().player.getName()), clientSup.get(), Throwable::printStackTrace);
     });
     private final JLabel action2L = JUtils.addText("Zug beenden",1679-105, 460,400,40,false);
     private final JButton action2B = JUtils.addButton(null,"images/Main_pictures/3d_button.png", 1479,450,400,80,true,false,actionevent ->  {
@@ -131,11 +138,11 @@ public class PlayerInfoPane extends JLayeredPane {
         thread.interrupt();
     }
 
-    public void init(Supplier<Client> clientSup, Supplier<RootPane> displaySup) {
+    public void init(Supplier<Client> clientSup) {
         try {
             this.clientSup = clientSup;
-            this.displaySup = displaySup;
             currentPlayer = clientSup.get().serverMethod().getPlayers().get(0).getName();
+            thread.interrupt();
             thread = new Thread(task);
             thread.start();
             setVisible(true);
@@ -186,9 +193,8 @@ public class PlayerInfoPane extends JLayeredPane {
     }
 
     private void updateImages() {
-        List<IPurchasable> cards = Field.getAll().stream().filter(card -> card instanceof IPurchasable).map(card -> ((IPurchasable) card)).toList();
-        for(int i = 1; i <= cards.size(); i++) {
-            IPurchasable card = cards.get(i-1);
+        for(int i = 1; i <= PURCHASABLES.size(); i++) {
+            IPurchasable card = PURCHASABLES.get(i-1);
             if(purchasableThis.getComponent(i-1) instanceof JLabel label) {
                 ImageIcon icon = new ImageIcon(card.getOwner().equals(clientSup.get().player.getName()) ? "images/kleine_karten/" + getColor(i) + "_filled.png" : "images/kleine_karten/" + getColor(i) + ".png");
                 label.setIcon(new ImageIcon(icon.getImage().getScaledInstance(JUtils.getX(icon.getIconWidth()), JUtils.getY(icon.getIconHeight()), Image.SCALE_DEFAULT)));
@@ -248,15 +254,13 @@ public class PlayerInfoPane extends JLayeredPane {
     }
 
     private void addPurchasableThis() {
-        List<IPurchasable> cards = Field.getAll().stream().filter(card -> card instanceof IPurchasable).map(card -> ((IPurchasable) card)).toList();
-        for(int i = 1; i <= cards.size(); i++) {
+        for(int i = 1; i <= PURCHASABLES.size(); i++) {
             purchasableThis.add(JUtils.addImage("images/kleine_karten/disabled.png", 1075 + getX(i), 148 + getY(i)), i-1);
         }
     }
 
     private void addPurchasableOther() {
-        List<IPurchasable> cards = Field.getAll().stream().filter(card -> card instanceof IPurchasable).map(card -> ((IPurchasable) card)).toList();
-        for(int i = 1; i <= cards.size(); i++) {
+        for(int i = 1; i <= PURCHASABLES.size(); i++) {
             purchasableOther.add(JUtils.addImage("images/kleine_karten/disabled.png", 1494 + getX(i), 148 + getY(i)), i-1);
         }
     }

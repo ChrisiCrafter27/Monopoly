@@ -46,25 +46,21 @@ public class PrototypeMenu {
     }
 
     private void focusThread() {
-        new Thread() {
-            @Override
-            public void run() {
-                while (!isInterrupted()) {
-                    KeyboardFocusManager kbdFocusManager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
-                    if(kbdFocusManager.getFocusOwner() != kbdFocusManager.getFocusedWindow() && kbdFocusManager.getFocusedWindow() == frame) frame.requestFocus();
-                    try {
-                        sleep(100);
-                    } catch (InterruptedException e) {
-                        return;
-                    }
+        new Thread(() -> {
+            while (!Thread.interrupted()) {
+                KeyboardFocusManager kbdFocusManager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
+                if(kbdFocusManager.getFocusOwner() != kbdFocusManager.getFocusedWindow() && kbdFocusManager.getFocusedWindow() == frame) frame.requestFocus();
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    return;
                 }
             }
-        }.start();
+        }).start();
     }
 
     public void prepareMenu() {
         Monopoly.INSTANCE.setState(GameState.MAIN_MENU);
-        if(gameThread.isAlive()) gameThread.interrupt();
 
         root.lobbyPane.reset();
         root.pingPane.reset();
@@ -79,21 +75,18 @@ public class PrototypeMenu {
         root.playerDicePane.reset();
 
         root.menuPane.init(clients, this::prepareLobby, root);
-        root.rejoinPane.init(() -> client, newClient -> {
-            clients.add(clients.size(), newClient);
-        });
+        root.rejoinPane.init(() -> client, newClient -> clients.add(clients.size(), newClient));
     }
 
     public void prepareLobby(Client currentClient) {
+        Monopoly.INSTANCE.setState(GameState.LOBBY);
+
         client = currentClient;
         try {
             ip = client.serverMethod().getIp();
         } catch (RemoteException e) {
             throw new RuntimeException(e);
         }
-
-        Monopoly.INSTANCE.setState(GameState.LOBBY);
-        if(gameThread.isAlive()) gameThread.interrupt();
 
         Thread lobbyThread = new Thread() {
             @Override
@@ -155,11 +148,15 @@ public class PrototypeMenu {
                         prepareMenu();
                         return;
                     }
+
+                    //Prepare game if game started
                     if(Monopoly.INSTANCE.getState() == GameState.RUNNING) {
                         interrupt();
                         prepareGame();
                         return;
                     }
+
+                    //Wait 100ms
                     try {
                         sleep(100);
                     } catch (InterruptedException e) {
@@ -171,41 +168,28 @@ public class PrototypeMenu {
         lobbyThread.start();
     }
 
-    Thread gameThread = new Thread(() -> {throw new IllegalStateException();});
-
     public void prepareGame() {
         Monopoly.INSTANCE.setState(GameState.RUNNING);
-        gameThread.interrupt();
 
+        //Reset lobby pane
         root.lobbyPane.reset();
+
         //keep PlayerPane enabled
         //keep PingPane enabled
 
+        //Initiate panes
         root.boardPane.init(root.selectedCardPane::init);
         root.playerDisplayPane.init(() -> root);
         root.infoPane.init(() -> client);
         root.freeParkingPane.init();
-        root.playerInfoPane.init(() -> client, () -> root);
+        root.playerInfoPane.init(() -> client);
+        root.playerDicePane.showWithoutAnim(6, 6, 6);
 
         new Thread(() -> {
-            boolean keyDown = false;
+            //While game is running
             while (Monopoly.INSTANCE.getState() == GameState.RUNNING) {
-                if (keyHandler.isKeyDown(KeyEvent.VK_M)) {
-                    if(!keyDown) {
-                        PacketManager.sendC2S(new RollDiceC2SPacket(client.player.getName()), client, e -> {});
-                    }
-                    keyDown = true;
-                } else keyDown = false;
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    return;
-                }
-            }
-        }).start();
 
-        new Thread(() -> {
-            while (Monopoly.INSTANCE.getState() == GameState.RUNNING) {
+                //Remove clients that left the game
                 for (int i = 0; i < clients.size(); i++) {
                     if(clients.get(i).closed()) clients.remove(clients.get(i));
                 }
@@ -217,6 +201,8 @@ public class PrototypeMenu {
                         return;
                     }
                 }
+
+                //Get clients from panes and update
                 if(root.playerPane.getClient() != null) {
                     Client oldClient = client;
                     client = root.playerPane.getClient();
@@ -230,6 +216,8 @@ public class PrototypeMenu {
                         e.printStackTrace(System.err);
                     }
                 });
+
+                //Wait 100ms
                 try {
                     Thread.sleep(100);
                 } catch (InterruptedException e) {
@@ -242,9 +230,8 @@ public class PrototypeMenu {
 
     public static void main(String[] args) {
         for(Street street : Street.values()) street.setOwner("Spieler 1");
-        for(TrainStation trainStation : TrainStation.values()) trainStation.setOwner("Spieler 1");
-        for(Plant plant : Plant.values()) plant.setOwner("Spieler 1");
+        for(TrainStation trainStation : TrainStation.values()) trainStation.setOwner("Spieler 2");
+        for(Plant plant : Plant.values()) plant.setOwner("Spieler 2");
         Monopoly.main(args);
     }
 }
-

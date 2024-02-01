@@ -10,12 +10,12 @@ public class PlayerDicePane extends JLayeredPane {
 
     private final JLabel NW1 = JUtils.addImage("images/Würfel/NW_1.png",480-70,540,60,60);
     private final JLabel NW2 = JUtils.addImage("images/Würfel/NW_1.png",480+70,540,60,60);
-    private final JLabel SW1 = JUtils.addImage("images/Würfel/SW_Monop.png",480,540,70,60);
+    private final JLabel SW1 = JUtils.addImage("images/Würfel/SW_Monop.png",480-5,540-5,70,70);
     private Thread thread1 = new Thread();
     private Thread thread2 = new Thread();
     private Thread thread3 = new Thread();
     private Thread animationTime = new Thread();
-    private int animation_Time = 3000;
+    private int animation_Time = 0;
 
 
     public PlayerDicePane(){
@@ -32,6 +32,20 @@ public class PlayerDicePane extends JLayeredPane {
         thread2.interrupt();
         thread3.interrupt();
     }
+    public void showWithoutAnim(int Dice1, int Dice2,int Dice3) {
+        setVisible(true);
+        NW1.setIcon(new ImageIcon("images/Würfel/NW_"+Dice1+".png"));
+        NW2.setIcon(new ImageIcon("images/Würfel/NW_"+Dice2+".png"));
+        if(Dice3 <= 3){
+            SW1.setIcon(new ImageIcon("images/Würfel/SW_"+Dice3+".png"));
+        }
+        if(Dice3 == 4){
+            SW1.setIcon(new ImageIcon("images/Würfel/SW_Bus.png"));
+        }
+        if(Dice3 == 5 || Dice3 ==6){
+            SW1.setIcon(new ImageIcon("images/Würfel/SW_Monop.png"));
+        }
+    }
     public void show(int Dice1, int Dice2,int Dice3){
 
         thread1.interrupt();
@@ -40,11 +54,13 @@ public class PlayerDicePane extends JLayeredPane {
 
         setVisible(true);
 
+        animation_Time = 0;
+
         animationTime = new Thread(() -> {
-            while (!animationTime.isInterrupted()) {
-                animation_Time += 100;
+            while (!animationTime.isInterrupted() && animation_Time < 6000) {
+                animation_Time += 10;
                 try {
-                    Thread.sleep(100);
+                    Thread.sleep(10);
                 } catch (InterruptedException e) {
                     return;
                 }
@@ -63,7 +79,7 @@ public class PlayerDicePane extends JLayeredPane {
                 }
                 Random random = new Random();
                 if(animation_Time<W1_animationTime){
-                    NW1.setIcon(new ImageIcon("images/Würfel/NW_"+random.nextInt(6)+1+".png"));
+                    NW1.setIcon(new ImageIcon("images/Würfel/NW_"+(random.nextInt(6)+1)+".png"));
                     breakTime1 += (int) (500*(1-Math.exp(-0.0005 * animation_Time)));
                 }
                 else{
@@ -76,7 +92,7 @@ public class PlayerDicePane extends JLayeredPane {
 
         thread2 = new Thread(() -> {
             int breakTime2 = 10;
-            int W2_animationTime = 1000;
+            int W2_animationTime = 2000;
             while (!thread2.isInterrupted()){
                 try {
                     Thread.sleep(breakTime2);
@@ -85,7 +101,7 @@ public class PlayerDicePane extends JLayeredPane {
                 }
                 Random random = new Random();
                 if(animation_Time<W2_animationTime){
-                    NW2.setIcon(new ImageIcon("images/Würfel/NW_"+random.nextInt(6)+1+".png"));
+                    NW2.setIcon(new ImageIcon("images/Würfel/NW_"+(random.nextInt(6)+1)+".png"));
                     breakTime2 += (int) (500*(1-Math.exp(-0.0005 * animation_Time)));
                 }
                 else{
@@ -99,7 +115,7 @@ public class PlayerDicePane extends JLayeredPane {
 
         thread3 = new Thread(() -> {
             int breakTime3 = 10;
-            int W3_animationTime = 1000;
+            int W3_animationTime = 3000;
             while (!thread3.isInterrupted()){
                 try {
                     Thread.sleep(breakTime3);
@@ -110,25 +126,25 @@ public class PlayerDicePane extends JLayeredPane {
                 if(animation_Time<W3_animationTime){
                     int ran = random.nextInt(6)+1;
                     if(ran <= 3){
-                        SW1.setIcon(new ImageIcon("images/Würfel/NW_"+ran+".png"));
+                        SW1.setIcon(new ImageIcon("images/Würfel/SW_"+ran+".png"));
                     }
                     if(ran == 4){
-                        SW1.setIcon(new ImageIcon("images/Würfel/NW_Bus.png"));
+                        SW1.setIcon(new ImageIcon("images/Würfel/SW_Bus.png"));
                     }
                     if(ran == 5 || ran ==6){
-                        SW1.setIcon(new ImageIcon("images/Würfel/NW_Monop.png"));
+                        SW1.setIcon(new ImageIcon("images/Würfel/SW_Monop.png"));
                     }
                     breakTime3 += (int) (500*(1-Math.exp(-0.0005 * animation_Time)));
                 }
                 else{
                     if(Dice3 <= 3){
-                        SW1.setIcon(new ImageIcon("images/Würfel/NW_"+Dice3+".png"));
+                        SW1.setIcon(new ImageIcon("images/Würfel/SW_"+Dice3+".png"));
                     }
                     if(Dice3 == 4){
-                        SW1.setIcon(new ImageIcon("images/Würfel/NW_Bus.png"));
+                        SW1.setIcon(new ImageIcon("images/Würfel/SW_Bus.png"));
                     }
                     if(Dice3 == 5 || Dice3 ==6){
-                        SW1.setIcon(new ImageIcon("images/Würfel/NW_Monop.png"));
+                        SW1.setIcon(new ImageIcon("images/Würfel/SW_Monop.png"));
                     }
                     thread3.interrupt();
                 }

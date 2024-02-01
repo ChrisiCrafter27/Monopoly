@@ -17,7 +17,7 @@ public class UpdateOwnerS2CPacket extends S2CPacket<UpdateOwnerS2CPacket> {
     public UpdateOwnerS2CPacket() {
         owner = new HashMap<>();
         for(IPurchasable purchasable : Field.getAll().stream().filter(field -> field instanceof IPurchasable).map(field -> (IPurchasable) field).toList()) {
-            owner.put(((Enum<?>) purchasable).name(), purchasable.getOwner());
+            owner.put(purchasable.getName(), purchasable.getOwner());
         }
     }
 
@@ -44,8 +44,8 @@ public class UpdateOwnerS2CPacket extends S2CPacket<UpdateOwnerS2CPacket> {
     @Override
     public void handleOnClient(Client client, RootPane display) {
         for(IPurchasable purchasable : Field.getAll().stream().filter(field -> field instanceof IPurchasable).map(field -> (IPurchasable) field).toList()) {
-            if(!owner.containsKey(((Enum<?>) purchasable).name())) System.out.println("error");
-            purchasable.setOwner(owner.get(((Enum<?>) purchasable).name()));
+            if(!owner.containsKey(purchasable.getName())) throw new IllegalStateException();
+            purchasable.setOwner(owner.get(purchasable.getName()));
         }
         display.playerInfoPane.update();
     }
