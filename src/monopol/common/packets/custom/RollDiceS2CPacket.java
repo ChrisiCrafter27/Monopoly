@@ -25,6 +25,6 @@ public class RollDiceS2CPacket extends S2CPacket<RollDiceS2CPacket> {
 
     @Override
     public void handleOnClient(Client client, RootPane display) {
-        //TODO update not existing pane
+        display.playerDicePane.show(dice1,dice2,tempoDice);
     }
 }

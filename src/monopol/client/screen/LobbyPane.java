@@ -38,11 +38,12 @@ public class LobbyPane extends JLayeredPane {
 
     private final JLabel connecting = addText("Verbinde zum Server...", (1920 / 2) - 250, 1080 / 2, 500, 25, true);
     private final JButton ipAddress = addButton((1920/2)-250, 1080-70, 500, 30, actionEvent -> {});
-    private final JPanel playerList = new JPanel();
+    private final JLayeredPane playerList = new JLayeredPane();
     private final JButton addPlayer = addButton("Spieler hinzufügen", 50, 1080 - 100, 200, 50, false, actionEvent -> {});
     private final JButton addBot = addButton("Bot hinzufügen", 50, 1080 - 200, 200, 50, false, actionEvent -> {});
     private final JButton leave = addButton("Verlassen", 1920 - 250, 1080 - 100, 200, 50, false, actionEvent -> {});
     private final JButton start = addButton("Starten", 1920 - 250, 1080 - 200, 200, 50, false, actionEvent -> {});
+    private final  JLabel hintergrund = JUtils.addImage("images/Main_pictures/2.Menü.png",0,0,1920,1080);
 
     public LobbyPane() {
         super();
@@ -51,7 +52,7 @@ public class LobbyPane extends JLayeredPane {
 
         setBounds(0, 0, (int) JUtils.SCREEN_WIDTH, (int) JUtils.SCREEN_HEIGHT);
         playerList.setBounds(0, 0, (int) JUtils.SCREEN_WIDTH, (int) JUtils.SCREEN_HEIGHT);
-        playerList.setLayout(null);
+
 
         add(connecting, POPUP_LAYER);
         add(ipAddress, MODAL_LAYER);
@@ -60,6 +61,7 @@ public class LobbyPane extends JLayeredPane {
         add(addBot, POPUP_LAYER);
         add(leave, POPUP_LAYER);
         add(start, POPUP_LAYER);
+        add(hintergrund, DEFAULT_LAYER);
 
         reset();
     }

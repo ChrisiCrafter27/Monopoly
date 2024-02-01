@@ -76,6 +76,7 @@ public class PrototypeMenu {
         root.boardPane.reset();
         root.freeParkingPane.reset();
         root.playerInfoPane.reset();
+        root.playerDicePane.reset();
 
         root.menuPane.init(clients, this::prepareLobby, root);
         root.rejoinPane.init(() -> client, newClient -> {
