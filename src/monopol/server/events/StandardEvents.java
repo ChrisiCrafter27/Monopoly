@@ -8,8 +8,8 @@ import monopol.common.data.IPurchasable;
 import monopol.common.packets.PacketManager;
 import monopol.common.packets.custom.CommunityCardS2CPacket;
 import monopol.common.packets.custom.InfoS2CPacket;
-import monopol.common.packets.custom.RollDiceC2SPacket;
 import monopol.common.packets.custom.RollDiceS2CPacket;
+import monopol.common.packets.custom.update.UpdateButtonsS2CPacket;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +27,6 @@ public class StandardEvents extends Events {
         players.clear();
         currentPlayer = -1;
         running = false;
-        RollDiceC2SPacket.request(null);
     }
 
     @Override
@@ -48,17 +47,22 @@ public class StandardEvents extends Events {
         else PacketManager.sendS2C(new CommunityCardS2CPacket(null, new ArrayList<>(), new ArrayList<>(), CommunityCard.unusedSize()), PacketManager.Restriction.all(), Throwable::printStackTrace);
     }
 
+    private boolean mayDoNextRound() {
+        return CommunityCard.getCurrent() == null && !hasToPayRent && diceRolled;
+    }
+
     @Override
-    public void onTryNextRound() {
-        if(CommunityCard.getCurrent() == null) onNextRound();
+    public void onTryNextRound(String name) {
+        if(name.equals(player().getName()) && mayDoNextRound()) onNextRound();
     }
 
     @Override
     public void onNextRound() {
         currentPlayer++;
-        Player player = player();
+        diceRolled = false;
+        hasToPayRent = false;
         PacketManager.sendS2C(new InfoS2CPacket(player().getName() +  " ist am Zug"), PacketManager.Restriction.all(), Throwable::printStackTrace);
-        RollDiceC2SPacket.request(player.getName());
+        PacketManager.sendS2C(new UpdateButtonsS2CPacket(player().getName(), diceRolled, hasToPayRent, mayDoNextRound()), PacketManager.Restriction.all(), Throwable::printStackTrace);
     }
 
     @Override
@@ -67,8 +71,11 @@ public class StandardEvents extends Events {
     }
 
     @Override
-    public void onDiceRoll() {
-        RollDiceC2SPacket.request(null);
+    public void onDiceRoll(String name) {
+        if(!name.equals(player().getName()) || diceRolled()) return;
+        diceRolled = true;
+        PacketManager.sendS2C(new UpdateButtonsS2CPacket("", diceRolled, hasToPayRent, mayDoNextRound()), PacketManager.Restriction.all(), Throwable::printStackTrace);
+
         Random random = new Random();
 
         int result1 = random.nextInt(6) + 1; //dice 1
@@ -79,9 +86,9 @@ public class StandardEvents extends Events {
             case 1 -> result += 1;
             case 2 -> result += 2;
             case 3 -> result += 3;
-            case 4 -> onGetBusCard();
             default -> {}
         }
+        diceResult = result;
         final int finalResult = result;
         new Thread(() -> {
             PacketManager.sendS2C(new RollDiceS2CPacket(result1, result2, result3), PacketManager.Restriction.all(), Throwable::printStackTrace);
@@ -90,14 +97,15 @@ public class StandardEvents extends Events {
             } catch (InterruptedException ignored) {}
             if(!running) return;
             player().move(finalResult);
-            PacketManager.sendS2C(new InfoS2CPacket(player().getName() +  " bewegt sich "), PacketManager.Restriction.all(), Throwable::printStackTrace);
+            PacketManager.sendS2C(new InfoS2CPacket(player().getName() +  " bewegt sich"), PacketManager.Restriction.all(), Throwable::printStackTrace);
+            if(result3 == 5) onGetBusCard();
             Monopoly.INSTANCE.server().updatePlayerData();
             try {
                 Thread.sleep(finalResult * 250);
             } catch (InterruptedException ignored) {}
             if(!running) return;
             onArrivedAtField();
-            onNextRound();
+            PacketManager.sendS2C(new UpdateButtonsS2CPacket(player().getName(), diceRolled, hasToPayRent, mayDoNextRound()), PacketManager.Restriction.all(), Throwable::printStackTrace);
         }).start();
     }
 
@@ -117,6 +125,17 @@ public class StandardEvents extends Events {
         else if(field == Field.EINKOMMENSSTEUER) onArrivedAtTaxField();
         else if(field == Field.ZUSATZSTEUER) onArrivedAtAdditionalTaxField();
         else throw new IllegalStateException("Player arrived at unregistered field");
+    }
+
+    @Override
+    public void onPayRent(String name) {
+        if(name.equals(player().getName()) && hasToPayRent) {
+            IPurchasable purchasable = (IPurchasable) Field.getAll().get(player().getPosition());
+            Monopoly.INSTANCE.server().getPlayerServerSide(purchasable.getOwner()).addMoney(purchasable.getRent(diceResult));
+            player().contractMoney(purchasable.getRent(diceResult));
+            hasToPayRent = false;
+            PacketManager.sendS2C(new UpdateButtonsS2CPacket(player().getName(), diceRolled, hasToPayRent, mayDoNextRound()), PacketManager.Restriction.all(), Throwable::printStackTrace);
+        }
     }
 
     @Override
@@ -179,7 +198,7 @@ public class StandardEvents extends Events {
 
     @Override
     public void onArrivedAtPurchasable(IPurchasable purchasable) {
-
+        if(purchasable.getOwner() != null && !purchasable.getOwner().equals(player().getName())) hasToPayRent = true;
     }
 
     @Override

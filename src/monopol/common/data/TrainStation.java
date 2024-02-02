@@ -11,7 +11,7 @@ public enum TrainStation implements IPurchasable {
     public final int mortgage = 100;
     private boolean upgraded;
     public final int rentNormal = 25;
-    private String owner = "";
+    private String owner = null;
     private boolean mortgaged;
     private boolean doubleRent;
 
@@ -47,7 +47,7 @@ public enum TrainStation implements IPurchasable {
     }
 
     @Override
-    public int price() {
+    public int getPrice() {
         return price;
     }
 
@@ -64,6 +64,16 @@ public enum TrainStation implements IPurchasable {
     @Override
     public int getLevel() {
         return isUpgraded() ? 1 : 0;
+    }
+
+    @Override
+    public int getMaxLevel() {
+        return 1;
+    }
+
+    @Override
+    public int getUpgradeCost() {
+        return 100;
     }
 
     @Override
@@ -127,7 +137,7 @@ public enum TrainStation implements IPurchasable {
     @Override
     public String valueText(int line) {
         return switch (line) {
-            case 1 -> price() + "€";
+            case 1 -> getPrice() + "€";
             case 3 -> "25€";
             case 4 -> "50€";
             case 5 -> "100€";

@@ -6,10 +6,12 @@ public interface IPurchasable extends IField, Serializable {
     void setOwner(String owner);
     String getOwner();
     String getName();
-    int price();
+    int getPrice();
     int getMortgage();
     boolean mortgaged();
     int getLevel();
+    int getMaxLevel();
+    int getUpgradeCost();
     boolean upgrade();
     boolean downgrade();
     boolean isMortgaged();
@@ -17,6 +19,5 @@ public interface IPurchasable extends IField, Serializable {
     boolean unmortgage();
     int getRent(int diceResult);
     String keyText(int line);
-
     String valueText(int line);
 }

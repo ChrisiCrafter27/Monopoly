@@ -78,6 +78,21 @@ public enum Street implements IPurchasable {
     }
 
     @Override
+    public int getMaxLevel() {
+        return 6;
+    }
+
+    @Override
+    public int getUpgradeCost() {
+        return switch (colorGroup) {
+            case BROWN, CYAN -> 50;
+            case PINK, ORANGE -> 100;
+            case RED, YELLOW -> 150;
+            case GREEN, BLUE -> 200;
+        };
+    }
+
+    @Override
     public boolean upgrade() {
         if(level >= 6) return false;
         level += 1;
@@ -97,7 +112,7 @@ public enum Street implements IPurchasable {
     }
 
     @Override
-    public int price() {
+    public int getPrice() {
         return price;
     }
 
@@ -175,7 +190,7 @@ public enum Street implements IPurchasable {
     @Override
     public String valueText(int line) {
         return switch (line) {
-            case 0 -> price() + "€";
+            case 0 -> getPrice() + "€";
             case 1 -> rentNormal + "€";
             case 2 -> rentOneHouse + "€";
             case 3 -> rentTwoHouses + "€";

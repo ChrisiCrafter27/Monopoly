@@ -4,7 +4,6 @@ import monopol.client.Client;
 import monopol.common.data.*;
 import monopol.common.packets.PacketManager;
 import monopol.common.packets.custom.ButtonC2SPacket;
-import monopol.common.packets.custom.RollDiceC2SPacket;
 import monopol.common.utils.JUtils;
 
 import javax.swing.*;
@@ -25,6 +24,10 @@ public class PlayerInfoPane extends JLayeredPane {
 
     private Supplier<Client> clientSup = () -> {throw new IllegalStateException("init()  was not called");};
     private String currentPlayer = null;
+    private String activePlayer = null;
+    private boolean diceRolled;
+    private boolean hasToPayRent;
+    private boolean ready;
 
     private final JLayeredPane topLeft = new JLayeredPane();
     private final JLayeredPane topRight = new JLayeredPane();
@@ -60,13 +63,13 @@ public class PlayerInfoPane extends JLayeredPane {
     private final JLabel busR = JUtils.addText("-",1579-100+17,317,67,22, SwingConstants.CENTER);
     private final JLabel freiR = JUtils.addText("-",1579+217,317,67,22, SwingConstants.CENTER);
 
-    private final JLabel action1L = JUtils.addText("Würfeln",1260-70, 463,160,40,false);
+    private final JLabel action1L = JUtils.addText("Würfeln",1060, 460,400,40,true);
     private final JButton action1B = JUtils.addButton(null,"images/Main_pictures/3d_button.png", 1060, 450, 400, 80, true, false, actionevent ->  {
-        PacketManager.sendC2S(new RollDiceC2SPacket(clientSup.get().player.getName()), clientSup.get(), Throwable::printStackTrace);
+        PacketManager.sendC2S(new ButtonC2SPacket(clientSup.get().player.getName(), ButtonC2SPacket.Button.ACTION_1), clientSup.get(), Throwable::printStackTrace);
     });
-    private final JLabel action2L = JUtils.addText("Zug beenden",1679-105, 460,400,40,false);
+    private final JLabel action2L = JUtils.addText("Zug beenden",1479, 460,400,40,true);
     private final JButton action2B = JUtils.addButton(null,"images/Main_pictures/3d_button.png", 1479,450,400,80,true,false,actionevent ->  {
-        PacketManager.sendC2S(new ButtonC2SPacket(clientSup.get().player.getName()), clientSup.get(), Throwable::printStackTrace);
+        PacketManager.sendC2S(new ButtonC2SPacket(clientSup.get().player.getName(), ButtonC2SPacket.Button.ACTION_2), clientSup.get(), Throwable::printStackTrace);
     });
     private final JLabel purchasableL = JUtils.addText("Kaufen",1060,450+90+13,400,40,true);
     private final JButton purchasableB = JUtils.addButton(null,"images/Main_pictures/3d_button.png", 1060,450+90,400,80,true,false, actionevent ->  {
@@ -165,11 +168,63 @@ public class PlayerInfoPane extends JLayeredPane {
         }
     }
 
+    public void updateButtons(String activePlayer, boolean diceRolled, boolean hasToPayRent, boolean ready) {
+        this.diceRolled = diceRolled;
+        this.activePlayer = activePlayer;
+        this.hasToPayRent = hasToPayRent;
+        this.ready = ready;
+        boolean active = activePlayer != null && activePlayer.equals(clientSup.get().player.getName());
+        action1L.setText(diceRolled ? "Zug Beenden" : "Würfeln");
+        action2L.setText(diceRolled ? "Miete Zahlen" : "Busfahren");
+        setIcon(action1B, false);
+        setIcon(action2B, false);
+        setIcon(purchasableB, false);
+        setIcon(upgradeB, false);
+        setIcon(downgradeB, false);
+        setIcon(mortgageB, false);
+        setIcon(tradeB, false);
+        setIcon(leaveB, true);
+        if(active) {
+            try {
+                Player player = clientSup.get().serverMethod().getPlayer(clientSup.get().player.getName());
+                IField field = Field.getAll().get(player.getPosition());
+                if(diceRolled) {
+                    setIcon(action1B, ready);
+                    setIcon(action2B, hasToPayRent);
+                    if(field instanceof IPurchasable purchasable) mortgageL.setText(purchasable.isMortgaged() ? "Zurückkaufen" : "Verpfänden");
+                    setIcon(purchasableB, field instanceof IPurchasable purchasable && purchasable.getOwner() == null && player.getMoney() >= purchasable.getPrice());
+                    setIcon(upgradeB, field instanceof IPurchasable purchasable && purchasable.getOwner().equals(player.getName()) && player.getMoney() >= purchasable.getUpgradeCost() && purchasable.getMaxLevel() > purchasable.getLevel());
+                    setIcon(downgradeB, field instanceof IPurchasable purchasable && purchasable.getOwner().equals(player.getName()) && purchasable.getLevel() > 0);
+                    setIcon(mortgageB, field instanceof IPurchasable purchasable && purchasable.getOwner().equals(player.getName()));
+                    setIcon(tradeB, false);
+                } else {
+                    setIcon(action1B, true);
+                    setIcon(action2B, player.getBusCards() > 0);
+                }
+            } catch (RemoteException e) {
+                clientSup.get().close();
+            }
+        }
+    }
+
+    private void setIcon(JButton button, boolean active) {
+        button.setDisabledIcon(new ImageIcon(new ImageIcon("images/Main_pictures/3d_button.png").getImage().getScaledInstance(JUtils.getX(400), JUtils.getY(80), Image.SCALE_SMOOTH)));
+        button.setPressedIcon(new ImageIcon(new ImageIcon("images/Main_pictures/3d_button_pressed.png").getImage().getScaledInstance(JUtils.getX(400), JUtils.getY(80), Image.SCALE_SMOOTH)));
+        if(active) {
+            button.setIcon(new ImageIcon(new ImageIcon("images/Main_pictures/3d_button_hell.png").getImage().getScaledInstance(JUtils.getX(400), JUtils.getY(80), Image.SCALE_SMOOTH)));
+            button.setEnabled(true);
+        } else {
+            button.setIcon(new ImageIcon(new ImageIcon("images/Main_pictures/3d_button.png").getImage().getScaledInstance(JUtils.getX(400), JUtils.getY(80), Image.SCALE_SMOOTH)));
+            button.setEnabled(false);
+        }
+    }
+
     public void update() {
         if(!isVisible()) return;
         updateTexts();
         updateImages();
         updateImages();
+        updateButtons(activePlayer, diceRolled, hasToPayRent, ready);
     }
 
     private void updateTexts() {

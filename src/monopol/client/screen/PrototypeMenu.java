@@ -7,8 +7,6 @@ import monopol.common.core.Monopoly;
 import monopol.common.data.Street;
 import monopol.common.data.TrainStation;
 import monopol.common.data.Plant;
-import monopol.common.packets.PacketManager;
-import monopol.common.packets.custom.RollDiceC2SPacket;
 import monopol.common.utils.JUtils;
 import monopol.common.utils.KeyHandler;
 import monopol.common.message.DisconnectReason;
@@ -16,12 +14,11 @@ import monopol.common.message.DisconnectReason;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyEvent;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 
 public class PrototypeMenu {
-    public final JFrame frame = new JFrame("Monopoly - PrototypeWindow");
+    public final JFrame frame = new JFrame("Monopoly");
     private final ArrayList<Client> clients = new ArrayList<>();
     public Client client;
     private String ip;

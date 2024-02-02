@@ -31,6 +31,9 @@ public abstract class Events {
 
     protected final List<String> players = new ArrayList<>();
     protected int currentPlayer;
+    protected boolean diceRolled;
+    protected int diceResult;
+    protected boolean hasToPayRent;
 
     protected Events(boolean limitBusTickets, int maxBusTickets, boolean limitBuildings, boolean tempoDice, boolean megaBuildings, boolean tripleTeleport, int startMoney, int losMoney, boolean doubleLosMoney, boolean freeParking, boolean gainRentInPrison, boolean buildEquable, boolean reRollEventCardsAfterUse, BuildRule buildRule, OwnedCardsOfColorGroup cardsRequiredForOneHouse, OwnedCardsOfColorGroup cardsRequiredForTwoHouses, OwnedCardsOfColorGroup cardsRequiredForThreeHouses, OwnedCardsOfColorGroup cardsRequiredForFourHouses, OwnedCardsOfColorGroup cardsRequiredForHotel, OwnedCardsOfColorGroup cardsRequiredForSkyscraper) {
         this.limitBusTickets = limitBusTickets;
@@ -67,15 +70,20 @@ public abstract class Events {
         return player;
     }
 
+    public boolean diceRolled() {
+        return diceRolled;
+    }
+
     public abstract void onGameStop();
     public abstract void onGameStart(List<String> playerNames);
     public abstract void onRejoin();
-    public abstract void onTryNextRound();
+    public abstract void onTryNextRound(String name);
     public abstract void onNextRound();
     public abstract void onPrisonerRound();
-    public abstract void onDiceRoll();
+    public abstract void onDiceRoll(String name);
     public abstract void onGetBusCard();
     public abstract void onArrivedAtField();
+    public abstract void onPayRent(String name);
     public abstract void onCommunityCardAction(String action);
     public abstract void onTryMortgage();
     public abstract void onPurchaseBuilding();

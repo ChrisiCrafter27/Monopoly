@@ -8,7 +8,7 @@ public enum Plant implements IPurchasable {
     public final String name;
     public final int price = 150;
     public final int mortgage = 75;
-    private String owner = "";
+    private String owner = null;
     private boolean mortgaged;
 
     Plant(String name) {
@@ -21,7 +21,7 @@ public enum Plant implements IPurchasable {
     }
 
     @Override
-    public int price() {
+    public int getPrice() {
         return price;
     }
 
@@ -37,6 +37,16 @@ public enum Plant implements IPurchasable {
 
     @Override
     public int getLevel() {
+        return 0;
+    }
+
+    @Override
+    public int getMaxLevel() {
+        return 0;
+    }
+
+    @Override
+    public int getUpgradeCost() {
         return 0;
     }
 
@@ -109,7 +119,7 @@ public enum Plant implements IPurchasable {
     @Override
     public String valueText(int line) {
         return switch (line) {
-            case 1 -> price() + "€";
+            case 1 -> getPrice() + "€";
             case 3 -> "4€ • Wurf";
             case 4 -> "10€ • Wurf";
             case 5 -> "20€ • Wurf";
