@@ -3,6 +3,7 @@ package monopol.client.screen;
 import monopol.client.Client;
 import monopol.common.data.*;
 import monopol.common.packets.PacketManager;
+import monopol.common.packets.custom.ButtonC2SPacket;
 import monopol.common.packets.custom.RollDiceC2SPacket;
 import monopol.common.utils.JUtils;
 
@@ -65,7 +66,7 @@ public class PlayerInfoPane extends JLayeredPane {
     });
     private final JLabel action2L = JUtils.addText("Zug beenden",1679-105, 460,400,40,false);
     private final JButton action2B = JUtils.addButton(null,"images/Main_pictures/3d_button.png", 1479,450,400,80,true,false,actionevent ->  {
-        //PacketManager.sendC2S();
+        PacketManager.sendC2S(new ButtonC2SPacket(clientSup.get().player.getName()), clientSup.get(), Throwable::printStackTrace);
     });
     private final JLabel purchasableL = JUtils.addText("Kaufen",1060,450+90+13,400,40,true);
     private final JButton purchasableB = JUtils.addButton(null,"images/Main_pictures/3d_button.png", 1060,450+90,400,80,true,false, actionevent ->  {

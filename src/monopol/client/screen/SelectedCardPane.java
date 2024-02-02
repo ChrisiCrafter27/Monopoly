@@ -46,7 +46,7 @@ public class SelectedCardPane extends JLayeredPane {
 
     public SelectedCardPane() {
         super();
-        setBounds((int) (JUtils.SCREEN_HEIGHT + 530 - 60), 561, 344, 485);
+        setBounds(JUtils.getX(JUtils.SCREEN_HEIGHT + 530 - 60), JUtils.getY(561), JUtils.getX(344), JUtils.getY(485));
         setVisible(false);
 
         add(color, PALETTE_LAYER);
