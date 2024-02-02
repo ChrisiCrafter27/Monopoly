@@ -185,7 +185,7 @@ public class LobbyPane extends JLayeredPane {
     }
 
     private JButton playerButton(Color background, int y, String name) {
-        JButton button = JUtils.addButton("", 775, y, 25, 25, client.player.getName().equals(name), actionEvent ->  {
+        JButton button = JUtils.addButton("", 775, y, 25, 25, name.equals(client.player.getName()), actionEvent ->  {
             List<Color> colors = COLORS.keySet().stream().filter(color -> {
                 try {
                     return client.serverMethod().getPlayers().stream().map(Player::getColor).noneMatch(color::equals);

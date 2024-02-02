@@ -67,7 +67,7 @@ public class InfoPane extends JLayeredPane {
         thread.interrupt();
     }
 
-    public void show(Client client, String text) {
+    public synchronized void show(Client client, String text) {
         if (!texts.containsKey(client)) texts.put(client, new ArrayList<>());
         List<String> list = texts.get(client);
         list.add(text);

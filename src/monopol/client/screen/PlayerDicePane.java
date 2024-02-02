@@ -54,7 +54,7 @@ public class PlayerDicePane extends JLayeredPane {
             SW1.setIcon(new ImageIcon(new ImageIcon("images/Würfel/SW_Monop.png").getImage().getScaledInstance(70,70,Image.SCALE_SMOOTH)));
         }
     }
-    public void show(int Dice1, int Dice2,int Dice3){
+    public synchronized void show(int Dice1, int Dice2,int Dice3){
 
         thread1.interrupt();
         thread2.interrupt();
