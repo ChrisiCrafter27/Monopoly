@@ -84,7 +84,7 @@ public class PlayerDicePane extends JLayeredPane {
 
         animationTime3 = new Thread(() -> {
             try {
-                Thread.sleep(5);
+                Thread.sleep(40);
             } catch (InterruptedException e) {return;}
             while (!animationTime3.isInterrupted() && animation_Time3 <= 3000) {animation_Time3 += 10;
                 try {
@@ -96,7 +96,7 @@ public class PlayerDicePane extends JLayeredPane {
 
         animationTime2 = new Thread(() -> {
             try {
-                Thread.sleep(10);
+                Thread.sleep(80);
             } catch (InterruptedException e) {return;}
             while (!animationTime2.isInterrupted() && animation_Time2 <= 3000) {animation_Time2 += 10;
                 try {

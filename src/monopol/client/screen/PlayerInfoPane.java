@@ -65,7 +65,7 @@ public class PlayerInfoPane extends JLayeredPane {
     });
     private final JLabel action2L = JUtils.addText("Zug beenden",1679-105, 460,400,40,false);
     private final JButton action2B = JUtils.addButton(null,"images/Main_pictures/3d_button.png", 1479,450,400,80,true,false,actionevent ->  {
-        //zug beenden
+        //PacketManager.sendC2S();
     });
     private final JLabel purchasableL = JUtils.addText("Kaufen",1060,450+90+13,400,40,true);
     private final JButton purchasableB = JUtils.addButton(null,"images/Main_pictures/3d_button.png", 1060,450+90,400,80,true,false, actionevent ->  {

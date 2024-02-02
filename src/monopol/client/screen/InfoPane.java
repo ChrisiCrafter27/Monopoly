@@ -39,7 +39,7 @@ public class InfoPane extends JLayeredPane {
 
     public InfoPane() {
         super();
-        setBounds(1080/2 - 175, 400, 300, 100);
+        setBounds(JUtils.getX(1080/2d - 175), JUtils.getY(400), JUtils.getX(300), JUtils.getY(100));
         add(text1);
         add(text2);
         add(text3);

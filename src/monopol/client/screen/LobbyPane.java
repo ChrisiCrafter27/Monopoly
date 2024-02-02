@@ -43,7 +43,7 @@ public class LobbyPane extends JLayeredPane {
     private final JButton addBot = addButton("Bot hinzufügen", 50, 1080 - 200, 200, 50, false, actionEvent -> {});
     private final JButton leave = addButton("Verlassen", 1920 - 250, 1080 - 100, 200, 50, false, actionEvent -> {});
     private final JButton start = addButton("Starten", 1920 - 250, 1080 - 200, 200, 50, false, actionEvent -> {});
-    private final  JLabel hintergrund = JUtils.addImage("images/Main_pictures/2.Menü.png",0,0,1920,1080);
+    private final  JLabel hintergrund = JUtils.addImage("images/Main_pictures/2.Menü.png",0,60,1920,1020);
 
     public LobbyPane() {
         super();
