@@ -9,16 +9,11 @@ public enum Field implements IField {
     AUKTION,
     BUSFAHRKARTE,
     GESCHENK,
-    LOS,
-    GEFAENGNIS,
-    FREIPARKEN,
-    INSGEFAENGNIS,
     EINKOMMENSSTEUER,
     ZUSATZSTEUER;
 
     private static final ArrayList<IField> FIELDS = new ArrayList<>(List.of(
-            Field.LOS,
-
+            Corner.LOS,
             Street.BADSTRASSE,
             Field.GEMEINSCHAFTSFELD,
             Street.TURMSTRASSE,
@@ -32,7 +27,7 @@ public enum Field implements IField {
             Street.POSTSTRASSE,
             Street.TIERGARTENSTRASSE,
 
-            Field.GEFAENGNIS,
+            Corner.GEFAENGNIS,
             Field.AUKTION,
             Street.SEESTRASSE,
             Street.HAFENSTRASSE,
@@ -46,7 +41,7 @@ public enum Field implements IField {
             Street.BERLINERSTRASSE,
             Street.HAMBURGERSTRASSE,
 
-            Field.FREIPARKEN,
+            Corner.FREIPARKEN,
             Street.THEATERSTRASSE,
             Field.EREIGNISFELD,
             Street.MUSEUMSTRASSE,
@@ -60,7 +55,7 @@ public enum Field implements IField {
             Street.GOETHESTRASSE,
             Street.RILKESTRASSE,
 
-            Field.INSGEFAENGNIS,
+            Corner.INSGEFAENGNIS,
             Street.RATHAUSPLATZ,
             Street.HAUPSTRASSE,
             Street.BOERSENPLATZ,
@@ -75,8 +70,19 @@ public enum Field implements IField {
             Street.SCHLOSSALLEE
     ));
 
-    public static List<IField> getAll() {
+    public static List<IField> fields() {
         return new ArrayList<>(FIELDS);
+    }
+
+    public static List<IPurchasable> purchasables() {
+        return fields().stream().filter(field -> field instanceof IPurchasable).map(field -> (IPurchasable) field).toList();
+    }
+
+    public static Corner nextCorner(int i) {
+        do {
+            i++;
+        } while (!(get(i) instanceof Corner));
+        return (Corner) get(i);
     }
 
     public static IField get(int i) {

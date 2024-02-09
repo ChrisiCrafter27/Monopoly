@@ -43,7 +43,7 @@ public enum TrainStation implements IPurchasable {
 
     @Override
     public String getOwner() {
-        return owner;
+        return owner == null ? "" : owner;
     }
 
     @Override

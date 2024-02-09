@@ -14,7 +14,7 @@ import java.util.*;
 public class CommunityCard {
     private static final List<CommunityCard> COMMUNITY_CARDS = List.of(
             new CommunityCard(List.of("Gehe zurück zur", "Badstraße."), Map.of("Bewegen", (server, player) -> {
-                player.setPosition(Field.getAll().indexOf(Street.BADSTRASSE));
+                player.setPosition(Field.fields().indexOf(Street.BADSTRASSE));
                 server.events().onArrivedAtField();
                 //TODO: send ok
             })),
@@ -42,7 +42,7 @@ public class CommunityCard {
                 //TODO: send ok
             })),
             new CommunityCard(List.of("Gehe in das Gefängnis!", "Begib dich direkt dorthin.", "Gehe nicht über Los.", "Ziehe nicht 200€ ein."), Map.of("Ins Gefängnis gehen", (server, player) -> {
-                player.setPosition(Field.getAll().indexOf(Field.GEFAENGNIS));
+                player.setPosition(Field.fields().indexOf(Field.GEFAENGNIS));
                 server.events().onArrivedAtField();
                 //TODO: send ok
             })),
@@ -64,7 +64,7 @@ public class CommunityCard {
                 //TODO: send ok
             })),
             new CommunityCard(List.of("Rücke vor bis auf Los.", "<--"), Map.of("Bewegen", (server, player) -> {
-                player.setPosition(Field.getAll().indexOf(Field.LOS));
+                player.setPosition(Field.fields().indexOf(Field.LOS));
                 server.events().onArrivedAtField();
                 //TODO: send ok
             })),

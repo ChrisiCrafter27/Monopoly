@@ -71,8 +71,8 @@ public class PlayerDicePane extends JLayeredPane {
         animation_Time3 = 10;
 
         breakTime1 = 10;
-        breakTime2 = 10;
-        breakTime3 = 10;
+        breakTime2 = 15;
+        breakTime3 = 20;
 
 
         animationTime1 = new Thread(() -> {
@@ -125,10 +125,10 @@ public class PlayerDicePane extends JLayeredPane {
                 if(animation_Time1<3000 || Dice1 != ran){
                     NW1.setIcon(new ImageIcon(new ImageIcon("images/Würfel/NW_"+ran+".png").getImage().getScaledInstance(66,66,Image.SCALE_SMOOTH)));
                     breakTime1 = (int) (700*(1-Math.exp(-0.0005 * animation_Time1)));
-                    //System.out.println(animation_Time1);
                 }
                 else{
                     NW1.setIcon(new ImageIcon(new ImageIcon("images/Würfel/NW_"+Dice1+".png").getImage().getScaledInstance(66,66,Image.SCALE_SMOOTH)));
+                    //System.out.println("time1: " + animation_Time1);
                     animation_Time1 = 10;
                     thread1.interrupt();
                 }
@@ -137,8 +137,8 @@ public class PlayerDicePane extends JLayeredPane {
         thread1.start();
 
         thread2 = new Thread(() -> {
-            int ran = Dice2 +1;
-            if(ran == 7){ran = 1;}
+            int ran = Dice2 -1;
+            if(ran == 0){ran = 6;}
             while (!thread2.isInterrupted()){
                 try {
                     Thread.sleep(breakTime2);
@@ -149,10 +149,10 @@ public class PlayerDicePane extends JLayeredPane {
                 if(animation_Time2<3000|| Dice2 != ran){
                     NW2.setIcon(new ImageIcon(new ImageIcon("images/Würfel/NW_"+ran+".png").getImage().getScaledInstance(66,66,Image.SCALE_SMOOTH)));
                     breakTime2 = (int) (700*(1-Math.exp(-0.0005 * animation_Time2)));
-                    //System.out.println(animation_Time2);
                 }
                 else{
                     NW2.setIcon(new ImageIcon(new ImageIcon("images/Würfel/NW_"+Dice2+".png").getImage().getScaledInstance(66,66,Image.SCALE_SMOOTH)));
+                    //System.out.println("time2: " + animation_Time2);
                     animation_Time2 = 10;
                     thread2.interrupt();
                 }
@@ -193,6 +193,7 @@ public class PlayerDicePane extends JLayeredPane {
                     if(Dice3 == 4 || Dice3 ==6){
                         SW1.setIcon(new ImageIcon(new ImageIcon("images/Würfel/SW_Monop.png").getImage().getScaledInstance(70,70,Image.SCALE_SMOOTH)));
                     }
+                    //System.out.println("time3: " + animation_Time3);
                     animation_Time3 = 10;
                     thread3.interrupt();
                 }

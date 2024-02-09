@@ -16,7 +16,7 @@ public class UpdateOwnerS2CPacket extends S2CPacket<UpdateOwnerS2CPacket> {
 
     public UpdateOwnerS2CPacket() {
         owner = new HashMap<>();
-        for(IPurchasable purchasable : Field.getAll().stream().filter(field -> field instanceof IPurchasable).map(field -> (IPurchasable) field).toList()) {
+        for(IPurchasable purchasable : Field.purchasables()) {
             owner.put(purchasable.getName(), purchasable.getOwner());
         }
     }
@@ -43,7 +43,7 @@ public class UpdateOwnerS2CPacket extends S2CPacket<UpdateOwnerS2CPacket> {
 
     @Override
     public void handleOnClient(Client client, RootPane display) {
-        for(IPurchasable purchasable : Field.getAll().stream().filter(field -> field instanceof IPurchasable).map(field -> (IPurchasable) field).toList()) {
+        for(IPurchasable purchasable : Field.purchasables()) {
             if(!owner.containsKey(purchasable.getName())) throw new IllegalStateException();
             purchasable.setOwner(owner.get(purchasable.getName()));
         }

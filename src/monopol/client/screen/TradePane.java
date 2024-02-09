@@ -317,7 +317,7 @@ public class TradePane extends JLayeredPane {
     }
 
     private void addTradeButtons() {
-        List<IPurchasable> cards = Field.getAll().stream().filter(card -> card instanceof IPurchasable).map(card -> ((IPurchasable) card)).toList();
+        List<IPurchasable> cards = Field.purchasables();
         for(int i = 1; i <= cards.size(); i++) {
             IPurchasable card = cards.get(i-1);
             JButton button = new JButton();
@@ -331,14 +331,14 @@ public class TradePane extends JLayeredPane {
     }
 
     private void addTradeInfoOther() {
-        List<IPurchasable> cards = Field.getAll().stream().filter(card -> card instanceof IPurchasable).map(card -> ((IPurchasable) card)).toList();
+        List<IPurchasable> cards = Field.purchasables();
         for(int i = 1; i <= cards.size(); i++) {
             tradeInfoOther.add(JUtils.addImage("images/kleine_karten/disabled.png", 1255 + getX(i), 200 + getY(i)), i-1);
         }
     }
 
     private void addTradeInfoThis() {
-        List<IPurchasable> cards = Field.getAll().stream().filter(card -> card instanceof IPurchasable).map(card -> ((IPurchasable) card)).toList();
+        List<IPurchasable> cards = Field.purchasables();
         for(int i = 1; i <= cards.size(); i++) {
             tradeInfoThis.add(JUtils.addImage("images/kleine_karten/disabled.png", 295 + getX(i), 200 + getY(i)), i-1);
         }
@@ -482,7 +482,7 @@ public class TradePane extends JLayeredPane {
     }
 
     public void enableChangeOfferButtons() throws RemoteException {
-        List<IPurchasable> cards = Field.getAll().stream().filter(card -> card instanceof IPurchasable).map(card -> ((IPurchasable) card)).toList();
+        List<IPurchasable> cards = Field.purchasables();
         for(int i = 1; i <= cards.size(); i++) {
             IPurchasable card = cards.get(i-1);
             if(tradeButtons.getComponent(i-1) instanceof JButton button) {
@@ -514,7 +514,7 @@ public class TradePane extends JLayeredPane {
     }
 
     public void enableTradeInfo() throws RemoteException {
-        List<IPurchasable> cards = Field.getAll().stream().filter(card -> card instanceof IPurchasable).map(card -> ((IPurchasable) card)).toList();
+        List<IPurchasable> cards = Field.purchasables();
         for(int i = 1; i <= cards.size(); i++) {
             IPurchasable card = cards.get(i-1);
             if(tradeInfoThis.getComponent(i-1) instanceof JLabel label) {

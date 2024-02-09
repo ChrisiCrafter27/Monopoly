@@ -2,6 +2,7 @@ package monopol.client.screen;
 
 import monopol.client.Client;
 import monopol.common.data.*;
+import monopol.common.message.DisconnectReason;
 import monopol.common.packets.PacketManager;
 import monopol.common.packets.custom.ButtonC2SPacket;
 import monopol.common.utils.JUtils;
@@ -95,7 +96,8 @@ public class PlayerInfoPane extends JLayeredPane {
     });
     private final JLabel leaveL = JUtils.addText("Verlassen",1060,450+90*6+13,400,40,true);
     private final JButton leaveB = JUtils.addButton(null,"images/Main_pictures/3d_button.png", 1060,450+90*6,400,80,true,false, actionevent ->  {
-        //hypothek zurücksetzen
+        if(JOptionPane.showConfirmDialog(this, "Möchtest du den Server wirklich verlassen?", "Server verlassen", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION)
+            try {clientSup.get().serverMethod().kick(clientSup.get().player.getName(), DisconnectReason.CLIENT_CLOSED);} catch (RemoteException e) {clientSup.get().closed();}
     });
 
     private final Runnable task = () -> {
@@ -174,8 +176,8 @@ public class PlayerInfoPane extends JLayeredPane {
         this.hasToPayRent = hasToPayRent;
         this.ready = ready;
         boolean active = activePlayer != null && activePlayer.equals(clientSup.get().player.getName());
-        action1L.setText(diceRolled ? "Zug Beenden" : "Würfeln");
-        action2L.setText(diceRolled ? "Miete Zahlen" : "Busfahren");
+        action1L.setText(diceRolled ? "Zug beenden" : "Würfeln");
+        action2L.setText(diceRolled ? "Miete zahlen" : "Busfahren");
         setIcon(action1B, false);
         setIcon(action2B, false);
         setIcon(purchasableB, false);
@@ -187,12 +189,13 @@ public class PlayerInfoPane extends JLayeredPane {
         if(active) {
             try {
                 Player player = clientSup.get().serverMethod().getPlayer(clientSup.get().player.getName());
-                IField field = Field.getAll().get(player.getPosition());
+                if(player == null) return;
+                IField field = Field.fields().get(player.getPosition());
                 if(diceRolled) {
                     setIcon(action1B, ready);
                     setIcon(action2B, hasToPayRent);
                     if(field instanceof IPurchasable purchasable) mortgageL.setText(purchasable.isMortgaged() ? "Zurückkaufen" : "Verpfänden");
-                    setIcon(purchasableB, field instanceof IPurchasable purchasable && purchasable.getOwner() == null && player.getMoney() >= purchasable.getPrice());
+                    setIcon(purchasableB, field instanceof IPurchasable purchasable && purchasable.getOwner().isEmpty() && player.getMoney() >= purchasable.getPrice());
                     setIcon(upgradeB, field instanceof IPurchasable purchasable && purchasable.getOwner().equals(player.getName()) && player.getMoney() >= purchasable.getUpgradeCost() && purchasable.getMaxLevel() > purchasable.getLevel());
                     setIcon(downgradeB, field instanceof IPurchasable purchasable && purchasable.getOwner().equals(player.getName()) && purchasable.getLevel() > 0);
                     setIcon(mortgageB, field instanceof IPurchasable purchasable && purchasable.getOwner().equals(player.getName()));

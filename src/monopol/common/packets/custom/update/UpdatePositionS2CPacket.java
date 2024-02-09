@@ -3,14 +3,10 @@ package monopol.common.packets.custom.update;
 import monopol.client.Client;
 import monopol.client.screen.RootPane;
 import monopol.common.data.Player;
-import monopol.common.core.Monopoly;
 import monopol.common.packets.S2CPacket;
 
 import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 public class UpdatePositionS2CPacket extends S2CPacket<UpdatePositionS2CPacket> {

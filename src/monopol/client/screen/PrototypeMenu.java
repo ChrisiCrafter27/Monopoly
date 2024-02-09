@@ -1,7 +1,6 @@
 package monopol.client.screen;
 
 import monopol.client.Client;
-import monopol.client.ClientTrade;
 import monopol.common.core.GameState;
 import monopol.common.core.Monopoly;
 import monopol.common.data.Street;
@@ -175,8 +174,8 @@ public class PrototypeMenu {
         //keep PingPane enabled
 
         //Initiate panes
-        root.boardPane.init(root.selectedCardPane::init);
-        root.playerDisplayPane.init(() -> root);
+        root.boardPane.init(root.selectedCardPane::select);
+        root.playerDisplayPane.init(() -> client, () -> root);
         root.infoPane.init(() -> client);
         root.freeParkingPane.init();
         root.playerInfoPane.init(() -> client);
@@ -185,6 +184,11 @@ public class PrototypeMenu {
         new Thread(() -> {
             //While game is running
             while (Monopoly.INSTANCE.getState() == GameState.RUNNING) {
+
+                //Get the client from the panels
+                Client oldClient = client;
+                if(root.lobbyPane.getClient() != null) client = root.lobbyPane.getClient();
+                if(root.playerPane.getClient() != null && client.equals(oldClient)) client = root.playerPane.getClient();
 
                 //Remove clients that left the game
                 for (int i = 0; i < clients.size(); i++) {
@@ -199,13 +203,8 @@ public class PrototypeMenu {
                     }
                 }
 
-                //Get clients from panes and update
-                if(root.playerPane.getClient() != null) {
-                    Client oldClient = client;
-                    client = root.playerPane.getClient();
-                    if(client != oldClient) ClientTrade.trade(() -> client, root.tradePane);
-                }
-                root.playerPane.update(client, clients, false);
+                //Try to get information from the server and update
+                root.playerPane.update(client, clients, root.lobbyPane.mustUpdate());
                 root.pingPane.update(client.getPing(), keyHandler, root, () -> {
                     try {
                         client.serverMethod().kick(client.player.getName(), DisconnectReason.CLIENT_CLOSED);

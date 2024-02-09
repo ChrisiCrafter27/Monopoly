@@ -87,8 +87,7 @@ public class Player implements Serializable {
     }
     public void setInPrison(boolean inPrison) {
         this.inPrison = inPrison;
-        if(inPrison) setPosition(Field.getAll().indexOf(Field.GEFAENGNIS));
-        Monopoly.INSTANCE.server().updatePosition(true);
+        if(inPrison) setPosition(Field.fields().indexOf(Field.GEFAENGNIS));
     }
 
     @Override

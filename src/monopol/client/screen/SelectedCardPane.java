@@ -84,7 +84,7 @@ public class SelectedCardPane extends JLayeredPane {
         repaint();
     }
 
-    public void init(IPurchasable purchasable) {
+    public void select(IPurchasable purchasable) {
         this.purchasable = purchasable;
         update();
         setVisible(true);

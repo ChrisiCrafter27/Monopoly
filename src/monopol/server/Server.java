@@ -306,7 +306,8 @@ public class Server extends UnicastRemoteObject implements IServer {
         List<Player> list = players.keySet().stream().filter(player -> players.get(player) == null && player.getName().equals(name)).toList();
         if (list.size() == 1) {
             players.remove(list.get(0));
-            Field.getAll().stream().filter(field -> field instanceof IPurchasable).map(field -> (IPurchasable) field).filter(purchasable -> list.get(0).getName().equals(purchasable.getOwner())).forEach(purchasable -> purchasable.setOwner(null));
+            Field.purchasables().stream().filter(purchasable -> list.get(0).getName().equals(purchasable.getOwner())).forEach(purchasable -> purchasable.setOwner(null));
+            events().onTryNextRound(name);
         }
     }
 

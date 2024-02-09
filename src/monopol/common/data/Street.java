@@ -108,7 +108,7 @@ public enum Street implements IPurchasable {
 
     @Override
     public String getOwner() {
-        return owner;
+        return owner == null ? "" : owner;
     }
 
     @Override
