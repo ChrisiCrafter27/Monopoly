@@ -1,10 +1,7 @@
 package monopol.client.screen;
 
 import monopol.client.Client;
-import monopol.common.data.Field;
-import monopol.common.data.IField;
-import monopol.common.data.IPurchasable;
-import monopol.common.data.Player;
+import monopol.common.data.*;
 import monopol.common.utils.JUtils;
 import monopol.common.utils.MapUtils;
 import monopol.common.utils.Triplet;
@@ -48,13 +45,13 @@ public class PlayerDisplayPane extends JLayeredPane {
                         List<Triplet<JButton, Integer, Integer>> list12 = map1.values().stream().filter(v -> inPrison(MapUtils.key(map1, v))).toList();
                         for (int i = 0; i < list11.size(); i++) {
                             JButton button = list11.get(i).getLeft();
-                            if(Field.fields().indexOf(Field.GEFAENGNIS) == list11.get(i).getRight()) {
+                            if(Field.fields().indexOf(Corner.GEFAENGNIS) == list11.get(i).getRight()) {
                                 button.setBounds(JUtils.getX(prisonX(pos, list11.size(), i, false)-10), JUtils.getY(prisonY(pos, list11.size(), i, false)-10), 20, 20);
                             } else button.setBounds(JUtils.getX(x(pos, list11.size(), i)-10), JUtils.getY(y(pos, list11.size(), i)-10), 20, 20);
                         }
                         for (int i = 0; i < list12.size(); i++) {
                             JButton button = list12.get(i).getLeft();
-                            if(Field.fields().indexOf(Field.GEFAENGNIS) == list12.get(i).getRight()) {
+                            if(Field.fields().indexOf(Corner.GEFAENGNIS) == list12.get(i).getRight()) {
                                 button.setBounds(JUtils.getX(prisonX(pos, list12.size(), i, true)-10), JUtils.getY(prisonY(pos, list12.size(), i, true)-10), 20, 20);
                             } else button.setBounds(JUtils.getX(x(pos, list12.size(), i)-10), JUtils.getY(y(pos, list12.size(), i)-10), 20, 20);
                         }
@@ -63,13 +60,13 @@ public class PlayerDisplayPane extends JLayeredPane {
                         List<Triplet<JButton, Integer, Integer>> list22 = map2.values().stream().filter(v -> inPrison(MapUtils.key(map2, v))).toList();
                         for (int i = 0; i < list21.size(); i++) {
                             JButton button = list21.get(i).getLeft();
-                            if(Field.fields().indexOf(Field.GEFAENGNIS) == list21.get(i).getRight()) {
+                            if(Field.fields().indexOf(Corner.GEFAENGNIS) == list21.get(i).getRight()) {
                                 button.setBounds(JUtils.getX(prisonX(pos, list21.size(), i, false)-10), JUtils.getY(prisonY(pos, list21.size(), i, false)-10), 20, 20);
                             } else button.setBounds(JUtils.getX(x(pos, list21.size(), i)-10), JUtils.getY(y(pos, list21.size(), i)-10), 20, 20);
                         }
                         for (int i = 0; i < list22.size(); i++) {
                             JButton button = list22.get(i).getLeft();
-                            if(Field.fields().indexOf(Field.GEFAENGNIS) == list22.get(i).getRight()) {
+                            if(Field.fields().indexOf(Corner.GEFAENGNIS) == list22.get(i).getRight()) {
                                 button.setBounds(JUtils.getX(prisonX(pos, list22.size(), i, true)-10), JUtils.getY(prisonY(pos, list22.size(), i, true)-10), 20, 20);
                             } else button.setBounds(JUtils.getX(x(pos, list22.size(), i)-10), JUtils.getY(y(pos, list22.size(), i)-10), 20, 20);
                         }
@@ -90,7 +87,7 @@ public class PlayerDisplayPane extends JLayeredPane {
     private boolean inPrison(String name) {
         try {
             Player player = clientSup.get().serverMethod().getPlayer(name);
-            return player.inPrison() && players.get(name).getRight() == Field.fields().indexOf(Field.GEFAENGNIS);
+            return player.inPrison() && players.get(name).getRight() == Field.fields().indexOf(Corner.GEFAENGNIS);
         } catch (Exception e) {
             return false;
         }
@@ -150,13 +147,13 @@ public class PlayerDisplayPane extends JLayeredPane {
             List<Triplet<JButton, Integer, Integer>> list12 = map1.values().stream().filter(v -> inPrison(MapUtils.key(map1, v))).toList();
             for (int i = 0; i < list11.size(); i++) {
                 JButton button = list11.get(i).getLeft();
-                if(Field.fields().indexOf(Field.GEFAENGNIS) == list11.get(i).getRight()) {
+                if(Field.fields().indexOf(Corner.GEFAENGNIS) == list11.get(i).getRight()) {
                     button.setBounds(JUtils.getX(prisonX(pos, list11.size(), i, false)-10), JUtils.getY(prisonY(pos, list11.size(), i, false)-10), 20, 20);
                 } else button.setBounds(JUtils.getX(x(pos, list11.size(), i)-10), JUtils.getY(y(pos, list11.size(), i)-10), 20, 20);
             }
             for (int i = 0; i < list12.size(); i++) {
                 JButton button = list12.get(i).getLeft();
-                if(Field.fields().indexOf(Field.GEFAENGNIS) == list12.get(i).getRight()) {
+                if(Field.fields().indexOf(Corner.GEFAENGNIS) == list12.get(i).getRight()) {
                     button.setBounds(JUtils.getX(prisonX(pos, list12.size(), i, true)-10), JUtils.getY(prisonY(pos, list12.size(), i, true)-10), 20, 20);
                 } else button.setBounds(JUtils.getX(x(pos, list12.size(), i)-10), JUtils.getY(y(pos, list12.size(), i)-10), 20, 20);
             }
@@ -165,13 +162,13 @@ public class PlayerDisplayPane extends JLayeredPane {
             List<Triplet<JButton, Integer, Integer>> list22 = map2.values().stream().filter(v -> inPrison(MapUtils.key(map2, v))).toList();
             for (int i = 0; i < list21.size(); i++) {
                 JButton button = list21.get(i).getLeft();
-                if(Field.fields().indexOf(Field.GEFAENGNIS) == list21.get(i).getRight()) {
+                if(Field.fields().indexOf(Corner.GEFAENGNIS) == list21.get(i).getRight()) {
                     button.setBounds(JUtils.getX(prisonX(pos, list21.size(), i, false)-10), JUtils.getY(prisonY(pos, list21.size(), i, false)-10), 20, 20);
                 } else button.setBounds(JUtils.getX(x(pos, list21.size(), i)-10), JUtils.getY(y(pos, list21.size(), i)-10), 20, 20);
             }
             for (int i = 0; i < list22.size(); i++) {
                 JButton button = list22.get(i).getLeft();
-                if(Field.fields().indexOf(Field.GEFAENGNIS) == list22.get(i).getRight()) {
+                if(Field.fields().indexOf(Corner.GEFAENGNIS) == list22.get(i).getRight()) {
                     button.setBounds(JUtils.getX(prisonX(pos, list22.size(), i, true)-10), JUtils.getY(prisonY(pos, list22.size(), i, true)-10), 20, 20);
                 } else button.setBounds(JUtils.getX(x(pos, list22.size(), i)-10), JUtils.getY(y(pos, list22.size(), i)-10), 20, 20);
             }
@@ -245,7 +242,7 @@ public class PlayerDisplayPane extends JLayeredPane {
     }
 
     private boolean otherSide(int pos) {
-        return (pos < Field.fields().indexOf(Field.GEFAENGNIS) && pos > Field.fields().indexOf(Field.LOS)) || (pos < Field.fields().indexOf(Field.INSGEFAENGNIS) && pos > Field.fields().indexOf(Field.FREIPARKEN));
+        return (pos < Field.fields().indexOf(Corner.GEFAENGNIS) && pos > Field.fields().indexOf(Corner.LOS)) || (pos < Field.fields().indexOf(Corner.INSGEFAENGNIS) && pos > Field.fields().indexOf(Corner.FREIPARKEN));
     }
 
     private int x(int pos, int players, int i) {
