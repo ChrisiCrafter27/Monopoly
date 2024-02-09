@@ -1,9 +1,6 @@
 package monopol.server.events;
 
-import monopol.common.data.Player;
-import monopol.common.data.Field;
-import monopol.common.data.Street;
-import monopol.common.data.TrainStation;
+import monopol.common.data.*;
 import monopol.common.packets.PacketManager;
 import monopol.common.packets.custom.InfoS2CPacket;
 import monopol.common.packets.custom.CommunityCardS2CPacket;
@@ -42,7 +39,7 @@ public class CommunityCard {
                 //TODO: send ok
             })),
             new CommunityCard(List.of("Gehe in das Gefängnis!", "Begib dich direkt dorthin.", "Gehe nicht über Los.", "Ziehe nicht 200€ ein."), Map.of("Ins Gefängnis gehen", (server, player) -> {
-                player.setPosition(Field.fields().indexOf(Field.GEFAENGNIS));
+                player.setPosition(Field.fields().indexOf(Corner.GEFAENGNIS));
                 server.events().onArrivedAtField();
                 //TODO: send ok
             })),
@@ -64,7 +61,7 @@ public class CommunityCard {
                 //TODO: send ok
             })),
             new CommunityCard(List.of("Rücke vor bis auf Los.", "<--"), Map.of("Bewegen", (server, player) -> {
-                player.setPosition(Field.fields().indexOf(Field.LOS));
+                player.setPosition(Field.fields().indexOf(Corner.LOS));
                 server.events().onArrivedAtField();
                 //TODO: send ok
             })),

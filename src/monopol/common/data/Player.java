@@ -87,7 +87,7 @@ public class Player implements Serializable {
     }
     public void setInPrison(boolean inPrison) {
         this.inPrison = inPrison;
-        if(inPrison) setPosition(Field.fields().indexOf(Field.GEFAENGNIS));
+        if(inPrison) setPosition(Field.fields().indexOf(Corner.GEFAENGNIS));
     }
 
     @Override
