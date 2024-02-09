@@ -14,6 +14,8 @@ public class Player implements Serializable {
     private int position = 0;
     private Color color = Color.WHITE;
     private boolean inPrison = false;
+    private int prisonRounds = 0;
+    private int doubles = 0;
 
     public Player(String name) {
         this.name = name;
@@ -88,6 +90,25 @@ public class Player implements Serializable {
     public void setInPrison(boolean inPrison) {
         this.inPrison = inPrison;
         if(inPrison) setPosition(Field.fields().indexOf(Corner.GEFAENGNIS));
+        else {
+            prisonRounds = 0;
+            Monopoly.INSTANCE.server().updatePosition(true);
+        }
+    }
+    public void prisonRound() {
+        prisonRounds++;
+    }
+    public int prisonRounds() {
+        return prisonRounds;
+    }
+    public void setDoubles(int doubles) {
+        this.doubles = doubles;
+    }
+    public void addDouble() {
+        doubles++;
+    }
+    public int getDoubles() {
+        return doubles;
     }
 
     @Override
@@ -95,6 +116,6 @@ public class Player implements Serializable {
         if (this == object) return true;
         if (object == null || getClass() != object.getClass()) return false;
         Player player = (Player) object;
-        return money == player.money && prisonCards == player.prisonCards && busCards == player.busCards && position == player.position && inPrison == player.inPrison && Objects.equals(name, player.name) && Objects.equals(color, player.color);
+        return money == player.money && prisonCards == player.prisonCards && busCards == player.busCards && position == player.position && inPrison == player.inPrison && prisonRounds == player.prisonRounds && Objects.equals(name, player.name) && Objects.equals(color, player.color);
     }
 }

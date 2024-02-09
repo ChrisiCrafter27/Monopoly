@@ -30,7 +30,8 @@ public class ButtonC2SPacket extends C2SPacket<ButtonC2SPacket> {
                 else server.events().onDiceRoll(name);
             }
             case ACTION_2 -> {
-                if(server.events().diceRolled()) server.events().onPayRent(name);
+                if(server.getPlayerServerSide(name).inPrison()) server.events().onPaySurety(name);
+                else if(server.events().diceRolled()) server.events().onPayRent(name);
                 //else server.events().onBusDrive();
             }
         }

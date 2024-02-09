@@ -4,10 +4,8 @@ import monopol.common.utils.JUtils;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.Random;
-import java.util.concurrent.atomic.AtomicInteger;
 
-public class PlayerDicePane extends JLayeredPane {
+public class DicePane extends JLayeredPane {
 
     private final JLabel NW1 = JUtils.addImage("images/Würfel/NW_1.png",480-85-3,540-3,66,66);
     private final JLabel NW2 = JUtils.addImage("images/Würfel/NW_1.png",480+85-3,540-3,66,66);
@@ -26,7 +24,7 @@ public class PlayerDicePane extends JLayeredPane {
     private int breakTime3 = 10;
 
 
-    public PlayerDicePane(){
+    public DicePane(){
         super();
         setBounds(0, 0, (int) JUtils.SCREEN_WIDTH, (int) JUtils.SCREEN_HEIGHT);
         setVisible(false);
@@ -47,10 +45,10 @@ public class PlayerDicePane extends JLayeredPane {
         if(Dice3 <= 3){
             SW1.setIcon(new ImageIcon(new ImageIcon("images/Würfel/SW_"+Dice3+".png").getImage().getScaledInstance(70,70,Image.SCALE_SMOOTH)));
         }
-        if(Dice3 == 4){
+        if(Dice3 == 5){
             SW1.setIcon(new ImageIcon(new ImageIcon("images/Würfel/SW_Bus.png").getImage().getScaledInstance(70,70,Image.SCALE_SMOOTH)));
         }
-        if(Dice3 == 5 || Dice3 ==6){
+        if(Dice3 == 4 || Dice3 ==6){
             SW1.setIcon(new ImageIcon(new ImageIcon("images/Würfel/SW_Monop.png").getImage().getScaledInstance(70,70,Image.SCALE_SMOOTH)));
         }
     }

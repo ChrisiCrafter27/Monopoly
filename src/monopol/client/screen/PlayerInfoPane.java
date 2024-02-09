@@ -23,11 +23,13 @@ public class PlayerInfoPane extends JLayeredPane {
         PURCHASABLES.addAll(List.of(Plant.values()));
     }
 
-    private Supplier<Client> clientSup = () -> {throw new IllegalStateException("init()  was not called");};
+    private Supplier<Client> clientSup = () -> {throw new IllegalStateException("init() was not called");};
+    private Supplier<RootPane> displaySup = () -> {throw new IllegalStateException("init() was not called");};
     private String currentPlayer = null;
     private String activePlayer = null;
     private boolean diceRolled;
     private boolean hasToPayRent;
+    private boolean inPrison;
     private boolean ready;
 
     private final JLayeredPane topLeft = new JLayeredPane();
@@ -68,8 +70,8 @@ public class PlayerInfoPane extends JLayeredPane {
     private final JButton action1B = JUtils.addButton(null,"images/Main_pictures/3d_button.png", 1060, 450, 400, 80, true, false, actionevent ->  {
         PacketManager.sendC2S(new ButtonC2SPacket(clientSup.get().player.getName(), ButtonC2SPacket.Button.ACTION_1), clientSup.get(), Throwable::printStackTrace);
     });
-    private final JLabel action2L = JUtils.addText("Zug beenden",1479, 460,400,40,true);
-    private final JButton action2B = JUtils.addButton(null,"images/Main_pictures/3d_button.png", 1479,450,400,80,true,false,actionevent ->  {
+    private final JLabel action2L = JUtils.addText("Zug beenden",1484, 460,400,40,true);
+    private final JButton action2B = JUtils.addButton(null,"images/Main_pictures/3d_button.png", 1484,450,400,80,true,false,actionevent ->  {
         PacketManager.sendC2S(new ButtonC2SPacket(clientSup.get().player.getName(), ButtonC2SPacket.Button.ACTION_2), clientSup.get(), Throwable::printStackTrace);
     });
     private final JLabel purchasableL = JUtils.addText("Kaufen",1060,450+90+13,400,40,true);
@@ -144,9 +146,10 @@ public class PlayerInfoPane extends JLayeredPane {
         thread.interrupt();
     }
 
-    public void init(Supplier<Client> clientSup) {
+    public void init(Supplier<Client> clientSup, Supplier<RootPane> displaySup) {
         try {
             this.clientSup = clientSup;
+            this.displaySup = displaySup;
             currentPlayer = clientSup.get().serverMethod().getPlayers().get(0).getName();
             thread.interrupt();
             thread = new Thread(task);
@@ -170,14 +173,15 @@ public class PlayerInfoPane extends JLayeredPane {
         }
     }
 
-    public void updateButtons(String activePlayer, boolean diceRolled, boolean hasToPayRent, boolean ready) {
+    public void updateButtons(String activePlayer, boolean diceRolled, boolean hasToPayRent, boolean inPrison, boolean ready) {
         this.diceRolled = diceRolled;
         this.activePlayer = activePlayer;
         this.hasToPayRent = hasToPayRent;
+        this.inPrison = inPrison;
         this.ready = ready;
         boolean active = activePlayer != null && activePlayer.equals(clientSup.get().player.getName());
         action1L.setText(diceRolled ? "Zug beenden" : "Würfeln");
-        action2L.setText(diceRolled ? "Miete zahlen" : "Busfahren");
+        action2L.setText(diceRolled ? "Miete zahlen" : inPrison ? "Freikaufen" : "Busfahren");
         setIcon(action1B, false);
         setIcon(action2B, false);
         setIcon(purchasableB, false);
@@ -190,19 +194,19 @@ public class PlayerInfoPane extends JLayeredPane {
             try {
                 Player player = clientSup.get().serverMethod().getPlayer(clientSup.get().player.getName());
                 if(player == null) return;
-                IField field = Field.fields().get(player.getPosition());
+                IPurchasable purchasable = displaySup.get().selectedCardPane.getSelected();
                 if(diceRolled) {
                     setIcon(action1B, ready);
                     setIcon(action2B, hasToPayRent);
-                    if(field instanceof IPurchasable purchasable) mortgageL.setText(purchasable.isMortgaged() ? "Zurückkaufen" : "Verpfänden");
-                    setIcon(purchasableB, field instanceof IPurchasable purchasable && purchasable.getOwner().isEmpty() && player.getMoney() >= purchasable.getPrice());
-                    setIcon(upgradeB, field instanceof IPurchasable purchasable && purchasable.getOwner().equals(player.getName()) && player.getMoney() >= purchasable.getUpgradeCost() && purchasable.getMaxLevel() > purchasable.getLevel());
-                    setIcon(downgradeB, field instanceof IPurchasable purchasable && purchasable.getOwner().equals(player.getName()) && purchasable.getLevel() > 0);
-                    setIcon(mortgageB, field instanceof IPurchasable purchasable && purchasable.getOwner().equals(player.getName()));
+                    mortgageL.setText(purchasable.isMortgaged() ? "Zurückkaufen" : "Verpfänden");
+                    setIcon(purchasableB, player.getPosition() == Field.fields().indexOf(purchasable) && purchasable.getOwner().isEmpty() && player.getMoney() >= purchasable.getPrice());
+                    setIcon(upgradeB, purchasable.getOwner().equals(player.getName()) && player.getMoney() >= purchasable.getUpgradeCost() && purchasable.getMaxLevel() > purchasable.getLevel());
+                    setIcon(downgradeB, purchasable.getOwner().equals(player.getName()) && purchasable.getLevel() > 0);
+                    setIcon(mortgageB, purchasable.getOwner().equals(player.getName()));
                     setIcon(tradeB, false);
                 } else {
                     setIcon(action1B, true);
-                    setIcon(action2B, player.getBusCards() > 0);
+                    setIcon(action2B, player.getBusCards() > 0 || inPrison);
                 }
             } catch (RemoteException e) {
                 clientSup.get().close();
@@ -227,7 +231,7 @@ public class PlayerInfoPane extends JLayeredPane {
         updateTexts();
         updateImages();
         updateImages();
-        updateButtons(activePlayer, diceRolled, hasToPayRent, ready);
+        updateButtons(activePlayer, diceRolled, hasToPayRent, inPrison, ready);
     }
 
     private void updateTexts() {

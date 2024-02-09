@@ -1,7 +1,6 @@
 package monopol.client.screen;
 
 import monopol.client.Client;
-import monopol.common.log.DebugLogger;
 import monopol.common.utils.JUtils;
 
 import javax.swing.*;
@@ -16,7 +15,6 @@ public class PlayerPane extends JLayeredPane {
 
     public PlayerPane() {
         super();
-        DebugLogger.INSTANCE.log().info("[PlayerPane] initiating...");
 
         setBounds(0, 0, (int) JUtils.SCREEN_WIDTH, (int) JUtils.SCREEN_HEIGHT);
         reset();
@@ -28,7 +26,6 @@ public class PlayerPane extends JLayeredPane {
 
     public void update(Client currentClient, ArrayList<Client> clients, boolean forceUpdate) {
         if(!clients.equals(shownClients) || !currentClient.equals(client) || forceUpdate || requestUpdate) {
-            DebugLogger.INSTANCE.log().info("[PlayerPane] updating...");
             requestUpdate = false;
 
             removeAll();
@@ -55,8 +52,6 @@ public class PlayerPane extends JLayeredPane {
     }
 
     public void reset() {
-        DebugLogger.INSTANCE.log().info("[PlayerPane] resetting...");
-
         client = null;
         shownClients = new ArrayList<>();
         removeAll();
@@ -64,8 +59,6 @@ public class PlayerPane extends JLayeredPane {
     }
 
     public void init() {
-        DebugLogger.INSTANCE.log().info("[PlayerPane] preparing...");
-
         setVisible(true);
     }
 

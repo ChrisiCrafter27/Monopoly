@@ -88,9 +88,10 @@ public abstract class Events {
     public abstract void onArrivedAtField();
     public abstract void onPayRent(String name);
     public abstract void onCommunityCardAction(String action);
+    public abstract void onPaySurety(String name);
     public abstract void onTryMortgage();
-    public abstract void onPurchaseBuilding();
-    public abstract void onSellBuilding();
+    public abstract void onUpgrade();
+    public abstract void onDowngrade();
     public abstract void onPurchaseCard();
     public abstract void onArrivedAtLos();
     public abstract void onArrivedAtAuction();

@@ -1,7 +1,6 @@
 package monopol.client.screen;
 
 import monopol.client.Client;
-import monopol.common.log.DebugLogger;
 import monopol.common.message.DisconnectReason;
 import monopol.common.data.Player;
 import monopol.common.utils.JUtils;
@@ -48,8 +47,6 @@ public class LobbyPane extends JLayeredPane {
     public LobbyPane() {
         super();
 
-        DebugLogger.INSTANCE.log().info("[LobbyPane] initiating...");
-
         setBounds(0, 0, (int) JUtils.SCREEN_WIDTH, (int) JUtils.SCREEN_HEIGHT);
         playerList.setBounds(0, 0, (int) JUtils.SCREEN_WIDTH, (int) JUtils.SCREEN_HEIGHT);
 
@@ -67,8 +64,6 @@ public class LobbyPane extends JLayeredPane {
     }
 
     public void reset() {
-        DebugLogger.INSTANCE.log().info("[LobbyPane] resetting...");
-
         client = null;
         memory = new ArrayList<>();
 
@@ -85,8 +80,6 @@ public class LobbyPane extends JLayeredPane {
     }
 
     public void init() {
-        DebugLogger.INSTANCE.log().info("[LobbyPane] waiting for server...");
-
         setVisible(true);
         connecting.setVisible(true);
         repaint();
@@ -96,8 +89,8 @@ public class LobbyPane extends JLayeredPane {
         requestUpdate = true;
     }
 
-    private void updateButtons(ArrayList<Client> clients, RootPane root) {
-        addPlayer.setEnabled(true);
+    private void updateButtons(ArrayList<Client> clients, RootPane root, boolean mayAddPlayer) {
+        addPlayer.setEnabled(mayAddPlayer);
         removeActionListener(addPlayer);
         addPlayer.addActionListener(actionEvent -> {
             try {
@@ -224,16 +217,14 @@ public class LobbyPane extends JLayeredPane {
 
         if(!ListUtils.equals(players, memory) || !currentClient.equals(client) || !ip.equals(this.ip) || forceUpdate || requestUpdate) {
             requestUpdate = false;
-            DebugLogger.INSTANCE.log().info("[LobbyPane] updating list...");
             client = currentClient;
             this.ip = ip;
             updateList(players);
-            updateButtons(clients, root);
+            updateButtons(clients, root, players.size() < 6);
             updateIp();
             repaint();
         }
         if(keyHandler.isKeyDown(KeyEvent.VK_SPACE) != spaceDown) {
-            DebugLogger.INSTANCE.log().info("[LobbyPane] updating ip...");
             spaceDown = keyHandler.isKeyDown(KeyEvent.VK_SPACE);
             this.ip = ip;
             updateIp();

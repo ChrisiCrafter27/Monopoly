@@ -61,14 +61,14 @@ public class PlayerDisplayPane extends JLayeredPane {
                         for (int i = 0; i < list21.size(); i++) {
                             JButton button = list21.get(i).getLeft();
                             if(Field.fields().indexOf(Corner.GEFAENGNIS) == list21.get(i).getRight()) {
-                                button.setBounds(JUtils.getX(prisonX(pos, list21.size(), i, false)-10), JUtils.getY(prisonY(pos, list21.size(), i, false)-10), 20, 20);
-                            } else button.setBounds(JUtils.getX(x(pos, list21.size(), i)-10), JUtils.getY(y(pos, list21.size(), i)-10), 20, 20);
+                                button.setBounds(JUtils.getX(prisonX(oldPos, list21.size(), i, false)-10), JUtils.getY(prisonY(oldPos, list21.size(), i, false)-10), 20, 20);
+                            } else button.setBounds(JUtils.getX(x(oldPos, list21.size(), i)-10), JUtils.getY(y(oldPos, list21.size(), i)-10), 20, 20);
                         }
                         for (int i = 0; i < list22.size(); i++) {
                             JButton button = list22.get(i).getLeft();
                             if(Field.fields().indexOf(Corner.GEFAENGNIS) == list22.get(i).getRight()) {
-                                button.setBounds(JUtils.getX(prisonX(pos, list22.size(), i, true)-10), JUtils.getY(prisonY(pos, list22.size(), i, true)-10), 20, 20);
-                            } else button.setBounds(JUtils.getX(x(pos, list22.size(), i)-10), JUtils.getY(y(pos, list22.size(), i)-10), 20, 20);
+                                button.setBounds(JUtils.getX(prisonX(oldPos, list22.size(), i, true)-10), JUtils.getY(prisonY(oldPos, list22.size(), i, true)-10), 20, 20);
+                            } else button.setBounds(JUtils.getX(x(oldPos, list22.size(), i)-10), JUtils.getY(y(oldPos, list22.size(), i)-10), 20, 20);
                         }
                         List<IField> list = Field.fields();
                         if(pos == triplet.getMiddle() && list.size() > pos && list.get(pos) instanceof IPurchasable purchasable) displaySup.get().selectedCardPane.select(purchasable);
@@ -163,14 +163,14 @@ public class PlayerDisplayPane extends JLayeredPane {
             for (int i = 0; i < list21.size(); i++) {
                 JButton button = list21.get(i).getLeft();
                 if(Field.fields().indexOf(Corner.GEFAENGNIS) == list21.get(i).getRight()) {
-                    button.setBounds(JUtils.getX(prisonX(pos, list21.size(), i, false)-10), JUtils.getY(prisonY(pos, list21.size(), i, false)-10), 20, 20);
-                } else button.setBounds(JUtils.getX(x(pos, list21.size(), i)-10), JUtils.getY(y(pos, list21.size(), i)-10), 20, 20);
+                    button.setBounds(JUtils.getX(prisonX(oldPos, list21.size(), i, false)-10), JUtils.getY(prisonY(oldPos, list21.size(), i, false)-10), 20, 20);
+                } else button.setBounds(JUtils.getX(x(oldPos, list21.size(), i)-10), JUtils.getY(y(oldPos, list21.size(), i)-10), 20, 20);
             }
             for (int i = 0; i < list22.size(); i++) {
                 JButton button = list22.get(i).getLeft();
                 if(Field.fields().indexOf(Corner.GEFAENGNIS) == list22.get(i).getRight()) {
-                    button.setBounds(JUtils.getX(prisonX(pos, list22.size(), i, true)-10), JUtils.getY(prisonY(pos, list22.size(), i, true)-10), 20, 20);
-                } else button.setBounds(JUtils.getX(x(pos, list22.size(), i)-10), JUtils.getY(y(pos, list22.size(), i)-10), 20, 20);
+                    button.setBounds(JUtils.getX(prisonX(oldPos, list22.size(), i, true)-10), JUtils.getY(prisonY(oldPos, list22.size(), i, true)-10), 20, 20);
+                } else button.setBounds(JUtils.getX(x(oldPos, list22.size(), i)-10), JUtils.getY(y(oldPos, list22.size(), i)-10), 20, 20);
             }
             List<IField> list = Field.fields();
             if(list.size() > pos && list.get(pos) instanceof IPurchasable purchasable) displaySup.get().selectedCardPane.select(purchasable);
@@ -258,6 +258,7 @@ public class PlayerDisplayPane extends JLayeredPane {
                 default -> 30;
             };
         } : switch (players) {
+            case 1 -> 0;
             case 2, 4, 6 -> switch (i) {
                 case 0, 2, 4 -> -15;
                 default -> 15;
@@ -277,6 +278,7 @@ public class PlayerDisplayPane extends JLayeredPane {
 
     private int y(int pos, int players, int i) {
         return simpleY(pos) + (otherSide(pos) ? switch (players) {
+            case 1 -> 0;
             case 2, 4, 6 -> switch (i) {
                 case 0, 2, 4 -> -15;
                 default -> 15;

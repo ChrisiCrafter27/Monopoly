@@ -68,7 +68,7 @@ public class PrototypeMenu {
         root.boardPane.reset();
         root.freeParkingPane.reset();
         root.playerInfoPane.reset();
-        root.playerDicePane.reset();
+        root.dicePane.reset();
 
         root.menuPane.init(clients, this::prepareLobby, root);
         root.rejoinPane.init(() -> client, newClient -> clients.add(clients.size(), newClient));
@@ -174,12 +174,13 @@ public class PrototypeMenu {
         //keep PingPane enabled
 
         //Initiate panes
-        root.boardPane.init(root.selectedCardPane::select);
+        root.boardPane.init(() -> root);
         root.playerDisplayPane.init(() -> client, () -> root);
         root.infoPane.init(() -> client);
         root.freeParkingPane.init();
-        root.playerInfoPane.init(() -> client);
-        root.playerDicePane.showWithoutAnim(6, 6, 6);
+        root.playerInfoPane.init(() -> client, () -> root);
+        root.dicePane.showWithoutAnim(6, 6, 6);
+        root.selectedCardPane.init(() -> root);
 
         new Thread(() -> {
             //While game is running

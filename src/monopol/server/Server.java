@@ -104,7 +104,8 @@ public class Server extends UnicastRemoteObject implements IServer {
                         clients.put(clients.size() + 1, newClient);
                         Player player = newServerPlayer();
                         players.put(player, newClient);
-                        player.setColor(COLORS.keySet().stream().filter(color -> players.keySet().stream().map(Player::getColor).noneMatch(color::equals)).toList().get(0));
+                        List<Color> colors = COLORS.keySet().stream().filter(color -> players.keySet().stream().map(Player::getColor).noneMatch(color::equals)).toList();
+                        player.setColor(colors.get(new Random().nextInt(colors.size())));
                         Message.send(new Message(player.getName(), MessageType.NAME), newClient);
                         PacketManager.sendS2C(new UpdatePlayerDataS2CPacket(), PacketManager.Restriction.all(), Throwable::printStackTrace);
                         logger.log().info("[Server]: New Client accepted (" + player.getName() + ")");

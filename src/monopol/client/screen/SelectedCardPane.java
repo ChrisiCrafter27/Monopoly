@@ -1,13 +1,11 @@
 package monopol.client.screen;
 
-import monopol.common.data.IPurchasable;
-import monopol.common.data.Plant;
-import monopol.common.data.Street;
-import monopol.common.data.TrainStation;
+import monopol.common.data.*;
 import monopol.common.utils.JUtils;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.function.Supplier;
 
 public class SelectedCardPane extends JLayeredPane {
     private final JLabel color = JUtils.addImage("", 5, 5, 334, 60);
@@ -42,11 +40,12 @@ public class SelectedCardPane extends JLayeredPane {
     private final JLabel textValue7 = JUtils.addText("", 5, 240, 334, 20, SwingConstants.RIGHT);
     private final JLabel textValue17 = JUtils.addText("", 5, 430, 334, 20, SwingConstants.RIGHT);
 
+    private Supplier<RootPane> displaySup = () -> {throw new IllegalStateException("init() was not called");};
     private IPurchasable purchasable;
 
     public SelectedCardPane() {
         super();
-        setBounds(JUtils.getX(1080 + 530 - 60), JUtils.getY(561), JUtils.getX(344), JUtils.getY(485));
+        setBounds(JUtils.getX(1080 + 495 - 60), JUtils.getY(561), JUtils.getX(344), JUtils.getY(485));
         setVisible(false);
 
         add(color, PALETTE_LAYER);
@@ -84,16 +83,28 @@ public class SelectedCardPane extends JLayeredPane {
         repaint();
     }
 
+    public void init(Supplier<RootPane> displaySup) {
+        this.displaySup = displaySup;
+        select(Street.BADSTRASSE);
+    }
+
     public void select(IPurchasable purchasable) {
         this.purchasable = purchasable;
         update();
+        displaySup.get().playerInfoPane.update();
         setVisible(true);
+    }
+
+    public IPurchasable getSelected() {
+        return purchasable;
     }
 
     private void update() {
         if(purchasable == null) throw new IllegalStateException("init() was not called");
         if(purchasable instanceof Street street) color.setIcon(new ImageIcon(new ImageIcon("images/felder/" + street.colorGroup.image + "_cardcolor.png").getImage().getScaledInstance(334, 60, Image.SCALE_SMOOTH)));
         else color.setIcon(new ImageIcon(""));
+        if(purchasable instanceof Street street && street.colorGroup == ColorGroup.BLUE) name.setForeground(Color.LIGHT_GRAY);
+        else name.setForeground(Color.BLACK);
         name.setText(purchasable.getName().toUpperCase());
         textKey0.setText(purchasable.keyText(0));
         textKey1.setText(purchasable.keyText(1));

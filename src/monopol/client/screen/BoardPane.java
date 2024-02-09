@@ -1,17 +1,15 @@
 package monopol.client.screen;
 
-import monopol.common.data.IPurchasable;
-import monopol.common.data.Plant;
-import monopol.common.data.Street;
-import monopol.common.data.TrainStation;
+import monopol.common.data.*;
 import monopol.common.utils.JUtils;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 public class BoardPane extends JLayeredPane {
-    Consumer<IPurchasable> selectCard = ignored -> {};
+    Supplier<RootPane> displaySup = () -> {throw new IllegalStateException("init() was not called");};
 
     public BoardPane() {
         super();
@@ -26,9 +24,14 @@ public class BoardPane extends JLayeredPane {
         setVisible(false);
     }
 
-    public void init(Consumer<IPurchasable> selectCard) {
-        this.selectCard = selectCard;
+    public void init(Supplier<RootPane> displaySup) {
+        this.displaySup = displaySup;
         setVisible(true);
+    }
+
+    private void buttonPressed(IField field) {
+        //TODO: bus card
+        if(field instanceof IPurchasable purchasable) displaySup.get().selectedCardPane.select(purchasable);
     }
     
     public void addButtons() {
@@ -98,7 +101,7 @@ public class BoardPane extends JLayeredPane {
         switch (direction) {
             case LEFT -> {
                 button = JUtils.addButton("", x, y, 90, 70, true, actionEvent -> {
-                    selectCard.accept(street);
+                    buttonPressed(street);
                 });
                 ImageIcon icon = new ImageIcon("images/felder/left_background.png");
                 button.setIcon(new ImageIcon(icon.getImage().getScaledInstance(button.getWidth(), button.getHeight(), Image.SCALE_SMOOTH)));
@@ -108,7 +111,7 @@ public class BoardPane extends JLayeredPane {
             }
             case UP -> {
                 button = JUtils.addButton("", x, y, 70, 90, true, actionEvent -> {
-                    selectCard.accept(street);
+                    buttonPressed(street);
                 });
                 ImageIcon icon = new ImageIcon("images/felder/up_background.png");
                 button.setIcon(new ImageIcon(icon.getImage().getScaledInstance(button.getWidth(), button.getHeight(), Image.SCALE_SMOOTH)));
@@ -118,7 +121,7 @@ public class BoardPane extends JLayeredPane {
             }
             case RIGHT -> {
                 button = JUtils.addButton("", x, y, 90, 70, true, actionEvent -> {
-                    selectCard.accept(street);
+                    buttonPressed(street);
                 });
                 ImageIcon icon = new ImageIcon("images/felder/right_background.png");
                 button.setIcon(new ImageIcon(icon.getImage().getScaledInstance(button.getWidth(), button.getHeight(), Image.SCALE_SMOOTH)));
@@ -128,7 +131,7 @@ public class BoardPane extends JLayeredPane {
             }
             case DOWN -> {
                 button = JUtils.addButton("", x, y, 70, 90, true, actionEvent -> {
-                    selectCard.accept(street);
+                    buttonPressed(street);
                 });
                 ImageIcon icon = new ImageIcon("images/felder/down_background.png");
                 button.setIcon(new ImageIcon(icon.getImage().getScaledInstance(button.getWidth(), button.getHeight(), Image.SCALE_SMOOTH)));
@@ -136,7 +139,7 @@ public class BoardPane extends JLayeredPane {
                 pane.add(JUtils.addRotatedText(street.name, Font.BOLD, x+2, y+28,11, 180, 66), 1);
                 pane.add(JUtils.addRotatedText(street.price + "€", Font.BOLD, x+2, y-22, 13, 180, 66), 1);
             }
-            default -> throw new RuntimeException();
+            default -> throw new IllegalStateException();
         }
         pane.add(button, 3);
         add(pane, PALETTE_LAYER);
@@ -149,7 +152,7 @@ public class BoardPane extends JLayeredPane {
         switch (direction) {
             case LEFT -> {
                 button = JUtils.addButton("", x, y, 90, 70, true, actionEvent -> {
-                    selectCard.accept(station);
+                    buttonPressed(station);
                 });
                 ImageIcon icon = new ImageIcon("images/felder/wide_background.png");
                 button.setIcon(new ImageIcon(icon.getImage().getScaledInstance(button.getWidth(), button.getHeight(), Image.SCALE_SMOOTH)));
@@ -159,7 +162,7 @@ public class BoardPane extends JLayeredPane {
             }
             case UP -> {
                 button = JUtils.addButton("", x, y, 70, 90, true, actionEvent -> {
-                    selectCard.accept(station);
+                    buttonPressed(station);
                 });
                 ImageIcon icon = new ImageIcon("images/felder/high_background.png");
                 button.setIcon(new ImageIcon(icon.getImage().getScaledInstance(button.getWidth(), button.getHeight(), Image.SCALE_SMOOTH)));
@@ -169,7 +172,7 @@ public class BoardPane extends JLayeredPane {
             }
             case RIGHT -> {
                 button = JUtils.addButton("", x, y, 90, 70, true, actionEvent -> {
-                    selectCard.accept(station);
+                    buttonPressed(station);
                 });
                 ImageIcon icon = new ImageIcon("images/felder/wide_background.png");
                 button.setIcon(new ImageIcon(icon.getImage().getScaledInstance(button.getWidth(), button.getHeight(), Image.SCALE_SMOOTH)));
@@ -179,7 +182,7 @@ public class BoardPane extends JLayeredPane {
             }
             case DOWN -> {
                 button = JUtils.addButton("", x, y, 70, 90, true, actionEvent -> {
-                    selectCard.accept(station);
+                    buttonPressed(station);
                 });
                 ImageIcon icon = new ImageIcon("images/felder/high_background.png");
                 button.setIcon(new ImageIcon(icon.getImage().getScaledInstance(button.getWidth(), button.getHeight(), Image.SCALE_SMOOTH)));
@@ -187,7 +190,7 @@ public class BoardPane extends JLayeredPane {
                 pane.add(JUtils.addRotatedText(station.name, Font.BOLD, x+2, y+48,11, 180, 66), 1);
                 pane.add(JUtils.addRotatedText(station.price + "€", Font.BOLD, x+2, y-22, 13, 180, 66), 1);
             }
-            default -> throw new RuntimeException();
+            default -> throw new IllegalStateException();
         }
         pane.add(button, 3);
         add(pane, PALETTE_LAYER);
@@ -200,7 +203,7 @@ public class BoardPane extends JLayeredPane {
         switch (direction) {
             case LEFT -> {
                 button = JUtils.addButton("", x, y, 90, 70, true, actionEvent -> {
-                    selectCard.accept(plant);
+                    buttonPressed(plant);
                 });
                 ImageIcon icon = new ImageIcon("images/felder/wide_background.png");
                 button.setIcon(new ImageIcon(icon.getImage().getScaledInstance(button.getWidth(), button.getHeight(), Image.SCALE_SMOOTH)));
@@ -208,12 +211,9 @@ public class BoardPane extends JLayeredPane {
                 pane.add(JUtils.addRotatedText(plant.name, Font.BOLD, x-25, y+2,11, -90, 66), 1);
                 pane.add(JUtils.addRotatedText(plant.price + "€", Font.BOLD, x+45, y+2, 13, -90, 66), 1);
             }
-            case UP -> {
-                throw new RuntimeException();
-            }
             case RIGHT -> {
                 button = JUtils.addButton("", x, y, 90, 70, true, actionEvent -> {
-                    selectCard.accept(plant);
+                    buttonPressed(plant);
                 });
                 ImageIcon icon = new ImageIcon("images/felder/wide_background.png");
                 button.setIcon(new ImageIcon(icon.getImage().getScaledInstance(button.getWidth(), button.getHeight(), Image.SCALE_SMOOTH)));
@@ -223,7 +223,7 @@ public class BoardPane extends JLayeredPane {
             }
             case DOWN -> {
                 button = JUtils.addButton("", x, y, 70, 90, true, actionEvent -> {
-                    selectCard.accept(plant);
+                    buttonPressed(plant);
                 });
                 ImageIcon icon = new ImageIcon("images/felder/high_background.png");
                 button.setIcon(new ImageIcon(icon.getImage().getScaledInstance(button.getWidth(), button.getHeight(), Image.SCALE_SMOOTH)));
@@ -231,121 +231,173 @@ public class BoardPane extends JLayeredPane {
                 pane.add(JUtils.addRotatedText(plant.name, Font.BOLD, x+2, y+48,11, 180, 66), 1);
                 pane.add(JUtils.addRotatedText(plant.price + "€", Font.BOLD, x+2, y-22, 13, 180, 66), 1);
             }
-            default -> throw new RuntimeException();
+            default -> throw new IllegalStateException();
         }
         pane.add(button, 3);
         add(pane, PALETTE_LAYER);
     }
 
     private void addEreignisfeld(int x, int y, Direction direction) {
-        JLabel label;
+        JButton button;
         JLayeredPane pane = new JLayeredPane();
         pane.setBounds(0, 0, 1920, 1080);
         switch (direction) {
             case LEFT -> {
-                label = JUtils.addImage("images/felder/wide_background.png", x, y);
+                button = JUtils.addButton("", x, y, 90, 70, true, actionEvent -> {
+                    buttonPressed(Field.EREIGNISFELD);
+                });
+                ImageIcon icon = new ImageIcon("images/felder/wide_background.png");
+                button.setIcon(new ImageIcon(icon.getImage().getScaledInstance(button.getWidth(), button.getHeight(), Image.SCALE_SMOOTH)));
                 pane.add(JUtils.addImage("images/felder/right_ereignis.png", x+30, y+10), 2);
                 pane.add(JUtils.addRotatedText("Ereignisfeld", Font.BOLD, x-25, y+2,11, -90, 66), 1);
             }
             case UP -> {
-                label = JUtils.addImage("images/felder/high_background.png", x, y);
+                button = JUtils.addButton("", x, y, 70, 90, true, actionEvent -> {
+                    buttonPressed(Field.EREIGNISFELD);
+                });
+                ImageIcon icon = new ImageIcon("images/felder/high_background.png");
+                button.setIcon(new ImageIcon(icon.getImage().getScaledInstance(button.getWidth(), button.getHeight(), Image.SCALE_SMOOTH)));
                 pane.add(JUtils.addImage("images/felder/down_ereignis.png", x+10, y+25), 2);
                 pane.add(JUtils.addRotatedText("Ereignisfeld", Font.BOLD, x+2, y-25,11, 0, 66), 1);
             }
             case RIGHT -> {
-                label = JUtils.addImage("images/felder/wide_background.png", x, y);
+                button = JUtils.addButton("", x, y, 90, 70, true, actionEvent -> {
+                    buttonPressed(Field.EREIGNISFELD);
+                });
+                ImageIcon icon = new ImageIcon("images/felder/wide_background.png");
+                button.setIcon(new ImageIcon(icon.getImage().getScaledInstance(button.getWidth(), button.getHeight(), Image.SCALE_SMOOTH)));
                 pane.add(JUtils.addImage("images/felder/left_ereignis.png", x+10, y+10), 2);
                 pane.add(JUtils.addRotatedText("Ereignisfeld", Font.BOLD, x+48, y+2,11, 90, 66), 1);
             }
             case DOWN -> {
-                label = JUtils.addImage("images/felder/high_background.png", x, y);
+                button = JUtils.addButton("", x, y, 70, 90, true, actionEvent -> {
+                    buttonPressed(Field.EREIGNISFELD);
+                });
+                ImageIcon icon = new ImageIcon("images/felder/high_background.png");
+                button.setIcon(new ImageIcon(icon.getImage().getScaledInstance(button.getWidth(), button.getHeight(), Image.SCALE_SMOOTH)));
                 pane.add(JUtils.addImage("images/felder/up_ereignis.png", x+10, y+10), 2);
                 pane.add(JUtils.addRotatedText("Ereignisfeld", Font.BOLD, x+2, y+48,11, 180, 66), 1);
             }
-            default -> throw new RuntimeException();
+            default -> throw new IllegalStateException();
         }
-        pane.add(label, 3);
+        pane.add(button, 3);
         add(pane, PALETTE_LAYER);
     }
 
     private void addGemeinschaftsfeld(int x, int y, Direction direction) {
-        JLabel label;
+        JButton button;
         JLayeredPane pane = new JLayeredPane();
         pane.setBounds(0, 0, 1920, 1080);
         switch (direction) {
             case LEFT -> {
-                label = JUtils.addImage("images/felder/wide_background.png", x, y);
+                button = JUtils.addButton("", x, y, 90, 70, true, actionEvent -> {
+                    buttonPressed(Field.GEMEINSCHAFTSFELD);
+                });
+                ImageIcon icon = new ImageIcon("images/felder/wide_background.png");
+                button.setIcon(new ImageIcon(icon.getImage().getScaledInstance(button.getWidth(), button.getHeight(), Image.SCALE_SMOOTH)));
                 pane.add(JUtils.addImage("images/felder/left_gemeinschaft.png", x+30, y+10), 2);
                 pane.add(JUtils.addRotatedText("Gemeinschaftsfeld", Font.BOLD, x-25, y+2,11, -90, 66), 1);
             }
             case UP -> {
-                label = JUtils.addImage("images/felder/high_background.png", x, y);
+                button = JUtils.addButton("", x, y, 70, 90, true, actionEvent -> {
+                    buttonPressed(Field.GEMEINSCHAFTSFELD);
+                });
+                ImageIcon icon = new ImageIcon("images/felder/high_background.png");
+                button.setIcon(new ImageIcon(icon.getImage().getScaledInstance(button.getWidth(), button.getHeight(), Image.SCALE_SMOOTH)));
                 pane.add(JUtils.addImage("images/felder/up_gemeinschaft.png", x+10, y+25), 2);
                 pane.add(JUtils.addRotatedText("Gemeinschaftsfeld", Font.BOLD, x+2, y-25,11, 0, 66), 1);
             }
             case RIGHT -> {
-                label = JUtils.addImage("images/felder/wide_background.png", x, y);
+                button = JUtils.addButton("", x, y, 90, 70, true, actionEvent -> {
+                    buttonPressed(Field.GEMEINSCHAFTSFELD);
+                });
+                ImageIcon icon = new ImageIcon("images/felder/wide_background.png");
+                button.setIcon(new ImageIcon(icon.getImage().getScaledInstance(button.getWidth(), button.getHeight(), Image.SCALE_SMOOTH)));
                 pane.add(JUtils.addImage("images/felder/right_gemeinschaft.png", x+10, y+10), 2);
                 pane.add(JUtils.addRotatedText("Gemeinschaftsfeld", Font.BOLD, x+48, y+2,11, 90, 66), 1);
             }
             case DOWN -> {
-                label = JUtils.addImage("images/felder/high_background.png", x, y);
+                button = JUtils.addButton("", x, y, 70, 90, true, actionEvent -> {
+                    buttonPressed(Field.GEMEINSCHAFTSFELD);
+                });
+                ImageIcon icon = new ImageIcon("images/felder/high_background.png");
+                button.setIcon(new ImageIcon(icon.getImage().getScaledInstance(button.getWidth(), button.getHeight(), Image.SCALE_SMOOTH)));
                 pane.add(JUtils.addImage("images/felder/down_gemeinschaft.png", x+10, y+10), 2);
                 pane.add(JUtils.addRotatedText("Gemeinschaftsfeld", Font.BOLD, x+2, y+48,11, 180, 66), 1);
             }
-            default -> throw new RuntimeException();
+            default -> throw new IllegalStateException();
         }
-        pane.add(label, 3);
+        pane.add(button, 3);
         add(pane, PALETTE_LAYER);
     }
 
     private void addSteuerfeld(int x, int y, Direction direction) {
-        JLabel label;
+        JButton button;
         JLayeredPane pane = new JLayeredPane();
         pane.setBounds(0, 0, 1920, 1080);
         switch (direction) {
             case UP -> {
-                label = JUtils.addImage("images/felder/high_background.png", x, y);
+                button = JUtils.addButton("", x, y, 70, 90, true, actionEvent -> {
+                    buttonPressed(Field.ZUSATZSTEUER);
+                });
+                ImageIcon icon = new ImageIcon("images/felder/high_background.png");
+                button.setIcon(new ImageIcon(icon.getImage().getScaledInstance(button.getWidth(), button.getHeight(), Image.SCALE_SMOOTH)));
                 pane.add(JUtils.addImage("images/felder/down_steuer.png", x+10, y+15), 3);
                 pane.add(JUtils.addRotatedText("Zusatzsteuer", Font.BOLD, x+2, y-25,11, 0, 66), 2);
                 pane.add(JUtils.addRotatedText("Zahle 75€", Font.BOLD, x+2, y+45, 11, 0, 66), 1);
             }
             case RIGHT -> {
-                label = JUtils.addImage("images/felder/wide_background.png", x, y);
+                button = JUtils.addButton("", x, y, 90, 70, true, actionEvent -> {
+                    buttonPressed(Field.EINKOMMENSSTEUER);
+                });
+                ImageIcon icon = new ImageIcon("images/felder/wide_background.png");
+                button.setIcon(new ImageIcon(icon.getImage().getScaledInstance(button.getWidth(), button.getHeight(), Image.SCALE_SMOOTH)));
                 pane.add(JUtils.addImage("images/felder/left_steuer.png", x+25, y+10), 3);
                 pane.add(JUtils.addRotatedText("Einkommenssteuer", Font.BOLD, x+48, y+2,11, 90, 66), 2);
                 pane.add(JUtils.addRotatedText("Zahle 10%", Font.BOLD, x-15, y+2, 11, 90, 66), 1);
                 pane.add(JUtils.addRotatedText("oder 200€", Font.BOLD, x-25, y+2, 11, 90, 66), 1);
             }
-            default -> throw new RuntimeException();
+            default -> throw new IllegalStateException();
         }
-        pane.add(label, 4);
+        pane.add(button, 4);
         add(pane, PALETTE_LAYER);
     }
 
     private void addSpecialField(int x, int y, Direction direction) {
-        JLabel label;
+        JButton button;
         JLayeredPane pane = new JLayeredPane();
         pane.setBounds(0, 0, 1920, 1080);
         switch (direction) {
             case LEFT -> {
-                label = JUtils.addImage("images/felder/wide_background.png", x, y);
+                button = JUtils.addButton("", x, y, 90, 70, true, actionEvent -> {
+                    buttonPressed(Field.BUSFAHRKARTE);
+                });
+                ImageIcon icon = new ImageIcon("images/felder/wide_background.png");
+                button.setIcon(new ImageIcon(icon.getImage().getScaledInstance(button.getWidth(), button.getHeight(), Image.SCALE_SMOOTH)));
                 pane.add(JUtils.addImage("images/felder/bus.png", x+30, y+10), 2);
                 pane.add(JUtils.addRotatedText("Busfahrkarte", Font.BOLD, x-25, y+2,11, -90, 66), 1);
             }
             case UP -> {
-                label = JUtils.addImage("images/felder/high_background.png", x, y);
+                button = JUtils.addButton("", x, y, 70, 90, true, actionEvent -> {
+                    buttonPressed(Field.GESCHENK);
+                });
+                ImageIcon icon = new ImageIcon("images/felder/high_background.png");
+                button.setIcon(new ImageIcon(icon.getImage().getScaledInstance(button.getWidth(), button.getHeight(), Image.SCALE_SMOOTH)));
                 pane.add(JUtils.addImage("images/felder/geschenk.png", x+10, y+25), 2);
                 pane.add(JUtils.addRotatedText("Geschenk", Font.BOLD, x+2, y-25,11, 0, 66), 1);
             }
             case DOWN -> {
-                label = JUtils.addImage("images/felder/high_background.png", x, y);
+                button = JUtils.addButton("", x, y, 70, 90, true, actionEvent -> {
+                    buttonPressed(Field.AUKTION);
+                });
+                ImageIcon icon = new ImageIcon("images/felder/high_background.png");
+                button.setIcon(new ImageIcon(icon.getImage().getScaledInstance(button.getWidth(), button.getHeight(), Image.SCALE_SMOOTH)));
                 pane.add(JUtils.addImage("images/felder/auktion.png", x+10, y+10), 2);
                 pane.add(JUtils.addRotatedText("Auktion", Font.BOLD, x+2, y+48,11, 180, 66), 1);
             }
-            default -> throw new RuntimeException();
+            default -> throw new IllegalStateException();
         }
-        pane.add(label, 3);
+        pane.add(button, 3);
         add(pane, PALETTE_LAYER);
     }
 }
