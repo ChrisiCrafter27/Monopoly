@@ -1,0 +1,8 @@
+<project name="Monopoly" default="cleanArtifacts">
+    <property name="artifact.dir"   value="out/artifacts"/>
+
+    <target name="cleanArtifacts">
+        <delete dir="${artifact.dir}"/>
+    </target>
+
+</project>
