@@ -27,7 +27,7 @@ public class MenuPane extends JLayeredPane {
         setVisible(true);
 
         add(addButton("invisible", 0, 0, 0, 0, true, actionEvent -> {}));
-        add(addButton("Host game", 50, 50, 200, 50, true, actionEvent -> {
+        add(addButton("Host game", 50, 50, 200, 50, Monopoly.INSTANCE.serverEnabled(), actionEvent -> {
             int input;
             input = JOptionPane.showConfirmDialog(null, "Dürfen die sich Mitspieler gegenseitig kicken?", "Spiel erstellen", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
             if(input == JOptionPane.CLOSED_OPTION) return;

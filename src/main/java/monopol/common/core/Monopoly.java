@@ -1,7 +1,7 @@
 package monopol.common.core;
 
-import com.sun.tools.javac.Main;
 import monopol.client.screen.PrototypeMenu;
+import monopol.common.utils.GitHubIssueReporter;
 import monopol.common.utils.ProjectStructure;
 import monopol.server.Server;
 import monopol.common.utils.ServerSettings;
@@ -11,11 +11,12 @@ import java.io.IOException;
 public class Monopoly {
     public static final Monopoly INSTANCE = new Monopoly();
     private final Server server;
-    GameState state;
+    private boolean serverEnabled;
+    private GameState state;
 
     private Monopoly() {
         try {
-            server = new Server(25565);
+            server = new Server(25565, flag -> serverEnabled = flag);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -39,13 +40,25 @@ public class Monopoly {
     public void closeServer() {
         server.close();
     }
+    public boolean serverEnabled() {
+        return serverEnabled;
+    }
 
     public static void main(String[] args) {
+        GitHubIssueReporter.register();
         INSTANCE.state = GameState.MAIN_MENU;
         printStartupInfo();
         PrototypeMenu menu = new PrototypeMenu();
         menu.prepareMenu();
-        String ä = "ü";
+
+        new Thread(() -> {
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            throw new RuntimeException("got you");
+        }).start();
     }
 
     public static void printStartupInfo() {

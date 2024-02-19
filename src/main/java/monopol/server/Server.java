@@ -24,6 +24,7 @@ import monopol.common.utils.ServerSettings;
 import monopol.common.data.Player;
 import monopol.server.events.*;
 
+import javax.swing.*;
 import java.awt.*;
 import java.io.*;
 import java.net.*;
@@ -33,6 +34,7 @@ import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.*;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class Server extends UnicastRemoteObject implements IServer {
     public static final int CLIENT_TIMEOUT = 5000;
@@ -56,7 +58,7 @@ public class Server extends UnicastRemoteObject implements IServer {
     private String host;
     private boolean hostJoined = false;
     private Events events = new StandardEvents(true, -1, true, true, true, true, 1000, 200, true, true, false, true, false, BuildRule.ANYWHERE, OwnedCardsOfColorGroup.NONE, OwnedCardsOfColorGroup.NONE, OwnedCardsOfColorGroup.NONE, OwnedCardsOfColorGroup.NONE, OwnedCardsOfColorGroup.ALL_BUT_ONE, OwnedCardsOfColorGroup.ALL);
-    private GameData gameData;
+    private GameData gameData = new GameData();
     
     private final Thread connectionThread = new Thread() {
         @Override
@@ -238,31 +240,40 @@ public class Server extends UnicastRemoteObject implements IServer {
         }
     });
 
-    public Server(int port) throws IOException{
+    public Server(int port, Consumer<Boolean> success) throws IOException{
         logger.log().info("[Server]: Initialing server...");
-        server = new ServerSocket(port);
-        //server.setSoTimeout(10000);
 
         serverSettings = new ServerSettings(false, false);
+
+        try {
+            server = new ServerSocket(port);
+            Registry registry;
+            try {
+                registry = LocateRegistry.createRegistry(1199);
+                registry.rebind("Server", this);
+            } catch(Exception ignored) {
+                try {
+                    registry = LocateRegistry.createRegistry(1199);
+                    registry.rebind("Server", this);
+                } catch(Exception e) {
+                    logger.log().warning("[Server]: Failed to start server\r\n" + e.getMessage());
+                    close();
+                    throw new RuntimeException(e);
+                }
+            }
+        } catch (Exception e) {
+            success.accept(false);
+            new Thread(() -> {
+                JOptionPane.showMessageDialog(null, "Der Server konnte nicht gestartet werden:\n" + e.getMessage() + "\nDu kannst daher nur anderen Servern beitreten.", "Error", JOptionPane.WARNING_MESSAGE);
+            }).start();
+            return;
+        }
+
+        success.accept(true);
 
         connectionThread.start();
         requestThread.start();
         pingThread.start();
-
-        Registry registry;
-        try {
-            registry = LocateRegistry.createRegistry(1199);
-            registry.rebind("Server", this);
-        } catch(Exception ignored) {
-            try {
-                registry = LocateRegistry.createRegistry(1199);
-                registry.rebind("Server", this);
-            } catch(Exception e) {
-                logger.log().severe("[Server]: Failed to start server\r\n" + e.getMessage());
-                close();
-                throw new RuntimeException(e);
-            }
-        }
     }
 
     public void open(ServerSettings serverSettings) {
