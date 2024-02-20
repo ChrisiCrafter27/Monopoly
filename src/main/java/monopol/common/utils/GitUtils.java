@@ -24,9 +24,7 @@ public class GitUtils {
                 URL url = new URL("https://raw.githubusercontent.com/ChrisiCrafter27/MonopolyIssueTrackerKey/main/token.txt");
                 URLConnection c = url.openConnection();
                 InputStream i = c.getInputStream();
-                String s = IOUtils.toString(i, StandardCharsets.UTF_8);
                 String token = IOUtils.toString(url.openConnection().getInputStream(), StandardCharsets.UTF_8).replace("#", "").replace("\n", "");
-                token = "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";
                 connection = GitHub.connectUsingOAuth(token);
                 monopolyRepository();
                 jarRepository();

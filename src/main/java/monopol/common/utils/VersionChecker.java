@@ -5,9 +5,6 @@ import org.apache.commons.io.IOUtils;
 import org.kohsuke.github.GHRepository;
 
 import javax.swing.*;
-import javax.swing.plaf.basic.BasicProgressBarUI;
-import javax.swing.plaf.metal.MetalProgressBarUI;
-import javax.swing.plaf.synth.SynthProgressBarUI;
 import java.awt.*;
 import java.io.*;
 import java.net.URL;
