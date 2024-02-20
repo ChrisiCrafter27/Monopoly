@@ -5,11 +5,17 @@ import org.apache.commons.io.IOUtils;
 import org.kohsuke.github.GHRepository;
 
 import javax.swing.*;
+import javax.swing.plaf.basic.BasicProgressBarUI;
+import javax.swing.plaf.metal.MetalProgressBarUI;
+import javax.swing.plaf.synth.SynthProgressBarUI;
+import java.awt.*;
 import java.io.*;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
 public class VersionChecker {
+    private static JFrame barFrame;
+
     public static boolean check() {
         if(inIdea()) {
             JOptionPane.showMessageDialog(null, "Du bist in einer Entwicklungsumgebung.\nAutomatische Updates sind daher deaktiviert.", "Version-Checker", JOptionPane.INFORMATION_MESSAGE);
@@ -28,6 +34,7 @@ public class VersionChecker {
                         if(destFile.exists()) {
                             JOptionPane.showMessageDialog(null, "Update erfolgreich.\n" + destFile.getName() + " wird gestartet.", "Version-Checker", JOptionPane.INFORMATION_MESSAGE);
                             Runtime.getRuntime().exec(new String[]{"java", "-jar", "Monopoly-" + remoteVersion(repository) + ".jar", "-updated", "Monopoly-" + version() + ".jar"});
+                            removeFrame();
                             return true;
                         } else {
                             JOptionPane.showMessageDialog(null, "Update nicht erfolgreich", "Version-Checker", JOptionPane.WARNING_MESSAGE);
@@ -38,6 +45,7 @@ public class VersionChecker {
                 e.printStackTrace(System.out);
             }
         }
+        removeFrame();
         return false;
     }
 
@@ -65,21 +73,55 @@ public class VersionChecker {
         try {
             repository.getFileContent(path);
         } catch (Exception e) {
-            e.printStackTrace();
             return false;
         }
         return true;
     }
 
     private static void update(GHRepository repository) throws IOException {
+        JProgressBar bar = createProgressbar();
+        bar.setValue(0);
+        bar.setString("Verbinde mit github...");
         InputStream in = new URL(repository.getFileContent("Monopoly-" + remoteVersion(repository) + ".jar").getDownloadUrl()).openStream();
+        bar.setValue(1);
+        bar.setString("Erstelle Zieldatei...");
         FileOutputStream out = new FileOutputStream("Monopoly-" + remoteVersion(repository) + ".jar");
+        bar.setValue(2);
+        bar.setString("Lade daten herunter...");
         byte[] buffer = new byte[1024];
         int bytesRead;
         while ((bytesRead = in.read(buffer)) != -1) {
             out.write(buffer, 0, bytesRead);
         }
+        bar.setValue(3);
+        bar.setString("Fertig!");
         in.close();
         out.close();
+    }
+
+    private static JProgressBar createProgressbar() {
+        removeFrame();
+        barFrame = new JFrame("Version-Checker");
+        barFrame.setLocationRelativeTo(null);
+        barFrame.setLocation((int) (JUtils.SCREEN_WIDTH/2d-150), (int) (JUtils.SCREEN_HEIGHT/2d-200));
+        barFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        barFrame.setSize(300, 100);
+
+        JProgressBar progressBar = new JProgressBar();
+        progressBar.setStringPainted(true);
+        progressBar.setMaximum(3);
+
+        barFrame.add(progressBar, BorderLayout.CENTER);
+        barFrame.setVisible(true);
+
+        return progressBar;
+    }
+
+    private static void removeFrame() {
+        if(barFrame != null) {
+            barFrame.setVisible(false);
+            barFrame.dispose();
+            barFrame = null;
+        }
     }
 }
