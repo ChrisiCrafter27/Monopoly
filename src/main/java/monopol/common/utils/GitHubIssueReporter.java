@@ -1,18 +1,12 @@
 package monopol.common.utils;
 
-import org.apache.commons.io.IOUtils;
 import org.kohsuke.github.*;
 
 import javax.swing.*;
 import java.io.*;
-import java.net.URL;
-import java.net.URLConnection;
-import java.nio.charset.StandardCharsets;
 
 public class GitHubIssueReporter implements Thread.UncaughtExceptionHandler {
     private static boolean registered = false;
-    private static final String REPOSITORY_OWNER = "ChrisiCrafter27";
-    private static final String REPOSITORY_NAME = "Monopoly";
 
     private GitHubIssueReporter() {
         Thread.setDefaultUncaughtExceptionHandler(this);
@@ -45,11 +39,7 @@ public class GitHubIssueReporter implements Thread.UncaughtExceptionHandler {
 
     public static void report(String title, String body) {
         try {
-            URL url = new URL("https://raw.githubusercontent.com/ChrisiCrafter27/MonopolyIssueTrackerKey/main/token.txt");
-            URLConnection connection = url.openConnection();
-            String token = IOUtils.toString(connection.getInputStream(), StandardCharsets.UTF_8).replace("#", "").replace("\n", "");
-            GitHub github = GitHub.connectUsingOAuth(token);
-            GHRepository repository = github.getRepository(REPOSITORY_OWNER + "/" + REPOSITORY_NAME);
+            GHRepository repository = GitUtils.monopolyRepository();
             GHIssue issue = repository.createIssue(title)
                     .body(body)
                     .create();

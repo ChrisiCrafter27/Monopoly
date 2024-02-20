@@ -1,20 +1,13 @@
 package monopol.common.utils;
 
 import com.sun.tools.javac.Main;
-import monopol.common.log.ServerLogger;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.net.URLDecoder;
-
-import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class JUtils {
     public static final double SCREEN_WIDTH = Toolkit.getDefaultToolkit().getScreenSize().width;

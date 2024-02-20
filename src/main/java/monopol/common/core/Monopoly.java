@@ -1,24 +1,30 @@
 package monopol.common.core;
 
 import monopol.client.screen.PrototypeMenu;
-import monopol.common.utils.GitHubIssueReporter;
-import monopol.common.utils.ProjectStructure;
+import monopol.common.utils.*;
 import monopol.server.Server;
-import monopol.common.utils.ServerSettings;
 
+import javax.swing.*;
+import java.io.File;
 import java.io.IOException;
 
 public class Monopoly {
     public static final Monopoly INSTANCE = new Monopoly();
-    private final Server server;
+    private Server server;
     private boolean serverEnabled;
     private GameState state;
 
     private Monopoly() {
-        try {
-            server = new Server(25565, flag -> serverEnabled = flag);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+
+    }
+
+    private void startServer() {
+        if(server == null) {
+            try {
+                server = new Server(25565, flag -> serverEnabled = flag);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
@@ -45,16 +51,40 @@ public class Monopoly {
     }
 
     public static void main(String[] args) {
-        GitHubIssueReporter.register();
-        INSTANCE.state = GameState.MAIN_MENU;
-        printStartupInfo();
-        PrototypeMenu menu = new PrototypeMenu();
-        menu.prepareMenu();
-    }
-
-    public static void printStartupInfo() {
         System.out.println("Starting Monopoly...");
         ProjectStructure.printProjectStructureAsTree(false);
-        System.out.println("Done!");
+
+        System.out.println("Initializing GitUtils...");
+        GitUtils.connect();
+
+        System.out.println("Registering Issue Reporter...");
+        GitHubIssueReporter.register();
+
+        System.out.println("Checking for updates...");
+        boolean updated = VersionChecker.check();
+
+        if(!updated) {
+            System.out.println("Starting server...");
+            INSTANCE.startServer();
+            INSTANCE.state = GameState.MAIN_MENU;
+
+            System.out.println("Creating GUI...");
+            PrototypeMenu menu = new PrototypeMenu();
+
+            System.out.println("Preparing main menu...");
+            menu.prepareMenu();
+
+            System.out.println("Done!");
+        } else {
+            System.out.println("Starting updated Monopoly...");
+            System.exit(1);
+        }
+
+        if(args.length > 1 && args[0].equals("-updated")) {
+            File file = new File(args[1]);
+            if(file.exists() && JOptionPane.showConfirmDialog(null, "Möchtest du die alte Version\nvon Monopoly löschen?", "Version-Checker", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
+                file.delete();
+            }
+        }
     }
 }
