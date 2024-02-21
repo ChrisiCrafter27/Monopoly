@@ -51,31 +51,44 @@ public class Monopoly {
     }
 
     public static void main(String[] args) {
-        System.out.println("Starting Monopoly...");
-        ProjectStructure.printProjectStructureAsTree(false);
+        StartupProgressBar bar = new StartupProgressBar("Monopoly loading progress", 7, 0);
 
+        bar.setTop("Scanne dateien...", 0);
+        System.out.println("Starting Monopoly...");
+        ProjectStructure.printProjectStructureAsTree(false, bar);
+
+        bar.setTop("Verbinde mit Github...", 1);
         System.out.println("Initializing GitUtils...");
         GitUtils.connect();
 
+        bar.setTop("Starte Issue-Reporter...", 2);
         System.out.println("Registering Issue Reporter...");
         GitHubIssueReporter.register();
 
+        bar.setTop("Suche nach Updates...", 3);
         System.out.println("Checking for updates...");
-        boolean updated = VersionChecker.check();
+        boolean updated = VersionChecker.check(bar);
 
         if(!updated) {
+            bar.setTop("Starte Server...", 4);
+            bar.bottomBar.setVisible(false);
             System.out.println("Starting server...");
             INSTANCE.startServer();
             INSTANCE.state = GameState.MAIN_MENU;
 
+            bar.setTop("Starte GUI...", 5);
             System.out.println("Creating GUI...");
             PrototypeMenu menu = new PrototypeMenu();
 
+            bar.setTop("Starte Hauptmenü...", 6);
             System.out.println("Preparing main menu...");
             menu.prepareMenu();
 
+            bar.setTop("Fertig!", 7);
             System.out.println("Done!");
         } else {
+            bar.setTop("Starte neue Version von Monopoly...", 7);
+            bar.bottomBar.setVisible(false);
             System.out.println("Starting updated Monopoly...");
             System.exit(1);
         }
@@ -86,5 +99,9 @@ public class Monopoly {
                 file.delete();
             }
         }
+
+        bar.close();
     }
+
+
 }

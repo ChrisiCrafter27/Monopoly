@@ -13,7 +13,7 @@ import java.nio.charset.StandardCharsets;
 public class VersionChecker {
     private static JFrame barFrame;
 
-    public static boolean check() {
+    public static boolean check(StartupProgressBar bar) {
         if(inIdea()) {
             JOptionPane.showMessageDialog(null, "Du bist in einer Entwicklungsumgebung.\nAutomatische Updates sind daher deaktiviert.", "Version-Checker", JOptionPane.INFORMATION_MESSAGE);
         } else  {
@@ -23,7 +23,7 @@ public class VersionChecker {
                     if(JOptionPane.showConfirmDialog(null, "Eine neue Version von Monopoly ist verfügbar.\nMöchtest du sie herunterladen?\nDeine Version: " + version() + "\nNeueste Version: " + remoteVersion(repository), "Version-Checker", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
                         File destFile = new File("Monopoly-" + remoteVersion(repository) + ".jar");
                         try {
-                            update(repository);
+                            update(repository, bar.bottomBar);
                         } catch (Exception e) {
                             e.printStackTrace(System.out);
                             if(destFile.exists()) destFile.delete();
@@ -75,8 +75,8 @@ public class VersionChecker {
         return true;
     }
 
-    private static void update(GHRepository repository) throws IOException {
-        JProgressBar bar = createProgressbar();
+    private static void update(GHRepository repository, JProgressBar bar) throws IOException {
+        bar.setMaximum(3);
         bar.setValue(0);
         bar.setString("Verbinde mit github...");
         InputStream in = new URL(repository.getFileContent("Monopoly-" + remoteVersion(repository) + ".jar").getDownloadUrl()).openStream();
@@ -94,24 +94,6 @@ public class VersionChecker {
         bar.setString("Fertig!");
         in.close();
         out.close();
-    }
-
-    private static JProgressBar createProgressbar() {
-        removeFrame();
-        barFrame = new JFrame("Version-Checker");
-        barFrame.setLocationRelativeTo(null);
-        barFrame.setLocation((int) (JUtils.SCREEN_WIDTH/2d-150), (int) (JUtils.SCREEN_HEIGHT/2d-200));
-        barFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        barFrame.setSize(300, 100);
-
-        JProgressBar progressBar = new JProgressBar();
-        progressBar.setStringPainted(true);
-        progressBar.setMaximum(3);
-
-        barFrame.add(progressBar, BorderLayout.CENTER);
-        barFrame.setVisible(true);
-
-        return progressBar;
     }
 
     private static void removeFrame() {

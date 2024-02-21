@@ -7,6 +7,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 public class ProjectStructure {
@@ -153,16 +154,23 @@ public class ProjectStructure {
         }
     }
 
-    public static void printProjectStructureAsTree(boolean detailed) {
+    public static void printProjectStructureAsTree(boolean detailed, StartupProgressBar bar) {
         System.out.println("*********************************************************************************************************************************************************************************************************************************");
         System.out.println("Indexing project...");
         System.out.println("*********************************************************************************************************************************************************************************************************************************");
         if(detailed) {
             try {
+                AtomicInteger max = new AtomicInteger();
+                getAllPackages().forEach(p -> getClassesInPackage(p).forEach(c -> max.getAndIncrement()));
+                bar.bottomBar.setMaximum(max.get());
+                bar.bottomBar.setVisible(true);
+                int i = 0;
                 for (String packageName : getAllPackages()) {
                     System.out.println("Package detected: " + packageName);
                     for (Class<?> clazz : getClassesInPackage(packageName)) {
                         System.out.println("    Class detected: " + clazz.getName());
+                        bar.bottomBar.setValue(i);
+                        i++;
                         for (Field field : getFieldsOfClass(clazz)) {
                             System.out.println("        Field detected: " + field.getType().getName() + " " + clazz.getName() + "." + field.getName());
                         }
@@ -184,9 +192,16 @@ public class ProjectStructure {
             }
         } else {
             try {
+                AtomicInteger max = new AtomicInteger();
+                getAllPackages().forEach(p -> getClassesInPackage(p).forEach(c -> max.getAndIncrement()));
+                bar.bottomBar.setMaximum(max.get());
+                bar.bottomBar.setVisible(true);
+                int i = 0;
                 for (String packageName : getAllPackages()) {
                     System.out.println("Package detected: " + packageName);
                     for (Class clazz : getClassesInPackage(packageName)) {
+                        bar.bottomBar.setValue(i);
+                        i++;
                         System.out.println("    Class detected: " + clazz.getSimpleName());
                         for (Field field : getFieldsOfClass(clazz)) {
                             System.out.println("        Field detected: " + field.getType().getSimpleName() + " " + field.getName());
@@ -208,6 +223,7 @@ public class ProjectStructure {
                 System.out.println("Failed to print project-structure: " + Arrays.toString(e.getStackTrace()));
             }
         }
+        bar.bottomBar.setVisible(false);
         System.out.println("*********************************************************************************************************************************************************************************************************************************");
     }
 }
