@@ -9,7 +9,7 @@ import monopol.common.data.Plant;
 import monopol.common.utils.JUtils;
 import monopol.common.utils.KeyHandler;
 import monopol.common.message.DisconnectReason;
-
+import monopol.common.utils.StartupProgressBar;
 
 import javax.swing.*;
 import java.awt.*;
@@ -24,7 +24,7 @@ public class PrototypeMenu {
     private final KeyHandler keyHandler = new KeyHandler();
     private final RootPane root = new RootPane();
 
-    public PrototypeMenu() {
+    public PrototypeMenu(StartupProgressBar bar) {
         if((int) JUtils.SCREEN_WIDTH / (int) JUtils.SCREEN_HEIGHT != 16 / 9) System.err.println("[WARN]: Deine Bildschirmauflösung ist nicht 16/9. Dadurch werden einige Dinge nicht richtig angezeigt. Es ist allerdings trotzdem möglich, so zu spielen.");
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setFocusable(true);
@@ -32,6 +32,7 @@ public class PrototypeMenu {
         frame.setUndecorated(true);
         frame.setResizable(false);
         frame.setLayout(null);
+        frame.setOpacity(0);
         frame.setVisible(true);
         frame.addKeyListener(keyHandler);
         frame.setFocusTraversalKeysEnabled(false);
@@ -39,8 +40,8 @@ public class PrototypeMenu {
         frame.setIconImage(icon.getImage());
         frame.add(root);
         focusThread();
+        if(bar != null) opacityThread(bar);
     }
-
     private void focusThread() {
         new Thread(() -> {
             while (!Thread.interrupted()) {
@@ -52,6 +53,21 @@ public class PrototypeMenu {
                     return;
                 }
             }
+        }).start();
+    }
+
+    private void opacityThread(StartupProgressBar bar) {
+        new Thread(() -> {
+            while (!Thread.interrupted() && frame.getOpacity() <= 0.999f) {
+                frame.setOpacity(frame.getOpacity() + 0.001f);
+                try {
+                    Thread.sleep(1);
+                } catch (InterruptedException e) {
+                    return;
+                }
+            }
+            frame.setOpacity(1);
+            bar.close();
         }).start();
     }
 

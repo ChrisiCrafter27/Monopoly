@@ -12,7 +12,7 @@ public class StartupProgressBar {
         barFrame.setLayout(null);
         barFrame.setTitle(title);
         barFrame.setLocationRelativeTo(null);
-        barFrame.setLocation((int) (JUtils.SCREEN_WIDTH/2d-150), (int) (JUtils.SCREEN_HEIGHT/2d-200));
+        barFrame.setLocation((int) (JUtils.SCREEN_WIDTH/2d-150), (int) (JUtils.SCREEN_HEIGHT/2d-250));
         barFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         barFrame.setSize(300, 100);
 

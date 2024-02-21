@@ -28,8 +28,10 @@ public class VersionChecker {
                             if(destFile.exists()) destFile.delete();
                         }
                         if(destFile.exists()) {
-                            JOptionPane.showMessageDialog(null, "Update erfolgreich.\n" + destFile.getName() + " wird gestartet.", "Version-Checker", JOptionPane.INFORMATION_MESSAGE);
-                            Runtime.getRuntime().exec(new String[]{"java", "-jar", "Monopoly-" + remoteVersion(repository) + ".jar", "-updated", "Monopoly-" + version() + ".jar"});
+                            if(System.getProperty("java.class.path").endsWith("Monopoly-" + version() + ".jar"))
+                                Runtime.getRuntime().exec(new String[]{"java", "-jar", "Monopoly-" + remoteVersion(repository) + ".jar", "-delete", System.getProperty("java.class.path")});
+                            else
+                                Runtime.getRuntime().exec(new String[]{"java", "-jar", "Monopoly-" + remoteVersion(repository) + ".jar", "-rename", System.getProperty("java.class.path")});
                             removeFrame();
                             return true;
                         } else {
@@ -55,6 +57,14 @@ public class VersionChecker {
 
     private static String version() throws IOException {
         return IOUtils.toString(Main.class.getClassLoader().getResourceAsStream("assets/version.txt"), StandardCharsets.UTF_8);
+    }
+
+    public static String title() {
+        try {
+            return "Monopoly " + version();
+        } catch (IOException e) {
+            return "Monopoly";
+        }
     }
 
     private static boolean upToDate(GHRepository repository) throws IOException {

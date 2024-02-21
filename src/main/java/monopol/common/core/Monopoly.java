@@ -5,8 +5,10 @@ import monopol.common.utils.*;
 import monopol.server.Server;
 
 import javax.swing.*;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 
 public class Monopoly {
     public static final Monopoly INSTANCE = new Monopoly();
@@ -51,19 +53,24 @@ public class Monopoly {
     }
 
     public static void main(String[] args) {
-        StartupProgressBar bar = new StartupProgressBar("Monopoly loading progress", 6, 0);
+        for (int i = 0; i < args.length;) {
+            i += arg(i, args);
+        }
+
+        System.out.println("Starting Monopoly...");
+        StartupProgressBar bar = new StartupProgressBar(VersionChecker.title(), 6, 0);
         bar.hideBottom();
 
         bar.setTop("Scanne dateien...", 0);
-        System.out.println("Starting Monopoly...");
+        System.out.println("Scanning files...");
         ProjectStructure.printProjectStructureAsTree(false, bar);
 
         bar.setTop("Verbinde mit Github...", 1);
-        System.out.println("Initializing GitUtils...");
+        System.out.println("Connecting to Gihub...");
         GitUtils.connect(bar);
 
         bar.setTop("Starte Issue-Reporter...", 2);
-        System.out.println("Registering Issue Reporter...");
+        System.out.println("Starting Issue-Reporter...");
         GitHubIssueReporter.register();
 
         bar.setTop("Suche nach Updates...", 3);
@@ -77,30 +84,40 @@ public class Monopoly {
             INSTANCE.startServer();
             INSTANCE.state = GameState.MAIN_MENU;
 
-            bar.setTop("Starte GUI...", 5);
+            bar.setTop("Erstelle GUI...", 5);
             System.out.println("Creating GUI...");
-            PrototypeMenu menu = new PrototypeMenu();
-            System.out.println("Preparing main menu...");
+            PrototypeMenu menu = new PrototypeMenu(bar);
             menu.prepareMenu();
 
             bar.setTop("Fertig!", 6);
             System.out.println("Done!");
-        } else {
-            bar.setTop("Starte neue Version von Monopoly...", 7);
-            bar.bottomBar.setVisible(false);
-            System.out.println("Starting updated Monopoly...");
-            System.exit(1);
-        }
-
-        if(args.length > 1 && args[0].equals("-updated")) {
-            File file = new File(args[1]);
-            if(file.exists() && JOptionPane.showConfirmDialog(null, "Möchtest du die alte Version\nvon Monopoly löschen?", "Version-Checker", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
-                file.delete();
-            }
-        }
-
-        bar.close();
+        } else System.exit(1);
     }
 
-
+    private static int arg(int pos, String[] args) {
+        return switch (args[pos]) {
+            case "-delete" -> {
+                File file = new File(args[pos+1]);
+                if(file.exists()) file.delete();
+                yield 2;
+            }
+            case "-rename" -> {
+                String source = System.getProperty("java.class.path");
+                String dest = args[pos+1];
+                try {
+                    File file = new File(dest);
+                    int i = 0;
+                    while (file.exists() && i < 100 && !file.delete()) {
+                        Thread.sleep(10);
+                        i++;
+                    }
+                    Files.copy(Path.of(source), Path.of(dest));
+                    Runtime.getRuntime().exec(new String[]{"java", "-jar", dest, "-delete", source});
+                    System.exit(1);
+                } catch (IOException | InterruptedException ignored) {}
+                yield 2;
+            }
+            default -> 1;
+        };
+    }
 }
