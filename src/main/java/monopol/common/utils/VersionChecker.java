@@ -15,7 +15,7 @@ public class VersionChecker {
     public static boolean check(StartupProgressBar bar) {
         try {
             GHRepository repository = GitUtils.jarRepository();
-            if(!inIdea()) {
+            if(inIdea()) {
                 if(!upToDate(repository)) JOptionPane.showMessageDialog(null, "Du bist in einer Entwicklungsumgebung.\nAutomatische Updates sind daher deaktiviert.", "Version-Checker", JOptionPane.INFORMATION_MESSAGE);
             } else  {
                 if(!upToDate(repository)) {
