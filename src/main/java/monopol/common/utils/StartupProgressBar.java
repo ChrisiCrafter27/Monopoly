@@ -12,18 +12,18 @@ public class StartupProgressBar {
         barFrame.setLayout(null);
         barFrame.setTitle(title);
         barFrame.setLocationRelativeTo(null);
-        barFrame.setLocation((int) (JUtils.SCREEN_WIDTH/2d-150), (int) (JUtils.SCREEN_HEIGHT/2d-300));
+        barFrame.setLocation((int) (JUtils.SCREEN_WIDTH/2d-150), (int) (JUtils.SCREEN_HEIGHT/2d-200));
         barFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        barFrame.setSize(300, 200);
+        barFrame.setSize(300, 100);
 
         topBar.setStringPainted(true);
         topBar.setMaximum(topMax);
         bottomBar.setStringPainted(true);
         bottomBar.setMaximum(bottomMax);
 
-        topBar.setBounds(0, 0, 300, 80);
+        topBar.setBounds(0, 0, 300, 60);
         barFrame.add(topBar, BorderLayout.CENTER);
-        bottomBar.setBounds(0, 80, 300, 80);
+        bottomBar.setBounds(0, 60, 300, 60);
         barFrame.add(bottomBar, BorderLayout.CENTER);
         barFrame.setVisible(true);
     }
@@ -47,15 +47,18 @@ public class StartupProgressBar {
         bottomBar.setString(string);
         bottomBar.setValue(progress);
         bottomBar.setVisible(true);
+        barFrame.setSize(300, 160);
     }
 
     public void setBottom(int progress) {
         bottomBar.setValue(progress);
         bottomBar.setVisible(true);
+        barFrame.setSize(300, 160);
     }
 
     public void hideBottom() {
         bottomBar.setStringPainted(false);
         bottomBar.setVisible(false);
+        barFrame.setSize(300, 100);
     }
 }

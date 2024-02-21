@@ -15,8 +15,8 @@ public class VersionChecker {
     public static boolean check(StartupProgressBar bar) {
         try {
             GHRepository repository = GitUtils.jarRepository();
-            if(inIdea() && !upToDate(repository)) {
-                JOptionPane.showMessageDialog(null, "Du bist in einer Entwicklungsumgebung.\nAutomatische Updates sind daher deaktiviert.", "Version-Checker", JOptionPane.INFORMATION_MESSAGE);
+            if(!inIdea()) {
+                if(!upToDate(repository)) JOptionPane.showMessageDialog(null, "Du bist in einer Entwicklungsumgebung.\nAutomatische Updates sind daher deaktiviert.", "Version-Checker", JOptionPane.INFORMATION_MESSAGE);
             } else  {
                 if(!upToDate(repository)) {
                     if(JOptionPane.showConfirmDialog(null, "Eine neue Version von Monopoly ist verfügbar.\nMöchtest du sie herunterladen?\nDeine Version: " + version() + "\nNeueste Version: " + remoteVersion(repository), "Version-Checker", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
