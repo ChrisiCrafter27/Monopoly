@@ -51,7 +51,8 @@ public class Monopoly {
     }
 
     public static void main(String[] args) {
-        StartupProgressBar bar = new StartupProgressBar("Monopoly loading progress", 7, 0);
+        StartupProgressBar bar = new StartupProgressBar("Monopoly loading progress", 6, 0);
+        bar.hideBottom();
 
         bar.setTop("Scanne dateien...", 0);
         System.out.println("Starting Monopoly...");
@@ -59,7 +60,7 @@ public class Monopoly {
 
         bar.setTop("Verbinde mit Github...", 1);
         System.out.println("Initializing GitUtils...");
-        GitUtils.connect();
+        GitUtils.connect(bar);
 
         bar.setTop("Starte Issue-Reporter...", 2);
         System.out.println("Registering Issue Reporter...");
@@ -79,12 +80,10 @@ public class Monopoly {
             bar.setTop("Starte GUI...", 5);
             System.out.println("Creating GUI...");
             PrototypeMenu menu = new PrototypeMenu();
-
-            bar.setTop("Starte Hauptmenü...", 6);
             System.out.println("Preparing main menu...");
             menu.prepareMenu();
 
-            bar.setTop("Fertig!", 7);
+            bar.setTop("Fertig!", 6);
             System.out.println("Done!");
         } else {
             bar.setTop("Starte neue Version von Monopoly...", 7);

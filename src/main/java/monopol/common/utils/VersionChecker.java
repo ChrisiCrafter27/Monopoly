@@ -5,7 +5,6 @@ import org.apache.commons.io.IOUtils;
 import org.kohsuke.github.GHRepository;
 
 import javax.swing.*;
-import java.awt.*;
 import java.io.*;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -14,16 +13,16 @@ public class VersionChecker {
     private static JFrame barFrame;
 
     public static boolean check(StartupProgressBar bar) {
-        if(inIdea()) {
-            JOptionPane.showMessageDialog(null, "Du bist in einer Entwicklungsumgebung.\nAutomatische Updates sind daher deaktiviert.", "Version-Checker", JOptionPane.INFORMATION_MESSAGE);
-        } else  {
-            try {
-                GHRepository repository = GitUtils.jarRepository();
+        try {
+            GHRepository repository = GitUtils.jarRepository();
+            if(inIdea() && !upToDate(repository)) {
+                JOptionPane.showMessageDialog(null, "Du bist in einer Entwicklungsumgebung.\nAutomatische Updates sind daher deaktiviert.", "Version-Checker", JOptionPane.INFORMATION_MESSAGE);
+            } else  {
                 if(!upToDate(repository)) {
                     if(JOptionPane.showConfirmDialog(null, "Eine neue Version von Monopoly ist verfügbar.\nMöchtest du sie herunterladen?\nDeine Version: " + version() + "\nNeueste Version: " + remoteVersion(repository), "Version-Checker", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
                         File destFile = new File("Monopoly-" + remoteVersion(repository) + ".jar");
                         try {
-                            update(repository, bar.bottomBar);
+                            update(repository, bar);
                         } catch (Exception e) {
                             e.printStackTrace(System.out);
                             if(destFile.exists()) destFile.delete();
@@ -38,9 +37,9 @@ public class VersionChecker {
                         }
                     }
                 }
-            } catch (Exception e) {
-                e.printStackTrace(System.out);
             }
+        } catch (Exception e) {
+            e.printStackTrace(System.out);
         }
         removeFrame();
         return false;
@@ -75,23 +74,19 @@ public class VersionChecker {
         return true;
     }
 
-    private static void update(GHRepository repository, JProgressBar bar) throws IOException {
-        bar.setMaximum(3);
-        bar.setValue(0);
-        bar.setString("Verbinde mit github...");
+    private static void update(GHRepository repository, StartupProgressBar bar) throws IOException {
+        bar.bottomBar.setMaximum(3);
+        bar.setBottom("Verbinde mit github...", 0);
         InputStream in = new URL(repository.getFileContent("Monopoly-" + remoteVersion(repository) + ".jar").getDownloadUrl()).openStream();
-        bar.setValue(1);
-        bar.setString("Erstelle Zieldatei...");
+        bar.setBottom("Erstelle Zieldatei...", 1);
         FileOutputStream out = new FileOutputStream("Monopoly-" + remoteVersion(repository) + ".jar");
-        bar.setValue(2);
-        bar.setString("Lade daten herunter...");
+        bar.setBottom("Lade daten herunter...", 2);
         byte[] buffer = new byte[1024];
         int bytesRead;
         while ((bytesRead = in.read(buffer)) != -1) {
             out.write(buffer, 0, bytesRead);
         }
-        bar.setValue(3);
-        bar.setString("Fertig!");
+        bar.setBottom("Fertig!", 3);
         in.close();
         out.close();
     }

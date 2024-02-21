@@ -163,7 +163,6 @@ public class ProjectStructure {
                 AtomicInteger max = new AtomicInteger();
                 getAllPackages().forEach(p -> getClassesInPackage(p).forEach(c -> max.getAndIncrement()));
                 bar.bottomBar.setMaximum(max.get());
-                bar.bottomBar.setVisible(true);
                 int i = 0;
                 for (String packageName : getAllPackages()) {
                     System.out.println("Package detected: " + packageName);
@@ -195,7 +194,6 @@ public class ProjectStructure {
                 AtomicInteger max = new AtomicInteger();
                 getAllPackages().forEach(p -> getClassesInPackage(p).forEach(c -> max.getAndIncrement()));
                 bar.bottomBar.setMaximum(max.get());
-                bar.bottomBar.setVisible(true);
                 int i = 0;
                 for (String packageName : getAllPackages()) {
                     System.out.println("Package detected: " + packageName);
@@ -223,7 +221,7 @@ public class ProjectStructure {
                 System.out.println("Failed to print project-structure: " + Arrays.toString(e.getStackTrace()));
             }
         }
-        bar.bottomBar.setVisible(false);
+        bar.hideBottom();
         System.out.println("*********************************************************************************************************************************************************************************************************************************");
     }
 }

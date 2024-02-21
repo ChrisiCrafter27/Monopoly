@@ -18,29 +18,37 @@ public class GitUtils {
 
     private static GitHub connection;
 
-    public static GitHub connect() {
+    public static void connect(StartupProgressBar bar) {
+        bar.bottomBar.setMaximum(7);
         if(connection == null) {
             try {
+                bar.setBottom("Erstelle Link...", 0);
                 URL url = new URL("https://raw.githubusercontent.com/ChrisiCrafter27/MonopolyIssueTrackerKey/main/token.txt");
+                bar.setBottom("Öffne Verbindung...", 1);
                 URLConnection c = url.openConnection();
+                bar.setBottom("Öffne Stream...", 2);
                 InputStream i = c.getInputStream();
-                String token = IOUtils.toString(url.openConnection().getInputStream(), StandardCharsets.UTF_8).replace("#", "").replace("\n", "");
+                bar.setBottom("Erstelle Token...", 3);
+                String token = IOUtils.toString(i, StandardCharsets.UTF_8).replace("#", "").replace("\n", "");
+                bar.setBottom("Verbinde mit Token...", 4);
                 connection = GitHub.connectUsingOAuth(token);
+                bar.setBottom("Suche nach Monopoly Repo...", 5);
                 monopolyRepository();
+                bar.setBottom("Suche nach Jars Repo...", 6);
                 jarRepository();
             } catch (IOException e) {
                 JOptionPane.showMessageDialog(null, e.getMessage());
                 throw new RuntimeException(e);
             }
         }
-        return connection;
+        bar.hideBottom();
     }
 
     public static GHRepository monopolyRepository() throws IOException {
-        return connect().getRepository(REPOSITORY_OWNER + "/" + REPOSITORY_NAME);
+        return connection.getRepository(REPOSITORY_OWNER + "/" + REPOSITORY_NAME);
     }
 
     public static GHRepository jarRepository() throws IOException {
-        return connect().getRepository(REPOSITORY_OWNER + "/Jars");
+        return connection.getRepository(REPOSITORY_OWNER + "/Jars");
     }
 }

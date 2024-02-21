@@ -10,7 +10,7 @@ public class StartupProgressBar {
 
     public StartupProgressBar(String title, int topMax, int bottomMax) {
         barFrame.setLayout(null);
-        barFrame.setTitle("Version-Checker");
+        barFrame.setTitle(title);
         barFrame.setLocationRelativeTo(null);
         barFrame.setLocation((int) (JUtils.SCREEN_WIDTH/2d-150), (int) (JUtils.SCREEN_HEIGHT/2d-300));
         barFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -43,11 +43,19 @@ public class StartupProgressBar {
     }
 
     public void setBottom(String string, int progress) {
+        bottomBar.setStringPainted(true);
         bottomBar.setString(string);
         bottomBar.setValue(progress);
+        bottomBar.setVisible(true);
     }
 
     public void setBottom(int progress) {
         bottomBar.setValue(progress);
+        bottomBar.setVisible(true);
+    }
+
+    public void hideBottom() {
+        bottomBar.setStringPainted(false);
+        bottomBar.setVisible(false);
     }
 }
