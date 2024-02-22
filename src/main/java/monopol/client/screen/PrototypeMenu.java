@@ -59,7 +59,7 @@ public class PrototypeMenu {
     private void opacityThread(StartupProgressBar bar) {
         new Thread(() -> {
             while (!Thread.interrupted() && frame.getOpacity() <= 0.999f) {
-                frame.setOpacity(frame.getOpacity() + 0.001f);
+                frame.setOpacity(frame.getOpacity() + 0.003f);
                 try {
                     Thread.sleep(1);
                 } catch (InterruptedException e) {
