@@ -1,11 +1,19 @@
 <project name="Monopoly" default="cleanArtifact">
+    <property name="build.dir"   value="out"/>
     <property name="artifact.dir"   value="out/artifacts"/>
+
+    <target name="cleanArtifacts">
+        <delete dir="${artifact.dir}" failonerror="true"/>
+    </target>
+
+    <target name="cleanBuilds">
+        <delete dir="${build.dir}" failonerror="true"/>
+    </target>
 
     <target name="cleanArtifact">
         <loadfile property="version" srcFile="src/main/resources/assets/version.txt"/>
 
         <property name="oldJarName" value="Monopoly.jar"/>
-        <property name="newJarName" value="Monopoly-${version}.jar"/>
 
         <delete dir="${artifact.dir}/Monopoly_jar/${oldJarName}" failonerror="false"/>
     </target>
