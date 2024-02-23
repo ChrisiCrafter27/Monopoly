@@ -35,13 +35,13 @@ public class LobbyPane extends JLayeredPane {
     private boolean spaceDown = false;
     private String ip = "";
 
-    private final JLabel connecting = addText("Verbinde zum Server...", (1920 / 2) - 250, 1080 / 2, 500, 25, true);
-    private final JButton ipAddress = addButton((1920/2)-250, 1080-70, 500, 30, actionEvent -> {});
+    private final JLabel connecting = JUtils.addText("Verbinde zum Server...", (1920 / 2) - 250, 1080 / 2, 500, 25, true);
+    private final JButton ipAddress = JUtils.addButton("", null, 200, 590, 800, 30, true, false, actionEvent -> {});
     private final JLayeredPane playerList = new JLayeredPane();
-    private final JButton addPlayer = addButton("Spieler hinzufügen", 50, 1080 - 100, 200, 50, false, actionEvent -> {});
-    private final JButton addBot = addButton("Bot hinzufügen", 50, 1080 - 200, 200, 50, false, actionEvent -> {});
-    private final JButton leave = addButton("Verlassen", 1920 - 250, 1080 - 100, 200, 50, false, actionEvent -> {});
-    private final JButton start = addButton("Starten", 1920 - 250, 1080 - 200, 200, 50, false, actionEvent -> {});
+    private final JButton addPlayer = JUtils.addButton("<html><div style='text-align: center;'>Spieler<br/>hinzufügen</div></html>", new Font(null, Font.PLAIN, 50), Color.BLACK, 450, 680, 270, 210, false, actionEvent -> {});
+    private final JButton addBot = JUtils.addButton("<html><div style='text-align: center;'>Bot<br/>hinzufügen</div></html>", new Font(null, Font.PLAIN, 50), Color.BLACK, 790, 680, 270, 210, false, actionEvent -> {});
+    private final JButton leave = JUtils.addButton("Verlassen", new Font(null, Font.PLAIN, 50), Color.BLACK, 0, 680, 380, 130, false, actionEvent -> {});
+    private final JButton start = JUtils.addButton("Starten", new Font(null, Font.PLAIN, 50), Color.BLACK, 1540, 290, 380, 130, false, actionEvent -> {});
     private final JLabel hintergrund = JUtils.addImage("images/Main_pictures/2.Menü.png",0,60,1920,1020);
 
     public LobbyPane() {
@@ -70,7 +70,8 @@ public class LobbyPane extends JLayeredPane {
         setVisible(false);
         connecting.setVisible(false);
         ipAddress.setVisible(false);
-        ipAddress.setFont(new Font("Arial", Font.PLAIN, 30));
+        ipAddress.setFont(new Font("Arial", Font.PLAIN, 20));
+        ipAddress.setForeground(Color.BLACK);
         playerList.setVisible(false);
         addPlayer.setVisible(false);
         addBot.setVisible(false);
@@ -90,11 +91,11 @@ public class LobbyPane extends JLayeredPane {
     }
 
     private void updateButtons(ArrayList<Client> clients, RootPane root, boolean mayAddPlayer) {
-        addPlayer.setEnabled(mayAddPlayer);
+        addPlayer.setEnabled(true);
         removeActionListener(addPlayer);
         addPlayer.addActionListener(actionEvent -> {
             try {
-                if(client.serverMethod().acceptsNewClient()) {
+                if(mayAddPlayer && client.serverMethod().acceptsNewClient()) {
                     client = new Client(ip, 25565, false, root);
                     clients.add(clients.size(), client);
                 }
@@ -104,10 +105,10 @@ public class LobbyPane extends JLayeredPane {
         });
         addPlayer.setVisible(true);
 
-        addBot.setEnabled(client.player.isHost);
+        addBot.setEnabled(true);
         removeActionListener(addBot);
         addBot.addActionListener(actionEvent -> {
-            JOptionPane.showMessageDialog(null, "Diese Aktion ist noch nicht implementiert", "Bot hinzufügen", JOptionPane.WARNING_MESSAGE);
+            if(client.player.isHost) JOptionPane.showMessageDialog(null, "Diese Aktion ist noch nicht implementiert", "Bot hinzufügen", JOptionPane.INFORMATION_MESSAGE);
         });
         addBot.setVisible(true);
 
@@ -138,7 +139,7 @@ public class LobbyPane extends JLayeredPane {
         memory = players;
 
         playerList.removeAll();
-        int y = 150;
+        int y = 310;
 
         boolean ableToKick;
         try {
@@ -149,10 +150,22 @@ public class LobbyPane extends JLayeredPane {
             ableToKick = false;
         }
 
+        Player host = players.stream().filter(player -> {
+            try {
+                return client.serverMethod().isHost(player.getName());
+            } catch (RemoteException e) {
+                return false;
+            }
+        }).findFirst().orElse(null);
+        if(host != null) {
+            players.remove(host);
+            players.add(0, host);
+        }
+
         for (Player player : players) {
-            playerList.add(addText(player.getName() + (client.serverMethod().isHost(player.getName()) ? " (Host)" : ""), 50, y, 500, 25, false));
+            playerList.add(JUtils.addText(player.getName() + (client.serverMethod().isHost(player.getName()) ? " (Host)" : ""), 200, y, 500, 25, SwingConstants.LEFT, Color.BLACK));
             if(!player.getName().equals(client.player.getName())) {
-                playerList.add(addButton("Kick", 600, y, 150, 25, ableToKick && !client.serverMethod().isHost(player.getName()), actionEvent -> {
+                playerList.add(JUtils.addButton("Kick", 750, y, 150, 25, ableToKick && !client.serverMethod().isHost(player.getName()), actionEvent -> {
                     try {
                         client.serverMethod().kick(player.getName(), DisconnectReason.KICKED);
                     } catch (Exception e) {
@@ -160,7 +173,7 @@ public class LobbyPane extends JLayeredPane {
                     }
                 }));
             } else {
-                playerList.add(addButton("Namen ändern", 600, y, 150, 25, true, actionEvent -> {
+                playerList.add(JUtils.addButton("Namen ändern", 750, y, 150, 25, true, actionEvent -> {
                     try {
                         String name = JOptionPane.showInputDialog(null, "Neuer Name:", "Namen ändern", JOptionPane.QUESTION_MESSAGE);
                         if(client.serverMethod().changeName(client.player.getName(), name)) {
@@ -178,7 +191,7 @@ public class LobbyPane extends JLayeredPane {
     }
 
     private JButton playerButton(Color background, int y, String name) {
-        JButton button = JUtils.addButton("", 775, y, 25, 25, name.equals(client.player.getName()), actionEvent ->  {
+        JButton button = JUtils.addButton("", 925, y, 25, 25, name.equals(client.player.getName()), actionEvent ->  {
             List<Color> colors = COLORS.keySet().stream().filter(color -> {
                 try {
                     return client.serverMethod().getPlayers().stream().map(Player::getColor).noneMatch(color::equals);
@@ -244,50 +257,6 @@ public class LobbyPane extends JLayeredPane {
             return true;
         }
         return false;
-    }
-
-    private JLabel addText(String display, int x, int y, int width, int height, boolean centered) {
-        JLabel label;
-        width = JUtils.getX(width);
-        height = JUtils.getY(height);
-        if(centered) label = new JLabel(display, SwingConstants.CENTER); else label = new JLabel(display);
-        label.setFont(new Font("Arial", Font.PLAIN, height));
-        label.setBounds(JUtils.getX(x), JUtils.getY(y), width, (int) ( height*1.2));
-        return label;
-    }
-
-    private JButton addButton(String display, int x, int y, int width, int height, boolean enabled, ActionListener actionEvent) {
-        JButton button = new JButton(display);
-        width = JUtils.getX(width);
-        height = JUtils.getY(height);
-        button.addActionListener(actionEvent);
-        button.setBounds(JUtils.getX(x), JUtils.getY(y), width, height);
-        button.setEnabled(enabled);
-        button.setOpaque(false);
-        button.setContentAreaFilled(false);
-        button.setBorderPainted(false);
-        button.setFocusPainted(false);
-        if(width < 1) width = 1;
-        if(height < 1) height = 1;
-        button.setIcon(new ImageIcon(JUtils.imageIcon("images/DO_NOT_CHANGE/plain_button_2.png").getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH)));
-        button.setHorizontalTextPosition(SwingConstants.CENTER);
-        button.setVerticalTextPosition(SwingConstants.CENTER);
-        return button;
-    }
-
-    public JButton addButton(int x, int y, int width, int height, ActionListener actionEvent) {
-        JButton button = new JButton("");
-        width = JUtils.getX(width);
-        height = JUtils.getY(height);
-        button.addActionListener(actionEvent);
-        button.setBounds(JUtils.getX(x), JUtils.getY(y), width, height);
-        button.setOpaque(false);
-        button.setContentAreaFilled(false);
-        button.setBorderPainted(false);
-        button.setFocusPainted(false);
-        button.setHorizontalTextPosition(SwingConstants.CENTER);
-        button.setVerticalTextPosition(SwingConstants.CENTER);
-        return button;
     }
 
     private void removeActionListener(JButton button) {

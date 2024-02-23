@@ -39,6 +39,28 @@ public class JUtils {
         return button;
     }
 
+    public static JButton addButton(String display, Font font, Color color, int x, int y, int width, int height, boolean enabled, ActionListener actionEvent) {
+        JButton button = new JButton(display);
+        button.setFont(font);
+        button.setForeground(color);
+        width = JUtils.getX(width);
+        height = JUtils.getY(height);
+        button.addActionListener(actionEvent);
+        button.setBounds(JUtils.getX(x), JUtils.getY(y), width, height);
+        button.setEnabled(enabled);
+        button.setOpaque(false);
+        button.setContentAreaFilled(false);
+        button.setBorderPainted(false);
+        button.setFocusPainted(false);
+        if(width < 1) width = 1;
+        if(height < 1) height = 1;
+        //button.setIcon(new ImageIcon(imageIcon("images/DO_NOT_CHANGE/plain_button_2.png").getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH)));
+        button.setDisabledIcon(imageIcon(""));
+        button.setHorizontalTextPosition(SwingConstants.CENTER);
+        button.setVerticalTextPosition(SwingConstants.CENTER);
+        return button;
+    }
+
     public static JButton addButton(JButton button, String display, int x, int y, int width, int height, boolean enabled, String icon, ActionListener actionEvent) {
         button.setText(display);
         width = JUtils.getX(width);
@@ -103,13 +125,14 @@ public class JUtils {
         return label;
     }
 
-    public static JLabel addText(JLabel label, String display,String font, int x, int y, int width, int height, boolean centered) {
+    public static JLabel addText(String display, int x, int y, int width, int height, int position, Color foreGround) {
+        JLabel label;
         width = JUtils.getX(width);
         height = JUtils.getY(height);
-        if(centered) label.setHorizontalAlignment(SwingConstants.CENTER);
-        label.setText(display);
-        label.setFont(new Font(font, Font.PLAIN, height));
-        label.setBounds(JUtils.getX(x), JUtils.getY(y), width, height);
+        label = new JLabel(display, position);
+        label.setFont(new Font("Arial", Font.PLAIN, height));
+        label.setBounds(JUtils.getX(x), JUtils.getY(y), width, (int) ( height*1.2));
+        label.setForeground(foreGround);
         return label;
     }
 
@@ -158,7 +181,7 @@ public class JUtils {
     }
 
     public static ImageIcon imageIcon(String path) {
-        if(path.isEmpty()) return new ImageIcon("");
+        if(path == null || path.isEmpty()) return new ImageIcon("");
         try {
             return new ImageIcon(ImageIO.read(Main.class.getClassLoader().getResourceAsStream("assets/" + path)));
         } catch (IOException | NullPointerException e) {

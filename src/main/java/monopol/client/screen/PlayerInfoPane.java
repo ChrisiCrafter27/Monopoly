@@ -259,11 +259,11 @@ public class PlayerInfoPane extends JLayeredPane {
         for(int i = 1; i <= PURCHASABLES.size(); i++) {
             IPurchasable card = PURCHASABLES.get(i-1);
             if(purchasableThis.getComponent(i-1) instanceof JLabel label) {
-                ImageIcon icon = new ImageIcon(card.getOwner().equals(clientSup.get().player.getName()) ? "images/kleine_karten/" + getColor(i) + "_filled.png" : "images/kleine_karten/" + getColor(i) + ".png");
+                ImageIcon icon = JUtils.imageIcon(card.getOwner().equals(clientSup.get().player.getName()) ? "images/kleine_karten/" + getColor(i) + "_filled.png" : "images/kleine_karten/" + getColor(i) + ".png");
                 label.setIcon(new ImageIcon(icon.getImage().getScaledInstance(JUtils.getX(icon.getIconWidth()), JUtils.getY(icon.getIconHeight()), Image.SCALE_DEFAULT)));
             }
             if(purchasableOther.getComponent(i-1) instanceof JLabel label) {
-                ImageIcon icon = new ImageIcon(card.getOwner().equals(currentPlayer) ? "images/kleine_karten/" + getColor(i) + "_filled.png" : "images/kleine_karten/" + getColor(i) + ".png");
+                ImageIcon icon = JUtils.imageIcon(card.getOwner().equals(currentPlayer) ? "images/kleine_karten/" + getColor(i) + "_filled.png" : "images/kleine_karten/" + getColor(i) + ".png");
                 label.setIcon(new ImageIcon(icon.getImage().getScaledInstance(JUtils.getX(icon.getIconWidth()), JUtils.getY(icon.getIconHeight()), Image.SCALE_DEFAULT)));
             }
         }

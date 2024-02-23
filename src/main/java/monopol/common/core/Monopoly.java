@@ -5,10 +5,10 @@ import monopol.common.utils.*;
 import monopol.server.Server;
 
 import javax.swing.*;
+import java.awt.*;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
 
 public class Monopoly {
     public static final Monopoly INSTANCE = new Monopoly();
@@ -45,9 +45,6 @@ public class Monopoly {
     public Server server() {
         return server;
     }
-    public void closeServer() {
-        server.close();
-    }
     public boolean serverEnabled() {
         return serverEnabled;
     }
@@ -66,7 +63,7 @@ public class Monopoly {
         ProjectStructure.printProjectStructureAsTree(false, bar);
 
         bar.setTop("Verbinde mit Github...", 1);
-        System.out.println("Connecting to Gihub...");
+        System.out.println("Connecting to Github...");
         GitUtils.connect(bar);
 
         bar.setTop("Starte Issue-Reporter...", 2);
@@ -86,6 +83,7 @@ public class Monopoly {
 
             bar.setTop("Erstelle GUI...", 5);
             System.out.println("Creating GUI...");
+            UIManager.getDefaults().put("Button.disabledText", Color.BLACK);
             PrototypeMenu menu = new PrototypeMenu(bar);
             menu.prepareMenu();
 
@@ -98,7 +96,9 @@ public class Monopoly {
         return switch (args[pos]) {
             case "-delete" -> {
                 File file = new File(args[pos+1]);
-                if(file.exists()) file.delete();
+                if(file.exists())
+                    //noinspection ResultOfMethodCallIgnored
+                    file.delete();
                 yield 2;
             }
             case "-rename" -> {
