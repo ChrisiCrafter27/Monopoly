@@ -18,7 +18,7 @@ public abstract class Events {
     public final int losMoney;
     public final boolean doubleLosMoney;
     public final boolean freeParking;
-    public final boolean gainRentInPrison;
+    public final boolean rentInPrison;
     public final boolean buildEquable;
     public final boolean reRollEventCardsAfterUse;
     public final BuildRule buildRule;
@@ -38,7 +38,7 @@ public abstract class Events {
     protected int dice3;
     protected boolean hasToPayRent;
 
-    protected Events(boolean limitBusTickets, int maxBusTickets, boolean limitBuildings, boolean tempoDice, boolean megaBuildings, boolean tripleTeleport, int startMoney, int losMoney, boolean doubleLosMoney, boolean freeParking, boolean gainRentInPrison, boolean buildEquable, boolean reRollEventCardsAfterUse, BuildRule buildRule, OwnedCardsOfColorGroup cardsRequiredForOneHouse, OwnedCardsOfColorGroup cardsRequiredForTwoHouses, OwnedCardsOfColorGroup cardsRequiredForThreeHouses, OwnedCardsOfColorGroup cardsRequiredForFourHouses, OwnedCardsOfColorGroup cardsRequiredForHotel, OwnedCardsOfColorGroup cardsRequiredForSkyscraper) {
+    protected Events(boolean limitBusTickets, int maxBusTickets, boolean limitBuildings, boolean tempoDice, boolean megaBuildings, boolean tripleTeleport, int startMoney, int losMoney, boolean doubleLosMoney, boolean freeParking, boolean rentInPrison, boolean buildEquable, boolean reRollEventCardsAfterUse, BuildRule buildRule, OwnedCardsOfColorGroup cardsRequiredForOneHouse, OwnedCardsOfColorGroup cardsRequiredForTwoHouses, OwnedCardsOfColorGroup cardsRequiredForThreeHouses, OwnedCardsOfColorGroup cardsRequiredForFourHouses, OwnedCardsOfColorGroup cardsRequiredForHotel, OwnedCardsOfColorGroup cardsRequiredForSkyscraper) {
         this.limitBusTickets = limitBusTickets;
         this.maxBusTickets = maxBusTickets;
         this.limitBuildings = limitBuildings;
@@ -49,7 +49,7 @@ public abstract class Events {
         this.losMoney = losMoney;
         this.doubleLosMoney = doubleLosMoney;
         this.freeParking = freeParking;
-        this.gainRentInPrison = gainRentInPrison;
+        this.rentInPrison = rentInPrison;
         this.buildEquable = buildEquable;
         this.reRollEventCardsAfterUse = reRollEventCardsAfterUse;
         this.buildRule = buildRule;
@@ -109,4 +109,8 @@ public abstract class Events {
     public abstract void onOfferTrade();
     public abstract void onAcceptTrade();
     public abstract void onGoBankrupt();
+
+    public interface Factory<T extends Events> {
+        T create(boolean limitBusTickets, int maxBusTickets, boolean limitBuildings, boolean tempoDice, boolean megaBuildings, boolean tripleTeleport, int startMoney, int losMoney, boolean doubleLosMoney, boolean freeParking, boolean gainRentInPrison, boolean buildEquable, boolean reRollEventCardsAfterUse, BuildRule buildRule, OwnedCardsOfColorGroup cardsRequiredForOneHouse, OwnedCardsOfColorGroup cardsRequiredForTwoHouses, OwnedCardsOfColorGroup cardsRequiredForThreeHouses, OwnedCardsOfColorGroup cardsRequiredForFourHouses, OwnedCardsOfColorGroup cardsRequiredForHotel, OwnedCardsOfColorGroup cardsRequiredForSkyscraper);
+    }
 }

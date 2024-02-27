@@ -39,6 +39,11 @@ public class GitHubIssueReporter implements Thread.UncaughtExceptionHandler {
 
     public static void report(String title, String body) {
         try {
+            if(!GitUtils.connected()) GitUtils.connect(new StartupProgressBar("", 0, 0));
+            if(!GitUtils.connected()) {
+                JOptionPane.showMessageDialog(null, "Ein GitHub-Issue konnte nicht erstellt werden:\nKeine Verbindung möglich.", "Fehler melden", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
             GHRepository repository = GitUtils.monopolyRepository();
             GHIssue issue = repository.createIssue(title)
                     .body(body)
@@ -46,7 +51,7 @@ public class GitHubIssueReporter implements Thread.UncaughtExceptionHandler {
             JOptionPane.showMessageDialog(null, "Ein neuer GitHub-Issue wurde erstellt:\n" + issue.getHtmlUrl(), "Fehler melden", JOptionPane.INFORMATION_MESSAGE);
         } catch (IOException ioe) {
             JOptionPane.showMessageDialog(null, "Ein GitHub-Issue konnte nicht erstellt werden:\n" + ioe.getMessage(), "Fehler melden", JOptionPane.WARNING_MESSAGE);
-            ioe.printStackTrace(System.out);
+            ioe.printStackTrace(System.err);
         }
     }
 

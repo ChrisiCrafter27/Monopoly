@@ -57,6 +57,7 @@ public class Monopoly {
         System.out.println("Starting Monopoly...");
         StartupProgressBar bar = new StartupProgressBar(VersionChecker.title(), 6, 0);
         bar.hideBottom();
+        bar.show();
 
         bar.setTop("Scanne dateien...", 0);
         System.out.println("Scanning files...");

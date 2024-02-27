@@ -17,6 +17,7 @@ public class GitUtils {
     public static final String REPOSITORY_NAME = "Monopoly";
 
     private static GitHub connection;
+    private static boolean connected = false;
 
     public static void connect(StartupProgressBar bar) {
         bar.bottomBar.setMaximum(7);
@@ -36,12 +37,14 @@ public class GitUtils {
                 monopolyRepository();
                 bar.setBottom("Suche nach Jars Repo...", 6);
                 jarRepository();
-            } catch (IOException e) {
-                JOptionPane.showMessageDialog(null, e.getMessage());
-                throw new RuntimeException(e);
-            }
+                connected = true;
+            } catch (Exception ignored) {}
         }
         bar.hideBottom();
+    }
+
+    public static boolean connected() {
+        return connected;
     }
 
     public static GHRepository monopolyRepository() throws IOException {

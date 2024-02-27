@@ -25,6 +25,9 @@ public class StartupProgressBar {
         barFrame.add(topBar, BorderLayout.CENTER);
         bottomBar.setBounds(0, 60, 300, 60);
         barFrame.add(bottomBar, BorderLayout.CENTER);
+    }
+
+    public void show() {
         barFrame.setVisible(true);
     }
 

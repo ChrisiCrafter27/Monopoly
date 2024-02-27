@@ -1,15 +1,19 @@
 - UpgradePane
 - PlayerInfoPane Buttons
-- Main Menu Aussehen
-- Versteigerung
 - Hypothek
-- Bankrott gehen
-- Spiel Ende
-- Zweites Würfeln bei Werken
-- Hypotheken schränken Bauen ein (Regel)
 - Kartenstapel
 - Ereigniskarten
-- Verkauf mit Upgrades (Regel)
+- Bankrott gehen
+- Spiel Ende
+
+- Regeln einstellbar
 - Mr. Monopoly Würfel
 - Dreier-Pasch
+- Main Menu Aussehen
+
+- Versteigerung
+- Handeln
+
+- Hypotheken schränken Bauen ein (Regel)
+- Verkauf mit Upgrades (Regel)
 - Hypotheken mit Upgrades (Regel)

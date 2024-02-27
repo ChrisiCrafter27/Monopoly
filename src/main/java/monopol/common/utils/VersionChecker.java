@@ -10,9 +10,8 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
 public class VersionChecker {
-    private static JFrame barFrame;
-
     public static boolean check(StartupProgressBar bar) {
+        if(!GitUtils.connected()) return false;
         try {
             GHRepository repository = GitUtils.jarRepository();
             if(inIdea()) {
@@ -32,7 +31,6 @@ public class VersionChecker {
                                 Runtime.getRuntime().exec(new String[]{"java", "-jar", "Monopoly-" + remoteVersion(repository) + ".jar", "-delete", System.getProperty("java.class.path")});
                             else
                                 Runtime.getRuntime().exec(new String[]{"java", "-jar", "Monopoly-" + remoteVersion(repository) + ".jar", "-rename", System.getProperty("java.class.path")});
-                            removeFrame();
                             return true;
                         } else {
                             JOptionPane.showMessageDialog(null, "Update nicht erfolgreich", "Version-Checker", JOptionPane.WARNING_MESSAGE);
@@ -41,9 +39,9 @@ public class VersionChecker {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace(System.out);
+            System.err.println("Failed to check for/install update:");
+            e.printStackTrace(System.err);
         }
-        removeFrame();
         return false;
     }
 
@@ -99,13 +97,5 @@ public class VersionChecker {
         bar.setBottom("Fertig!", 3);
         in.close();
         out.close();
-    }
-
-    private static void removeFrame() {
-        if(barFrame != null) {
-            barFrame.setVisible(false);
-            barFrame.dispose();
-            barFrame = null;
-        }
     }
 }

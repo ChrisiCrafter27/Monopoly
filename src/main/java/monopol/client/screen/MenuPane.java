@@ -32,9 +32,9 @@ public class MenuPane extends JLayeredPane {
             input = JOptionPane.showConfirmDialog(null, "Dürfen die sich Mitspieler gegenseitig kicken?", "Spiel erstellen", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
             if(input == JOptionPane.CLOSED_OPTION) return;
             boolean canKick = input == JOptionPane.YES_OPTION;
-            input = JOptionPane.showConfirmDialog(null, "Dürfen die Mitspieler Einstellungen ändern?", "Spiel erstellen", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-            if(input == JOptionPane.CLOSED_OPTION) return;
-            boolean canSet = input == JOptionPane.YES_OPTION;
+            //input = JOptionPane.showConfirmDialog(null, "Dürfen die Mitspieler Einstellungen ändern?", "Spiel erstellen", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+            //if(input == JOptionPane.CLOSED_OPTION) return;
+            boolean canSet = false; //input == JOptionPane.YES_OPTION;
             try {
                 ip = "localhost";
                 Monopoly.INSTANCE.openServer(new ServerSettings(canKick, canSet));

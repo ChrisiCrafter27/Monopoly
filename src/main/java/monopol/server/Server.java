@@ -586,4 +586,8 @@ public class Server extends UnicastRemoteObject implements IServer {
     public GameData gameData() {
         return gameData;
     }
+
+    public void setEvents(Events events) {
+        if(Monopoly.INSTANCE.getState() != GameState.LOBBY) this.events = events;
+    }
 }
