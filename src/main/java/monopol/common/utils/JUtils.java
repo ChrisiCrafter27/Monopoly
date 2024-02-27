@@ -153,7 +153,7 @@ public class JUtils {
         JLabel label = addImage(src, x, y);
         width = JUtils.getX(width);
         height = JUtils.getY(height);
-        label.setIcon(new ImageIcon(((ImageIcon) label.getIcon()).getImage().getScaledInstance(width, height, Image.SCALE_DEFAULT)));
+        label.setIcon(new ImageIcon(((ImageIcon) label.getIcon()).getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH)));
         label.setBounds(JUtils.getX(x), JUtils.getY(y), width, height);
         return label;
     }

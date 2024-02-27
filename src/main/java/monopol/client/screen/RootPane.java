@@ -18,6 +18,7 @@ public class RootPane extends JLayeredPane {
     public final FreeParkingPane freeParkingPane = new FreeParkingPane();
     public final PlayerInfoPane playerInfoPane = new PlayerInfoPane();
     public final DicePane dicePane = new DicePane();
+    public final HousePane housePane = new HousePane();
 
     public RootPane() {
         super();
@@ -38,6 +39,7 @@ public class RootPane extends JLayeredPane {
         add(freeParkingPane, JLayeredPane.PALETTE_LAYER);
         add(playerInfoPane, JLayeredPane.PALETTE_LAYER);
         add(dicePane, JLayeredPane.PALETTE_LAYER);
+        add(housePane, JLayeredPane.MODAL_LAYER);
 
         repaint();
     }
