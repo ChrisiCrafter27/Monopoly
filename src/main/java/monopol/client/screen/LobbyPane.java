@@ -1,11 +1,15 @@
 package monopol.client.screen;
 
+import monopol.common.core.Monopoly;
 import monopol.common.utils.JUtils;
 import monopol.common.utils.KeyHandler;
 import monopol.common.utils.ListUtils;
 import monopol.client.Client;
 import monopol.common.message.DisconnectReason;
 import monopol.common.data.Player;
+import monopol.server.Server;
+import monopol.server.events.Events;
+import monopol.server.events.StandardEvents;
 
 import javax.swing.*;
 import java.awt.*;
@@ -32,16 +36,57 @@ public class LobbyPane extends JLayeredPane {
     private boolean requestUpdate = false;
 
     private ArrayList<Player> memory = new ArrayList<>();
+    private ArrayList<Client> clients = new ArrayList<>();
+    private RootPane root;
     private boolean spaceDown = false;
     private String ip = "";
 
     private final JLabel connecting = JUtils.addText("Verbinde zum Server...", (1920 / 2) - 250, 1080 / 2, 500, 25, true);
     private final JButton ipAddress = JUtils.addButton("", null, 200, 590, 800, 30, true, false, actionEvent -> {});
     private final JLayeredPane playerList = new JLayeredPane();
-    private final JButton addPlayer = JUtils.addButton("<html><div style='text-align: center;'>Spieler<br/>hinzufügen</div></html>", new Font(null, Font.PLAIN, 50), Color.BLACK, 450, 680, 270, 210, false, actionEvent -> {});
-    private final JButton addBot = JUtils.addButton("<html><div style='text-align: center;'>Bot<br/>hinzufügen</div></html>", new Font(null, Font.PLAIN, 50), Color.BLACK, 790, 680, 270, 210, false, actionEvent -> {});
-    private final JButton leave = JUtils.addButton("Verlassen", new Font(null, Font.PLAIN, 50), Color.BLACK, 0, 680, 380, 130, false, actionEvent -> {});
-    private final JButton start = JUtils.addButton("Starten", new Font(null, Font.PLAIN, 50), Color.BLACK, 1540, 290, 380, 130, false, actionEvent -> {});
+    private final JButton addPlayer = JUtils.addButton("+ Spieler", new Font(null, Font.PLAIN, 40), Color.BLACK, 450, 680, 270, 105, false, actionEvent -> {
+        try {
+            if(client.serverMethod().acceptsNewClient()) {
+                client = new Client(ip, 25565, false, root);
+                clients.add(clients.size(), client);
+            }
+        } catch (Exception e) {
+            e.printStackTrace(System.err);
+        }
+    });
+    private final JButton addBot = JUtils.addButton("+ Bot", new Font(null, Font.PLAIN, 40), Color.BLACK, 450, 785, 270, 105, false, actionEvent -> {
+        if(client.player.isHost) JOptionPane.showMessageDialog(null, "Diese Aktion ist noch nicht implementiert", "Bot hinzufügen", JOptionPane.INFORMATION_MESSAGE);
+    });
+    private final JButton changeMode = JUtils.addButton("Modus", new Font(null, Font.PLAIN, 40), Color.BLACK, 790, 680, 270, 105, false, actionEvent -> {
+        if(client.player.isHost) {
+            HashMap<String, Events.Factory<?>> modes = new HashMap<>(Map.of("Standard", StandardEvents::new));
+            List<String> names = modes.keySet().stream().toList();
+            int selection = JOptionPane.showOptionDialog(null, "Modus wählen:", "Einstellungen", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, names.toArray(), null);
+            if(selection != JOptionPane.CLOSED_OPTION) {
+                Monopoly.INSTANCE.server().setEventsType(modes.get(names.get(selection)));
+            }
+        }
+    });
+    private final JButton changeSettings = JUtils.addButton("Einstellungen", new Font(null, Font.PLAIN, 40), Color.BLACK, 790, 785, 270, 105, false, actionEvent -> {
+        if(client.player.isHost) {
+            Server server = Monopoly.INSTANCE.server();
+            new SettingsScreen<>(server.getEventsType(), server.events(), server::setEvents).show();
+        }
+    });
+    private final JButton leave = JUtils.addButton("Verlassen", new Font(null, Font.PLAIN, 50), Color.BLACK, 0, 680, 380, 130, false, actionEvent -> {
+        try {
+            client.serverMethod().kick(client.player.getName(), DisconnectReason.CLIENT_CLOSED);
+        } catch (Exception e) {
+            e.printStackTrace(System.err);
+        }
+    });
+    private final JButton start = JUtils.addButton("Starten", new Font(null, Font.PLAIN, 50), Color.BLACK, 1540, 290, 380, 130, false, actionEvent -> {
+        try {
+            client.serverMethod().start();
+        } catch (Exception e) {
+            e.printStackTrace(System.err);
+        }
+    });
     private final JLabel hintergrund = JUtils.addImage("images/Main_pictures/2.Menü.png",0,60,1920,1020);
 
     public LobbyPane() {
@@ -56,6 +101,8 @@ public class LobbyPane extends JLayeredPane {
         add(playerList, JLayeredPane.MODAL_LAYER);
         add(addPlayer, JLayeredPane.POPUP_LAYER);
         add(addBot, JLayeredPane.POPUP_LAYER);
+        add(changeMode, JLayeredPane.POPUP_LAYER);
+        add(changeSettings, JLayeredPane.POPUP_LAYER);
         add(leave, JLayeredPane.POPUP_LAYER);
         add(start, JLayeredPane.POPUP_LAYER);
         add(hintergrund, JLayeredPane.DEFAULT_LAYER);
@@ -75,6 +122,8 @@ public class LobbyPane extends JLayeredPane {
         playerList.setVisible(false);
         addPlayer.setVisible(false);
         addBot.setVisible(false);
+        changeMode.setVisible(false);
+        changeSettings.setVisible(false);
         leave.setVisible(false);
         start.setVisible(false);
         repaint();
@@ -91,47 +140,21 @@ public class LobbyPane extends JLayeredPane {
     }
 
     private void updateButtons(ArrayList<Client> clients, RootPane root, boolean mayAddPlayer) {
-        addPlayer.setEnabled(true);
-        removeActionListener(addPlayer);
-        addPlayer.addActionListener(actionEvent -> {
-            try {
-                if(mayAddPlayer && client.serverMethod().acceptsNewClient()) {
-                    client = new Client(ip, 25565, false, root);
-                    clients.add(clients.size(), client);
-                }
-            } catch (Exception e) {
-                e.printStackTrace(System.err);
-            }
-        });
+        this.clients = clients;
+        this.root = root;
+        addPlayer.setEnabled(mayAddPlayer);
         addPlayer.setVisible(true);
-
-        addBot.setEnabled(true);
-        removeActionListener(addBot);
-        addBot.addActionListener(actionEvent -> {
-            if(client.player.isHost) JOptionPane.showMessageDialog(null, "Diese Aktion ist noch nicht implementiert", "Bot hinzufügen", JOptionPane.INFORMATION_MESSAGE);
-        });
+        addBot.setEnabled(client.player.isHost);
         addBot.setVisible(true);
-
+        changeMode.setEnabled(client.player.isHost);
+        changeMode.setVisible(true);
+        changeSettings.setEnabled(client.player.isHost);
+        changeSettings.setVisible(true);
         leave.setEnabled(true);
-        removeActionListener(leave);
-        leave.addActionListener(actionEvent -> {
-            try {
-                client.serverMethod().kick(client.player.getName(), DisconnectReason.CLIENT_CLOSED);
-            } catch (Exception e) {
-                e.printStackTrace(System.err);
-            }
-        });
         leave.setVisible(true);
-
         start.setEnabled(client.player.isHost);
-        removeActionListener(start);
-        start.addActionListener(actionEvent -> {
-            try {
-                client.serverMethod().start();
-            } catch (Exception e) {
-                e.printStackTrace(System.err);
-            }
-        });
+        start.setFont(new Font(start.getFont().getName(), start.getFont().getStyle(), client.player.isHost ? 50 : 42));
+        start.setText(client.player.isHost ? "Starten" : "Warten auf Host");
         start.setVisible(true);
     }
 

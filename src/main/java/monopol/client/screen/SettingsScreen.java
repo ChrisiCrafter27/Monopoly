@@ -22,8 +22,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
-@SuppressWarnings("unchecked")
 public class SettingsScreen<T extends Events> {
+    private final JFrame frame = new JFrame("Einstellungen");
     private final Events.Factory<T> factory;
     private final Consumer<T> set;
     private final List<Setting<?, ?>> settingsList;
@@ -35,11 +35,10 @@ public class SettingsScreen<T extends Events> {
         this.settingsList = settings(prev != null ? prev : defaultEvents());
     }
 
-    @SuppressWarnings("rawtypes")
     public void show() {
-        JFrame frame = new JFrame("Einstellungen");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setLocationRelativeTo(null);
+        ToolTipManager.sharedInstance().setDismissDelay(10000);
+        ToolTipManager.sharedInstance().setInitialDelay(100);
+        ToolTipManager.sharedInstance().setReshowDelay(100);
 
         JPanel panel = new JPanel(new GridLayout(0, 2, 10, 10));
         panel.setBorder(new EmptyBorder(10, 10, 10, 10));
@@ -99,31 +98,35 @@ public class SettingsScreen<T extends Events> {
         }
 
         JButton abortButton = new JButton("Abbrechen");
-        abortButton.addActionListener(e -> {
-            frame.setVisible(false);
-            frame.dispose();
-        });
+        abortButton.addActionListener(e -> close());
 
         JButton saveButton = new JButton("Speichern");
         saveButton.addActionListener(e -> {
             set.accept(events());
-            JOptionPane.showMessageDialog(null, "Einstellungen gespeichert!");
+            close();
         });
 
         panel.add(abortButton);
         panel.add(saveButton);
 
-        frame.getContentPane().add(panel);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.setLocationRelativeTo(null);
+        frame.add(panel);
         frame.pack();
         frame.setLocation((int) (JUtils.SCREEN_WIDTH / 2d - frame.getWidth() / 2d), (int) (JUtils.SCREEN_HEIGHT / 2d - frame.getHeight() / 2d));
         frame.setVisible(true);
+    }
+
+    public void close() {
+        frame.setVisible(false);
+        frame.dispose();
     }
 
     private T defaultEvents() {
         return factory.create(
                 false,
                 16,
-                false,
+                true,
                 true,
                 true,
                 true,
@@ -157,15 +160,15 @@ public class SettingsScreen<T extends Events> {
                 new BooleanSetting("Doppeltes Los-Geld", "Wenn du auf Los landest, anstatt es zu überqueren, bekommst du doppelt soviel Geld", defaultValues.doubleLosMoney),
                 new BooleanSetting("Frei Parken", "Steuereinnahmen und Einnahmen aus Ereignis-/Gemeinschaftskarten landen auf dem Spielbrett. Wer auf Frei-Parken kommt, bekommt alles davon.", defaultValues.freeParking),
                 new BooleanSetting("Miete im Gefängnis", defaultValues.rentInPrison),
-                new BooleanSetting("Gleichmäßiges Bauen", "In einer Farbgruppe müssen alle Straßen auf dem gleichen Levels (Anzahl Häuser/Hotel/Wolkenkratzer) sein. Es darf nur eine Abweichung von einem Level nach oben geben.", defaultValues.buildEquable),
-                new BooleanSetting("Karten nach Ziehen mischen", "Wenn eine Ereignis-/Gemeinschaftskarte gezogen wird, wird sie sofort wieder untergemischt", defaultValues.reRollEventCardsAfterUse),
-                new EnumSetting<>("Bauregel", "Legt fest du Gebäude (Häuser/Hotels/Wolkenkratzer) bauen und abreißen kannst, wenn du am Zug bist", BuildRule.values(), defaultValues.buildRule),
-                new EnumSetting<>("Karten für ein Haus", "Legt fest wie viele Karten du von der jeweiligen Farbgruppe brauchst", OwnedCardsOfColorGroup.values(), defaultValues.cardsRequiredForOneHouse),
-                new EnumSetting<>("Karten für zwei Häuser", "Legt fest wie viele Karten du von der jeweiligen Farbgruppe brauchst", OwnedCardsOfColorGroup.values(), defaultValues.cardsRequiredForTwoHouses),
-                new EnumSetting<>("Karten für drei Häuser", "Legt fest wie viele Karten du von der jeweiligen Farbgruppe brauchst", OwnedCardsOfColorGroup.values(), defaultValues.cardsRequiredForThreeHouses),
-                new EnumSetting<>("Karten für vier Häuser", "Legt fest wie viele Karten du von der jeweiligen Farbgruppe brauchst", OwnedCardsOfColorGroup.values(), defaultValues.cardsRequiredForFourHouses),
-                new EnumSetting<>("Karten für ein Hotel", "Legt fest wie viele Karten du von der jeweiligen Farbgruppe brauchst", OwnedCardsOfColorGroup.values(), defaultValues.cardsRequiredForHotel),
-                new EnumSetting<>("Karten für einen Wolkenkratzer", "Legt fest wie viele Karten du von der jeweiligen Farbgruppe brauchst", OwnedCardsOfColorGroup.values(), defaultValues.cardsRequiredForSkyscraper)
+                new BooleanSetting("Gleichmäßiges Bauen", "In einer Farbgruppe müssen alle Straßen auf dem gleichen Level (Anzahl Häuser/Hotel/Wolkenkratzer) sein. Es darf nur eine Abweichung von einem Level nach oben geben.", defaultValues.buildEquable),
+                new BooleanSetting("Karten nach Ziehen mischen", "Wenn eine Ereignis-/Gemeinschaftskarte gezogen wird, wird diese sofort wieder untergemischt", defaultValues.reRollEventCardsAfterUse),
+                new EnumSetting<>("Bauregel", "Legt fest, wo du Gebäude (Häuser/Hotels/Wolkenkratzer) bauen und abreißen kannst, wenn du am Zug bist", BuildRule.values(), defaultValues.buildRule),
+                new EnumSetting<>("Karten für ein Haus", "Legt fest, wie viele Karten du von der jeweiligen Farbgruppe brauchst", OwnedCardsOfColorGroup.values(), defaultValues.cardsRequiredForOneHouse),
+                new EnumSetting<>("Karten für zwei Häuser", "Legt fest, wie viele Karten du von der jeweiligen Farbgruppe brauchst", OwnedCardsOfColorGroup.values(), defaultValues.cardsRequiredForTwoHouses),
+                new EnumSetting<>("Karten für drei Häuser", "Legt fest, wie viele Karten du von der jeweiligen Farbgruppe brauchst", OwnedCardsOfColorGroup.values(), defaultValues.cardsRequiredForThreeHouses),
+                new EnumSetting<>("Karten für vier Häuser", "Legt fest, wie viele Karten du von der jeweiligen Farbgruppe brauchst", OwnedCardsOfColorGroup.values(), defaultValues.cardsRequiredForFourHouses),
+                new EnumSetting<>("Karten für ein Hotel", "Legt fest, wie viele Karten du von der jeweiligen Farbgruppe brauchst", OwnedCardsOfColorGroup.values(), defaultValues.cardsRequiredForHotel),
+                new EnumSetting<>("Karten für einen Wolkenkratzer", "Legt fest, wie viele Karten du von der jeweiligen Farbgruppe brauchst", OwnedCardsOfColorGroup.values(), defaultValues.cardsRequiredForSkyscraper)
         );
     }
 

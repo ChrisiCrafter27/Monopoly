@@ -52,9 +52,6 @@ public class JUtils {
         button.setContentAreaFilled(false);
         button.setBorderPainted(false);
         button.setFocusPainted(false);
-        if(width < 1) width = 1;
-        if(height < 1) height = 1;
-        //button.setIcon(new ImageIcon(imageIcon("images/DO_NOT_CHANGE/plain_button_2.png").getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH)));
         button.setDisabledIcon(imageIcon(""));
         button.setHorizontalTextPosition(SwingConstants.CENTER);
         button.setVerticalTextPosition(SwingConstants.CENTER);

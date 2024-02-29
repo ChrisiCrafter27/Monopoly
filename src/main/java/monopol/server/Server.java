@@ -57,7 +57,8 @@ public class Server extends UnicastRemoteObject implements IServer {
     public ServerSettings serverSettings;
     private String host;
     private boolean hostJoined = false;
-    private Events events = new StandardEvents(true, -1, true, true, true, true, 1000, 200, true, true, false, true, false, BuildRule.ANYWHERE, OwnedCardsOfColorGroup.NONE, OwnedCardsOfColorGroup.NONE, OwnedCardsOfColorGroup.NONE, OwnedCardsOfColorGroup.NONE, OwnedCardsOfColorGroup.ALL_BUT_ONE, OwnedCardsOfColorGroup.ALL);
+    private Events.Factory<?> eventsType = StandardEvents::new;
+    private Events events = eventsType.create(false, 16, true, true, true, true, 2500, 200, true, true, true, false, false, BuildRule.ANYWHERE, OwnedCardsOfColorGroup.ALL_BUT_ONE, OwnedCardsOfColorGroup.ALL_BUT_ONE, OwnedCardsOfColorGroup.ALL_BUT_ONE, OwnedCardsOfColorGroup.ALL_BUT_ONE, OwnedCardsOfColorGroup.ALL_BUT_ONE, OwnedCardsOfColorGroup.ALL);
     private GameData gameData = new GameData();
     
     private final Thread connectionThread = new Thread() {
@@ -579,15 +580,20 @@ public class Server extends UnicastRemoteObject implements IServer {
         PacketManager.sendS2C(new UpdatePlayerDataS2CPacket(), PacketManager.Restriction.all(), Throwable::printStackTrace);
     }
 
-    public Events events() {
-        return events;
-    }
-
     public GameData gameData() {
         return gameData;
     }
+    public Events events() {
+        return events;
+    }
+    public Events.Factory<?> getEventsType() {
+        return eventsType;
+    }
 
     public void setEvents(Events events) {
-        if(Monopoly.INSTANCE.getState() != GameState.LOBBY) this.events = events;
+        if(Monopoly.INSTANCE.getState() == GameState.LOBBY) this.events = events;
+    }
+    public void setEventsType(Events.Factory<?> eventsType) {
+        if(Monopoly.INSTANCE.getState() == GameState.LOBBY) this.eventsType = eventsType;
     }
 }

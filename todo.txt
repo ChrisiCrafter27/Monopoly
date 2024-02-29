@@ -1,4 +1,4 @@
-- UpgradePane
+- HousePane
 - PlayerInfoPane Buttons
 - Hypothek
 - Kartenstapel
@@ -6,7 +6,7 @@
 - Bankrott gehen
 - Spiel Ende
 
-- Regeln einstellbar
+- Regeln wirksam
 - Mr. Monopoly Würfel
 - Dreier-Pasch
 - Main Menu Aussehen
@@ -17,3 +17,4 @@
 - Hypotheken schränken Bauen ein (Regel)
 - Verkauf mit Upgrades (Regel)
 - Hypotheken mit Upgrades (Regel)
+- Mr. Monopoly Würfel (Regel)
