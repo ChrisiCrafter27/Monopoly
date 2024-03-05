@@ -68,27 +68,27 @@ public class PlayerInfoPane extends JLayeredPane {
 
     private final JLabel action1L = JUtils.addText("Würfeln",1060, 460,400,40,true);
     private final JButton action1B = JUtils.addButton(null,"images/Main_pictures/3d_button.png", 1060, 450, 400, 80, true, false, actionevent ->  {
-        PacketManager.sendC2S(new ButtonC2SPacket(clientSup.get().player.getName(), ButtonC2SPacket.Button.ACTION_1), clientSup.get(), Throwable::printStackTrace);
+        PacketManager.sendC2S(new ButtonC2SPacket(clientSup.get().player.getName(), displaySup.get().selectedCardPane.getSelected().getName(), ButtonC2SPacket.Button.ACTION_1), clientSup.get(), Throwable::printStackTrace);
     });
     private final JLabel action2L = JUtils.addText("Zug beenden",1484, 460,400,40,true);
     private final JButton action2B = JUtils.addButton(null,"images/Main_pictures/3d_button.png", 1484,450,400,80,true,false,actionevent ->  {
-        PacketManager.sendC2S(new ButtonC2SPacket(clientSup.get().player.getName(), ButtonC2SPacket.Button.ACTION_2), clientSup.get(), Throwable::printStackTrace);
+        PacketManager.sendC2S(new ButtonC2SPacket(clientSup.get().player.getName(), displaySup.get().selectedCardPane.getSelected().getName(), ButtonC2SPacket.Button.ACTION_2), clientSup.get(), Throwable::printStackTrace);
     });
     private final JLabel purchasableL = JUtils.addText("Kaufen",1060,450+90+13,400,40,true);
     private final JButton purchasableB = JUtils.addButton(null,"images/Main_pictures/3d_button.png", 1060,450+90,400,80,true,false, actionevent ->  {
-        //Straße kaufen
+        PacketManager.sendC2S(new ButtonC2SPacket(clientSup.get().player.getName(), displaySup.get().selectedCardPane.getSelected().getName(), ButtonC2SPacket.Button.PURCHASE), clientSup.get(), Throwable::printStackTrace);
     });
     private final JLabel upgradeL = JUtils.addText("Aufwerten",1060,450+90*2+13,400,40,true);
     private final JButton upgradeB = JUtils.addButton(null,"images/Main_pictures/3d_button.png", 1060,450+90*2,400,80,true,false, actionevent ->  {
-        //haus bauen
+        PacketManager.sendC2S(new ButtonC2SPacket(clientSup.get().player.getName(), displaySup.get().selectedCardPane.getSelected().getName(), ButtonC2SPacket.Button.UPGRADE), clientSup.get(), Throwable::printStackTrace);
     });
     private final JLabel downgradeL = JUtils.addText("Abwerten",1060,450+90*3+13,400,40,true);
     private final JButton downgradeB = JUtils.addButton(null,"images/Main_pictures/3d_button.png", 1060,450+90*3,400,80,true,false, actionevent ->  {
-        //haus verkaufen
+        PacketManager.sendC2S(new ButtonC2SPacket(clientSup.get().player.getName(), displaySup.get().selectedCardPane.getSelected().getName(), ButtonC2SPacket.Button.DOWNGRADE), clientSup.get(), Throwable::printStackTrace);
     });
     private final JLabel mortgageL = JUtils.addText("Verpfänden",1060,450+90*4+13,400,40,true);
     private final JButton mortgageB = JUtils.addButton(null,"images/Main_pictures/3d_button.png", 1060,450+90*4,400,80,true,false, actionevent ->  {
-        //hypothek aufnehmen
+        PacketManager.sendC2S(new ButtonC2SPacket(clientSup.get().player.getName(), displaySup.get().selectedCardPane.getSelected().getName(), ButtonC2SPacket.Button.MORTGAGE), clientSup.get(), Throwable::printStackTrace);
     });
     private final JLabel tradeL = JUtils.addText("Handeln", 1060, 450+90*5+13,400,40,true);
     private final JButton tradeB = JUtils.addButton(null, "images/Main_pictures/3d_button.png", 1060, 450+90*5, 400, 80, true,false, actionEvent -> {

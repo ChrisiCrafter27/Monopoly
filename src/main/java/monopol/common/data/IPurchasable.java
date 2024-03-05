@@ -15,9 +15,17 @@ public interface IPurchasable extends IField, Serializable {
     boolean upgrade();
     boolean downgrade();
     boolean isMortgaged();
-    boolean mortgage();
-    boolean unmortgage();
+    void mortgage();
+    void unmortgage();
     int getRent(int diceResult);
     String keyText(int line);
     String valueText(int line);
+
+    default void copyOf(IPurchasable other) {
+        setOwner(other.getOwner());
+        if(other.isMortgaged()) mortgage();
+        else unmortgage();
+        while (getLevel() < other.getLevel()) upgrade();
+        while (getLevel() > other.getLevel()) downgrade();
+    }
 }

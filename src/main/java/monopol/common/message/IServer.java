@@ -10,6 +10,7 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public interface IServer extends Remote {
     ServerSettings getServerSettings() throws RemoteException;
@@ -21,10 +22,9 @@ public interface IServer extends Remote {
     boolean changeColor(String name, Color color) throws RemoteException;
     void sendMessage(String name, MessageType type, Object[] value) throws IOException;
     void sendMessage(String name, MessageType type, Object value) throws IOException;
-    HashMap<IPurchasable, String> getOwnerMap() throws RemoteException;
+    List<IPurchasable> getPurchasables() throws RemoteException;
     boolean trade(String player1, String player2, ArrayList<IPurchasable> offer1, ArrayList<IPurchasable> offer2, int money1, int money2) throws RemoteException;
     boolean acceptsNewClient() throws RemoteException;
     boolean isHost(String name) throws RemoteException;
     boolean stopped() throws RemoteException;
-    void start() throws IOException;
 }

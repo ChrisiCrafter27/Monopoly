@@ -81,11 +81,7 @@ public class LobbyPane extends JLayeredPane {
         }
     });
     private final JButton start = JUtils.addButton("Starten", new Font(null, Font.PLAIN, 50), Color.BLACK, 1540, 290, 380, 130, false, actionEvent -> {
-        try {
-            client.serverMethod().start();
-        } catch (Exception e) {
-            e.printStackTrace(System.err);
-        }
+        Monopoly.INSTANCE.server().start();
     });
     private final JLabel hintergrund = JUtils.addImage("images/Main_pictures/2.Menü.png",0,60,1920,1020);
 

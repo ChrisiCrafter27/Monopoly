@@ -16,9 +16,7 @@ public class Monopoly {
     private boolean serverEnabled;
     private GameState state;
 
-    private Monopoly() {
-
-    }
+    private Monopoly() {}
 
     private void startServer() {
         if(server == null) {
@@ -80,7 +78,6 @@ public class Monopoly {
             bar.bottomBar.setVisible(false);
             System.out.println("Starting server...");
             INSTANCE.startServer();
-            INSTANCE.state = GameState.MAIN_MENU;
 
             bar.setTop("Erstelle GUI...", 5);
             System.out.println("Creating GUI...");

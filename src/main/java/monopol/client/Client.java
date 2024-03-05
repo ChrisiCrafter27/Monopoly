@@ -1,13 +1,13 @@
 package monopol.client;
 
 import monopol.client.screen.RootPane;
+import monopol.common.core.GameState;
 import monopol.common.data.TrainStation;
 import monopol.common.packets.ClientSide;
 import monopol.common.packets.PacketManager;
 import monopol.common.utils.Json;
 import monopol.common.data.Plant;
 import monopol.common.data.Street;
-import monopol.common.core.GameState;
 import monopol.common.core.Monopoly;
 import monopol.common.message.DisconnectReason;
 import monopol.common.message.IServer;
@@ -33,7 +33,7 @@ public class Client {
     public DisconnectReason disconnectReason = null;
     public final TradeData tradeData = new TradeData();
     private long ping = -1;
-    boolean received = true;
+    private boolean received = true;
     public String requestRejoin;
 
     private final Thread clientThread = new Thread() {

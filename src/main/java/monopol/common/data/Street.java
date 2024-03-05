@@ -108,7 +108,7 @@ public enum Street implements IPurchasable {
 
     @Override
     public String getOwner() {
-        return owner == null ? "" : owner;
+        return owner;
     }
 
     @Override
@@ -137,17 +137,13 @@ public enum Street implements IPurchasable {
     }
 
     @Override
-    public boolean mortgage() {
-        if(mortgaged) return false;
-        mortgaged = true;
-        return true;
+    public void mortgage() {
+        if(!mortgaged) mortgaged = true;
     }
 
     @Override
-    public boolean unmortgage() {
-        if(!mortgaged) return false;
-        mortgaged = false;
-        return true;
+    public void unmortgage() {
+        if(mortgaged) mortgaged = false;
     }
 
     @Override
@@ -182,7 +178,7 @@ public enum Street implements IPurchasable {
             case 14 -> "nicht bebaut ist und du alle Straßen der";
             case 15 -> "Farbgruppe besitzt.";
             case 17 -> "1 Upgrade kostet";
-            case 18 -> getOwner() == null || getOwner().equals("") ? "Zu Verkaufen" : "Besitzer: " + getOwner();
+            case 18 -> getOwner() == null ? "Zu Verkaufen" : "Besitzer: " + getOwner();
             default -> "";
         };
     }

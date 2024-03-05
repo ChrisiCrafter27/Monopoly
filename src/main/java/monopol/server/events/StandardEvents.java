@@ -7,6 +7,7 @@ import monopol.common.packets.custom.CommunityCardS2CPacket;
 import monopol.common.packets.custom.InfoS2CPacket;
 import monopol.common.packets.custom.RollDiceS2CPacket;
 import monopol.common.packets.custom.update.UpdateButtonsS2CPacket;
+import monopol.common.packets.custom.update.UpdatePurchasablesS2CPacket;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +31,7 @@ public class StandardEvents extends Events {
     public void onGameStart(List<String> playerNames) {
         CommunityCard.setCurrent(null);
         CommunityCard.resetUnused();
+        Field.purchasables().forEach(purchasable -> purchasable.setOwner(null));
         players.clear();
         players.addAll(playerNames);
         currentPlayer = new Random().nextInt(players.size()) - 1;
@@ -39,8 +41,7 @@ public class StandardEvents extends Events {
 
     @Override
     public void onRejoin() {
-        if(CommunityCard.getCurrent() != null)
-            CommunityCard.getCurrent().activate(player());
+        if(CommunityCard.getCurrent() != null) CommunityCard.getCurrent().activate(player());
         else PacketManager.sendS2C(new CommunityCardS2CPacket(null, new ArrayList<>(), new ArrayList<>(), CommunityCard.unusedSize()), PacketManager.Restriction.all(), Throwable::printStackTrace);
     }
 
@@ -116,7 +117,7 @@ public class StandardEvents extends Events {
                 PacketManager.sendS2C(new InfoS2CPacket(player().getName() +  " bewegt sich"), PacketManager.Restriction.all(), Throwable::printStackTrace);
             }
 
-            if(dice3 == 5) onGetBusCard();
+            if(dice3 == 5) onGetBusCard(player().getName());
             Monopoly.INSTANCE.server().updatePlayerData();
             try {
                 Thread.sleep((player().inPrison()) ? 0 : (finalResult + 1) * 250L);
@@ -176,31 +177,58 @@ public class StandardEvents extends Events {
     }
 
     @Override
-    public void onTryMortgage() {
-
+    public void onMortgage(String name, IPurchasable purchasable) {
+        if(name.equals(player().getName())) {
+            if(purchasable.isMortgaged()) {
+                player().contractMoney(purchasable.getMortgage());
+                purchasable.unmortgage();
+            } else {
+                player().addMoney(purchasable.getMortgage());
+                purchasable.mortgage();
+            }
+            PacketManager.sendS2C(new UpdateButtonsS2CPacket(player().getName(), diceRolled, hasToPayRent, player().inPrison(), mayDoNextRound()), PacketManager.Restriction.all(), Throwable::printStackTrace);
+        }
     }
 
     @Override
-    public void onGetBusCard() {
+    public void onGetBusCard(String name) {
         if(new Random().nextInt(10) == 0) {
             Monopoly.INSTANCE.server().getPlayersServerSide().forEach(Player::removeBusCards);
         }
-        player().addBusCard();
+        Monopoly.INSTANCE.server().getPlayerServerSide(name).addBusCard();
     }
 
     @Override
-    public void onUpgrade() {
-
+    public void onUpgrade(String name, IPurchasable purchasable) {
+        if(name.equals(player().getName())) {
+            if(purchasable.upgrade()) {
+                player().contractMoney(purchasable.getUpgradeCost());
+            }
+            PacketManager.sendS2C(new UpdatePurchasablesS2CPacket(), PacketManager.Restriction.all(), Throwable::printStackTrace);
+            PacketManager.sendS2C(new UpdateButtonsS2CPacket(player().getName(), diceRolled, hasToPayRent, player().inPrison(), mayDoNextRound()), PacketManager.Restriction.all(), Throwable::printStackTrace);
+        }
     }
 
     @Override
-    public void onDowngrade() {
-
+    public void onDowngrade(String name, IPurchasable purchasable) {
+        if(name.equals(player().getName())) {
+            if(purchasable.downgrade()) {
+                player().addMoney(purchasable.getUpgradeCost() / 2);
+            }
+            PacketManager.sendS2C(new UpdatePurchasablesS2CPacket(), PacketManager.Restriction.all(), Throwable::printStackTrace);
+            PacketManager.sendS2C(new UpdateButtonsS2CPacket(player().getName(), diceRolled, hasToPayRent, player().inPrison(), mayDoNextRound()), PacketManager.Restriction.all(), Throwable::printStackTrace);
+        }
     }
 
     @Override
-    public void onPurchaseCard() {
-
+    public void onPurchaseCard(String name, IPurchasable purchasable) {
+        if(name.equals(player().getName()) && purchasable.getOwner() == null) {
+            if(purchasable.downgrade()) {
+                player().addMoney(purchasable.getUpgradeCost() / 2);
+            }
+            PacketManager.sendS2C(new UpdatePurchasablesS2CPacket(), PacketManager.Restriction.all(), Throwable::printStackTrace);
+            PacketManager.sendS2C(new UpdateButtonsS2CPacket(player().getName(), diceRolled, hasToPayRent, player().inPrison(), mayDoNextRound()), PacketManager.Restriction.all(), Throwable::printStackTrace);
+        }
     }
 
     @Override
@@ -215,7 +243,7 @@ public class StandardEvents extends Events {
 
     @Override
     public void onArrivedAtBusPass() {
-        onGetBusCard();
+        onGetBusCard(player().getName());
     }
 
     @Override
@@ -283,7 +311,7 @@ public class StandardEvents extends Events {
     }
 
     @Override
-    public void onGoBankrupt() {
+    public void onGoBankrupt(String name) {
 
     }
 }

@@ -17,7 +17,7 @@ public enum Plant implements IPurchasable {
 
     @Override
     public String getOwner() {
-        return owner == null ? "" : owner;
+        return owner;
     }
 
     @Override
@@ -71,17 +71,13 @@ public enum Plant implements IPurchasable {
     }
 
     @Override
-    public boolean mortgage() {
-        if(mortgaged) return false;
-        mortgaged = true;
-        return true;
+    public void mortgage() {
+        if(!mortgaged) mortgaged = true;
     }
 
     @Override
-    public boolean unmortgage() {
-        if(!mortgaged) return false;
-        mortgaged = false;
-        return true;
+    public void unmortgage() {
+        if(mortgaged) mortgaged = false;
     }
 
     @Override
@@ -111,7 +107,7 @@ public enum Plant implements IPurchasable {
             case 12 -> "Die Miete ergibt sich aus der";
             case 13 -> "Würfelzahl der Person, die auf";
             case 14 -> "das Feld gekommen ist.";
-            case 18 -> getOwner() == null || getOwner().equals("") ? "Zu Verkaufen" : "Besitzer: " + getOwner();
+            case 18 -> getOwner() == null ? "Zu Verkaufen" : "Besitzer: " + getOwner();
             default -> "";
         };
     }

@@ -1,7 +1,7 @@
 package monopol.common.core;
 
 public enum GameState {
-    MAIN_MENU,
+    MENU,
     LOBBY,
     RUNNING,
     OVER,

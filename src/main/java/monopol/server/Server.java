@@ -1,7 +1,5 @@
 package monopol.server;
 
-import monopol.common.core.GameState;
-import monopol.common.core.Monopoly;
 import monopol.common.data.*;
 import monopol.common.log.ServerLogger;
 import monopol.common.message.IServer;
@@ -14,7 +12,7 @@ import monopol.common.packets.custom.CommunityCardS2CPacket;
 import monopol.common.packets.custom.RejoinStatusS2CPacket;
 import monopol.common.packets.custom.RequestRejoinC2SPacket;
 import monopol.common.packets.custom.update.UpdateFreeParkingS2CPacket;
-import monopol.common.packets.custom.update.UpdateOwnerS2CPacket;
+import monopol.common.packets.custom.update.UpdatePurchasablesS2CPacket;
 import monopol.common.packets.custom.update.UpdatePlayerDataS2CPacket;
 import monopol.common.packets.custom.update.UpdatePositionS2CPacket;
 import monopol.common.utils.Json;
@@ -46,6 +44,7 @@ public class Server extends UnicastRemoteObject implements IServer {
     }
 
     public ServerSocket server;
+    private ServerState serverState = ServerState.CLOSED;
     private boolean pause = true;
     private final List<Player> waitForRejoin = new ArrayList<>();
     private String ip;
@@ -87,7 +86,7 @@ public class Server extends UnicastRemoteObject implements IServer {
                                         Message.send(new Message(null, MessageType.START), newClient);
                                         logger.log().info("[Server]: New Client rejoined (" + player.getName() + ")");
                                         //TODO: send necessary information
-                                        PacketManager.sendS2C(new UpdateOwnerS2CPacket(), PacketManager.Restriction.all(), Throwable::printStackTrace);
+                                        PacketManager.sendS2C(new UpdatePurchasablesS2CPacket(), PacketManager.Restriction.all(), Throwable::printStackTrace);
                                         PacketManager.sendS2C(new UpdatePositionS2CPacket(false), PacketManager.Restriction.all(), Throwable::printStackTrace);
                                         PacketManager.sendS2C(new UpdatePlayerDataS2CPacket(), PacketManager.Restriction.all(), Throwable::printStackTrace);
                                         PacketManager.sendS2C(new UpdateFreeParkingS2CPacket(gameData.getFreeParkingAmount()), PacketManager.Restriction.all(), Throwable::printStackTrace);
@@ -103,7 +102,7 @@ public class Server extends UnicastRemoteObject implements IServer {
                                 } catch (IOException ignored) {}
                             }
                         }).start();
-                    } else if (acceptNewClients && clients.size() < 6 && Monopoly.INSTANCE.getState() == GameState.LOBBY) {
+                    } else if (acceptNewClients && clients.size() < 6 && serverState == ServerState.LOBBY) {
                         clients.put(clients.size() + 1, newClient);
                         Player player = newServerPlayer();
                         players.put(player, newClient);
@@ -116,7 +115,7 @@ public class Server extends UnicastRemoteObject implements IServer {
                         logger.log().info("[Server]: New Client declined");
                         if (pause)
                             Message.send(new Message(DisconnectReason.SERVER_CLOSED, MessageType.DISCONNECT), newClient);
-                        else if (Monopoly.INSTANCE.getState() == GameState.RUNNING)
+                        else if (serverState == ServerState.GAME)
                             Message.send(new Message(DisconnectReason.GAME_RUNNING, MessageType.DISCONNECT), newClient);
                         else if (clients.size() >= 10)
                             Message.send(new Message(DisconnectReason.SERVER_FULL, MessageType.DISCONNECT), newClient);
@@ -128,7 +127,7 @@ public class Server extends UnicastRemoteObject implements IServer {
                     close();
                     return;
                 }
-                acceptNewClients = Monopoly.INSTANCE.getState() == GameState.LOBBY;
+                acceptNewClients = serverState == ServerState.LOBBY;
                 if (pause) acceptNewClients = false;
                 try {
                     Thread.sleep(10);
@@ -278,7 +277,7 @@ public class Server extends UnicastRemoteObject implements IServer {
     }
 
     public void open(ServerSettings serverSettings) {
-        Monopoly.INSTANCE.setState(GameState.LOBBY);
+        serverState = ServerState.LOBBY;
         logger.log().info("[Server]: Starting server...");
         try {
             logger.log().info("[Server]: IP-Address: " + InetAddress.getLocalHost().getHostAddress());
@@ -291,6 +290,7 @@ public class Server extends UnicastRemoteObject implements IServer {
         }
         this.serverSettings = serverSettings;
         pause = false;
+        serverState = ServerState.LOBBY;
         acceptNewClients = true;
         logger.log().info("[Server]: Listening for new clients...");
     }
@@ -312,6 +312,7 @@ public class Server extends UnicastRemoteObject implements IServer {
             kick(client, DisconnectReason.SERVER_CLOSED);
         }
         pause = true;
+        serverState = ServerState.CLOSED;
         logger.log().warning("[Server]: Server closed...");
     }
 
@@ -326,7 +327,7 @@ public class Server extends UnicastRemoteObject implements IServer {
 
     public void kick(Socket client, DisconnectReason reason) {
         if(!clients.containsValue(client)) return;
-        int id = MapUtils.key(clients, client);
+        int id = MapUtils.key(clients, client).orElseThrow();
         try {
             Message.send(new Message(reason, MessageType.DISCONNECT), client);
         } catch (IOException e) {
@@ -339,7 +340,7 @@ public class Server extends UnicastRemoteObject implements IServer {
         for(Map.Entry<Player, Socket> entry : players.entrySet()) {
             if(entry.getValue() == client) {
                 players.replace(entry.getKey(), null);
-                if(Monopoly.INSTANCE.getState() == GameState.LOBBY) players.remove(entry.getKey());
+                if(serverState == ServerState.LOBBY) players.remove(entry.getKey());
                 break;
             }
         }
@@ -444,7 +445,7 @@ public class Server extends UnicastRemoteObject implements IServer {
 
     @Override
     public synchronized boolean changeName(String oldName, String newName) throws RemoteException {
-        if(Monopoly.INSTANCE.getState() != GameState.LOBBY) return false;
+        if(serverState != ServerState.LOBBY) return false;
         if(newName.length() > 15) return false;
         for (Map.Entry<Player, Socket> entry : players.entrySet()) {
             if(entry.getKey().getName().equals(newName)) return false;
@@ -462,7 +463,7 @@ public class Server extends UnicastRemoteObject implements IServer {
 
     @Override
     public synchronized boolean changeColor(String name, Color color) throws RemoteException {
-        if(Monopoly.INSTANCE.getState() != GameState.LOBBY) return false;
+        if(serverState != ServerState.LOBBY) return false;
         for (Map.Entry<Player, Socket> entry : players.entrySet()) {
             if(entry.getKey().getColor() == color) return false;
         }
@@ -491,18 +492,8 @@ public class Server extends UnicastRemoteObject implements IServer {
     }
 
     @Override
-    public HashMap<IPurchasable, String> getOwnerMap() throws RemoteException {
-        HashMap<IPurchasable, String> ownerMap = new HashMap<>();
-        for(Street street : Street.values()) {
-            ownerMap.put(street, street.getOwner());
-        }
-        for(TrainStation trainStation : TrainStation.values()) {
-            ownerMap.put(trainStation, trainStation.getOwner());
-        }
-        for(Plant plant : Plant.values()) {
-            ownerMap.put(plant, plant.getOwner());
-        }
-        return ownerMap;
+    public List<IPurchasable> getPurchasables() throws RemoteException {
+        return Field.purchasables();
     }
 
     @Override
@@ -529,7 +520,7 @@ public class Server extends UnicastRemoteObject implements IServer {
                 player.addMoney(money1);
             }
         }
-        PacketManager.sendS2C(new UpdateOwnerS2CPacket(), player -> true, e -> {});
+        PacketManager.sendS2C(new UpdatePurchasablesS2CPacket(), player -> true, e -> {});
         return true;
     }
 
@@ -548,24 +539,29 @@ public class Server extends UnicastRemoteObject implements IServer {
         return pause;
     }
 
-    @Override
-    public void start() throws IOException {
-        Monopoly.INSTANCE.setState(GameState.RUNNING);
-        gameData = new GameData();
-        for (Socket socket : players.values()) {
-            Message.send(new Message(null, MessageType.START), socket);
-            PacketManager.sendS2C(new UpdateOwnerS2CPacket(), PacketManager.Restriction.all(), Throwable::printStackTrace);
-            PacketManager.sendS2C(new UpdatePositionS2CPacket(false), PacketManager.Restriction.all(), Throwable::printStackTrace);
-            PacketManager.sendS2C(new UpdatePlayerDataS2CPacket(), PacketManager.Restriction.all(), Throwable::printStackTrace);
-            PacketManager.sendS2C(new UpdateFreeParkingS2CPacket(gameData.getFreeParkingAmount()), PacketManager.Restriction.all(), Throwable::printStackTrace);
-            PacketManager.sendS2C(new CommunityCardS2CPacket(null, new ArrayList<>(), new ArrayList<>(), CommunityCard.unusedSize()), PacketManager.Restriction.all(), Throwable::printStackTrace);
-        }
-        new Thread(() -> {
+    public void start() {
+        if(!pause && serverState == ServerState.LOBBY && (players.size() > 1 || true)) {
+            gameData = new GameData();
             try {
-                Thread.sleep(1000);
-            } catch (InterruptedException ignored) {}
-            if(Monopoly.INSTANCE.getState() == GameState.RUNNING) events.onGameStart(players.keySet().stream().map(Player::getName).toList());
-        }).start();
+                for (Socket socket : players.values()) {
+                    Message.send(new Message(null, MessageType.START), socket);
+                    PacketManager.sendS2C(new UpdatePurchasablesS2CPacket(), PacketManager.Restriction.all(), Throwable::printStackTrace);
+                    PacketManager.sendS2C(new UpdatePositionS2CPacket(false), PacketManager.Restriction.all(), Throwable::printStackTrace);
+                    PacketManager.sendS2C(new UpdatePlayerDataS2CPacket(), PacketManager.Restriction.all(), Throwable::printStackTrace);
+                    PacketManager.sendS2C(new UpdateFreeParkingS2CPacket(gameData.getFreeParkingAmount()), PacketManager.Restriction.all(), Throwable::printStackTrace);
+                    PacketManager.sendS2C(new CommunityCardS2CPacket(null, new ArrayList<>(), new ArrayList<>(), CommunityCard.unusedSize()), PacketManager.Restriction.all(), Throwable::printStackTrace);
+                }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            serverState = ServerState.GAME;
+            new Thread(() -> {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException ignored) {}
+                if(serverState == ServerState.GAME) events.onGameStart(players.keySet().stream().map(Player::getName).toList());
+            }).start();
+        }
     }
 
     public void updatePosition(boolean anim) {
@@ -591,9 +587,9 @@ public class Server extends UnicastRemoteObject implements IServer {
     }
 
     public void setEvents(Events events) {
-        if(Monopoly.INSTANCE.getState() == GameState.LOBBY) this.events = events;
+        if(serverState == ServerState.LOBBY) this.events = events;
     }
     public void setEventsType(Events.Factory<?> eventsType) {
-        if(Monopoly.INSTANCE.getState() == GameState.LOBBY) this.eventsType = eventsType;
+        if(serverState == ServerState.LOBBY) this.eventsType = eventsType;
     }
 }

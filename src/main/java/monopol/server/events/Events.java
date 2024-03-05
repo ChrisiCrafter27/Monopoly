@@ -84,15 +84,15 @@ public abstract class Events {
     public abstract void onNextRound();
     public abstract void onPrisonerRound();
     public abstract void onDiceRoll(String name);
-    public abstract void onGetBusCard();
+    public abstract void onGetBusCard(String name);
     public abstract void onArrivedAtField();
     public abstract void onPayRent(String name);
     public abstract void onCommunityCardAction(String action);
     public abstract void onPaySurety(String name);
-    public abstract void onTryMortgage();
-    public abstract void onUpgrade();
-    public abstract void onDowngrade();
-    public abstract void onPurchaseCard();
+    public abstract void onMortgage(String name, IPurchasable purchasable);
+    public abstract void onUpgrade(String name, IPurchasable purchasable);
+    public abstract void onDowngrade(String name, IPurchasable purchasable);
+    public abstract void onPurchaseCard(String name, IPurchasable purchasable);
     public abstract void onArrivedAtLos();
     public abstract void onArrivedAtAuction();
     public abstract void onArrivedAtBusPass();
@@ -108,7 +108,7 @@ public abstract class Events {
     public abstract void onPassedLos();
     public abstract void onOfferTrade();
     public abstract void onAcceptTrade();
-    public abstract void onGoBankrupt();
+    public abstract void onGoBankrupt(String name);
 
     @FunctionalInterface
     public interface Factory<T extends Events> {

@@ -43,7 +43,7 @@ public enum TrainStation implements IPurchasable {
 
     @Override
     public String getOwner() {
-        return owner == null ? "" : owner;
+        return owner;
     }
 
     @Override
@@ -87,17 +87,13 @@ public enum TrainStation implements IPurchasable {
     }
 
     @Override
-    public boolean mortgage() {
-        if(mortgaged) return false;
-        mortgaged = true;
-        return true;
+    public void mortgage() {
+        if(!mortgaged) mortgaged = true;
     }
 
     @Override
-    public boolean unmortgage() {
-        if(!mortgaged) return false;
-        mortgaged = false;
-        return true;
+    public void unmortgage() {
+        if(mortgaged) mortgaged = false;
     }
 
     @Override
@@ -129,7 +125,7 @@ public enum TrainStation implements IPurchasable {
             case 13 -> "Ein Zugdepot verdoppelt";
             case 14 -> "die Miete.";
             case 17 -> "1 Upgrade kostet";
-            case 18 -> getOwner() == null || getOwner().equals("") ? "Zu Verkaufen" : "Besitzer: " + getOwner();
+            case 18 -> getOwner() == null ? "Zu Verkaufen" : "Besitzer: " + getOwner();
             default -> "";
         };
     }

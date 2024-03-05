@@ -20,7 +20,7 @@ public class GitHubIssueReporter implements Thread.UncaughtExceptionHandler {
         int result = JOptionPane.showOptionDialog(null, "Ein unerwarteter Fehler ist aufgetreten:\n" + e.getMessage() + "\nEs kann sein, dass das Spiel nun nicht mehr\nwie erwartet funktioniert.", "Fehler", JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE, null, new String[]{"Melden und schließen", "Melden und ignorieren", "Informationen hinzufügen"}, null);
         String info = "";
         if(result == 2) {
-            info = JOptionPane.showInputDialog(null, "Wann ist der Fehler passiert?", "Fehler", JOptionPane.QUESTION_MESSAGE);
+            info = JOptionPane.showInputDialog(null, "Fasse kurz zusammen, wie/wann\nder Fehler aufgetreten ist:", "Fehler", JOptionPane.QUESTION_MESSAGE);
         }
         report(e, info);
         if(result == 0) System.exit(1);

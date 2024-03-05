@@ -41,8 +41,8 @@ public class PlayerDisplayPane extends JLayeredPane {
                         if(pos >= 52) pos = 0;
                         triplet.setRight(pos);
                         Map<String, Triplet<JButton, Integer, Integer>> map1 = playersOn(pos);
-                        List<Triplet<JButton, Integer, Integer>> list11 = map1.values().stream().filter(v -> !inPrison(MapUtils.key(map1, v))).toList();
-                        List<Triplet<JButton, Integer, Integer>> list12 = map1.values().stream().filter(v -> inPrison(MapUtils.key(map1, v))).toList();
+                        List<Triplet<JButton, Integer, Integer>> list11 = map1.values().stream().filter(v -> !inPrison(MapUtils.key(map1, v).orElseThrow())).toList();
+                        List<Triplet<JButton, Integer, Integer>> list12 = map1.values().stream().filter(v -> inPrison(MapUtils.key(map1, v).orElseThrow())).toList();
                         for (int i = 0; i < list11.size(); i++) {
                             JButton button = list11.get(i).getLeft();
                             if(Field.fields().indexOf(Corner.GEFAENGNIS) == list11.get(i).getRight()) {
@@ -56,8 +56,8 @@ public class PlayerDisplayPane extends JLayeredPane {
                             } else button.setBounds(JUtils.getX(x(pos, list12.size(), i)-10), JUtils.getY(y(pos, list12.size(), i)-10), 20, 20);
                         }
                         Map<String, Triplet<JButton, Integer, Integer>> map2 = playersOn(oldPos);
-                        List<Triplet<JButton, Integer, Integer>> list21 = map2.values().stream().filter(v -> !inPrison(MapUtils.key(map2, v))).toList();
-                        List<Triplet<JButton, Integer, Integer>> list22 = map2.values().stream().filter(v -> inPrison(MapUtils.key(map2, v))).toList();
+                        List<Triplet<JButton, Integer, Integer>> list21 = map2.values().stream().filter(v -> !inPrison(MapUtils.key(map2, v).orElseThrow())).toList();
+                        List<Triplet<JButton, Integer, Integer>> list22 = map2.values().stream().filter(v -> inPrison(MapUtils.key(map2, v).orElseThrow())).toList();
                         for (int i = 0; i < list21.size(); i++) {
                             JButton button = list21.get(i).getLeft();
                             if(Field.fields().indexOf(Corner.GEFAENGNIS) == list21.get(i).getRight()) {
@@ -143,8 +143,8 @@ public class PlayerDisplayPane extends JLayeredPane {
             triplet.setRight(pos);
             if(color != null) triplet.getLeft().setBackground(color);
             Map<String, Triplet<JButton, Integer, Integer>> map1 = playersOn(pos);
-            List<Triplet<JButton, Integer, Integer>> list11 = map1.values().stream().filter(v -> !inPrison(MapUtils.key(map1, v))).toList();
-            List<Triplet<JButton, Integer, Integer>> list12 = map1.values().stream().filter(v -> inPrison(MapUtils.key(map1, v))).toList();
+            List<Triplet<JButton, Integer, Integer>> list11 = map1.values().stream().filter(v -> !inPrison(MapUtils.key(map1, v).orElseThrow())).toList();
+            List<Triplet<JButton, Integer, Integer>> list12 = map1.values().stream().filter(v -> inPrison(MapUtils.key(map1, v).orElseThrow())).toList();
             for (int i = 0; i < list11.size(); i++) {
                 JButton button = list11.get(i).getLeft();
                 if(Field.fields().indexOf(Corner.GEFAENGNIS) == list11.get(i).getRight()) {
@@ -158,8 +158,8 @@ public class PlayerDisplayPane extends JLayeredPane {
                 } else button.setBounds(JUtils.getX(x(pos, list12.size(), i)-10), JUtils.getY(y(pos, list12.size(), i)-10), 20, 20);
             }
             Map<String, Triplet<JButton, Integer, Integer>> map2 = playersOn(oldPos);
-            List<Triplet<JButton, Integer, Integer>> list21 = map2.values().stream().filter(v -> !inPrison(MapUtils.key(map2, v))).toList();
-            List<Triplet<JButton, Integer, Integer>> list22 = map2.values().stream().filter(v -> inPrison(MapUtils.key(map2, v))).toList();
+            List<Triplet<JButton, Integer, Integer>> list21 = map2.values().stream().filter(v -> !inPrison(MapUtils.key(map2, v).orElseThrow())).toList();
+            List<Triplet<JButton, Integer, Integer>> list22 = map2.values().stream().filter(v -> inPrison(MapUtils.key(map2, v).orElseThrow())).toList();
             for (int i = 0; i < list21.size(); i++) {
                 JButton button = list21.get(i).getLeft();
                 if(Field.fields().indexOf(Corner.GEFAENGNIS) == list21.get(i).getRight()) {

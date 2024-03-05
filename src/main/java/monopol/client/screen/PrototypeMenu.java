@@ -72,7 +72,7 @@ public class PrototypeMenu {
     }
 
     public void prepareMenu() {
-        Monopoly.INSTANCE.setState(GameState.MAIN_MENU);
+        Monopoly.INSTANCE.setState(GameState.MENU);
 
         root.lobbyPane.reset();
         root.pingPane.reset();
