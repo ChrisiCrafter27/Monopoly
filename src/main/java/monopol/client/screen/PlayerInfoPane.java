@@ -182,13 +182,6 @@ public class PlayerInfoPane extends JLayeredPane {
         boolean active = activePlayer != null && activePlayer.equals(clientSup.get().player.getName());
         action1L.setText(diceRolled ? "Zug beenden" : "Würfeln");
         action2L.setText(diceRolled ? "Miete zahlen" : inPrison ? "Freikaufen" : "Busfahren");
-        setIcon(action1B, false);
-        setIcon(action2B, false);
-        setIcon(purchasableB, false);
-        setIcon(upgradeB, false);
-        setIcon(downgradeB, false);
-        setIcon(mortgageB, false);
-        setIcon(tradeB, false);
         setIcon(leaveB, true);
         if(active) {
             try {
@@ -211,6 +204,14 @@ public class PlayerInfoPane extends JLayeredPane {
             } catch (RemoteException e) {
                 clientSup.get().close();
             }
+        } else {
+            setIcon(action1B, false);
+            setIcon(action2B, false);
+            setIcon(purchasableB, false);
+            setIcon(upgradeB, false);
+            setIcon(downgradeB, false);
+            setIcon(mortgageB, false);
+            setIcon(tradeB, false);
         }
     }
 

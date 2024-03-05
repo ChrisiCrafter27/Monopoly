@@ -186,6 +186,7 @@ public class StandardEvents extends Events {
                 player().addMoney(purchasable.getMortgage());
                 purchasable.mortgage();
             }
+            PacketManager.sendS2C(new UpdatePurchasablesS2CPacket(), PacketManager.Restriction.all(), Throwable::printStackTrace);
             PacketManager.sendS2C(new UpdateButtonsS2CPacket(player().getName(), diceRolled, hasToPayRent, player().inPrison(), mayDoNextRound()), PacketManager.Restriction.all(), Throwable::printStackTrace);
         }
     }
@@ -222,10 +223,9 @@ public class StandardEvents extends Events {
 
     @Override
     public void onPurchaseCard(String name, IPurchasable purchasable) {
-        if(name.equals(player().getName()) && purchasable.getOwner() == null) {
-            if(purchasable.downgrade()) {
-                player().addMoney(purchasable.getUpgradeCost() / 2);
-            }
+        if(name.equals(player().getName()) && purchasable.getOwner().isEmpty()) {
+            purchasable.setOwner(name);
+            player().contractMoney(purchasable.getPrice());
             PacketManager.sendS2C(new UpdatePurchasablesS2CPacket(), PacketManager.Restriction.all(), Throwable::printStackTrace);
             PacketManager.sendS2C(new UpdateButtonsS2CPacket(player().getName(), diceRolled, hasToPayRent, player().inPrison(), mayDoNextRound()), PacketManager.Restriction.all(), Throwable::printStackTrace);
         }

@@ -5,6 +5,7 @@ import monopol.common.utils.JUtils;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.util.function.Supplier;
 
 public class SelectedCardPane extends JLayeredPane {
@@ -141,108 +142,112 @@ public class SelectedCardPane extends JLayeredPane {
         textValue7.setText(purchasable.valueText(7));
         textValue17.setText(purchasable.valueText(17));
         for (Component component : getComponents()) {
-            if (component.getForeground() == Color.GREEN) component.setForeground(Color.BLACK);
+            if (component.getForeground() == getColor()) component.setForeground(Color.BLACK);
         }
         if (purchasable instanceof Street street) {
-            if(street.getOwner() == null || street.getOwner().isEmpty()) {
-                textKey0.setForeground(Color.GREEN);
-                textValue0.setForeground(Color.GREEN);
+            if(street.getOwner().isEmpty()) {
+                textKey0.setForeground(getColor());
+                textValue0.setForeground(getColor());
             } else {
                 switch (street.getLevel()) {
                     case 0 -> {
-                        textKey1.setForeground(Color.GREEN);
-                        textValue1.setForeground(Color.GREEN);
+                        textKey1.setForeground(getColor());
+                        textValue1.setForeground(getColor());
                     }
                     case 1 -> {
-                        textKey2.setForeground(Color.GREEN);
-                        textValue2.setForeground(Color.GREEN);
+                        textKey2.setForeground(getColor());
+                        textValue2.setForeground(getColor());
                     }
                     case 2 -> {
-                        textKey3.setForeground(Color.GREEN);
-                        textValue3.setForeground(Color.GREEN);
+                        textKey3.setForeground(getColor());
+                        textValue3.setForeground(getColor());
                     }
                     case 3 -> {
-                        textKey4.setForeground(Color.GREEN);
-                        textValue4.setForeground(Color.GREEN);
+                        textKey4.setForeground(getColor());
+                        textValue4.setForeground(getColor());
                     }
                     case 4 -> {
-                        textKey5.setForeground(Color.GREEN);
-                        textValue5.setForeground(Color.GREEN);
+                        textKey5.setForeground(getColor());
+                        textValue5.setForeground(getColor());
                     }
                     case 5 -> {
-                        textKey6.setForeground(Color.GREEN);
-                        textValue6.setForeground(Color.GREEN);
+                        textKey6.setForeground(getColor());
+                        textValue6.setForeground(getColor());
                     }
                     case 6 -> {
-                        textKey7.setForeground(Color.GREEN);
-                        textValue7.setForeground(Color.GREEN);
+                        textKey7.setForeground(getColor());
+                        textValue7.setForeground(getColor());
                     }
                 }
             }
         } else if (purchasable instanceof TrainStation trainStation) {
-            if(trainStation.getOwner() == null || trainStation.getOwner().isEmpty()) {
-                textKey1.setForeground(Color.GREEN);
-                textValue1.setForeground(Color.GREEN);
+            if(trainStation.getOwner().isEmpty()) {
+                textKey1.setForeground(getColor());
+                textValue1.setForeground(getColor());
             } else {
                 switch (trainStation.getRent(1)) {
                     case 25 -> {
-                        textKey3.setForeground(Color.GREEN);
-                        textValue3.setForeground(Color.GREEN);
+                        textKey3.setForeground(getColor());
+                        textValue3.setForeground(getColor());
                     }
                     case 50 -> {
                         if (trainStation.getLevel() == 1) {
-                            textKey3.setForeground(Color.GREEN);
-                            textValue3.setForeground(Color.GREEN);
+                            textKey3.setForeground(getColor());
+                            textValue3.setForeground(getColor());
                         } else {
-                            textKey4.setForeground(Color.GREEN);
-                            textValue4.setForeground(Color.GREEN);
+                            textKey4.setForeground(getColor());
+                            textValue4.setForeground(getColor());
                         }
                     }
                     case 100 -> {
                         if (trainStation.getLevel() == 1) {
-                            textKey4.setForeground(Color.GREEN);
-                            textValue4.setForeground(Color.GREEN);
+                            textKey4.setForeground(getColor());
+                            textValue4.setForeground(getColor());
                         } else {
-                            textKey5.setForeground(Color.GREEN);
-                            textValue5.setForeground(Color.GREEN);
+                            textKey5.setForeground(getColor());
+                            textValue5.setForeground(getColor());
                         }
                     }
                     case 200 -> {
                         if (trainStation.getLevel() == 1) {
-                            textKey5.setForeground(Color.GREEN);
-                            textValue5.setForeground(Color.GREEN);
+                            textKey5.setForeground(getColor());
+                            textValue5.setForeground(getColor());
                         } else {
-                            textKey6.setForeground(Color.GREEN);
-                            textValue6.setForeground(Color.GREEN);
+                            textKey6.setForeground(getColor());
+                            textValue6.setForeground(getColor());
                         }
                     }
                     case 400 -> {
-                        textKey6.setForeground(Color.GREEN);
-                        textValue6.setForeground(Color.GREEN);
+                        textKey6.setForeground(getColor());
+                        textValue6.setForeground(getColor());
                     }
                 }
             }
         } else if (purchasable instanceof Plant plant) {
-            if(plant.getOwner() == null || plant.getOwner().isEmpty()) {
-                textKey1.setForeground(Color.GREEN);
-                textValue1.setForeground(Color.GREEN);
+            if(plant.getOwner().isEmpty()) {
+                textKey1.setForeground(getColor());
+                textValue1.setForeground(getColor());
             } else {
                 switch (plant.getRent(1)) {
                     case 4 -> {
-                        textKey3.setForeground(Color.GREEN);
-                        textValue3.setForeground(Color.GREEN);
+                        textKey3.setForeground(getColor());
+                        textValue3.setForeground(getColor());
                     }
                     case 10 -> {
-                        textKey4.setForeground(Color.GREEN);
-                        textValue4.setForeground(Color.GREEN);
+                        textKey4.setForeground(getColor());
+                        textValue4.setForeground(getColor());
                     }
                     case 20 -> {
-                        textKey5.setForeground(Color.GREEN);
-                        textValue5.setForeground(Color.GREEN);
+                        textKey5.setForeground(getColor());
+                        textValue5.setForeground(getColor());
                     }
                 }
             }
         }
+    }
+
+    private Color getColor() {
+        return purchasable.mortgaged() ? Color.RED : Color.GREEN;
     }
 
     public void reset() {

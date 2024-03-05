@@ -5,6 +5,7 @@
 - Ereigniskarten
 - Bankrott gehen
 - Spiel Ende
+- Report button
 
 - Regeln wirksam
 - Mr. Monopoly Würfel
