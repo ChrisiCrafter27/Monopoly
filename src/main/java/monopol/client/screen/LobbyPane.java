@@ -122,23 +122,21 @@ public class LobbyPane extends JLayeredPane {
         changeSettings.setVisible(false);
         leave.setVisible(false);
         start.setVisible(false);
-        repaint();
     }
 
     public void init() {
         setVisible(true);
         connecting.setVisible(true);
-        repaint();
     }
 
     public void requestUpdate() {
         requestUpdate = true;
     }
 
-    private void updateButtons(ArrayList<Client> clients, RootPane root, boolean mayAddPlayer) {
+    private void updateButtons(ArrayList<Client> clients, RootPane root, int players) {
         this.clients = clients;
         this.root = root;
-        addPlayer.setEnabled(mayAddPlayer);
+        addPlayer.setEnabled(players < 6);
         addPlayer.setVisible(true);
         addBot.setEnabled(client.player.isHost);
         addBot.setVisible(true);
@@ -148,7 +146,7 @@ public class LobbyPane extends JLayeredPane {
         changeSettings.setVisible(true);
         leave.setEnabled(true);
         leave.setVisible(true);
-        start.setEnabled(client.player.isHost);
+        start.setEnabled(client.player.isHost && players >= Monopoly.INSTANCE.server().events().minPlayers());
         start.setFont(new Font(start.getFont().getName(), start.getFont().getStyle(), client.player.isHost ? 50 : 42));
         start.setText(client.player.isHost ? "Starten" : "Warten auf Host");
         start.setVisible(true);
@@ -252,15 +250,13 @@ public class LobbyPane extends JLayeredPane {
             client = currentClient;
             this.ip = ip;
             updateList(players);
-            updateButtons(clients, root, players.size() < 6);
+            updateButtons(clients, root, players.size());
             updateIp();
-            repaint();
         }
         if(keyHandler.isKeyDown(KeyEvent.VK_SPACE) != spaceDown) {
             spaceDown = keyHandler.isKeyDown(KeyEvent.VK_SPACE);
             this.ip = ip;
             updateIp();
-            repaint();
         }
 
         playerList.setVisible(true);

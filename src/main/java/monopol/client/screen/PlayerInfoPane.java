@@ -187,6 +187,7 @@ public class PlayerInfoPane extends JLayeredPane {
             try {
                 Player player = clientSup.get().serverMethod().getPlayer(clientSup.get().player.getName());
                 if(player == null) return;
+                if(player.getMoney() <= 0) enableGiveUp();
                 IPurchasable purchasable = displaySup.get().selectedCardPane.getSelected();
                 if(diceRolled) {
                     setIcon(action1B, ready);
@@ -215,6 +216,14 @@ public class PlayerInfoPane extends JLayeredPane {
         }
     }
 
+    private void enableGiveUp() {
+        action1B.setDisabledIcon(new ImageIcon(JUtils.imageIcon("images/Main_pictures/3d_button_red.png").getImage().getScaledInstance(JUtils.getX(400), JUtils.getY(80), Image.SCALE_SMOOTH)));
+        action1B.setPressedIcon(new ImageIcon(JUtils.imageIcon("images/Main_pictures/3d_button_pressed_red.png").getImage().getScaledInstance(JUtils.getX(400), JUtils.getY(80), Image.SCALE_SMOOTH)));
+        action1B.setIcon(new ImageIcon(JUtils.imageIcon("images/Main_pictures/3d_button_hell_red.png").getImage().getScaledInstance(JUtils.getX(400), JUtils.getY(80), Image.SCALE_SMOOTH)));
+        action1B.setEnabled(true);
+        action1L.setText("Aufgeben");
+    }
+
     private void setIcon(JButton button, boolean active) {
         button.setDisabledIcon(new ImageIcon(JUtils.imageIcon("images/Main_pictures/3d_button.png").getImage().getScaledInstance(JUtils.getX(400), JUtils.getY(80), Image.SCALE_SMOOTH)));
         button.setPressedIcon(new ImageIcon(JUtils.imageIcon("images/Main_pictures/3d_button_pressed.png").getImage().getScaledInstance(JUtils.getX(400), JUtils.getY(80), Image.SCALE_SMOOTH)));
@@ -230,7 +239,6 @@ public class PlayerInfoPane extends JLayeredPane {
     public void update() {
         if(!isVisible()) return;
         updateTexts();
-        updateImages();
         updateImages();
         updateButtons(activePlayer, diceRolled, hasToPayRent, inPrison, ready);
     }

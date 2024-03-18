@@ -238,7 +238,6 @@ public class PrototypeMenu {
                 }
             }
         }).start();
-        frame.repaint();
     }
 
     public static void main(String[] args) {

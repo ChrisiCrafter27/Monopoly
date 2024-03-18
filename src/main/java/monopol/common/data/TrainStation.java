@@ -100,7 +100,7 @@ public enum TrainStation implements IPurchasable {
     public int getRent(int diceResult) {
         int i = 0;
         for (TrainStation station : values()) {
-            if (station.getOwner().equals(getOwner())) i++;
+            if (station.getOwner().equals(getOwner()) && !station.mortgaged()) i++;
         }
         int toReturn = 25;
         while (i > 1) {
@@ -124,7 +124,7 @@ public enum TrainStation implements IPurchasable {
             case 10 -> "Bahnhöfe du besitzt.";
             case 13 -> "Ein Zugdepot verdoppelt";
             case 14 -> "die Miete.";
-            case 17 -> "1 Upgrade kostet";
+            case 17 -> "Aufwertungskosten";
             case 18 -> getOwner().isEmpty() ? "Zu Verkaufen" : "Besitzer: " + getOwner();
             default -> "";
         };

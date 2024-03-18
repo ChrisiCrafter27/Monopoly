@@ -69,8 +69,6 @@ public class MenuPane extends JLayeredPane {
             System.exit(0);
         }), JLayeredPane.MODAL_LAYER);
         add(JUtils.addImage("images/Monopoly_client1.png", 0, 0, 1920, 1080), JLayeredPane.DEFAULT_LAYER);
-
-        repaint();
     }
 
     public void reset() {

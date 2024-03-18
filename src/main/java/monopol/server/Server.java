@@ -540,7 +540,7 @@ public class Server extends UnicastRemoteObject implements IServer {
     }
 
     public void start() {
-        if(!pause && serverState == ServerState.LOBBY && (players.size() > 1 || true)) {
+        if(!pause && serverState == ServerState.LOBBY && (players.size() >= events().minPlayers())) {
             gameData = new GameData();
             try {
                 for (Socket socket : players.values()) {

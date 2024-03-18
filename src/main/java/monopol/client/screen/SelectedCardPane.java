@@ -80,8 +80,6 @@ public class SelectedCardPane extends JLayeredPane {
         add(textValue6, JLayeredPane.POPUP_LAYER);
         add(textValue7, JLayeredPane.POPUP_LAYER);
         add(textValue17, JLayeredPane.POPUP_LAYER);
-
-        repaint();
     }
 
     public void init(Supplier<RootPane> displaySup) {

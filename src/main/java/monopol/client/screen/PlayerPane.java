@@ -45,8 +45,6 @@ public class PlayerPane extends JLayeredPane {
                 button.setSelectedIcon(new ImageIcon(JUtils.imageIcon("images/playerselect/playerselect_" + clients.size() + "_selected.png").getImage().getScaledInstance(step, 60, Image.SCALE_SMOOTH)));
                 add(button, JLayeredPane.DEFAULT_LAYER);
             }
-
-            repaint();
         }
 
     }

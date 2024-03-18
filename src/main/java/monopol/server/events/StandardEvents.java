@@ -21,6 +21,11 @@ public class StandardEvents extends Events {
     }
 
     @Override
+    public int minPlayers() {
+        return 1;
+    }
+
+    @Override
     public void onGameStop() {
         players.clear();
         currentPlayer = -1;
@@ -74,7 +79,7 @@ public class StandardEvents extends Events {
 
     @Override
     public void onDiceRoll(String name) {
-        if(!name.equals(player().getName()) || diceRolled()) return;
+        if(!name.equals(player().getName()) || diceRolled) return;
         diceRolled = true;
         PacketManager.sendS2C(new UpdateButtonsS2CPacket("", true, hasToPayRent, player().inPrison(), mayDoNextRound()), PacketManager.Restriction.all(), Throwable::printStackTrace);
 

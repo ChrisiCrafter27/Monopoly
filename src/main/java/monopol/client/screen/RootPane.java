@@ -40,7 +40,5 @@ public class RootPane extends JLayeredPane {
         add(playerInfoPane, JLayeredPane.PALETTE_LAYER);
         add(dicePane, JLayeredPane.PALETTE_LAYER);
         add(housePane, JLayeredPane.MODAL_LAYER);
-
-        repaint();
     }
 }

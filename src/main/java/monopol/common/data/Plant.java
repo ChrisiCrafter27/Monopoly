@@ -84,7 +84,7 @@ public enum Plant implements IPurchasable {
     public int getRent(int diceResult) {
         int i = 0;
         for (Plant plant : values()) {
-            if (plant.getOwner().equals(getOwner())) i++;
+            if (plant.getOwner().equals(getOwner()) && !plant.isMortgaged()) i++;
         }
         int toReturn = switch (i) {
             case 1 -> 4;

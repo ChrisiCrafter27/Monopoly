@@ -77,6 +77,8 @@ public abstract class Events {
         return diceRolled;
     }
 
+    public abstract int minPlayers();
+
     public abstract void onGameStop();
     public abstract void onGameStart(List<String> playerNames);
     public abstract void onRejoin();

@@ -1,6 +1,5 @@
 - HousePane
 - PlayerInfoPane Buttons
-- Hypothek
 - Kartenstapel
 - Ereigniskarten
 - Bankrott gehen
