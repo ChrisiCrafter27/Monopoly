@@ -1,65 +1,47 @@
 package monopol.common.message;
 
+import monopol.common.data.DataReader;
+import monopol.common.data.DataWriter;
+import monopol.common.packets.Packet;
 import monopol.common.utils.Json;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.net.SocketException;
+import java.util.List;
 
 public class Message {
-    public Object[] objects;
-    public MessageType messageType;
+    public List<Object> content;
+    public String clazz;
 
     public Message() {}
 
-    public Message(Object[] objects, MessageType messageType) {
-        this.objects = objects;
-        this.messageType = messageType;
+    public Message(Packet<?> packet) {
+        DataWriter writer = new DataWriter();
+        packet.serialize(writer);
+        this.content = writer.getData();
+        this.clazz = packet.getClass().getName();
     }
 
-    public Message(Object object, MessageType messageType) {
-        objects = new Object[1];
-        objects[0] = object;
-        this.messageType = messageType;
+    public List<Object> getContent() {
+        return content;
     }
 
-    public Object[] getMessage() {
-        return objects;
-    }
-
-    public MessageType getMessageType() {
-        return messageType;
-    }
-
-    public static void sendString(String value, MessageType messageType, Socket client) throws IOException {
-        DataOutputStream output = new DataOutputStream(client.getOutputStream());
-        Object[] array = new Object[1];
-        array[0] = value;
-        Message message = new Message(array, messageType);
-        output.writeUTF(Json.toString(message, false));
-    }
-
-    public static void send(Message message, Socket client) throws IOException {
+    public Class<?> getClazz() {
         try {
-            DataOutputStream output = new DataOutputStream(client.getOutputStream());
-            output.writeUTF(Json.toString(message, false));
-        } catch (NullPointerException e) {
-            e.printStackTrace(System.err);
+            return Class.forName(clazz);
+        } catch (ClassNotFoundException e) {
+            return null;
         }
     }
 
-    public static void sendPing(Socket client) throws IOException {
-        DataOutputStream output = new DataOutputStream(client.getOutputStream());
-        Object[] array = new Object[1];
-        array[0] = System.currentTimeMillis();
-        Message message = new Message(array, MessageType.PING);
-        output.writeUTF(Json.toString(message, false));
-    }
-
-    public static void sendTypeOnly(MessageType messageType, Socket client) throws IOException {
-        DataOutputStream output = new DataOutputStream(client.getOutputStream());
-        Object[] array = new Object[0];
-        Message message = new Message(array, messageType);
-        output.writeUTF(Json.toString(message, false));
+    public void send(Socket target) throws IOException {
+        try {
+            DataOutputStream output = new DataOutputStream(target.getOutputStream());
+            output.writeUTF(Json.toString(this, false));
+        } catch (NullPointerException e) {
+            e.printStackTrace(System.err);
+        }
     }
 }

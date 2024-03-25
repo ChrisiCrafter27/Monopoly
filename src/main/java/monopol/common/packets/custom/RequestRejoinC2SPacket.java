@@ -1,7 +1,11 @@
 package monopol.common.packets.custom;
 
+import monopol.common.data.DataReader;
+import monopol.common.data.DataWriter;
 import monopol.common.packets.C2SPacket;
 import monopol.server.Server;
+
+import java.net.Socket;
 
 public class RequestRejoinC2SPacket extends C2SPacket<RequestRejoinC2SPacket> {
     private final String name;
@@ -11,17 +15,17 @@ public class RequestRejoinC2SPacket extends C2SPacket<RequestRejoinC2SPacket> {
     }
 
     @SuppressWarnings("unused")
-    public static RequestRejoinC2SPacket deserialize(Object[] objects) {
-        return new RequestRejoinC2SPacket((String) objects[0]);
+    public static RequestRejoinC2SPacket deserialize(DataReader reader) {
+        return new RequestRejoinC2SPacket(reader.readString());
     }
 
     @Override
-    public Object[] serialize() {
-        return new Object[]{name};
+    public void serialize(DataWriter writer) {
+        writer.writeString(name);
     }
 
     @Override
-    public void handleOnServer(Server server) {}
+    public void handleOnServer(Server server, Socket source) {}
 
     public String name() {
         return name;

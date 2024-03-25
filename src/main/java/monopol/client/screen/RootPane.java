@@ -10,7 +10,7 @@ public class RootPane extends JLayeredPane {
     public final MenuPane menuPane = new MenuPane();
     public final PingPane pingPane = new PingPane();
     public final BoardPane boardPane = new BoardPane();
-    public final TradePane tradePane = new TradePane();
+    //public final TradePane tradePane = new TradePane();
     public final SelectedCardPane selectedCardPane = new SelectedCardPane();
     public final PlayerDisplayPane playerDisplayPane = new PlayerDisplayPane();
     public final InfoPane infoPane = new InfoPane();
@@ -31,7 +31,7 @@ public class RootPane extends JLayeredPane {
         add(menuPane, JLayeredPane.DEFAULT_LAYER);
         add(pingPane, JLayeredPane.POPUP_LAYER);
         add(boardPane, JLayeredPane.DEFAULT_LAYER);
-        add(tradePane, JLayeredPane.MODAL_LAYER);
+        //add(tradePane, JLayeredPane.MODAL_LAYER);
         add(selectedCardPane, JLayeredPane.PALETTE_LAYER);
         add(playerDisplayPane, JLayeredPane.PALETTE_LAYER);
         add(infoPane, JLayeredPane.PALETTE_LAYER);

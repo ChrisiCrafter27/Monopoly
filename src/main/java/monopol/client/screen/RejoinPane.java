@@ -46,8 +46,8 @@ public class RejoinPane extends JLayeredPane {
             String name = names.get(i);
             players.add(JUtils.addButton(name, 1920 / 2 - 100, 300 + i * 50, 200, 30, true, actionEvent -> {
                 Object[] options;
-                System.out.println(clientSup.get().player.getName());
-                if(clientSup.get() != null && clientSup.get().player.isHost) {
+                System.out.println(clientSup.get().player().getName());
+                if(clientSup.get() != null && clientSup.get().player().isHost) {
                     options = new Object[]{"Abbrechen", "Beitreten", "Entfernen"};
                 } else options = new Object[]{"Abbrechen", "Beitreten"};
                 int result = JOptionPane.showOptionDialog(null, "Als " + name + " erneut beitreten?", "Erneut beitreten", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, null);

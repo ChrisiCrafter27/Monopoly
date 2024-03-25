@@ -2,10 +2,6 @@ package monopol.common.packets;
 
 import monopol.server.Server;
 
-public class ServerSide implements Side {
-    public final Server server;
+import java.net.Socket;
 
-    public ServerSide(Server server) {
-        this.server = server;
-    }
-}
+public record ServerSide(Server server, Socket source) implements Side {}

@@ -132,8 +132,8 @@ public class CommunityCard {
     }
 
     public void activate(Player player) {
-        PacketManager.sendS2C(new InfoS2CPacket(player.getName() + " zog eine Gemeinschaftskarte"), PacketManager.Restriction.all(), Throwable::printStackTrace);
-        PacketManager.sendS2C(new CommunityCardS2CPacket(player.getName(), description, new ArrayList<>(actions.keySet()), CommunityCard.unusedSize()), PacketManager.Restriction.all(), Throwable::printStackTrace);
+        PacketManager.sendS2C(new InfoS2CPacket(player.getName() + " zog eine Gemeinschaftskarte"), PacketManager.all(), Throwable::printStackTrace);
+        PacketManager.sendS2C(new CommunityCardS2CPacket(player.getName(), description, new ArrayList<>(actions.keySet()), CommunityCard.unusedSize()), PacketManager.all(), Throwable::printStackTrace);
     }
 
     public Map<String, CommunityCardAction> actions() {

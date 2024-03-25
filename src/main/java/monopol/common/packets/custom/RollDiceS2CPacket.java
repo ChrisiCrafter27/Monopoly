@@ -2,6 +2,8 @@ package monopol.common.packets.custom;
 
 import monopol.client.Client;
 import monopol.client.screen.RootPane;
+import monopol.common.data.DataReader;
+import monopol.common.data.DataWriter;
 import monopol.common.packets.S2CPacket;
 
 public class RollDiceS2CPacket extends S2CPacket<RollDiceS2CPacket> {
@@ -14,13 +16,15 @@ public class RollDiceS2CPacket extends S2CPacket<RollDiceS2CPacket> {
     }
 
     @SuppressWarnings("unused")
-    public static RollDiceS2CPacket deserialize(Object[] objects) {
-        return new RollDiceS2CPacket((int) objects[0], (int) objects[1], (int) objects[2]);
+    public static RollDiceS2CPacket deserialize(DataReader reader) {
+        return new RollDiceS2CPacket(reader.readInt(), reader.readInt(), reader.readInt());
     }
 
     @Override
-    public Object[] serialize() {
-        return new Object[]{dice1, dice2, tempoDice};
+    public void serialize(DataWriter writer) {
+        writer.writeInt(dice1);
+        writer.writeInt(dice2);
+        writer.writeInt(tempoDice);
     }
 
     @Override

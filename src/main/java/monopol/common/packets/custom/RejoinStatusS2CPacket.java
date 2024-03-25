@@ -2,8 +2,11 @@ package monopol.common.packets.custom;
 
 import monopol.client.Client;
 import monopol.client.screen.RootPane;
+import monopol.common.data.DataReader;
+import monopol.common.data.DataWriter;
 import monopol.common.packets.S2CPacket;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class RejoinStatusS2CPacket extends S2CPacket<RejoinStatusS2CPacket> {
@@ -14,13 +17,13 @@ public class RejoinStatusS2CPacket extends S2CPacket<RejoinStatusS2CPacket> {
     }
 
     @SuppressWarnings("unused")
-    public static RejoinStatusS2CPacket deserialize(Object[] objects) {
-        return new RejoinStatusS2CPacket((List<String>) objects[0]);
+    public static RejoinStatusS2CPacket deserialize(DataReader reader) {
+        return new RejoinStatusS2CPacket(reader.readList(ArrayList::new, DataReader::readString));
     }
 
     @Override
-    public Object[] serialize() {
-        return new Object[]{names};
+    public void serialize(DataWriter writer) {
+        writer.writeList(names, DataWriter::writeString);
     }
 
     @Override

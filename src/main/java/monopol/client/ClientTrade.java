@@ -1,7 +1,6 @@
 package monopol.client;
 
 import monopol.client.screen.TradePane;
-import monopol.common.message.MessageType;
 
 import java.io.IOException;
 import java.rmi.RemoteException;
@@ -18,6 +17,8 @@ public class ClientTrade {
     }
 
     public static void trade(Supplier<Client> clientSup, String player2, TradeState state, TradePane display) throws RemoteException {
+        /*
+
         Client client = clientSup.get();
         ClientPlayer clientPlayer = client.player;
         String player1 = clientPlayer.getName();
@@ -331,5 +332,6 @@ public class ClientTrade {
                 }.start();
             }
         }
+        */
     }
 }

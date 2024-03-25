@@ -15,9 +15,9 @@ public class VersionChecker {
         try {
             GHRepository repository = GitUtils.jarRepository();
             if(inIdea()) {
-                if(!upToDate(repository)) JOptionPane.showMessageDialog(null, "Du bist in einer Entwicklungsumgebung.\nAutomatische Updates sind daher deaktiviert.", "Version-Checker", JOptionPane.INFORMATION_MESSAGE);
+                if(hasToUpdate(repository)) JOptionPane.showMessageDialog(null, "Du bist in einer Entwicklungsumgebung.\nAutomatische Updates sind daher deaktiviert.", "Version-Checker", JOptionPane.INFORMATION_MESSAGE);
             } else  {
-                if(!upToDate(repository)) {
+                if(hasToUpdate(repository)) {
                     if(JOptionPane.showConfirmDialog(null, "Eine neue Version von Monopoly ist verfügbar.\nMöchtest du sie herunterladen?\nDeine Version: " + version() + "\nNeueste Version: " + remoteVersion(repository), "Version-Checker", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
                         File destFile = new File("Monopoly-" + remoteVersion(repository) + ".jar");
                         try {
@@ -65,12 +65,12 @@ public class VersionChecker {
         }
     }
 
-    private static boolean upToDate(GHRepository repository) throws IOException {
+    private static boolean hasToUpdate(GHRepository repository) throws IOException {
         String remoteVersionString = remoteVersion(repository);
         String versionString = version();
         double remoteVersion = Double.parseDouble(remoteVersionString);
         double version = Double.parseDouble(versionString);
-        return remoteVersion <= version || !fileExists(repository, "Monopoly-" + remoteVersionString + ".jar");
+        return remoteVersion > version && fileExists(repository, "Monopoly-" + remoteVersionString + ".jar");
     }
 
     private static boolean fileExists(GHRepository repository, String path) {

@@ -1,9 +1,12 @@
 package monopol.common.packets.custom;
 
 import monopol.client.screen.RootPane;
+import monopol.common.data.DataReader;
+import monopol.common.data.DataWriter;
 import monopol.common.packets.S2CPacket;
 import monopol.client.Client;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CommunityCardS2CPacket extends S2CPacket<CommunityCardS2CPacket> {
@@ -20,13 +23,15 @@ public class CommunityCardS2CPacket extends S2CPacket<CommunityCardS2CPacket> {
     }
 
     @Override
-    public Object[] serialize() {
-        return new Object[]{player, descriptions, buttons, size};
+    public void serialize(DataWriter writer) {
+        writer.writeString(player);
+        writer.writeList(descriptions, DataWriter::writeString);
+        writer.writeList(buttons, DataWriter::writeString);
+        writer.writeInt(size);
     }
 
-    @SuppressWarnings({"unused", "unchecked"})
-    public static CommunityCardS2CPacket deserialize(Object[] objects) {
-        return new CommunityCardS2CPacket((String) objects[0], (List<String>) objects[1], (List<String>) objects[2], (int) objects[3]);
+    public static CommunityCardS2CPacket deserialize(DataReader reader) {
+        return new CommunityCardS2CPacket(reader.readString(), reader.readList(ArrayList::new, DataReader::readString), reader.readList(ArrayList::new, DataReader::readString), reader.readInt());
     }
 
     @Override

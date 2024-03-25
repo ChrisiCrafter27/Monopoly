@@ -2,6 +2,8 @@ package monopol.common.packets.custom.update;
 
 import monopol.client.Client;
 import monopol.client.screen.RootPane;
+import monopol.common.data.DataReader;
+import monopol.common.data.DataWriter;
 import monopol.common.packets.S2CPacket;
 
 public class UpdateFreeParkingS2CPacket extends S2CPacket<UpdateFreeParkingS2CPacket> {
@@ -12,13 +14,13 @@ public class UpdateFreeParkingS2CPacket extends S2CPacket<UpdateFreeParkingS2CPa
     }
 
     @Override
-    public Object[] serialize() {
-        return new Object[]{money};
+    public void serialize(DataWriter writer) {
+        writer.writeInt(money);
     }
 
     @SuppressWarnings("unused")
-    public static UpdateFreeParkingS2CPacket deserialize(Object[] objects) {
-        return new UpdateFreeParkingS2CPacket((int) objects[0]);
+    public static UpdateFreeParkingS2CPacket deserialize(DataReader reader) {
+        return new UpdateFreeParkingS2CPacket(reader.readInt());
     }
 
     @Override

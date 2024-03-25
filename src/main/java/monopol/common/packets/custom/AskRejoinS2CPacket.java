@@ -2,10 +2,13 @@ package monopol.common.packets.custom;
 
 import monopol.client.Client;
 import monopol.client.screen.RootPane;
+import monopol.common.data.DataReader;
+import monopol.common.data.DataWriter;
 import monopol.common.packets.PacketManager;
 import monopol.common.packets.S2CPacket;
 
 import javax.swing.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class AskRejoinS2CPacket extends S2CPacket<AskRejoinS2CPacket> {
@@ -16,13 +19,13 @@ public class AskRejoinS2CPacket extends S2CPacket<AskRejoinS2CPacket> {
     }
 
     @SuppressWarnings("unused")
-    public static AskRejoinS2CPacket deserialize(Object[] objects) {
-        return new AskRejoinS2CPacket((List<String>) objects[0]);
+    public static AskRejoinS2CPacket deserialize(DataReader reader) {
+        return new AskRejoinS2CPacket(reader.readList(ArrayList::new, DataReader::readString));
     }
 
     @Override
-    public Object[] serialize() {
-        return new Object[]{names};
+    public void serialize(DataWriter writer) {
+        writer.writeList(names, DataWriter::writeString);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package monopol.common.core;
 
 import monopol.client.screen.PrototypeMenu;
+import monopol.common.packets.Packets;
 import monopol.common.utils.*;
 import monopol.server.Server;
 
@@ -77,6 +78,7 @@ public class Monopoly {
             bar.setTop("Starte Server...", 4);
             bar.bottomBar.setVisible(false);
             System.out.println("Starting server...");
+            Packets.register();
             INSTANCE.startServer();
 
             bar.setTop("Erstelle GUI...", 5);

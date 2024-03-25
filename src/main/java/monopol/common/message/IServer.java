@@ -20,8 +20,6 @@ public interface IServer extends Remote {
     void kick(String name, DisconnectReason reason) throws RemoteException;
     boolean changeName(String oldName, String newName) throws RemoteException;
     boolean changeColor(String name, Color color) throws RemoteException;
-    void sendMessage(String name, MessageType type, Object[] value) throws IOException;
-    void sendMessage(String name, MessageType type, Object value) throws IOException;
     List<IPurchasable> getPurchasables() throws RemoteException;
     boolean trade(String player1, String player2, ArrayList<IPurchasable> offer1, ArrayList<IPurchasable> offer2, int money1, int money2) throws RemoteException;
     boolean acceptsNewClient() throws RemoteException;

@@ -47,7 +47,7 @@ public class StandardEvents extends Events {
     @Override
     public void onRejoin() {
         if(CommunityCard.getCurrent() != null) CommunityCard.getCurrent().activate(player());
-        else PacketManager.sendS2C(new CommunityCardS2CPacket(null, new ArrayList<>(), new ArrayList<>(), CommunityCard.unusedSize()), PacketManager.Restriction.all(), Throwable::printStackTrace);
+        else PacketManager.sendS2C(new CommunityCardS2CPacket(null, new ArrayList<>(), new ArrayList<>(), CommunityCard.unusedSize()), PacketManager.all(), Throwable::printStackTrace);
     }
 
     private boolean mayDoNextRound() {
@@ -68,8 +68,8 @@ public class StandardEvents extends Events {
         diceRolled = false;
         hasToPayRent = false;
         if(player().inPrison()) onPrisonerRound();
-        PacketManager.sendS2C(new InfoS2CPacket(player().getName() +  " ist am Zug"), PacketManager.Restriction.all(), Throwable::printStackTrace);
-        PacketManager.sendS2C(new UpdateButtonsS2CPacket(player().getName(), diceRolled, hasToPayRent, player().inPrison(), mayDoNextRound()), PacketManager.Restriction.all(), Throwable::printStackTrace);
+        PacketManager.sendS2C(new InfoS2CPacket(player().getName() +  " ist am Zug"), PacketManager.all(), Throwable::printStackTrace);
+        PacketManager.sendS2C(new UpdateButtonsS2CPacket(player().getName(), diceRolled, hasToPayRent, player().inPrison(), mayDoNextRound()), PacketManager.all(), Throwable::printStackTrace);
     }
 
     @Override
@@ -81,7 +81,7 @@ public class StandardEvents extends Events {
     public void onDiceRoll(String name) {
         if(!name.equals(player().getName()) || diceRolled) return;
         diceRolled = true;
-        PacketManager.sendS2C(new UpdateButtonsS2CPacket("", true, hasToPayRent, player().inPrison(), mayDoNextRound()), PacketManager.Restriction.all(), Throwable::printStackTrace);
+        PacketManager.sendS2C(new UpdateButtonsS2CPacket("", true, hasToPayRent, player().inPrison(), mayDoNextRound()), PacketManager.all(), Throwable::printStackTrace);
 
         Random random = new Random();
 
@@ -97,7 +97,7 @@ public class StandardEvents extends Events {
         }
         final int finalResult = diceResult;
         new Thread(() -> {
-            PacketManager.sendS2C(new RollDiceS2CPacket(dice1, dice2, dice3), PacketManager.Restriction.all(), Throwable::printStackTrace);
+            PacketManager.sendS2C(new RollDiceS2CPacket(dice1, dice2, dice3), PacketManager.all(), Throwable::printStackTrace);
             try {
                 Thread.sleep(6000);
             } catch (InterruptedException ignored) {}
@@ -108,7 +108,7 @@ public class StandardEvents extends Events {
             if(player().inPrison()) {
                 if(dice1 == dice2) {
                     player().move(finalResult);
-                    PacketManager.sendS2C(new InfoS2CPacket(player().getName() +  " ist ausgebrochen"), PacketManager.Restriction.all(), Throwable::printStackTrace);
+                    PacketManager.sendS2C(new InfoS2CPacket(player().getName() +  " ist ausgebrochen"), PacketManager.all(), Throwable::printStackTrace);
                 } else if (player().prisonRounds() >= 3) {
                     onPaySurety(player().getName());
                     player().move(finalResult);
@@ -116,10 +116,10 @@ public class StandardEvents extends Events {
             } else if(player().getDoubles() >= 3) {
                 player().setDoubles(0);
                 player().setInPrison(true);
-                PacketManager.sendS2C(new InfoS2CPacket(player().getName() +  " muss ins Gefängnis"), PacketManager.Restriction.all(), Throwable::printStackTrace);
+                PacketManager.sendS2C(new InfoS2CPacket(player().getName() +  " muss ins Gefängnis"), PacketManager.all(), Throwable::printStackTrace);
             } else {
                 player().move(finalResult);
-                PacketManager.sendS2C(new InfoS2CPacket(player().getName() +  " bewegt sich"), PacketManager.Restriction.all(), Throwable::printStackTrace);
+                PacketManager.sendS2C(new InfoS2CPacket(player().getName() +  " bewegt sich"), PacketManager.all(), Throwable::printStackTrace);
             }
 
             if(dice3 == 5) onGetBusCard(player().getName());
@@ -129,7 +129,7 @@ public class StandardEvents extends Events {
             } catch (InterruptedException ignored) {}
             if(!running) return;
             onArrivedAtField();
-            PacketManager.sendS2C(new UpdateButtonsS2CPacket(player().getName(), diceRolled, hasToPayRent, player().inPrison(), mayDoNextRound()), PacketManager.Restriction.all(), Throwable::printStackTrace);
+            PacketManager.sendS2C(new UpdateButtonsS2CPacket(player().getName(), diceRolled, hasToPayRent, player().inPrison(), mayDoNextRound()), PacketManager.all(), Throwable::printStackTrace);
         }).start();
     }
 
@@ -157,7 +157,7 @@ public class StandardEvents extends Events {
             Monopoly.INSTANCE.server().getPlayerServerSide(purchasable.getOwner()).addMoney(purchasable.getRent(diceResult));
             player().contractMoney(purchasable.getRent(diceResult));
             hasToPayRent = false;
-            PacketManager.sendS2C(new UpdateButtonsS2CPacket(player().getName(), diceRolled, hasToPayRent, player().inPrison(), mayDoNextRound()), PacketManager.Restriction.all(), Throwable::printStackTrace);
+            PacketManager.sendS2C(new UpdateButtonsS2CPacket(player().getName(), diceRolled, hasToPayRent, player().inPrison(), mayDoNextRound()), PacketManager.all(), Throwable::printStackTrace);
         }
     }
 
@@ -167,7 +167,7 @@ public class StandardEvents extends Events {
         if(card != null && card.actions().containsKey(action)) {
             card.actions().get(action).act(Monopoly.INSTANCE.server(), player());
             CommunityCard.setCurrent(null);
-            PacketManager.sendS2C(new CommunityCardS2CPacket(null, new ArrayList<>(), new ArrayList<>(), CommunityCard.unusedSize()), PacketManager.Restriction.all(), Throwable::printStackTrace);
+            PacketManager.sendS2C(new CommunityCardS2CPacket(null, new ArrayList<>(), new ArrayList<>(), CommunityCard.unusedSize()), PacketManager.all(), Throwable::printStackTrace);
         }
     }
 
@@ -176,8 +176,8 @@ public class StandardEvents extends Events {
         if(name.equals(player().getName()) && player().inPrison()) {
             player().contractMoney(50);
             player().setInPrison(false);
-            PacketManager.sendS2C(new InfoS2CPacket(player().getName() +  " ist wieder frei"), PacketManager.Restriction.all(), Throwable::printStackTrace);
-            PacketManager.sendS2C(new UpdateButtonsS2CPacket(player().getName(), diceRolled, hasToPayRent, player().inPrison(), mayDoNextRound()), PacketManager.Restriction.all(), Throwable::printStackTrace);
+            PacketManager.sendS2C(new InfoS2CPacket(player().getName() +  " ist wieder frei"), PacketManager.all(), Throwable::printStackTrace);
+            PacketManager.sendS2C(new UpdateButtonsS2CPacket(player().getName(), diceRolled, hasToPayRent, player().inPrison(), mayDoNextRound()), PacketManager.all(), Throwable::printStackTrace);
         }
     }
 
@@ -191,8 +191,8 @@ public class StandardEvents extends Events {
                 player().addMoney(purchasable.getMortgage());
                 purchasable.mortgage();
             }
-            PacketManager.sendS2C(new UpdatePurchasablesS2CPacket(), PacketManager.Restriction.all(), Throwable::printStackTrace);
-            PacketManager.sendS2C(new UpdateButtonsS2CPacket(player().getName(), diceRolled, hasToPayRent, player().inPrison(), mayDoNextRound()), PacketManager.Restriction.all(), Throwable::printStackTrace);
+            PacketManager.sendS2C(new UpdatePurchasablesS2CPacket(), PacketManager.all(), Throwable::printStackTrace);
+            PacketManager.sendS2C(new UpdateButtonsS2CPacket(player().getName(), diceRolled, hasToPayRent, player().inPrison(), mayDoNextRound()), PacketManager.all(), Throwable::printStackTrace);
         }
     }
 
@@ -210,8 +210,8 @@ public class StandardEvents extends Events {
             if(purchasable.upgrade()) {
                 player().contractMoney(purchasable.getUpgradeCost());
             }
-            PacketManager.sendS2C(new UpdatePurchasablesS2CPacket(), PacketManager.Restriction.all(), Throwable::printStackTrace);
-            PacketManager.sendS2C(new UpdateButtonsS2CPacket(player().getName(), diceRolled, hasToPayRent, player().inPrison(), mayDoNextRound()), PacketManager.Restriction.all(), Throwable::printStackTrace);
+            PacketManager.sendS2C(new UpdatePurchasablesS2CPacket(), PacketManager.all(), Throwable::printStackTrace);
+            PacketManager.sendS2C(new UpdateButtonsS2CPacket(player().getName(), diceRolled, hasToPayRent, player().inPrison(), mayDoNextRound()), PacketManager.all(), Throwable::printStackTrace);
         }
     }
 
@@ -221,8 +221,8 @@ public class StandardEvents extends Events {
             if(purchasable.downgrade()) {
                 player().addMoney(purchasable.getUpgradeCost() / 2);
             }
-            PacketManager.sendS2C(new UpdatePurchasablesS2CPacket(), PacketManager.Restriction.all(), Throwable::printStackTrace);
-            PacketManager.sendS2C(new UpdateButtonsS2CPacket(player().getName(), diceRolled, hasToPayRent, player().inPrison(), mayDoNextRound()), PacketManager.Restriction.all(), Throwable::printStackTrace);
+            PacketManager.sendS2C(new UpdatePurchasablesS2CPacket(), PacketManager.all(), Throwable::printStackTrace);
+            PacketManager.sendS2C(new UpdateButtonsS2CPacket(player().getName(), diceRolled, hasToPayRent, player().inPrison(), mayDoNextRound()), PacketManager.all(), Throwable::printStackTrace);
         }
     }
 
@@ -231,8 +231,8 @@ public class StandardEvents extends Events {
         if(name.equals(player().getName()) && purchasable.getOwner().isEmpty()) {
             purchasable.setOwner(name);
             player().contractMoney(purchasable.getPrice());
-            PacketManager.sendS2C(new UpdatePurchasablesS2CPacket(), PacketManager.Restriction.all(), Throwable::printStackTrace);
-            PacketManager.sendS2C(new UpdateButtonsS2CPacket(player().getName(), diceRolled, hasToPayRent, player().inPrison(), mayDoNextRound()), PacketManager.Restriction.all(), Throwable::printStackTrace);
+            PacketManager.sendS2C(new UpdatePurchasablesS2CPacket(), PacketManager.all(), Throwable::printStackTrace);
+            PacketManager.sendS2C(new UpdateButtonsS2CPacket(player().getName(), diceRolled, hasToPayRent, player().inPrison(), mayDoNextRound()), PacketManager.all(), Throwable::printStackTrace);
         }
     }
 
@@ -275,13 +275,13 @@ public class StandardEvents extends Events {
 
     @Override
     public void onArrivedAtFreeParking() {
-        PacketManager.sendS2C(new InfoS2CPacket(player().getName() +  " parkt frei"), PacketManager.Restriction.all(), Throwable::printStackTrace);
+        PacketManager.sendS2C(new InfoS2CPacket(player().getName() +  " parkt frei"), PacketManager.all(), Throwable::printStackTrace);
         player().addMoney(Monopoly.INSTANCE.server().gameData().parkForFree());
     }
 
     @Override
     public void onArrivedAtGoToPrisonField() {
-        PacketManager.sendS2C(new InfoS2CPacket(player().getName() +  " muss ins Gefängnis"), PacketManager.Restriction.all(), Throwable::printStackTrace);
+        PacketManager.sendS2C(new InfoS2CPacket(player().getName() +  " muss ins Gefängnis"), PacketManager.all(), Throwable::printStackTrace);
         player().setInPrison(true);
     }
 

@@ -1,9 +1,13 @@
 package monopol.common.packets.custom;
 
+import monopol.common.data.DataReader;
+import monopol.common.data.DataWriter;
 import monopol.common.data.Field;
 import monopol.common.data.IPurchasable;
 import monopol.common.packets.C2SPacket;
 import monopol.server.Server;
+
+import java.net.Socket;
 
 public class ButtonC2SPacket extends C2SPacket<ButtonC2SPacket> {
     private final String name;
@@ -17,17 +21,19 @@ public class ButtonC2SPacket extends C2SPacket<ButtonC2SPacket> {
     }
 
     @SuppressWarnings("unused")
-    public static ButtonC2SPacket deserialize(Object[] objects) {
-        return new ButtonC2SPacket((String) objects[0], (String) objects[1], Button.valueOf((String) objects[2]));
+    public static ButtonC2SPacket deserialize(DataReader reader) {
+        return new ButtonC2SPacket(reader.readString(), reader.readString(), reader.readEnum(Button.class));
     }
 
     @Override
-    public Object[] serialize() {
-        return new Object[]{name, selectedCard, button.name()};
+    public void serialize(DataWriter writer) {
+        writer.writeString(name);
+        writer.writeString(selectedCard);
+        writer.writeEnum(button);
     }
 
     @Override
-    public void handleOnServer(Server server) {
+    public void handleOnServer(Server server, Socket source) {
         IPurchasable selected = Field.purchasables().stream().filter(p -> p.getName().equals(selectedCard)).findFirst().orElse(null);
         switch (button) {
             case ACTION_1 -> {

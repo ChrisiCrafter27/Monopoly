@@ -7,7 +7,6 @@ import monopol.client.TradeState;
 import monopol.common.data.Field;
 import monopol.common.data.IPurchasable;
 import monopol.common.message.Message;
-import monopol.common.message.MessageType;
 import monopol.common.data.Player;
 import monopol.common.utils.JUtils;
 
@@ -21,6 +20,7 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public class TradePane extends JLayeredPane {
+    /*
     private String player1 = "";
     private String player2 = "";
     private Supplier<Client> client = () -> {throw new IllegalStateException("init() was not called");};
@@ -556,4 +556,5 @@ public class TradePane extends JLayeredPane {
         tradeFailed1Text.setVisible(true);
         tradeFailed2Text.setVisible(true);
     }
+    */
 }

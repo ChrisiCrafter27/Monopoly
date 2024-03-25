@@ -2,6 +2,8 @@ package monopol.common.packets.custom.update;
 
 import monopol.client.Client;
 import monopol.client.screen.RootPane;
+import monopol.common.data.DataReader;
+import monopol.common.data.DataWriter;
 import monopol.common.data.IPurchasable;
 import monopol.common.packets.S2CPacket;
 import monopol.common.data.Field;
@@ -16,12 +18,10 @@ public class UpdatePurchasablesS2CPacket extends S2CPacket<UpdatePurchasablesS2C
     public UpdatePurchasablesS2CPacket() {}
 
     @Override
-    public Object[] serialize() {
-        return new Object[]{};
-    }
+    public void serialize(DataWriter writer) {}
 
     @SuppressWarnings("unused")
-    public static UpdatePurchasablesS2CPacket deserialize(Object[] objects) {
+    public static UpdatePurchasablesS2CPacket deserialize(DataReader reader) {
         return new UpdatePurchasablesS2CPacket();
     }
 

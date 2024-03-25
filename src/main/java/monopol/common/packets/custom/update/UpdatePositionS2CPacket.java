@@ -2,6 +2,8 @@ package monopol.common.packets.custom.update;
 
 import monopol.client.Client;
 import monopol.client.screen.RootPane;
+import monopol.common.data.DataReader;
+import monopol.common.data.DataWriter;
 import monopol.common.packets.S2CPacket;
 import monopol.common.data.Player;
 
@@ -17,13 +19,13 @@ public class UpdatePositionS2CPacket extends S2CPacket<UpdatePositionS2CPacket> 
     }
 
     @Override
-    public Object[] serialize() {
-        return new Object[]{anim};
+    public void serialize(DataWriter writer) {
+        writer.writeBool(anim);
     }
 
     @SuppressWarnings("unused")
-    public static UpdatePositionS2CPacket deserialize(Object[] objects) {
-        return new UpdatePositionS2CPacket((boolean) objects[0]);
+    public static UpdatePositionS2CPacket deserialize(DataReader reader) {
+        return new UpdatePositionS2CPacket(reader.readBool());
     }
 
     @Override

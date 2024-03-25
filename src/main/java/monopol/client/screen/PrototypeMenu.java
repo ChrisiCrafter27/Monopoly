@@ -112,7 +112,7 @@ public class PrototypeMenu {
                 root.playerPane.init();
 
                 //Wait for the server connection
-                while(!isInterrupted() && client.player.getName() == null) {
+                while(!isInterrupted() && client.player().getName() == null) {
                     if(client.closed()) {
                         interrupt();
                         prepareMenu();
@@ -148,7 +148,7 @@ public class PrototypeMenu {
                         root.playerPane.update(client, clients, root.lobbyPane.mustUpdate());
                         root.pingPane.update(client.getPing(), keyHandler, root, () -> {
                             try {
-                                client.serverMethod().kick(client.player.getName(), DisconnectReason.CLIENT_CLOSED);
+                                client.serverMethod().kick(client.player().getName(), DisconnectReason.CLIENT_CLOSED);
                             } catch (Exception e) {
                                 e.printStackTrace(System.err);
                             }
@@ -224,7 +224,7 @@ public class PrototypeMenu {
                 root.playerPane.update(client, clients, root.lobbyPane.mustUpdate());
                 root.pingPane.update(client.getPing(), keyHandler, root, () -> {
                     try {
-                        client.serverMethod().kick(client.player.getName(), DisconnectReason.CLIENT_CLOSED);
+                        client.serverMethod().kick(client.player().getName(), DisconnectReason.CLIENT_CLOSED);
                     } catch (Exception e) {
                         e.printStackTrace(System.err);
                     }

@@ -1,6 +1,7 @@
 package monopol.common.packets;
 
 import monopol.client.Client;
+import monopol.common.data.DataWriter;
 import monopol.common.message.Message;
 
 import java.util.function.Consumer;
@@ -19,6 +20,6 @@ import java.util.function.Function;
  * @param <T> the packets class
  */
 public interface Packet<T extends Packet<T>> {
-    Object[] serialize();
+    void serialize(DataWriter writer);
     void handle(Side side);
 }

@@ -1,12 +1,15 @@
 package monopol.client.screen;
 
 import monopol.client.Client;
+import monopol.client.ClientPlayer;
+import monopol.common.data.Player;
 import monopol.common.utils.JUtils;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.List;
 
 public class PlayerPane extends JLayeredPane {
     private Client client;
@@ -26,6 +29,7 @@ public class PlayerPane extends JLayeredPane {
 
     public void update(Client currentClient, ArrayList<Client> clients, boolean forceUpdate) {
         if(!clients.equals(shownClients) || !currentClient.equals(client) || forceUpdate || requestUpdate) {
+
             requestUpdate = false;
 
             removeAll();
@@ -36,7 +40,7 @@ public class PlayerPane extends JLayeredPane {
             for(int i = 0; i < clients.size(); i++) {
                 int step = 1920 / clients.size();
                 final int value = i;
-                JButton button = addButton(clients.get(i).player.getName(), i * step, 0, step, 60, true, (client == clients.get(value)), actionEvent -> {
+                JButton button = addButton(clients.get(i).player().getName(), i * step, 0, step, 60, true, (client == clients.get(value)), actionEvent -> {
                     client = clients.get(value);
                     update(client, clients, true);
                 });
