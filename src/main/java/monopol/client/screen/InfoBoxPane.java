@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.function.Supplier;
 
-public class InfoPane extends JLayeredPane {
+public class InfoBoxPane extends JLayeredPane {
     private final HashMap<Client, List<String>> texts = new HashMap<>();
     private Supplier<Client> clientSup = () -> {throw new IllegalStateException("init() was not called");};
 
@@ -37,7 +37,7 @@ public class InfoPane extends JLayeredPane {
 
     private Thread thread = new Thread(task);
 
-    public InfoPane() {
+    public InfoBoxPane() {
         super();
         setBounds(JUtils.getX(1080/2d - 175), JUtils.getY(400), JUtils.getX(300), JUtils.getY(100));
         add(text1);

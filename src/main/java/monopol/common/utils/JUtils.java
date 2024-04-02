@@ -112,14 +112,7 @@ public class JUtils {
     }
 
     public static JLabel addText(String display, int x, int y, int width, int height, int position) {
-        JLabel label;
-        width = JUtils.getX(width);
-        height = JUtils.getY(height);
-        label = new JLabel(display, position);
-        label.setFont(new Font("Arial", Font.PLAIN, height));
-        label.setBounds(JUtils.getX(x), JUtils.getY(y), width, (int) ( height*1.2));
-        label.setForeground(Color.BLACK);
-        return label;
+        return addText(display, x, y, width, height, position, Color.BLACK);
     }
 
     public static JLabel addText(String display, int x, int y, int width, int height, int position, Color foreGround) {

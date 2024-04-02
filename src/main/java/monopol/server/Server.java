@@ -501,6 +501,7 @@ public class Server extends UnicastRemoteObject implements IServer {
 
     public void start() {
         if(!pause && serverState == ServerState.LOBBY && (players.size() >= events().minPlayers())) {
+            events.prepareGame();
             gameData = new GameData();
             PacketManager.sendS2C(new StartS2CPacket(), PacketManager.all(), Throwable::printStackTrace);
             PacketManager.sendS2C(new UpdatePurchasablesS2CPacket(), PacketManager.all(), Throwable::printStackTrace);

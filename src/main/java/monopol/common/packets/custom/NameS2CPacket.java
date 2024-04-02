@@ -5,7 +5,6 @@ import monopol.client.screen.RootPane;
 import monopol.common.core.Monopoly;
 import monopol.common.data.DataReader;
 import monopol.common.data.DataWriter;
-import monopol.common.packets.PacketManager;
 import monopol.common.packets.S2CPacket;
 
 public class NameS2CPacket extends S2CPacket<NameS2CPacket> {
@@ -30,7 +29,7 @@ public class NameS2CPacket extends S2CPacket<NameS2CPacket> {
         if (client.player().getName() == null) {
             client.player().setName(name);
             if(client.player().isHost) Monopoly.INSTANCE.setHost(client.player().getName());
-            display.playerPane.requestUpdate();
+            display.playerSelectPane.requestUpdate();
         }
     }
 }

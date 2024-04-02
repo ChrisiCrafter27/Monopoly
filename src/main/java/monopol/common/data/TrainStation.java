@@ -108,7 +108,10 @@ public enum TrainStation implements IPurchasable {
             i--;
         }
         if (isUpgraded()) toReturn *= 2;
-        if (doubleRent) toReturn *= 2;
+        if (doubleRent) {
+            toReturn *= 2;
+            doubleRent = false;
+        }
         return toReturn;
     }
 

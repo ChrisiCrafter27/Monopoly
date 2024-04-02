@@ -78,6 +78,7 @@ public abstract class Events {
     }
 
     public abstract int minPlayers();
+    public abstract void prepareGame();
 
     public abstract void onGameStop();
     public abstract void onGameStart(List<String> playerNames);
@@ -89,7 +90,7 @@ public abstract class Events {
     public abstract void onGetBusCard(String name);
     public abstract void onArrivedAtField();
     public abstract void onPayRent(String name);
-    public abstract void onCommunityCardAction(String action);
+    public abstract void onCommunityCardAction(String player, String action);
     public abstract void onPaySurety(String name);
     public abstract void onMortgage(String name, IPurchasable purchasable);
     public abstract void onUpgrade(String name, IPurchasable purchasable);

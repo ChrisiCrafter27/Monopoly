@@ -19,5 +19,6 @@ public class UpdatePlayerDataS2CPacket extends S2CPacket<UpdatePlayerDataS2CPack
     public void handleOnClient(Client client, RootPane display) {
         display.lobbyPane.requestUpdate();
         display.playerInfoPane.update();
+        display.buttonsPane.update();
     }
 }

@@ -36,6 +36,6 @@ public class CommunityCardS2CPacket extends S2CPacket<CommunityCardS2CPacket> {
 
     @Override
     public void handleOnClient(Client client, RootPane display) {
-        //TODO update not existing pane
+        display.cardDecksPane.updateCommunityCards(player, descriptions, buttons, size);
     }
 }

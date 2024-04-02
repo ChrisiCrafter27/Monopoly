@@ -118,6 +118,7 @@ public class PlayerDisplayPane extends JLayeredPane {
     private JButton playerButton(Color color, String name) {
         JButton button = JUtils.addButton("", 0, 0, 0, 0, true, actionEvent ->  {
             displaySup.get().playerInfoPane.setCurrentAndUpdate(name);
+            displaySup.get().buttonsPane.setCurrentAndUpdate(name);
         });
         button.setBackground(color);
         button.setOpaque(true);

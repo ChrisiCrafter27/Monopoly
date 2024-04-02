@@ -26,6 +26,13 @@ public class StandardEvents extends Events {
     }
 
     @Override
+    public void prepareGame() {
+        CommunityCard.setCurrent(null);
+        CommunityCard.resetUnused();
+        Field.purchasables().forEach(purchasable -> purchasable.setOwner(null));
+    }
+
+    @Override
     public void onGameStop() {
         players.clear();
         currentPlayer = -1;
@@ -34,9 +41,6 @@ public class StandardEvents extends Events {
 
     @Override
     public void onGameStart(List<String> playerNames) {
-        CommunityCard.setCurrent(null);
-        CommunityCard.resetUnused();
-        Field.purchasables().forEach(purchasable -> purchasable.setOwner(null));
         players.clear();
         players.addAll(playerNames);
         currentPlayer = new Random().nextInt(players.size()) - 1;
@@ -162,12 +166,13 @@ public class StandardEvents extends Events {
     }
 
     @Override
-    public void onCommunityCardAction(String action) {
+    public void onCommunityCardAction(String player, String action) {
         CommunityCard card = CommunityCard.getCurrent();
-        if(card != null && card.actions().containsKey(action)) {
+        if(card != null && card.actions().containsKey(action) && player.equals(player().getName())) {
             card.actions().get(action).act(Monopoly.INSTANCE.server(), player());
             CommunityCard.setCurrent(null);
             PacketManager.sendS2C(new CommunityCardS2CPacket(null, new ArrayList<>(), new ArrayList<>(), CommunityCard.unusedSize()), PacketManager.all(), Throwable::printStackTrace);
+            PacketManager.sendS2C(new UpdateButtonsS2CPacket(player().getName(), diceRolled, hasToPayRent, player().inPrison(), mayDoNextRound()), PacketManager.all(), Throwable::printStackTrace);
         }
     }
 
@@ -259,6 +264,7 @@ public class StandardEvents extends Events {
     @Override
     public void onArrivedAtPurchasable(IPurchasable purchasable) {
         if(!purchasable.getOwner().isEmpty() && !purchasable.getOwner().equals(player().getName())) hasToPayRent = true;
+        onArrivedAtCommunityField();
     }
 
     @Override
@@ -268,6 +274,7 @@ public class StandardEvents extends Events {
 
     @Override
     public void onArrivedAtCommunityField() {
+        PacketManager.sendS2C(new InfoS2CPacket(player().getName() + " zog eine Gemeinschaftskarte"), PacketManager.all(), Throwable::printStackTrace);
         CommunityCard card = CommunityCard.getUnused();
         CommunityCard.setCurrent(card);
         card.activate(player());

@@ -31,6 +31,7 @@ public class FreeParkingPane extends JLayeredPane {
     private void updateImages() {
         removeAll();
         addFreeParkingMoney();
+        repaint();
     }
 
     private void addFreeParkingMoney() {

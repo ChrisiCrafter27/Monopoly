@@ -1,22 +1,19 @@
 package monopol.client.screen;
 
 import monopol.client.Client;
-import monopol.client.ClientPlayer;
-import monopol.common.data.Player;
 import monopol.common.utils.JUtils;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.List;
 
-public class PlayerPane extends JLayeredPane {
+public class PlayerSelectPane extends JLayeredPane {
     private Client client;
     private ArrayList<Client> shownClients = new ArrayList<>();
     private boolean requestUpdate = false;
 
-    public PlayerPane() {
+    public PlayerSelectPane() {
         super();
 
         setBounds(0, 0, (int) JUtils.SCREEN_WIDTH, (int) JUtils.SCREEN_HEIGHT);

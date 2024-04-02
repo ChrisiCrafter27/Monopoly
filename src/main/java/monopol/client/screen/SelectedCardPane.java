@@ -91,6 +91,7 @@ public class SelectedCardPane extends JLayeredPane {
         this.purchasable = purchasable;
         update();
         displaySup.get().playerInfoPane.update();
+        displaySup.get().buttonsPane.update();
         setVisible(true);
     }
 

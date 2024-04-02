@@ -274,7 +274,7 @@ public class BoardPane extends JLayeredPane {
                 });
                 ImageIcon icon = JUtils.imageIcon("images/felder/high_background.png");
                 button.setIcon(new ImageIcon(icon.getImage().getScaledInstance(button.getWidth(), button.getHeight(), Image.SCALE_SMOOTH)));
-                pane.add(JUtils.addImage("images/felder/up_ereignis.png", x+10, y+10), 2);
+                pane.add(JUtils.addImage("images/felder/ereignis.png", x+10, y+10), 2);
                 pane.add(JUtils.addRotatedText("Ereignisfeld", Font.BOLD, x+2, y+48,11, 180, 66), 1);
             }
             default -> throw new IllegalStateException();

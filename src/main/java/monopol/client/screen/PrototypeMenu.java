@@ -76,15 +76,17 @@ public class PrototypeMenu {
 
         root.lobbyPane.reset();
         root.pingPane.reset();
-        root.playerPane.reset();
+        root.playerSelectPane.reset();
         root.selectedCardPane.reset();
         root.playerDisplayPane.reset();
-        root.infoPane.reset();
+        root.infoBoxPane.reset();
         root.rejoinPane.reset();
         root.boardPane.reset();
         root.freeParkingPane.reset();
         root.playerInfoPane.reset();
+        root.buttonsPane.reset();
         root.dicePane.reset();
+        root.cardDecksPane.reset();
 
         root.menuPane.init(clients, this::prepareLobby, root);
         root.rejoinPane.init(() -> client, newClient -> clients.add(clients.size(), newClient));
@@ -109,7 +111,7 @@ public class PrototypeMenu {
 
                 //Initiate panes
                 root.lobbyPane.init();
-                root.playerPane.init();
+                root.playerSelectPane.init();
 
                 //Wait for the server connection
                 while(!isInterrupted() && client.player().getName() == null) {
@@ -126,7 +128,7 @@ public class PrototypeMenu {
                     //Get the client from the panels
                     Client oldClient = client;
                     if(root.lobbyPane.getClient() != null) client = root.lobbyPane.getClient();
-                    if(root.playerPane.getClient() != null && client.equals(oldClient)) client = root.playerPane.getClient();
+                    if(root.playerSelectPane.getClient() != null && client.equals(oldClient)) client = root.playerSelectPane.getClient();
 
                     //Remove clients that left the game
                     for (int i = 0; i < clients.size(); i++) {
@@ -145,7 +147,7 @@ public class PrototypeMenu {
                     //Try to get information from the server and update
                     try {
                         root.lobbyPane.update(client.serverMethod().getPlayers(), client, clients, ip, keyHandler, false, root);
-                        root.playerPane.update(client, clients, root.lobbyPane.mustUpdate());
+                        root.playerSelectPane.update(client, clients, root.lobbyPane.mustUpdate());
                         root.pingPane.update(client.getPing(), keyHandler, root, () -> {
                             try {
                                 client.serverMethod().kick(client.player().getName(), DisconnectReason.CLIENT_CLOSED);
@@ -192,11 +194,13 @@ public class PrototypeMenu {
         //Initiate panes
         root.boardPane.init(() -> root);
         root.playerDisplayPane.init(() -> client, () -> root);
-        root.infoPane.init(() -> client);
+        root.infoBoxPane.init(() -> client);
         root.freeParkingPane.init();
-        root.playerInfoPane.init(() -> client, () -> root);
+        root.playerInfoPane.init(() -> client);
+        root.buttonsPane.init(() -> client, () -> root);
         root.dicePane.showWithoutAnim(6, 6, 6);
         root.selectedCardPane.init(() -> root);
+        root.cardDecksPane.init(() -> client);
 
         new Thread(() -> {
             //While game is running
@@ -205,7 +209,7 @@ public class PrototypeMenu {
                 //Get the client from the panels
                 Client oldClient = client;
                 if(root.lobbyPane.getClient() != null) client = root.lobbyPane.getClient();
-                if(root.playerPane.getClient() != null && client.equals(oldClient)) client = root.playerPane.getClient();
+                if(root.playerSelectPane.getClient() != null && client.equals(oldClient)) client = root.playerSelectPane.getClient();
 
                 //Remove clients that left the game
                 for (int i = 0; i < clients.size(); i++) {
@@ -221,7 +225,7 @@ public class PrototypeMenu {
                 }
 
                 //Try to get information from the server and update
-                root.playerPane.update(client, clients, root.lobbyPane.mustUpdate());
+                root.playerSelectPane.update(client, clients, root.lobbyPane.mustUpdate());
                 root.pingPane.update(client.getPing(), keyHandler, root, () -> {
                     try {
                         client.serverMethod().kick(client.player().getName(), DisconnectReason.CLIENT_CLOSED);

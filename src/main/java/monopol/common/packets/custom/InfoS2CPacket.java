@@ -25,6 +25,6 @@ public class InfoS2CPacket extends S2CPacket<InfoS2CPacket> {
 
     @Override
     public void handleOnClient(Client client, RootPane display) {
-        display.infoPane.show(client, text);
+        display.infoBoxPane.show(client, text);
     }
 }
