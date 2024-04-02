@@ -11,8 +11,6 @@
     </target>
 
     <target name="cleanArtifact">
-        <loadfile property="version" srcFile="src/main/resources/assets/version.txt"/>
-
         <property name="oldJarName" value="Monopoly.jar"/>
 
         <delete dir="${artifact.dir}/Monopoly_jar/${oldJarName}" failonerror="false"/>

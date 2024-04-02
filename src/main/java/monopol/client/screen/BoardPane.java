@@ -75,14 +75,14 @@ public class BoardPane extends JLayeredPane {
         addStreetButton(Street.RILKESTRASSE, 930, 920, Direction.LEFT);
         //DOWN
         addStreetButton(Street.SCHLOSSALLEE, 90, 990, Direction.UP);
-        addGemeinschaftsfeld(160, 990, Direction.UP);
+        addSteuerfeld(160, 990, Direction.UP);
         addStreetButton(Street.PARKSTRASSE, 230, 990, Direction.UP);
         addStreetButton(Street.DOMPLATZ, 300, 990, Direction.UP);
         addSpecialField(370, 990, Direction.UP);
-        addSteuerfeld(440, 990, Direction.UP);
+        addEreignisfeld(440, 990, Direction.UP);
         addTrainStationButton(TrainStation.HAUPTBAHNHOF, 510, 990, Direction.UP);
         addStreetButton(Street.BAHNHOFSTRASSE, 580, 990, Direction.UP);
-        addEreignisfeld(650, 990, Direction.UP);
+        addGemeinschaftsfeld(650, 990, Direction.UP);
         addStreetButton(Street.BOERSENPLATZ, 720, 990, Direction.UP);
         addStreetButton(Street.HAUPSTRASSE, 790, 990, Direction.UP);
         addStreetButton(Street.RATHAUSPLATZ, 860, 990, Direction.UP);

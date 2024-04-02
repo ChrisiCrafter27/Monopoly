@@ -1,4 +1,3 @@
 package monopol.common.data;
 
-public interface IField {
-}
+public interface IField {}

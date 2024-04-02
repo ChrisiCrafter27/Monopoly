@@ -31,6 +31,9 @@ public class Packets {
         register(RollDiceS2CPacket.class, RollDiceS2CPacket::deserialize);
         register(StartS2CPacket.class, StartS2CPacket::deserialize);
         register(TradeS2CPacket.class, TradeS2CPacket::deserialize);
+        register(BusCardS2CPacket.class, BusCardS2CPacket::deserialize);
+        register(BusCardC2SPacket.class, BusCardC2SPacket::deserialize);
+
         register(UpdateButtonsS2CPacket.class, UpdateButtonsS2CPacket::deserialize);
         register(UpdateFreeParkingS2CPacket.class, UpdateFreeParkingS2CPacket::deserialize);
         register(UpdatePlayerDataS2CPacket.class, UpdatePlayerDataS2CPacket::deserialize);

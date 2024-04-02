@@ -65,12 +65,15 @@ public class Player implements Serializable {
     }
     public void addBusCard() {
         busCards++;
+        Monopoly.INSTANCE.server().updatePlayerData();
     }
     public void useBusCard() {
         busCards--;
+        Monopoly.INSTANCE.server().updatePlayerData();
     }
     public void removeBusCards() {
         busCards = 0;
+        Monopoly.INSTANCE.server().updatePlayerData();
     }
     public void setPosition(int position) {
         this.position = position;

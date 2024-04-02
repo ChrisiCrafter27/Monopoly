@@ -34,8 +34,7 @@ public class CommunityCard {
                 player.addMoney(money);
             })),
             new CommunityCard(List.of("Gehe in das Gefängnis!", "Begib dich direkt dorthin.", "Gehe nicht über Los.", "Ziehe nicht 200€ ein."), Map.of("Ins Gefängnis gehen", (server, player) -> {
-                player.setPosition(Field.fields().indexOf(Corner.GEFAENGNIS));
-                server.events().onArrivedAtField();
+                player.setInPrison(true);
             })),
             new CommunityCard(List.of("", "Arzt-Kosten.", "Zahle 50€."), Map.of("Geld zahlen", (server, player) -> {
                 player.contractMoney(50);
@@ -90,6 +89,7 @@ public class CommunityCard {
         if(unusedCards.isEmpty()) resetUnused();
         CommunityCard toReturn = unusedCards.get(new Random().nextInt(unusedCards.size()));
         unusedCards.remove(toReturn);
+        if(unusedCards.isEmpty()) resetUnused();
         return toReturn;
     }
 
@@ -115,7 +115,7 @@ public class CommunityCard {
     }
 
     public void activate(Player player) {
-        PacketManager.sendS2C(new CommunityCardS2CPacket(player.getName(), description, new ArrayList<>(actions.keySet()), CommunityCard.unusedSize()), PacketManager.all(), Throwable::printStackTrace);
+        PacketManager.sendS2C(new CommunityCardS2CPacket(player.getName(), description, new ArrayList<>(actions.keySet()), unusedSize()), PacketManager.all(), Throwable::printStackTrace);
     }
 
     public Map<String, CommunityCardAction> actions() {

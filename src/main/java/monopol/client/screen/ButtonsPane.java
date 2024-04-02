@@ -22,6 +22,7 @@ public class ButtonsPane extends JLayeredPane {
     private boolean hasToPayRent;
     private boolean inPrison;
     private boolean ready;
+    private List<IPurchasable> purchasables;
 
     private final JLayeredPane bottom = new JLayeredPane();
 
@@ -114,15 +115,16 @@ public class ButtonsPane extends JLayeredPane {
     }
 
     public void update() {
-        if(isVisible()) update(activePlayer, diceRolled, hasToPayRent, inPrison, ready);
+        if(isVisible()) update(activePlayer, diceRolled, hasToPayRent, inPrison, ready, purchasables);
     }
 
-    public void update(String activePlayer, boolean diceRolled, boolean hasToPayRent, boolean inPrison, boolean ready) {
+    public void update(String activePlayer, boolean diceRolled, boolean hasToPayRent, boolean inPrison, boolean ready, List<IPurchasable> purchasables) {
         this.diceRolled = diceRolled;
         this.activePlayer = activePlayer;
         this.hasToPayRent = hasToPayRent;
         this.inPrison = inPrison;
         this.ready = ready;
+        this.purchasables = purchasables;
         boolean active = activePlayer != null && activePlayer.equals(clientSup.get().player().getName());
         action1L.setText(diceRolled ? "Zug beenden" : "Würfeln");
         action2L.setText(diceRolled ? "Miete zahlen" : inPrison ? "Freikaufen" : "Busfahren");
@@ -137,9 +139,9 @@ public class ButtonsPane extends JLayeredPane {
                     setIcon(action1B, ready);
                     setIcon(action2B, hasToPayRent);
                     mortgageL.setText(purchasable.isMortgaged() ? "Zurückkaufen" : "Verpfänden");
-                    setIcon(purchasableB, player.getPosition() == Field.fields().indexOf(purchasable) && purchasable.getOwner().isEmpty() && player.getMoney() >= purchasable.getPrice());
-                    setIcon(upgradeB, purchasable.getOwner().equals(player.getName()) && player.getMoney() >= purchasable.getUpgradeCost() && purchasable.getMaxLevel() > purchasable.getLevel());
-                    setIcon(downgradeB, purchasable.getOwner().equals(player.getName()) && purchasable.getLevel() > 0);
+                    setIcon(purchasableB, purchasables.stream().map(IPurchasable::getName).anyMatch(purchasable.getName()::equals) && player.getPosition() == Field.fields().indexOf(purchasable) && purchasable.getOwner().isEmpty() && player.getMoney() >= purchasable.getPrice());
+                    setIcon(upgradeB, purchasables.stream().map(IPurchasable::getName).anyMatch(purchasable.getName()::equals) && purchasable.getOwner().equals(player.getName()) && player.getMoney() >= purchasable.getUpgradeCost() && purchasable.getMaxLevel() > purchasable.getLevel());
+                    setIcon(downgradeB, purchasables.stream().map(IPurchasable::getName).anyMatch(purchasable.getName()::equals) && purchasable.getOwner().equals(player.getName()) && purchasable.getLevel() > 0);
                     setIcon(mortgageB, purchasable.getOwner().equals(player.getName()));
                     setIcon(tradeB, false);
                 } else {

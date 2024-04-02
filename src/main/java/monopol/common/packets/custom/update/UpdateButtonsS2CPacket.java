@@ -4,6 +4,7 @@ import monopol.client.Client;
 import monopol.client.screen.RootPane;
 import monopol.common.data.*;
 import monopol.common.packets.S2CPacket;
+import monopol.server.events.BuildRule;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,15 +12,19 @@ import java.util.List;
 public class UpdateButtonsS2CPacket extends S2CPacket<UpdateButtonsS2CPacket> {
     private final String currentPlayer;
     private final boolean diceRolled, hasToPayRent, inPrison, ready;
-    private final List<IPurchasable> modifiable;
+    private final List<IPurchasable> purchasables;
 
-    public UpdateButtonsS2CPacket(String currentPlayer, boolean diceRolled, boolean hasToPayRent, boolean inPrison, boolean ready, List<IPurchasable> modifiable) {
+    public UpdateButtonsS2CPacket(String currentPlayer, boolean diceRolled, boolean hasToPayRent, boolean inPrison, boolean ready, BuildRule buildRule, Player player) {
+        this(currentPlayer, diceRolled, hasToPayRent, inPrison, ready, buildRule.apply(player));
+    }
+
+    public UpdateButtonsS2CPacket(String currentPlayer, boolean diceRolled, boolean hasToPayRent, boolean inPrison, boolean ready, List<IPurchasable> purchasables) {
         this.currentPlayer = currentPlayer;
         this.diceRolled = diceRolled;
         this.hasToPayRent = hasToPayRent;
         this.inPrison = inPrison;
         this.ready = ready;
-        this.modifiable = modifiable;
+        this.purchasables = purchasables;
     }
 
     public static UpdateButtonsS2CPacket deserialize(DataReader reader) {
@@ -32,6 +37,9 @@ public class UpdateButtonsS2CPacket extends S2CPacket<UpdateButtonsS2CPacket> {
 
     @Override
     public void serialize(DataWriter writer) {
+        writer.writeList(purchasables.stream().filter(purchasable -> purchasable instanceof Street).map(purchasable -> (Street) purchasable).toList(), DataWriter::writeEnum);
+        writer.writeList(purchasables.stream().filter(purchasable -> purchasable instanceof TrainStation).map(purchasable -> (TrainStation) purchasable).toList(), DataWriter::writeEnum);
+        writer.writeList(purchasables.stream().filter(purchasable -> purchasable instanceof Plant).map(purchasable -> (Plant) purchasable).toList(), DataWriter::writeEnum);
         writer.writeString(currentPlayer);
         writer.writeBool(diceRolled);
         writer.writeBool(hasToPayRent);
@@ -41,6 +49,6 @@ public class UpdateButtonsS2CPacket extends S2CPacket<UpdateButtonsS2CPacket> {
 
     @Override
     public void handleOnClient(Client client, RootPane display) {
-        display.buttonsPane.update(currentPlayer, diceRolled, hasToPayRent, inPrison, ready);
+        display.buttonsPane.update(currentPlayer, diceRolled, hasToPayRent, inPrison, ready, purchasables);
     }
 }

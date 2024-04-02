@@ -87,7 +87,8 @@ public abstract class Events {
     public abstract void onNextRound();
     public abstract void onPrisonerRound();
     public abstract void onDiceRoll(String name);
-    public abstract void onGetBusCard(String name);
+    public abstract void onGetBusCard();
+    public abstract void onTakeBusCard(String name);
     public abstract void onArrivedAtField();
     public abstract void onPayRent(String name);
     public abstract void onCommunityCardAction(String player, String action);
@@ -98,7 +99,7 @@ public abstract class Events {
     public abstract void onPurchaseCard(String name, IPurchasable purchasable);
     public abstract void onArrivedAtLos();
     public abstract void onArrivedAtAuction();
-    public abstract void onArrivedAtBusPass();
+    public abstract void onArrivedAtBusCard();
     public abstract void onArrivedAtBirthday();
     public abstract void onArrivedAtPurchasable(IPurchasable purchasable);
     public abstract void onArrivedAtEventField();

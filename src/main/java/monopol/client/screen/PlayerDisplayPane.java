@@ -184,6 +184,7 @@ public class PlayerDisplayPane extends JLayeredPane {
 
     public void reset() {
         removeAll();
+        players.clear();
         setVisible(false);
         animThread.interrupt();
     }
