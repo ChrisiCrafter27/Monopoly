@@ -1,5 +1,7 @@
 package monopol.common.data;
 
+import monopol.common.utils.Triplet;
+
 public enum Plant implements IPurchasable {
     GASWERK ("Gaswerk"),
     ELEKTRIZITAETSWERK ("Elektrizitätswerk"),
@@ -10,6 +12,7 @@ public enum Plant implements IPurchasable {
     public final int mortgage = 75;
     private String owner = null;
     private boolean mortgaged;
+    private boolean specialRent;
 
     Plant(String name) {
         this.name = name;
@@ -81,7 +84,18 @@ public enum Plant implements IPurchasable {
     }
 
     @Override
-    public int getRent(int diceResult) {
+    public void setSpecialRent(boolean specialRent) {
+        this.specialRent = specialRent;
+    }
+
+    @Override
+    public boolean getSpecialRent() {
+        return specialRent;
+    }
+
+    @Override
+    public int getRent(Triplet<Integer, Integer, Integer> diceResult, boolean considerSpecialRent) {
+        if(considerSpecialRent && specialRent) return diceResult.getLeft() * 10;
         int i = 0;
         for (Plant plant : values()) {
             if (plant.getOwner().equals(getOwner()) && !plant.isMortgaged()) i++;
@@ -92,7 +106,7 @@ public enum Plant implements IPurchasable {
             case 3 -> 20;
             default -> 0;
         };
-        return toReturn * diceResult;
+        return toReturn * (diceResult.getLeft() + diceResult.getRight());
     }
 
     @Override

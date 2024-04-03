@@ -3,7 +3,6 @@ package monopol.server.events;
 import monopol.common.data.*;
 import monopol.common.packets.PacketManager;
 import monopol.common.packets.custom.CommunityCardS2CPacket;
-import monopol.common.packets.custom.InfoS2CPacket;
 import monopol.server.Server;
 
 import java.util.*;
@@ -43,10 +42,10 @@ public class CommunityCard {
             new CommunityCard(List.of("Du hast den 2. Preis in einer", "Schönheitskonkurrenz", "gewonnen. Ziehe 10€ ein."), Map.of("Geld einziehen", (server, player) -> {
                 player.addMoney(10);
             })),
-            new CommunityCard(List.of("Du kommst aus dem", "Gefängnis frei.", "Diese Karte musst du behalten", "bis du sie benötigst."), Map.of("Karte einziehen", (server, player) -> {
+            new CommunityCard(List.of("Du kommst aus dem", "Gefängnis frei.", "Diese Karte musst du behalten,", "bis du sie benötigst."), Map.of("Karte einziehen", (server, player) -> {
                 player.addPrisonCard();
             })),
-            new CommunityCard(List.of("", "Aus Lagerverkäufen", "erhältst du 50€"), Map.of("Geld einziehen", (server, player) -> {
+            new CommunityCard(List.of("", "Aus Lagerverkäufen", "erhältst du 50€."), Map.of("Geld einziehen", (server, player) -> {
                 player.addMoney(50);
             })),
             new CommunityCard(List.of("", "", "Rücke vor bis auf Los."), Map.of("Bewegen", (server, player) -> {
@@ -56,7 +55,7 @@ public class CommunityCard {
             new CommunityCard(List.of("", "Die Jahresrente wird fällig.", "Ziehe 100€ ein."), Map.of("Geld einziehen", (server, player) -> {
                 player.addMoney(100);
             })),
-            new CommunityCard(List.of("", "Dur erbst", "100€"), Map.of("Geld einziehen", (server, player) -> {
+            new CommunityCard(List.of("", "Dur erbst", "100€."), Map.of("Geld einziehen", (server, player) -> {
                 player.addMoney(100);
             })),
             new CommunityCard(List.of("Rücke vor bis zum nächsten", "Bahnhof. Ist dieser verkauft,", "erhält der Eigentümer die", "doppelte Miete."), Map.of("Bewegen", (server, player) -> {
@@ -64,8 +63,10 @@ public class CommunityCard {
                 do {
                     pos++;
                 } while (!(Field.get(pos) instanceof TrainStation trainStation));
-                trainStation.setDoubleRent(true);
+                int oldPos = player.getPosition();
+                trainStation.setSpecialRent(true);
                 player.setPosition(pos);
+                if(player.getPosition() < oldPos) server.events().onPassedLos();
                 server.events().onArrivedAtField();
             })),
             new CommunityCard(List.of("Du erhältst auf Vorzugs-", "Aktien 7% Dividende:", "25€"), Map.of("Geld einziehen", (server, player) -> {

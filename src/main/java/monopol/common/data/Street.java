@@ -1,5 +1,7 @@
 package monopol.common.data;
 
+import monopol.common.utils.Triplet;
+
 public enum Street implements IPurchasable {
     BADSTRASSE ("Badstraße", 60, 0, 2, 10, 30, 90, 160, 250, 750, ColorGroup.BROWN, "", false),
     TURMSTRASSE ("Turmstraße", 60, 0, 4, 20, 60, 180, 320, 450, 950, ColorGroup.BROWN, "", false),
@@ -21,7 +23,7 @@ public enum Street implements IPurchasable {
     HAMBURGERSTRASSE ("Hamburgerstraße", 200, 0, 16, 80, 220, 600, 800, 1000, 1500, ColorGroup.ORANGE, "", false),
 
     THEATERSTRASSE ("Theaterstraße", 220, 0, 18, 90, 250, 700, 875, 1050, 2050, ColorGroup.RED, "", false),
-    MUSEUMSTRASSE ("Museumsstraße", 220, 0, 18, 90, 250, 700, 875, 1050, 2050, ColorGroup.RED, "", false),
+    MUSEUMSTRASSE ("Museumstraße", 220, 0, 18, 90, 250, 700, 875, 1050, 2050, ColorGroup.RED, "", false),
     OPERNPLATZ ("Opernplatz", 240, 0, 20, 100, 300, 750, 925, 1100, 2100, ColorGroup.RED, "", false),
     KONZERTHAUSSTRASSE ("Konzerthausstraße", 240, 0, 20, 100, 300, 750, 925, 1100, 2100, ColorGroup.RED, "", false),
 
@@ -31,7 +33,7 @@ public enum Street implements IPurchasable {
     RILKESTRASSE ("Rilkestraße", 280, 0, 24, 120, 360, 850, 1025, 1200, 2200, ColorGroup.YELLOW, "", false),
 
     RATHAUSPLATZ ("Rathausplatz", 300, 0, 26, 130, 390, 900, 1100, 1275, 2275, ColorGroup.GREEN, "", false),
-    HAUPSTRASSE ("Hauptsstraße", 300, 0, 26, 130, 390, 900, 1100, 1275, 2275, ColorGroup.GREEN, "", false),
+    HAUPSTRASSE ("Hauptstraße", 300, 0, 26, 130, 390, 900, 1100, 1275, 2275, ColorGroup.GREEN, "", false),
     BOERSENPLATZ ("Börsenplatz", 320, 0, 28, 150, 450, 1000, 1200, 1400, 2400, ColorGroup.GREEN, "", false),
     BAHNHOFSTRASSE ("Bahnhofstraße", 320, 0, 28, 150, 450, 1000, 1200, 1400, 2400, ColorGroup.GREEN, "", false),
 
@@ -147,7 +149,15 @@ public enum Street implements IPurchasable {
     }
 
     @Override
-    public int getRent(int diceResult) {
+    public void setSpecialRent(boolean specialRent) {}
+
+    @Override
+    public boolean getSpecialRent() {
+        return false;
+    }
+
+    @Override
+    public int getRent(Triplet<Integer, Integer, Integer> diceResult, boolean considerSpecialRent) {
         return switch (level) {
             case 0 -> rentNormal;
             case 1 -> rentOneHouse;

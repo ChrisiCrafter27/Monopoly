@@ -6,8 +6,10 @@ import monopol.common.packets.PacketManager;
 import monopol.common.packets.custom.*;
 import monopol.common.packets.custom.update.UpdateButtonsS2CPacket;
 import monopol.common.packets.custom.update.UpdatePurchasablesS2CPacket;
+import monopol.common.utils.Triplet;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -33,6 +35,8 @@ public class StandardEvents extends Events {
         BusCard.setSize(maxBusTickets);
         BusCard.resetUnused();
         Field.purchasables().forEach(purchasable -> purchasable.setOwner(null));
+        Arrays.stream(TrainStation.values()).forEach(trainStation -> trainStation.setSpecialRent(false));
+        Arrays.stream(Plant.values()).forEach(plant -> plant.setSpecialRent(false));
     }
 
     @Override
@@ -99,14 +103,15 @@ public class StandardEvents extends Events {
         dice1 = random.nextInt(6) + 1;
         dice2 = random.nextInt(6) + 1;
         dice3 = tempoDice ? random.nextInt(6) + 1 : -1;
-        diceResult = dice1 + dice2;
+        diceResult = new Triplet<>(dice1, dice2, dice3);
+        int intResult = dice1 + dice2;
         switch (dice3) {
-            case 1 -> diceResult += 1;
-            case 2 -> diceResult += 2;
-            case 3 -> diceResult += 3;
+            case 1 -> intResult += 1;
+            case 2 -> intResult += 2;
+            case 3 -> intResult += 3;
             default -> {}
         }
-        final int finalResult = diceResult;
+        final int finalResult = intResult;
         new Thread(() -> {
             PacketManager.sendS2C(new RollDiceS2CPacket(dice1, dice2, dice3), PacketManager.all(), Throwable::printStackTrace);
             try {
@@ -163,8 +168,9 @@ public class StandardEvents extends Events {
     public void onPayRent(String name) {
         if(name.equals(player().getName()) && hasToPayRent) {
             IPurchasable purchasable = (IPurchasable) Field.fields().get(player().getPosition());
-            Monopoly.INSTANCE.server().getPlayerServerSide(purchasable.getOwner()).addMoney(purchasable.getRent(diceResult));
-            player().contractMoney(purchasable.getRent(diceResult));
+            Monopoly.INSTANCE.server().getPlayerServerSide(purchasable.getOwner()).addMoney(purchasable.getRent(diceResult, true));
+            player().contractMoney(purchasable.getRent(diceResult, true));
+            purchasable.setSpecialRent(false);
             hasToPayRent = false;
             PacketManager.sendS2C(new UpdateButtonsS2CPacket(player().getName(), diceRolled, hasToPayRent, player().inPrison(), mayDoNextRound(), buildRule, player()), PacketManager.all(), Throwable::printStackTrace);
         }
@@ -300,13 +306,6 @@ public class StandardEvents extends Events {
     @Override
     public void onArrivedAtPurchasable(IPurchasable purchasable) {
         if(!purchasable.getOwner().isEmpty() && !purchasable.getOwner().equals(player().getName())) hasToPayRent = true;
-
-        Random random = new Random();
-        switch (random.nextInt(3)) {
-            case 0 -> onArrivedAtCommunityField();
-            case 1 -> onArrivedAtBusCard();
-            case 2 -> onArrivedAtEventField();
-        }
     }
 
     @Override

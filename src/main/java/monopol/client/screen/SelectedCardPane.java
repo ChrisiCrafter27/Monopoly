@@ -2,6 +2,7 @@ package monopol.client.screen;
 
 import monopol.common.data.*;
 import monopol.common.utils.JUtils;
+import monopol.common.utils.Triplet;
 
 import javax.swing.*;
 import java.awt.*;
@@ -184,7 +185,7 @@ public class SelectedCardPane extends JLayeredPane {
                 textKey1.setForeground(getColor());
                 textValue1.setForeground(getColor());
             } else {
-                switch (trainStation.getRent(1)) {
+                switch (trainStation.getRent(new Triplet<>(0, 0, 0), false)) {
                     case 25 -> {
                         textKey3.setForeground(getColor());
                         textValue3.setForeground(getColor());
@@ -227,7 +228,7 @@ public class SelectedCardPane extends JLayeredPane {
                 textKey1.setForeground(getColor());
                 textValue1.setForeground(getColor());
             } else {
-                switch (plant.getRent(1)) {
+                switch (plant.getRent(new Triplet<>(0, 0, 0), false)) {
                     case 4 -> {
                         textKey3.setForeground(getColor());
                         textValue3.setForeground(getColor());

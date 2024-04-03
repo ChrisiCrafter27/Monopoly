@@ -3,6 +3,7 @@ package monopol.server.events;
 import monopol.common.core.Monopoly;
 import monopol.common.data.IPurchasable;
 import monopol.common.data.Player;
+import monopol.common.utils.Triplet;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +33,7 @@ public abstract class Events {
     protected final List<String> players = new ArrayList<>();
     protected int currentPlayer;
     protected boolean diceRolled;
-    protected int diceResult;
+    protected Triplet<Integer, Integer, Integer> diceResult;
     protected int dice1;
     protected int dice2;
     protected int dice3;

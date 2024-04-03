@@ -1,5 +1,7 @@
 package monopol.common.data;
 
+import monopol.common.utils.Triplet;
+
 public enum TrainStation implements IPurchasable {
     SUEDBAHNHOF ("Südbahnhof"),
     WESTBAHNHOF ("Westbahnhof"),
@@ -13,7 +15,7 @@ public enum TrainStation implements IPurchasable {
     public final int rentNormal = 25;
     private String owner = null;
     private boolean mortgaged;
-    private boolean doubleRent;
+    private boolean specialRent;
 
     TrainStation(String name) {
         this.name = name;
@@ -21,10 +23,6 @@ public enum TrainStation implements IPurchasable {
 
     public boolean isUpgraded() {
         return upgraded;
-    }
-
-    public void setDoubleRent(boolean doubleRent) {
-        this.doubleRent = doubleRent;
     }
 
     @Override
@@ -97,7 +95,17 @@ public enum TrainStation implements IPurchasable {
     }
 
     @Override
-    public int getRent(int diceResult) {
+    public void setSpecialRent(boolean specialRent) {
+        this.specialRent = specialRent;
+    }
+
+    @Override
+    public boolean getSpecialRent() {
+        return specialRent;
+    }
+
+    @Override
+    public int getRent(Triplet<Integer, Integer, Integer> diceResult, boolean considerSpecialRent) {
         int i = 0;
         for (TrainStation station : values()) {
             if (station.getOwner().equals(getOwner()) && !station.mortgaged()) i++;
@@ -108,10 +116,7 @@ public enum TrainStation implements IPurchasable {
             i--;
         }
         if (isUpgraded()) toReturn *= 2;
-        if (doubleRent) {
-            toReturn *= 2;
-            doubleRent = false;
-        }
+        if (considerSpecialRent && specialRent) toReturn *= 2;
         return toReturn;
     }
 
