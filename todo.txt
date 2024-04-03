@@ -1,7 +1,4 @@
 - HousePane
-- PlayerInfoPane Buttons
-- Kartenstapel
-- Ereigniskarten
 - Bankrott gehen
 - Spiel Ende
 - Report button
