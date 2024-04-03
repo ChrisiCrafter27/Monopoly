@@ -33,6 +33,8 @@ public class Packets {
         register(TradeS2CPacket.class, TradeS2CPacket::deserialize);
         register(BusCardS2CPacket.class, BusCardS2CPacket::deserialize);
         register(BusCardC2SPacket.class, BusCardC2SPacket::deserialize);
+        register(EventCardS2CPacket.class, EventCardS2CPacket::deserialize);
+        register(EventCardC2SPacket.class, EventCardC2SPacket::deserialize);
 
         register(UpdateButtonsS2CPacket.class, UpdateButtonsS2CPacket::deserialize);
         register(UpdateFreeParkingS2CPacket.class, UpdateFreeParkingS2CPacket::deserialize);

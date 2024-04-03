@@ -91,6 +91,7 @@ public abstract class Events {
     public abstract void onTakeBusCard(String name);
     public abstract void onArrivedAtField();
     public abstract void onPayRent(String name);
+    public abstract void onEventCardAction(String player, String action);
     public abstract void onCommunityCardAction(String player, String action);
     public abstract void onPaySurety(String name);
     public abstract void onMortgage(String name, IPurchasable purchasable);
