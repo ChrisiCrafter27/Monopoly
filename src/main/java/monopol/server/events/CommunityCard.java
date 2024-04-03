@@ -3,6 +3,7 @@ package monopol.server.events;
 import monopol.common.data.*;
 import monopol.common.packets.PacketManager;
 import monopol.common.packets.custom.CommunityCardS2CPacket;
+import monopol.common.packets.custom.InfoS2CPacket;
 import monopol.server.Server;
 
 import java.util.*;
@@ -17,7 +18,10 @@ public class CommunityCard {
                 player.contractMoney(10);
                 server.gameData().addFreeParking(10);
             }, "Ziehen", (server, player) -> {
-                //TODO: EventCard.getUnused().activate(player);
+                PacketManager.sendS2C(new InfoS2CPacket(player.getName() + " zog eine Ereigniskarte"), PacketManager.all(), Throwable::printStackTrace);
+                EventCard card = EventCard.getUnused();
+                EventCard.setCurrent(card);
+                card.activate(player);
             })),
             new CommunityCard(List.of("", "Bank-Irrtum zu deinen Gunsten.", "Ziehe 200€ ein."), Map.of("Geld einziehen", (server, player) -> {
                 player.addMoney(200);

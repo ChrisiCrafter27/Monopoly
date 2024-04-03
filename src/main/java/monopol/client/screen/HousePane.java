@@ -24,14 +24,14 @@ public class HousePane extends JLayeredPane {
         setBounds(0, 0, (int) JUtils.SCREEN_WIDTH, (int) JUtils.SCREEN_HEIGHT);
         setVisible(false);
 
-        for(int i = 0; i< HOUSES_COUNT; i++){
-            JLabel label = JUtils.addImage("images/Main_pictures/Haus.png",(i/8)*26+155,(i%8)*30+400, 20, (int) (17.5));
+        for(int i = 0; i < HOUSES_COUNT; i++){
+            JLabel label = JUtils.addImage("images/Main_pictures/Haus.png",(i%4)*26+155,(i/4)*30+400, 20, 18);
             add(label, DEFAULT_LAYER);
             houses.put(label, new Pair<>(null, i));
         }
 
-        for(int i = 0; i< HOTELS_COUNT; i++){
-            JLabel label = JUtils.addImage("images/Main_pictures/Hotel.png",(i/4)*26+777,(i%4)*30+400, 20, (int) (25));
+        for(int i = 0; i < HOTELS_COUNT; i++){
+            JLabel label = JUtils.addImage("images/Main_pictures/Hotel.png",(i%3)*26+777,(i/3)*30+400, 20, 25);
             add(label, DEFAULT_LAYER);
             hotels.put(label, null);
         }
@@ -50,7 +50,6 @@ public class HousePane extends JLayeredPane {
     }
 
     public void update() {
-        if(true) return;
         for(IPurchasable purchasable : Field.purchasables()) {
             if(purchasable instanceof Street street) {
                 int level = street.getLevel();
@@ -122,8 +121,8 @@ public class HousePane extends JLayeredPane {
 
     private void moveHouseOffStreet(Street street){
         int storedHouses = storedHouses(houses);
-        int x = (storedHouses/8)*26+155;
-        int y = (storedHouses%8)*30+400;
+        int x = (storedHouses%4)*26+155;
+        int y = (storedHouses/4)*30+400;
         JLabel label = getLabel(houses, street, buildingsOn(houses, street) - 1);
         label.setBounds(JUtils.getX(x), JUtils.getY(y), label.getWidth(), label.getHeight());
         houses.replace(label, new Pair<>(null, storedHouses));
