@@ -104,8 +104,8 @@ public class HousePane extends JLayeredPane {
             y += (int) (17.25 * buildingsOn + 1);
         }
         if (side == 2) {
-            y += 70;
             x += (int) (17.5 * buildingsOn - 1);
+            y += 70;
         }
         if (side == 3) {
             x += 1;

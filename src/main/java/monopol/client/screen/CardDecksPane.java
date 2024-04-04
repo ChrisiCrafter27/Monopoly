@@ -23,6 +23,8 @@ public class CardDecksPane extends JLayeredPane {
     private final JLayeredPane communityCardDescription = new JLayeredPane();
     private final int communityX = 131;
     private final int communityY = 784;
+    private final int communityWidth = 350 - communityX;
+    private final int communityHeight = 953  -  communityY;
 
     private final List<JLabel> busCards = new ArrayList<>();
     private final JLayeredPane busCardDeck = new JLayeredPane();
@@ -32,6 +34,8 @@ public class CardDecksPane extends JLayeredPane {
     private final JLayeredPane busCardDescription = new JLayeredPane();
     private final int busX = 401;
     private final int busY = 784;
+    private final int busWidth = 620 - busX;
+    private final int busHeight = 953 - busY;
 
     private final List<JLabel> eventCards = new ArrayList<>();
     private final JLayeredPane eventCardDeck = new JLayeredPane();
@@ -40,6 +44,8 @@ public class CardDecksPane extends JLayeredPane {
     private final JLayeredPane eventCardDescription = new JLayeredPane();
     private final int eventX = 671;
     private final int eventY = 784;
+    private final int eventWidth = 890 - eventX;
+    private final int eventHeight = 953 - eventY;
 
     public CardDecksPane() {
         super();
@@ -48,10 +54,10 @@ public class CardDecksPane extends JLayeredPane {
 
         communityCardDeck.setBounds(0, 0, (int) JUtils.SCREEN_WIDTH, (int) JUtils.SCREEN_HEIGHT);
         add(communityCardDeck, DEFAULT_LAYER);
-        communityCard.setBounds(JUtils.getX(communityX), JUtils.getY(communityY), JUtils.getX(350 - communityX), JUtils.getY(953  -  communityY));
-        JLabel communityCardBackground = JUtils.addImage("images/felder/karte.png", 0, 0, JUtils.getX(350 - communityX), JUtils.getY(953  -  communityY));
+        communityCard.setBounds(JUtils.getX(communityX), JUtils.getY(communityY), JUtils.getX(communityWidth), JUtils.getY(communityHeight));
+        JLabel communityCardBackground = JUtils.addImage("images/felder/karte.png", 0, 0, JUtils.getX(communityWidth), JUtils.getY(communityHeight));
         communityCard.add(communityCardBackground, DEFAULT_LAYER);
-        JLabel communityCardTitle = JUtils.addText("Gemeinschaftskarte", 0, 8, communityCard.getWidth(), 16, SwingConstants.CENTER, Color.RED);
+        JLabel communityCardTitle = JUtils.addText("Gemeinschaftskarte", 0, 8, communityWidth, 16, SwingConstants.CENTER, Color.RED);
         communityCardTitle.setFont(communityCardTitle.getFont().deriveFont(Font.BOLD));
         communityCard.add(communityCardTitle, PALETTE_LAYER);
         communityCardDescription.setBounds(0, 0, communityCard.getWidth(), communityCard.getHeight());
@@ -64,10 +70,10 @@ public class CardDecksPane extends JLayeredPane {
 
         busCardDeck.setBounds(0, 0, (int) JUtils.SCREEN_WIDTH, (int) JUtils.SCREEN_HEIGHT);
         add(busCardDeck, DEFAULT_LAYER);
-        busCard.setBounds(JUtils.getX(busX), JUtils.getY(busY), JUtils.getX(620 - busX), JUtils.getY(953 - busY));
-        JLabel busCardBackground = JUtils.addImage("images/felder/karte.png", 0, 0, JUtils.getX(620 - busX), JUtils.getY(953 - busY));
+        busCard.setBounds(JUtils.getX(busX), JUtils.getY(busY), JUtils.getX(busWidth), JUtils.getY(busHeight));
+        JLabel busCardBackground = JUtils.addImage("images/felder/karte.png", 0, 0, JUtils.getX(busWidth), JUtils.getY(busHeight));
         busCard.add(busCardBackground, DEFAULT_LAYER);
-        JLabel busCardTitle = JUtils.addText("Busfahrkarte", 0, 8, busCard.getWidth(), 16, SwingConstants.CENTER, Color.RED);
+        JLabel busCardTitle = JUtils.addText("Busfahrkarte", 0, 8, busWidth, 16, SwingConstants.CENTER, Color.RED);
         busCardTitle.setFont(busCardTitle.getFont().deriveFont(Font.BOLD));
         busCard.add(busCardTitle, PALETTE_LAYER);
         busCardDescription.setBounds(0, 0, busCard.getWidth(), busCard.getHeight());
@@ -79,10 +85,10 @@ public class CardDecksPane extends JLayeredPane {
 
         eventCardDeck.setBounds(0, 0, (int) JUtils.SCREEN_WIDTH, (int) JUtils.SCREEN_HEIGHT);
         add(eventCardDeck, DEFAULT_LAYER);
-        eventCard.setBounds(JUtils.getX(eventX), JUtils.getY(eventY), JUtils.getX(890 - eventX), JUtils.getY(953 - eventY));
-        JLabel eventCardBackground = JUtils.addImage("images/felder/karte.png", 0, 0, JUtils.getX(890 - eventX), JUtils.getY(953 - eventY));
+        eventCard.setBounds(JUtils.getX(eventX), JUtils.getY(eventY), JUtils.getX(eventWidth), JUtils.getY(eventHeight));
+        JLabel eventCardBackground = JUtils.addImage("images/felder/karte.png", 0, 0, JUtils.getX(eventWidth), JUtils.getY(eventHeight));
         eventCard.add(eventCardBackground, DEFAULT_LAYER);
-        JLabel eventCardTitle = JUtils.addText("Ereigniskarte", 0, 8, eventCard.getWidth(), 16, SwingConstants.CENTER, Color.RED);
+        JLabel eventCardTitle = JUtils.addText("Ereigniskarte", 0, 8, eventWidth, 16, SwingConstants.CENTER, Color.RED);
         eventCardTitle.setFont(eventCardTitle.getFont().deriveFont(Font.BOLD));
         eventCard.add(eventCardTitle, PALETTE_LAYER);
         eventCardDescription.setBounds(0, 0, eventCard.getWidth(), eventCard.getHeight());
@@ -119,7 +125,7 @@ public class CardDecksPane extends JLayeredPane {
 
     private void updateCommunityCardDeck(int size) {
         while(size > communityCards.size()) {
-            JLabel label = JUtils.addImage("images/felder/gemeinschaftskarte.png", communityX - 2, communityY - 2 - 2 * communityCards.size(), 350 - communityX + 4, 953  -  communityY + 4);
+            JLabel label = JUtils.addImage("images/felder/gemeinschaftskarte.png", communityX - 2, communityY - 2 - 2 * communityCards.size(), communityWidth + 4, communityHeight + 4);
             communityCards.add(label);
             communityCardDeck.add(label, DEFAULT_LAYER, 0);
         }
@@ -134,7 +140,7 @@ public class CardDecksPane extends JLayeredPane {
         int height = 14;
         communityCardDescription.removeAll();
         for(int i = 0; i < description.size(); i++) {
-            communityCardDescription.add(JUtils.addText(description.get(i), distance, 25+distance+i*(distance+height), communityCard.getWidth()-2*distance, height, SwingConstants.CENTER), DEFAULT_LAYER);
+            communityCardDescription.add(JUtils.addText(description.get(i), distance, 25+distance+i*(distance+height), communityWidth-2*distance, height, SwingConstants.CENTER), DEFAULT_LAYER);
         }
     }
 
@@ -144,7 +150,7 @@ public class CardDecksPane extends JLayeredPane {
         communityCardButtons.removeAll();
         for(int i = 0; i < buttons.size(); i++) {
             String button = buttons.get(i);
-            communityCardButtons.add(JUtils.addButton(button, distance+i*((communityCard.getWidth()-distance)/buttons.size()), communityCard.getHeight()-distance-height, (communityCard.getWidth()-distance)/buttons.size()-distance, height, true,
+            communityCardButtons.add(JUtils.addButton(button, distance+i*((communityWidth-distance)/buttons.size()), communityHeight-distance-height, (communityWidth-distance)/buttons.size()-distance, height, true,
                     actionEvent -> PacketManager.sendC2S(new CommunityCardC2SPacket(clientSup.get().player().getName(), button), clientSup.get(), Throwable::printStackTrace)), DEFAULT_LAYER);
         }
     }
@@ -190,7 +196,7 @@ public class CardDecksPane extends JLayeredPane {
         );
         busCardDescription.removeAll();
         for(int i = 0; i < description.size(); i++) {
-            busCardDescription.add(JUtils.addText(description.get(i), distance, 25+distance+i*(distance+height), busCard.getWidth()-2*distance, height, SwingConstants.CENTER), DEFAULT_LAYER);
+            busCardDescription.add(JUtils.addText(description.get(i), distance, 25+distance+i*(distance+height), busWidth-2*distance, height, SwingConstants.CENTER), DEFAULT_LAYER);
         }
     }
 
@@ -225,7 +231,7 @@ public class CardDecksPane extends JLayeredPane {
         int height = 14;
         eventCardDescription.removeAll();
         for(int i = 0; i < description.size(); i++) {
-            eventCardDescription.add(JUtils.addText(description.get(i), distance, 25+distance+i*(distance+height), eventCard.getWidth()-2*distance, height, SwingConstants.CENTER), DEFAULT_LAYER);
+            eventCardDescription.add(JUtils.addText(description.get(i), distance, 25+distance+i*(distance+height), eventWidth-2*distance, height, SwingConstants.CENTER), DEFAULT_LAYER);
         }
     }
 
@@ -235,7 +241,7 @@ public class CardDecksPane extends JLayeredPane {
         eventCardButtons.removeAll();
         for(int i = 0; i < buttons.size(); i++) {
             String button = buttons.get(i);
-            eventCardButtons.add(JUtils.addButton(button, distance+i*((eventCard.getWidth()-distance)/buttons.size()), eventCard.getHeight()-distance-height, (eventCard.getWidth()-distance)/buttons.size()-distance, height, true,
+            eventCardButtons.add(JUtils.addButton(button, distance+i*((eventWidth-distance)/buttons.size()), eventHeight-distance-height, (eventHeight-distance)/buttons.size()-distance, height, true,
                     actionEvent -> PacketManager.sendC2S(new EventCardC2SPacket(clientSup.get().player().getName(), button), clientSup.get(), Throwable::printStackTrace)), DEFAULT_LAYER);
         }
     }
