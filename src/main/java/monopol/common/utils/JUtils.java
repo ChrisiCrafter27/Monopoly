@@ -14,10 +14,10 @@ public class JUtils {
     public static final double SCREEN_HEIGHT = Toolkit.getDefaultToolkit().getScreenSize().height;
 
     public static int getX(double x) {
-        return (int) (x * (SCREEN_WIDTH / 1920d));
+        return (int) (x * (SCREEN_WIDTH / 1920d) + 0.5);
     }
     public static int getY(double y) {
-        return (int) (y * (SCREEN_HEIGHT) / 1080d);
+        return (int) (y * (SCREEN_HEIGHT / 1080d) + 0.5);
     }
 
     public static JButton addButton(String display, int x, int y, int width, int height, boolean enabled, ActionListener actionEvent) {

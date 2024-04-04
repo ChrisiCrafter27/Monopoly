@@ -119,7 +119,7 @@ public class CardDecksPane extends JLayeredPane {
 
     private void updateCommunityCardDeck(int size) {
         while(size > communityCards.size()) {
-            JLabel label = JUtils.addImage("images/felder/gemeinschaftskarte.png", communityX - 2, communityY - 2 - 2 * communityCards.size(), communityCard.getWidth() + 4, communityCard.getHeight() + 4);
+            JLabel label = JUtils.addImage("images/felder/gemeinschaftskarte.png", communityX - 2, communityY - 2 - 2 * communityCards.size(), 350 - communityX + 4, 953  -  communityY + 4);
             communityCards.add(label);
             communityCardDeck.add(label, DEFAULT_LAYER, 0);
         }
@@ -164,7 +164,7 @@ public class CardDecksPane extends JLayeredPane {
 
     private void setBusCardDeck(int size) {
         while(size > busCards.size()) {
-            JLabel label = JUtils.addImage("images/felder/busfahrkarte.png", busX - 2, busY - 2 - 2 * busCards.size(), busCard.getWidth() + 4, busCard.getHeight() + 4);
+            JLabel label = JUtils.addImage("images/felder/busfahrkarte.png", busX - 2, busY - 2 - 2 * busCards.size(), 620 - busX + 4, 953 - busY + 4);
             busCards.add(label);
             busCardDeck.add(label, DEFAULT_LAYER, 0);
         }
@@ -210,7 +210,7 @@ public class CardDecksPane extends JLayeredPane {
 
     private void updateEventCardDeck(int size) {
         while(size > eventCards.size()) {
-            JLabel label = JUtils.addImage("images/felder/ereigniskarte.png", eventX - 2, eventY - 2 - 2 * eventCards.size(), eventCard.getWidth() + 4, eventCard.getHeight() + 4);
+            JLabel label = JUtils.addImage("images/felder/ereigniskarte.png", eventX - 2, eventY - 2 - 2 * eventCards.size(), 890 - eventX + 4, 953 - eventY + 4);
             eventCards.add(label);
             eventCardDeck.add(label, DEFAULT_LAYER, 0);
         }
