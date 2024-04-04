@@ -9,18 +9,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9eaf43f6-042c-4548-9a1e-cf61af280a6f" name="Changes" comment="CardDeck">
-      <change afterPath="$PROJECT_DIR$/src/main/java/monopol/common/utils/Coordinate.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/monopol/common/utils/Either.java" afterDir="false" />
+    <list default="true" id="9eaf43f6-042c-4548-9a1e-cf61af280a6f" name="Changes" comment="less todo">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/monopol/client/screen/FreeParkingPane.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/monopol/client/screen/FreeParkingPane.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/monopol/client/screen/HousePane.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/monopol/client/screen/HousePane.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/monopol/client/screen/PlayerInfoPane.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/monopol/client/screen/PlayerInfoPane.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/monopol/client/screen/PrototypeMenu.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/monopol/client/screen/PrototypeMenu.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/monopol/common/utils/Coordinate2d.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/assets/images/Main_pictures/busfahrkarte_rechts.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/assets/images/Main_pictures/busfahrkarte_rechts.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/assets/images/Main_pictures/gefängnisfrei_rechts.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/assets/images/Main_pictures/gefängnisfrei_rechts.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/assets/images/Main_pictures/hintergrund_links_mitte2.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/assets/images/Main_pictures/hintergrund_links_mitte2.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/monopol/client/screen/RootPane.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/monopol/client/screen/RootPane.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/monopol/client/screen/SelectedCardPane.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/monopol/client/screen/SelectedCardPane.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/monopol/common/packets/custom/StartS2CPacket.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/monopol/common/packets/custom/StartS2CPacket.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/monopol/common/packets/custom/update/UpdatePurchasablesS2CPacket.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/monopol/common/packets/custom/update/UpdatePurchasablesS2CPacket.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -142,14 +139,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1691581671917</updated>
-    </task>
-    <task id="LOCAL-00118" summary="Networking">
-      <option name="closed" value="true" />
-      <created>1705439754549</created>
-      <option name="number" value="00118" />
-      <option name="presentableId" value="LOCAL-00118" />
-      <option name="project" value="LOCAL" />
-      <updated>1705439754549</updated>
     </task>
     <task id="LOCAL-00119" summary="Networking">
       <option name="closed" value="true" />
@@ -535,7 +524,15 @@
       <option name="project" value="LOCAL" />
       <updated>1712164017600</updated>
     </task>
-    <option name="localTasksCounter" value="167" />
+    <task id="LOCAL-00167" summary="less todo">
+      <option name="closed" value="true" />
+      <created>1712164549658</created>
+      <option name="number" value="00167" />
+      <option name="presentableId" value="LOCAL-00167" />
+      <option name="project" value="LOCAL" />
+      <updated>1712164549658</updated>
+    </task>
+    <option name="localTasksCounter" value="168" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -551,7 +548,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
-    <MESSAGE value="Moved packages" />
     <MESSAGE value="Move PrototypeMenu actions to custom Panels" />
     <MESSAGE value="Ping and IP-Address" />
     <MESSAGE value="Focus Fix" />
@@ -576,7 +572,8 @@
     <MESSAGE value="much" />
     <MESSAGE value="Network Overhaul" />
     <MESSAGE value="CardDeck" />
-    <option name="LAST_COMMIT_MESSAGE" value="CardDeck" />
+    <MESSAGE value="less todo" />
+    <option name="LAST_COMMIT_MESSAGE" value="less todo" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -597,12 +594,12 @@
     <select />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/Monopoly$Monopoly.ic" NAME="Monopoly Coverage Results" MODIFIED="1699461357466" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
-    <SUITE FILE_PATH="coverage/Monopoly$Server.ic" NAME="Server Coverage Results" MODIFIED="1692036172674" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">
-      <FILTER>monopol.server.*</FILTER>
-    </SUITE>
     <SUITE FILE_PATH="coverage/Monopoly$PrototypeMenu.ic" NAME="PrototypeMenu Coverage Results" MODIFIED="1691869944776" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">
       <FILTER>monopol.screen.*</FILTER>
     </SUITE>
+    <SUITE FILE_PATH="coverage/Monopoly$Server.ic" NAME="Server Coverage Results" MODIFIED="1692036172674" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">
+      <FILTER>monopol.server.*</FILTER>
+    </SUITE>
+    <SUITE FILE_PATH="coverage/Monopoly$Monopoly.ic" NAME="Monopoly Coverage Results" MODIFIED="1699461357466" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
   </component>
 </project>
