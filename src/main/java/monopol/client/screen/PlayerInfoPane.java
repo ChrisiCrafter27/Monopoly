@@ -34,8 +34,8 @@ public class PlayerInfoPane extends JLayeredPane {
     private final JButton buttonL = JUtils.addButton(null,"images/Main_pictures/Player_display.png", 1060,90,400,60,true,false, actionevent -> {});
     private final JLabel nameL = JUtils.addText("-",1060,90 + 13,400,30, SwingConstants.CENTER);
     private final JLabel moneyL = JUtils.addText("-",1160,340,200,28, SwingConstants.CENTER);
-    private final JLabel busL = JUtils.addText("-",1160-100+17,317,67,22, SwingConstants.CENTER);
-    private final JLabel freiL = JUtils.addText("-",1160+217,317,67,22, SwingConstants.CENTER);
+    private final JLabel busL = JUtils.addText("-",1160-100+14,343,70,25, SwingConstants.CENTER);
+    private final JLabel freiL = JUtils.addText("-",1160+214,343,70,25, SwingConstants.CENTER);
     private final JButton buttonR = JUtils.addButton(null,"images/Main_pictures/Player_display.png", 1479,90,400,60,true,false, actionevent ->  {
         try {
             List<Player> list = clientSup.get().serverMethod().getPlayers();
@@ -56,8 +56,8 @@ public class PlayerInfoPane extends JLayeredPane {
     });
     private final JLabel nameR = JUtils.addText("-",1479,90 + 13,400,30, SwingConstants.CENTER);
     private final JLabel moneyR = JUtils.addText("-",1579,340,200,28, SwingConstants.CENTER);
-    private final JLabel busR = JUtils.addText("-",1579-100+17,317,67,22, SwingConstants.CENTER);
-    private final JLabel freiR = JUtils.addText("-",1579+217,317,67,22, SwingConstants.CENTER);
+    private final JLabel busR = JUtils.addText("-",1579-100+14,343,70,25, SwingConstants.CENTER);
+    private final JLabel freiR = JUtils.addText("-",1579+214,343,70,25, SwingConstants.CENTER);
 
     private final Runnable task = () -> {
         Client client = clientSup.get();

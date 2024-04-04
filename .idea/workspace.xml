@@ -10,8 +10,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9eaf43f6-042c-4548-9a1e-cf61af280a6f" name="Changes" comment="CardDeck">
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/todo.txt" beforeDir="false" afterPath="$PROJECT_DIR$/todo.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/monopol/common/utils/Coordinate.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/monopol/common/utils/Either.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/monopol/client/screen/FreeParkingPane.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/monopol/client/screen/FreeParkingPane.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/monopol/client/screen/HousePane.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/monopol/client/screen/HousePane.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/monopol/client/screen/PlayerInfoPane.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/monopol/client/screen/PlayerInfoPane.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/monopol/client/screen/PrototypeMenu.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/monopol/client/screen/PrototypeMenu.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/monopol/common/utils/Coordinate2d.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/assets/images/Main_pictures/busfahrkarte_rechts.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/assets/images/Main_pictures/busfahrkarte_rechts.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/assets/images/Main_pictures/gefängnisfrei_rechts.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/assets/images/Main_pictures/gefängnisfrei_rechts.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/assets/images/Main_pictures/hintergrund_links_mitte2.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/assets/images/Main_pictures/hintergrund_links_mitte2.png" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -67,30 +76,30 @@
   <component name="ProjectViewState">
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ASKED_ADD_EXTERNAL_FILES": "true",
-    "DefaultPlantUmlFileTemplate": "UML Sequence",
-    "Downloaded.Files.Path.Enabled": "false",
-    "JavaClassFindUsagesOptions.isSearchForTextOccurrences": "false",
-    "Repository.Attach.Annotations": "false",
-    "Repository.Attach.JavaDocs": "false",
-    "Repository.Attach.Sources": "false",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "app.teamhub.Repo-options": "{\"forks\":true,\"offline\":true}",
-    "app.teamhub.selectedTeam": "github.com/ChrisiCrafter27/Monopoly",
-    "app.teamhub.trackedBranches": "c6sh0v/master",
-    "git-widget-placeholder": "master",
-    "last_opened_file_path": "C:/Users/postb/Documents/_ desktop ordner/Intellij/Projekte/Monopoly/src/main/java/monopol/common/annotation",
-    "project.structure.last.edited": "Artifacts",
-    "project.structure.proportion": "0.15",
-    "project.structure.side.proportion": "0.2",
-    "settings.editor.selected.configurable": "reference.projectsettings.compiler.annotationProcessors",
-    "two.files.diff.last.used.file": "C:/Users/postb/Documents/_ desktop ordner/Intellij/Projekte/Monopoly/src/monopol/log/ServerLogger.java"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
+    &quot;DefaultPlantUmlFileTemplate&quot;: &quot;UML Sequence&quot;,
+    &quot;Downloaded.Files.Path.Enabled&quot;: &quot;false&quot;,
+    &quot;JavaClassFindUsagesOptions.isSearchForTextOccurrences&quot;: &quot;false&quot;,
+    &quot;Repository.Attach.Annotations&quot;: &quot;false&quot;,
+    &quot;Repository.Attach.JavaDocs&quot;: &quot;false&quot;,
+    &quot;Repository.Attach.Sources&quot;: &quot;false&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;app.teamhub.Repo-options&quot;: &quot;{\&quot;forks\&quot;:true,\&quot;offline\&quot;:true}&quot;,
+    &quot;app.teamhub.selectedTeam&quot;: &quot;github.com/ChrisiCrafter27/Monopoly&quot;,
+    &quot;app.teamhub.trackedBranches&quot;: &quot;c6sh0v/master&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/postb/Documents/_ desktop ordner/Intellij/Projekte/Monopoly/src/main/java/monopol/common/annotation&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Artifacts&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;reference.projectsettings.compiler.annotationProcessors&quot;,
+    &quot;two.files.diff.last.used.file&quot;: &quot;C:/Users/postb/Documents/_ desktop ordner/Intellij/Projekte/Monopoly/src/monopol/log/ServerLogger.java&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\postb\Documents\_ desktop ordner\Intellij\Projekte\Monopoly\src\main\resources\assets\images\felder" />
@@ -588,12 +597,12 @@
     <select />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/Monopoly$PrototypeMenu.ic" NAME="PrototypeMenu Coverage Results" MODIFIED="1691869944776" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">
-      <FILTER>monopol.screen.*</FILTER>
-    </SUITE>
+    <SUITE FILE_PATH="coverage/Monopoly$Monopoly.ic" NAME="Monopoly Coverage Results" MODIFIED="1699461357466" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="coverage/Monopoly$Server.ic" NAME="Server Coverage Results" MODIFIED="1692036172674" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">
       <FILTER>monopol.server.*</FILTER>
     </SUITE>
-    <SUITE FILE_PATH="coverage/Monopoly$Monopoly.ic" NAME="Monopoly Coverage Results" MODIFIED="1699461357466" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/Monopoly$PrototypeMenu.ic" NAME="PrototypeMenu Coverage Results" MODIFIED="1691869944776" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">
+      <FILTER>monopol.screen.*</FILTER>
+    </SUITE>
   </component>
 </project>

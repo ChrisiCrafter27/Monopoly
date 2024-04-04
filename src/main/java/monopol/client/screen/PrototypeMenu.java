@@ -87,6 +87,7 @@ public class PrototypeMenu {
         root.buttonsPane.reset();
         root.dicePane.reset();
         root.cardDecksPane.reset();
+        root.housePane.reset();
 
         root.menuPane.init(clients, this::prepareLobby, root);
         root.rejoinPane.init(() -> client, newClient -> clients.add(clients.size(), newClient));
@@ -129,7 +130,6 @@ public class PrototypeMenu {
                     Client oldClient = client;
                     if(root.lobbyPane.getClient() != null) client = root.lobbyPane.getClient();
                     if(root.playerSelectPane.getClient() != null && client.equals(oldClient)) client = root.playerSelectPane.getClient();
-
                     //Remove clients that left the game
                     for (int i = 0; i < clients.size(); i++) {
                         if(clients.get(i).closed()) clients.remove(clients.get(i));
@@ -200,6 +200,7 @@ public class PrototypeMenu {
         root.buttonsPane.init(() -> client, () -> root);
         root.dicePane.showWithoutAnim(6, 6, 6);
         root.selectedCardPane.init(() -> root);
+        root.housePane.init();
         root.cardDecksPane.init(() -> client);
 
         new Thread(() -> {

@@ -4,7 +4,7 @@ import monopol.common.utils.JUtils;
 
 import javax.swing.*;
 
-public class FreeParkingPane extends JLayeredPane {
+public class  FreeParkingPane extends JLayeredPane {
     private int money = 0;
 
     public FreeParkingPane() {
