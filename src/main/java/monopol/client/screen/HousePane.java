@@ -134,7 +134,7 @@ public class HousePane extends JLayeredPane {
         }
 
         JLabel label = getLabel(houses, storedHouses(houses) - 1);
-        label.setBounds(x, y, label.getWidth(), label.getHeight());
+        label.setBounds(JUtils.getX(x), JUtils.getY(y), label.getWidth(), label.getHeight());
         houses.replace(label, new Pair<>(street, buildingsOn));
     }
 
@@ -144,7 +144,7 @@ public class HousePane extends JLayeredPane {
         int y = (storedHouses%8)*30+400;
 
         JLabel label = getLabel(houses, street, buildingsOn(houses, street) - 1);
-        label.setBounds(x, y, label.getWidth(), label.getHeight());
+        label.setBounds(JUtils.getX(x), JUtils.getY(y), label.getWidth(), label.getHeight());
         houses.replace(label, new Pair<>(null, storedHouses));
     }
 

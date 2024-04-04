@@ -53,41 +53,37 @@ public class Monopoly {
             i += arg(i, args);
         }
 
+        StartupProgressBar bar = new StartupProgressBar(VersionChecker.title(), 5, 0);
         System.out.println("Starting Monopoly...");
-        StartupProgressBar bar = new StartupProgressBar(VersionChecker.title(), 6, 0);
         bar.hideBottom();
         bar.show();
 
-        bar.setTop("Scanne dateien...", 0);
-        System.out.println("Scanning files...");
-        ProjectStructure.printProjectStructureAsTree(false, bar);
-
-        bar.setTop("Verbinde mit Github...", 1);
+        bar.setTop("Verbinde mit Github...", 0);
         System.out.println("Connecting to Github...");
         GitUtils.connect(bar);
 
-        bar.setTop("Starte Issue-Reporter...", 2);
+        bar.setTop("Starte Issue-Reporter...", 1);
         System.out.println("Starting Issue-Reporter...");
         GitHubIssueReporter.register();
 
-        bar.setTop("Suche nach Updates...", 3);
+        bar.setTop("Suche nach Updates...", 2);
         System.out.println("Checking for updates...");
         boolean updated = VersionChecker.check(bar);
 
         if(!updated) {
-            bar.setTop("Starte Server...", 4);
+            bar.setTop("Starte Server...", 3);
             bar.bottomBar.setVisible(false);
             System.out.println("Starting server...");
             Packets.register();
             INSTANCE.startServer();
 
-            bar.setTop("Erstelle GUI...", 5);
+            bar.setTop("Erstelle GUI...", 4);
             System.out.println("Creating GUI...");
             UIManager.getDefaults().put("Button.disabledText", Color.BLACK);
             PrototypeMenu menu = new PrototypeMenu(bar);
             menu.prepareMenu();
 
-            bar.setTop("Fertig!", 6);
+            bar.setTop("Fertig!", 5);
             System.out.println("Done!");
         } else System.exit(1);
     }
