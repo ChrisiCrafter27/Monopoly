@@ -22,6 +22,6 @@ public class StartS2CPacket extends S2CPacket<StartS2CPacket> {
 
     @Override
     public void handleOnClient(Client client, RootPane display) {
-        Monopoly.INSTANCE.setState(GameState.RUNNING);
+        display.start();
     }
 }

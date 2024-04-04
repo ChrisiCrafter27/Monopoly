@@ -5,6 +5,9 @@ import monopol.common.utils.JUtils;
 import javax.swing.*;
 
 public class RootPane extends JLayeredPane {
+    private final Runnable start;
+    private boolean started;
+
     public final PlayerSelectPane playerSelectPane = new PlayerSelectPane();
     public final LobbyPane lobbyPane = new LobbyPane();
     public final MenuPane menuPane = new MenuPane();
@@ -22,8 +25,9 @@ public class RootPane extends JLayeredPane {
     public final HousePane housePane = new HousePane();
     public final CardDecksPane cardDecksPane = new CardDecksPane();
 
-    public RootPane() {
+    public RootPane(Runnable start) {
         super();
+        this.start = start;
 
         setBounds(0, 0, (int) JUtils.SCREEN_WIDTH, (int) JUtils.SCREEN_HEIGHT);
         setVisible(true);
@@ -44,5 +48,14 @@ public class RootPane extends JLayeredPane {
         add(dicePane, JLayeredPane.PALETTE_LAYER);
         add(housePane, JLayeredPane.MODAL_LAYER);
         add(cardDecksPane, JLayeredPane.PALETTE_LAYER);
+    }
+
+    public void resetStart() {
+        started = false;
+    }
+
+    public synchronized void start() {
+        if(!started) start.run();
+        started = true;
     }
 }

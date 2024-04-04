@@ -22,7 +22,7 @@ public class PrototypeMenu {
     public Client client;
     private String ip;
     private final KeyHandler keyHandler = new KeyHandler();
-    private final RootPane root = new RootPane();
+    private final RootPane display = new RootPane(this::prepareGame);
 
     public PrototypeMenu(StartupProgressBar bar) {
         if((int) JUtils.SCREEN_WIDTH / (int) JUtils.SCREEN_HEIGHT != 16 / 9) System.err.println("[WARN]: Deine Bildschirmauflösung ist nicht 16/9. Dadurch werden einige Dinge nicht richtig angezeigt. Es ist allerdings trotzdem möglich, so zu spielen.");
@@ -38,7 +38,7 @@ public class PrototypeMenu {
         frame.setFocusTraversalKeysEnabled(false);
         ImageIcon icon = new ImageIcon(JUtils.imageIcon("images/Main_pictures/frame_icon.png").getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH));
         frame.setIconImage(icon.getImage());
-        frame.add(root);
+        frame.add(display);
         focusThread();
         if(bar != null) opacityThread(bar);
     }
@@ -73,24 +73,25 @@ public class PrototypeMenu {
 
     public void prepareMenu() {
         Monopoly.INSTANCE.setState(GameState.MENU);
+        display.resetStart();
 
-        root.lobbyPane.reset();
-        root.pingPane.reset();
-        root.playerSelectPane.reset();
-        root.selectedCardPane.reset();
-        root.playerDisplayPane.reset();
-        root.infoBoxPane.reset();
-        root.rejoinPane.reset();
-        root.boardPane.reset();
-        root.freeParkingPane.reset();
-        root.playerInfoPane.reset();
-        root.buttonsPane.reset();
-        root.dicePane.reset();
-        root.cardDecksPane.reset();
-        root.housePane.reset();
+        display.lobbyPane.reset();
+        display.pingPane.reset();
+        display.playerSelectPane.reset();
+        display.selectedCardPane.reset();
+        display.playerDisplayPane.reset();
+        display.infoBoxPane.reset();
+        display.rejoinPane.reset();
+        display.boardPane.reset();
+        display.freeParkingPane.reset();
+        display.playerInfoPane.reset();
+        display.buttonsPane.reset();
+        display.dicePane.reset();
+        display.cardDecksPane.reset();
+        display.housePane.reset();
 
-        root.menuPane.init(clients, this::prepareLobby, root);
-        root.rejoinPane.init(() -> client, newClient -> clients.add(clients.size(), newClient));
+        display.menuPane.init(clients, this::prepareLobby, display);
+        display.rejoinPane.init(() -> client, newClient -> clients.add(clients.size(), newClient));
     }
 
     public void prepareLobby(Client currentClient) {
@@ -107,12 +108,18 @@ public class PrototypeMenu {
             @Override
             public void run() {
 
+                //Interrupt if game state changed
+                if(Monopoly.INSTANCE.getState() != GameState.LOBBY) {
+                    interrupt();
+                    return;
+                }
+
                 //Reset menu pane
-                root.menuPane.reset();
+                display.menuPane.reset();
 
                 //Initiate panes
-                root.lobbyPane.init();
-                root.playerSelectPane.init();
+                display.lobbyPane.init();
+                display.playerSelectPane.init();
 
                 //Wait for the server connection
                 while(!isInterrupted() && client.player().getName() == null) {
@@ -128,8 +135,8 @@ public class PrototypeMenu {
 
                     //Get the client from the panels
                     Client oldClient = client;
-                    if(root.lobbyPane.getClient() != null) client = root.lobbyPane.getClient();
-                    if(root.playerSelectPane.getClient() != null && client.equals(oldClient)) client = root.playerSelectPane.getClient();
+                    if(display.lobbyPane.getClient() != null) client = display.lobbyPane.getClient();
+                    if(display.playerSelectPane.getClient() != null && client.equals(oldClient)) client = display.playerSelectPane.getClient();
                     //Remove clients that left the game
                     for (int i = 0; i < clients.size(); i++) {
                         if(clients.get(i).closed()) clients.remove(clients.get(i));
@@ -146,9 +153,9 @@ public class PrototypeMenu {
 
                     //Try to get information from the server and update
                     try {
-                        root.lobbyPane.update(client.serverMethod().getPlayers(), client, clients, ip, keyHandler, false, root);
-                        root.playerSelectPane.update(client, clients, root.lobbyPane.mustUpdate());
-                        root.pingPane.update(client.getPing(), keyHandler, root, () -> {
+                        display.lobbyPane.update(client.serverMethod().getPlayers(), client, clients, ip, keyHandler, false, display);
+                        display.playerSelectPane.update(client, clients, display.lobbyPane.mustUpdate());
+                        display.pingPane.update(client.getPing(), keyHandler, display, () -> {
                             try {
                                 client.serverMethod().kick(client.player().getName(), DisconnectReason.CLIENT_CLOSED);
                             } catch (Exception e) {
@@ -160,13 +167,6 @@ public class PrototypeMenu {
                         client.close();
                         interrupt();
                         prepareMenu();
-                        return;
-                    }
-
-                    //Prepare game if game started
-                    if(Monopoly.INSTANCE.getState() == GameState.RUNNING) {
-                        interrupt();
-                        prepareGame();
                         return;
                     }
 
@@ -186,22 +186,22 @@ public class PrototypeMenu {
         Monopoly.INSTANCE.setState(GameState.RUNNING);
 
         //Reset lobby pane
-        root.lobbyPane.reset();
+        display.lobbyPane.reset();
 
         //keep PlayerPane enabled
         //keep PingPane enabled
 
         //Initiate panes
-        root.boardPane.init(() -> root);
-        root.playerDisplayPane.init(() -> client, () -> root);
-        root.infoBoxPane.init(() -> client);
-        root.freeParkingPane.init();
-        root.playerInfoPane.init(() -> client);
-        root.buttonsPane.init(() -> client, () -> root);
-        root.dicePane.showWithoutAnim(6, 6, 6);
-        root.selectedCardPane.init(() -> root);
-        root.housePane.init();
-        root.cardDecksPane.init(() -> client);
+        display.boardPane.init(() -> display);
+        display.playerDisplayPane.init(() -> client, () -> display);
+        display.infoBoxPane.init(() -> client);
+        display.freeParkingPane.init();
+        display.playerInfoPane.init(() -> client);
+        display.buttonsPane.init(() -> client, () -> display);
+        display.dicePane.showWithoutAnim(6, 6, 6);
+        display.selectedCardPane.init(() -> display);
+        display.housePane.init();
+        display.cardDecksPane.init(() -> client);
 
         new Thread(() -> {
             //While game is running
@@ -209,8 +209,8 @@ public class PrototypeMenu {
 
                 //Get the client from the panels
                 Client oldClient = client;
-                if(root.lobbyPane.getClient() != null) client = root.lobbyPane.getClient();
-                if(root.playerSelectPane.getClient() != null && client.equals(oldClient)) client = root.playerSelectPane.getClient();
+                if(display.lobbyPane.getClient() != null) client = display.lobbyPane.getClient();
+                if(display.playerSelectPane.getClient() != null && client.equals(oldClient)) client = display.playerSelectPane.getClient();
 
                 //Remove clients that left the game
                 for (int i = 0; i < clients.size(); i++) {
@@ -226,8 +226,8 @@ public class PrototypeMenu {
                 }
 
                 //Try to get information from the server and update
-                root.playerSelectPane.update(client, clients, root.lobbyPane.mustUpdate());
-                root.pingPane.update(client.getPing(), keyHandler, root, () -> {
+                display.playerSelectPane.update(client, clients, display.lobbyPane.mustUpdate());
+                display.pingPane.update(client.getPing(), keyHandler, display, () -> {
                     try {
                         client.serverMethod().kick(client.player().getName(), DisconnectReason.CLIENT_CLOSED);
                     } catch (Exception e) {

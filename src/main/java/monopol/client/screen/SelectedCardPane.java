@@ -100,13 +100,7 @@ public class SelectedCardPane extends JLayeredPane {
         return purchasable;
     }
 
-    public void tryUpdate() {
-        try {
-            update();
-        } catch (Exception ignored) {}
-    }
-
-    private void update() {
+    public void update() {
         if(purchasable == null) throw new IllegalStateException("init() was not called");
         if(purchasable instanceof Street street) color.setIcon(new ImageIcon(JUtils.imageIcon("images/felder/" + street.colorGroup.image + "_cardcolor.png").getImage().getScaledInstance(334, 60, Image.SCALE_SMOOTH)));
         else color.setIcon(new ImageIcon(""));

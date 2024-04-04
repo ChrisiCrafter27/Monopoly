@@ -20,7 +20,6 @@ public class UpdatePurchasablesS2CPacket extends S2CPacket<UpdatePurchasablesS2C
     @Override
     public void serialize(DataWriter writer) {}
 
-    @SuppressWarnings("unused")
     public static UpdatePurchasablesS2CPacket deserialize(DataReader reader) {
         return new UpdatePurchasablesS2CPacket();
     }
@@ -32,7 +31,8 @@ public class UpdatePurchasablesS2CPacket extends S2CPacket<UpdatePurchasablesS2C
                 String name = purchasable.getName();
                 Field.purchasables().stream().filter(p -> p.getName().equals(name)).findFirst().orElseThrow().copyOf(purchasable);
             }
-            display.selectedCardPane.tryUpdate();
+            display.selectedCardPane.update();
+            display.housePane.update();
         } catch (RemoteException e) {
             client.close();
         }

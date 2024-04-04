@@ -8,6 +8,7 @@ import monopol.common.packets.custom.update.UpdateButtonsS2CPacket;
 import monopol.common.packets.custom.update.UpdatePurchasablesS2CPacket;
 import monopol.common.utils.Triplet;
 
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
