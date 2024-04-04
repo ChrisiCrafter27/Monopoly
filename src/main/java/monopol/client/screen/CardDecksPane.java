@@ -55,7 +55,7 @@ public class CardDecksPane extends JLayeredPane {
         communityCardDeck.setBounds(0, 0, (int) JUtils.SCREEN_WIDTH, (int) JUtils.SCREEN_HEIGHT);
         add(communityCardDeck, DEFAULT_LAYER);
         communityCard.setBounds(JUtils.getX(communityX), JUtils.getY(communityY), JUtils.getX(communityWidth), JUtils.getY(communityHeight));
-        JLabel communityCardBackground = JUtils.addImage("images/felder/karte.png", 0, 0, JUtils.getX(communityWidth), JUtils.getY(communityHeight));
+        JLabel communityCardBackground = JUtils.addImage("images/felder/karte.png", 0, 0, communityWidth, communityHeight);
         communityCard.add(communityCardBackground, DEFAULT_LAYER);
         JLabel communityCardTitle = JUtils.addText("Gemeinschaftskarte", 0, 8, communityWidth, 16, SwingConstants.CENTER, Color.RED);
         communityCardTitle.setFont(communityCardTitle.getFont().deriveFont(Font.BOLD));
@@ -71,7 +71,7 @@ public class CardDecksPane extends JLayeredPane {
         busCardDeck.setBounds(0, 0, (int) JUtils.SCREEN_WIDTH, (int) JUtils.SCREEN_HEIGHT);
         add(busCardDeck, DEFAULT_LAYER);
         busCard.setBounds(JUtils.getX(busX), JUtils.getY(busY), JUtils.getX(busWidth), JUtils.getY(busHeight));
-        JLabel busCardBackground = JUtils.addImage("images/felder/karte.png", 0, 0, JUtils.getX(busWidth), JUtils.getY(busHeight));
+        JLabel busCardBackground = JUtils.addImage("images/felder/karte.png", 0, 0, busWidth, busHeight);
         busCard.add(busCardBackground, DEFAULT_LAYER);
         JLabel busCardTitle = JUtils.addText("Busfahrkarte", 0, 8, busWidth, 16, SwingConstants.CENTER, Color.RED);
         busCardTitle.setFont(busCardTitle.getFont().deriveFont(Font.BOLD));
@@ -86,7 +86,7 @@ public class CardDecksPane extends JLayeredPane {
         eventCardDeck.setBounds(0, 0, (int) JUtils.SCREEN_WIDTH, (int) JUtils.SCREEN_HEIGHT);
         add(eventCardDeck, DEFAULT_LAYER);
         eventCard.setBounds(JUtils.getX(eventX), JUtils.getY(eventY), JUtils.getX(eventWidth), JUtils.getY(eventHeight));
-        JLabel eventCardBackground = JUtils.addImage("images/felder/karte.png", 0, 0, JUtils.getX(eventWidth), JUtils.getY(eventHeight));
+        JLabel eventCardBackground = JUtils.addImage("images/felder/karte.png", 0, 0, eventWidth, eventHeight);
         eventCard.add(eventCardBackground, DEFAULT_LAYER);
         JLabel eventCardTitle = JUtils.addText("Ereigniskarte", 0, 8, eventWidth, 16, SwingConstants.CENTER, Color.RED);
         eventCardTitle.setFont(eventCardTitle.getFont().deriveFont(Font.BOLD));
