@@ -1,0 +1,8 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Clean Artifacts" type="AntRunConfiguration">
+    <antsettings antfile="file://$PROJECT_DIR$/ant.xml" target="cleanArtifacts" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

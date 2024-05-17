@@ -4,6 +4,12 @@
     <module name="Monopoly" />
     <method v="2">
       <option name="Make" enabled="true" />
+      <option name="RunConfigurationTask" enabled="true" run_configuration_name="Clean Artifact" run_configuration_type="AntRunConfiguration" />
+      <option name="BuildArtifacts" enabled="true">
+        <artifact name="Monopoly:jar" />
+      </option>
+      <option name="RunConfigurationTask" enabled="true" run_configuration_name="Wait" run_configuration_type="AntRunConfiguration" />
+      <option name="RunConfigurationTask" enabled="true" run_configuration_name="Rename Jar" run_configuration_type="AntRunConfiguration" />
     </method>
   </configuration>
 </component>
