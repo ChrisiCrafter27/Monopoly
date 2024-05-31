@@ -13,6 +13,8 @@ import java.nio.file.Path;
 
 public class Monopoly {
     public static final Monopoly INSTANCE = new Monopoly();
+    private static StartupProgressBar bar;
+
     private Server server;
     private boolean serverEnabled;
     private GameState state;
@@ -22,7 +24,7 @@ public class Monopoly {
     private void startServer() {
         if(server == null) {
             try {
-                server = new Server(25565, flag -> serverEnabled = flag);
+                server = new Server(25565, success -> serverEnabled = success);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -48,13 +50,17 @@ public class Monopoly {
         return serverEnabled;
     }
 
+    public static void closeBar() {
+        bar.close();
+    }
+
     public static void main(String[] args) {
         for (int i = 0; i < args.length;) {
             i += arg(i, args);
         }
 
-        StartupProgressBar bar = new StartupProgressBar(VersionChecker.title(), 5, 0);
         System.out.println("Starting Monopoly...");
+        bar = new StartupProgressBar(VersionChecker.title(), 5, 0);
         bar.hideBottom();
         bar.show();
 
@@ -80,7 +86,7 @@ public class Monopoly {
             bar.setTop("Erstelle GUI...", 4);
             System.out.println("Creating GUI...");
             UIManager.getDefaults().put("Button.disabledText", Color.BLACK);
-            PrototypeMenu menu = new PrototypeMenu(bar);
+            PrototypeMenu menu = new PrototypeMenu();
             menu.prepareMenu();
 
             bar.setTop("Fertig!", 5);

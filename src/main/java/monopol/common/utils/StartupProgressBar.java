@@ -15,6 +15,7 @@ public class StartupProgressBar {
         barFrame.setLocation((int) (JUtils.SCREEN_WIDTH/2d-150), (int) (JUtils.SCREEN_HEIGHT/2d-250));
         barFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         barFrame.setSize(300, 100);
+        barFrame.setIconImage(new ImageIcon(JUtils.imageIcon("images/Main_pictures/frame_icon.png").getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH)).getImage());
 
         topBar.setStringPainted(true);
         topBar.setMaximum(topMax);

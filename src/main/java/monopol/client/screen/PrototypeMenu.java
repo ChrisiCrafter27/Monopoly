@@ -24,7 +24,7 @@ public class PrototypeMenu {
     private final KeyHandler keyHandler = new KeyHandler();
     private final RootPane display = new RootPane(this::prepareGame);
 
-    public PrototypeMenu(StartupProgressBar bar) {
+    public PrototypeMenu() {
         if((int) JUtils.SCREEN_WIDTH / (int) JUtils.SCREEN_HEIGHT != 16 / 9) System.err.println("[WARN]: Deine Bildschirmauflösung ist nicht 16/9. Dadurch werden einige Dinge nicht richtig angezeigt. Es ist allerdings trotzdem möglich, so zu spielen.");
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setFocusable(true);
@@ -36,12 +36,12 @@ public class PrototypeMenu {
         frame.setVisible(true);
         frame.addKeyListener(keyHandler);
         frame.setFocusTraversalKeysEnabled(false);
-        ImageIcon icon = new ImageIcon(JUtils.imageIcon("images/Main_pictures/frame_icon.png").getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH));
-        frame.setIconImage(icon.getImage());
+        frame.setIconImage(new ImageIcon(JUtils.imageIcon("images/Main_pictures/frame_icon.png").getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH)).getImage());
         frame.add(display);
         focusThread();
-        if(bar != null) opacityThread(bar);
+        opacityThread();
     }
+
     private void focusThread() {
         new Thread(() -> {
             while (!Thread.interrupted()) {
@@ -56,7 +56,7 @@ public class PrototypeMenu {
         }).start();
     }
 
-    private void opacityThread(StartupProgressBar bar) {
+    private void opacityThread() {
         new Thread(() -> {
             while (!Thread.interrupted() && frame.getOpacity() <= 0.999f) {
                 frame.setOpacity(frame.getOpacity() + 0.003f);
@@ -67,7 +67,7 @@ public class PrototypeMenu {
                 }
             }
             frame.setOpacity(1);
-            bar.close();
+            Monopoly.closeBar();
         }).start();
     }
 
@@ -108,12 +108,6 @@ public class PrototypeMenu {
             @Override
             public void run() {
 
-                //Interrupt if game state changed
-                if(Monopoly.INSTANCE.getState() != GameState.LOBBY) {
-                    interrupt();
-                    return;
-                }
-
                 //Reset menu pane
                 display.menuPane.reset();
 
@@ -132,6 +126,12 @@ public class PrototypeMenu {
 
                 //While on the server and in lobby
                 while(!isInterrupted()) {
+
+                    //Interrupt if game state changed
+                    if(Monopoly.INSTANCE.getState() != GameState.LOBBY) {
+                        interrupt();
+                        return;
+                    }
 
                     //Get the client from the panels
                     Client oldClient = client;
@@ -208,9 +208,7 @@ public class PrototypeMenu {
             while (Monopoly.INSTANCE.getState() == GameState.RUNNING) {
 
                 //Get the client from the panels
-                Client oldClient = client;
-                if(display.lobbyPane.getClient() != null) client = display.lobbyPane.getClient();
-                if(display.playerSelectPane.getClient() != null && client.equals(oldClient)) client = display.playerSelectPane.getClient();
+                if(display.playerSelectPane.getClient() != null) client = display.playerSelectPane.getClient();
 
                 //Remove clients that left the game
                 for (int i = 0; i < clients.size(); i++) {

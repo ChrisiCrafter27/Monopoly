@@ -6,7 +6,6 @@ import monopol.common.utils.KeyHandler;
 import monopol.client.Client;
 import monopol.common.message.DisconnectReason;
 import monopol.common.data.Player;
-import monopol.common.utils.ListUtils;
 import monopol.server.Server;
 import monopol.server.events.Events;
 import monopol.server.events.StandardEvents;
@@ -242,10 +241,10 @@ public class LobbyPane extends JLayeredPane {
         ipAddress.setVisible(true);
     }
 
-    public void update(ArrayList<Player> players, Client currentClient, ArrayList<Client> clients, String ip, KeyHandler keyHandler, boolean forceUpdate, RootPane root) throws RemoteException {
+    public synchronized void update(ArrayList<Player> players, Client currentClient, ArrayList<Client> clients, String ip, KeyHandler keyHandler, boolean forceUpdate, RootPane root) throws RemoteException {
         connecting.setVisible(false);
 
-        if(!ListUtils.equals(players, memory) || !currentClient.equals(client) || !ip.equals(this.ip) || forceUpdate || requestUpdate) {
+        if(!(players.containsAll(memory) && memory.containsAll(players)) || !currentClient.equals(client) || !ip.equals(this.ip) || forceUpdate || requestUpdate) {
             requestUpdate = false;
             client = currentClient;
             this.ip = ip;

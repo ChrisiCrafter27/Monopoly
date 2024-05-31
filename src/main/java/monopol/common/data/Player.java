@@ -115,10 +115,24 @@ public class Player implements Serializable {
     }
 
     @Override
-    public boolean equals(Object object) {
-        if (this == object) return true;
-        if (object == null || getClass() != object.getClass()) return false;
-        Player player = (Player) object;
-        return money == player.money && prisonCards == player.prisonCards && busCards == player.busCards && position == player.position && inPrison == player.inPrison && prisonRounds == player.prisonRounds && Objects.equals(name, player.name) && Objects.equals(color, player.color);
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Player player)) return false;
+        return money == player.money && prisonCards == player.prisonCards && busCards == player.busCards && position == player.position && inPrison == player.inPrison && prisonRounds == player.prisonRounds && doubles == player.doubles && Objects.equals(name, player.name) && Objects.equals(color, player.color);
+    }
+
+    @Override
+    public String toString() {
+        return "Player{" +
+                "name='" + name + '\'' +
+                ", money=" + money +
+                ", prisonCards=" + prisonCards +
+                ", busCards=" + busCards +
+                ", position=" + position +
+                ", color=" + color +
+                ", inPrison=" + inPrison +
+                ", prisonRounds=" + prisonRounds +
+                ", doubles=" + doubles +
+                '}';
     }
 }

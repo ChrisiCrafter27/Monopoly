@@ -26,10 +26,9 @@ public class MenuPane extends JLayeredPane {
         reset();
         setVisible(true);
 
-        add(addButton("invisible", 0, 0, 0, 0, true, actionEvent -> {}));
-        add(addButton("Host game", 50, 50, 200, 50, Monopoly.INSTANCE.serverEnabled(), actionEvent -> {
+        add(JUtils.addButton("Spiel erstellen", 90, 325, 800, 200, 100, Monopoly.INSTANCE.serverEnabled(), actionEvent -> {
             int input;
-            input = JOptionPane.showConfirmDialog(null, "Dürfen die sich Mitspieler gegenseitig kicken?", "Spiel erstellen", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+            input = JOptionPane.showConfirmDialog(null, "Dürfen sich die Mitspieler gegenseitig kicken?", "Spiel erstellen", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
             if(input == JOptionPane.CLOSED_OPTION) return;
             boolean canKick = input == JOptionPane.YES_OPTION;
             //input = JOptionPane.showConfirmDialog(null, "Dürfen die Mitspieler Einstellungen ändern?", "Spiel erstellen", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
@@ -47,7 +46,7 @@ public class MenuPane extends JLayeredPane {
                 JOptionPane.showMessageDialog(null, "Server konnte nicht gestartet werden. Laufen andere Server auf deinem PC?", "Spiel erstellen", JOptionPane.WARNING_MESSAGE);
             }
         }), JLayeredPane.MODAL_LAYER);
-        add(addButton("Join game", 50, 150, 200, 50, true, actionEvent -> {
+        add(JUtils.addButton("Spiel beitreten", 90, 600, 800, 200, 100, true, actionEvent -> {
             do {
                 String clipboard = "";
                 try {
@@ -65,7 +64,7 @@ public class MenuPane extends JLayeredPane {
                 JOptionPane.showMessageDialog(null, "Server nicht gefunden. Ist die IP-Adresse korrekt?", "Spiel beitreten", JOptionPane.WARNING_MESSAGE);
             }
         }), JLayeredPane.MODAL_LAYER);
-        add(addButton("Close", 50, 250, 200, 50, true, actionEvent -> {
+        add(JUtils.addButton("Schließen", 90, 900, 400, 100, 50, true, actionEvent -> {
             System.exit(0);
         }), JLayeredPane.MODAL_LAYER);
         add(JUtils.addImage("images/Monopoly_client1.png", 0, 0, 1920, 1080), JLayeredPane.DEFAULT_LAYER);
@@ -74,24 +73,5 @@ public class MenuPane extends JLayeredPane {
     public void reset() {
         removeAll();
         setVisible(false);
-    }
-
-    private JButton addButton(String display, int x, int y, int width, int height, boolean enabled, ActionListener actionEvent) {
-        JButton button = new JButton(display);
-        width = JUtils.getX(width);
-        height = JUtils.getY(height);
-        button.addActionListener(actionEvent);
-        button.setBounds(JUtils.getX(x), JUtils.getY(y), width, height);
-        button.setEnabled(enabled);
-        button.setOpaque(false);
-        button.setContentAreaFilled(false);
-        button.setBorderPainted(false);
-        button.setFocusPainted(false);
-        if(width < 1) width = 1;
-        if(height < 1) height = 1;
-        button.setIcon(new ImageIcon(JUtils.imageIcon("images/DO_NOT_CHANGE/plain_button_2.png").getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH)));
-        button.setHorizontalTextPosition(SwingConstants.CENTER);
-        button.setVerticalTextPosition(SwingConstants.CENTER);
-        return button;
     }
 }

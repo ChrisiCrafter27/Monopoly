@@ -295,7 +295,6 @@ public class Server extends UnicastRemoteObject implements IServer {
         List<Socket> list = new ArrayList<>();
         clients.forEach((id, client) -> list.add(client));
         for (Socket client : list) {
-            PacketManager.sendS2C(new DisconnectS2CPacket(DisconnectReason.SERVER_CLOSED), PacketManager.all(), Throwable::printStackTrace);
             kick(client, DisconnectReason.SERVER_CLOSED);
         }
         pause = true;
@@ -312,7 +311,7 @@ public class Server extends UnicastRemoteObject implements IServer {
         }
     }
 
-    public void kick(Socket client, DisconnectReason reason) {
+    public synchronized void kick(Socket client, DisconnectReason reason) {
         if(!clients.containsValue(client)) return;
         int id = MapUtils.key(clients, client).orElseThrow();
         PacketManager.sendS2C(new DisconnectS2CPacket(reason), client, Throwable::printStackTrace);

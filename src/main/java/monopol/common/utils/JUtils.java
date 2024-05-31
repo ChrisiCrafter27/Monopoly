@@ -20,6 +20,12 @@ public class JUtils {
         return (int) (y * (SCREEN_HEIGHT / 1080d) + 0.5);
     }
 
+    public static JButton addButton(String display, int x, int y, int width, int height, int fontSize, boolean enabled, ActionListener actionEvent) {
+        JButton button = addButton(display, x, y, width, height, enabled, actionEvent);
+        button.setFont(button.getFont().deriveFont((float) fontSize));
+        return button;
+    }
+
     public static JButton addButton(String display, int x, int y, int width, int height, boolean enabled, ActionListener actionEvent) {
         JButton button = new JButton(display);
         width = JUtils.getX(width);

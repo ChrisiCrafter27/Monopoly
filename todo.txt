@@ -1,12 +1,12 @@
 - HousePane
 - Bankrott gehen
 - Spiel Ende
-- Report button
-
+- Busfahren
 - Regeln wirksam
+
+- Report button
 - Mr. Monopoly Würfel
 - Dreier-Pasch
-- Main Menu Aussehen
 
 - Versteigerung
 - Handeln
