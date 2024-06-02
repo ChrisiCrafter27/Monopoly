@@ -18,6 +18,7 @@ public class InfoBoxPane extends JLayeredPane {
     private final JLabel text3 = JUtils.addText("", 0, 40, 350, 15, SwingConstants.LEFT);
     private final JLabel text4 = JUtils.addText("", 0, 60, 350, 15, SwingConstants.LEFT);
     private final JLabel text5 = JUtils.addText("", 0, 80, 350, 15, SwingConstants.LEFT);
+    private final JLabel text6 = JUtils.addText("", 0, 100, 350, 15, SwingConstants.LEFT);
 
     private final Runnable task = () -> {
         Client client = clientSup.get();
@@ -39,12 +40,13 @@ public class InfoBoxPane extends JLayeredPane {
 
     public InfoBoxPane() {
         super();
-        setBounds(JUtils.getX(1080/2d - 175), JUtils.getY(400), JUtils.getX(300), JUtils.getY(100));
+        setBounds(JUtils.getX(1080/2d - 215), JUtils.getY(370), JUtils.getX(500), JUtils.getY(150));
         add(text1);
         add(text2);
         add(text3);
         add(text4);
         add(text5);
+        add(text6);
         reset();
     }
 
@@ -64,6 +66,7 @@ public class InfoBoxPane extends JLayeredPane {
         text3.setText("");
         text4.setText("");
         text5.setText("");
+        text6.setText("");
         thread.interrupt();
     }
 
@@ -71,7 +74,7 @@ public class InfoBoxPane extends JLayeredPane {
         if (!texts.containsKey(client)) texts.put(client, new ArrayList<>());
         List<String> list = texts.get(client);
         list.add(text);
-        if(list.size() > 5) list.remove(0);
+        if(list.size() > 6) list.remove(0);
         updateTexts();
     }
 
@@ -88,5 +91,7 @@ public class InfoBoxPane extends JLayeredPane {
         else text4.setText("");
         if(list.size() > 4) text5.setText(list.get(4));
         else text5.setText("");
+        if(list.size() > 5) text6.setText(list.get(5));
+        else text6.setText("");
     }
 }

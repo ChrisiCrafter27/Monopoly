@@ -18,12 +18,11 @@ public class GitHubIssueReporter implements Thread.UncaughtExceptionHandler {
                 + t.getName() + "\" ");
         e.printStackTrace(System.err);
         int result = JOptionPane.showOptionDialog(null, "Ein unerwarteter Fehler ist aufgetreten:\n" + e.getMessage() + "\nEs kann sein, dass das Spiel nun nicht mehr\nwie erwartet funktioniert.", "Fehler", JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE, null, new String[]{"Melden und schließen", "Melden und ignorieren", "Informationen hinzufügen"}, null);
-        String info = "";
         if(result == 2) {
-            info = JOptionPane.showInputDialog(null, "Fasse kurz zusammen, wie/wann\nder Fehler aufgetreten ist:", "Fehler", JOptionPane.QUESTION_MESSAGE);
-        }
-        report(e, info);
-        if(result == 0) System.exit(1);
+            new Thread(() -> report(e, JOptionPane.showInputDialog(null, "Fasse kurz zusammen, wie/wann\nder Fehler aufgetreten ist:", "Fehler", JOptionPane.QUESTION_MESSAGE))).start();
+        } else if(result == 1) {
+            report(e);
+        } else if(result == 0) System.exit(1);
     }
 
     private static String getStackTrace(Throwable throwable) {
@@ -33,8 +32,20 @@ public class GitHubIssueReporter implements Thread.UncaughtExceptionHandler {
         return sw.toString();
     }
 
+    public static void report(Throwable exception) {
+        report("Fehlerbericht: " + exception.getMessage(), "Ein unbehandelter Fehler ist aufgetreten:\n" + getStackTrace(exception) + "\n- keine Nutzerinformationen -");
+    }
+
     public static void report(Throwable exception, String userInfo) {
         report("Fehlerbericht: " + exception.getMessage(), "Ein unbehandelter Fehler ist aufgetreten:\n" + getStackTrace(exception) + "\nNutzerinformationen:\n" + userInfo);
+    }
+
+    public static void report() {
+        new Thread(() -> report(JOptionPane.showInputDialog(null, "Fasse kurz zusammen, wie/wann\nder Fehler aufgetreten ist:", "Fehler", JOptionPane.QUESTION_MESSAGE))).start();
+    }
+
+    public static void report(String userInfo) {
+        report("Fehlerbericht: Gemeldeter Fehler", "Ein unbehandelter Fehler ist aufgetreten:\n- Von Nutzer gemeldet -" + "\nNutzerinformationen:\n" + userInfo);
     }
 
     public static void report(String title, String body) {

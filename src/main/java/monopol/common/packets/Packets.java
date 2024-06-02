@@ -35,6 +35,7 @@ public class Packets {
         register(BusCardC2SPacket.class, BusCardC2SPacket::deserialize);
         register(EventCardS2CPacket.class, EventCardS2CPacket::deserialize);
         register(EventCardC2SPacket.class, EventCardC2SPacket::deserialize);
+        register(GameEndS2CPacket.class, GameEndS2CPacket::deserialize);
 
         register(UpdateButtonsS2CPacket.class, UpdateButtonsS2CPacket::deserialize);
         register(UpdateFreeParkingS2CPacket.class, UpdateFreeParkingS2CPacket::deserialize);

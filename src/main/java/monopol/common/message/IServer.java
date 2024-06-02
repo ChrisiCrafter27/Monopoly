@@ -25,4 +25,5 @@ public interface IServer extends Remote {
     boolean acceptsNewClient() throws RemoteException;
     boolean isHost(String name) throws RemoteException;
     boolean stopped() throws RemoteException;
+    boolean enoughPlayers() throws RemoteException;
 }

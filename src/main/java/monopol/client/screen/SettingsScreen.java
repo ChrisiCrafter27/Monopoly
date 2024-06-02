@@ -8,7 +8,6 @@ import monopol.common.utils.JUtils;
 import monopol.server.events.BuildRule;
 import monopol.server.events.Events;
 import monopol.server.events.OwnedCardsOfColorGroup;
-import monopol.server.events.StandardEvents;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -23,6 +22,8 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 public class SettingsScreen<T extends Events> {
+    public static SettingsScreen<?> current;
+
     private final JFrame frame = new JFrame("Einstellungen");
     private final Events.Factory<T> factory;
     private final Consumer<T> set;
@@ -30,6 +31,8 @@ public class SettingsScreen<T extends Events> {
     private int i;
 
     public SettingsScreen(Events.Factory<T> factory, Events prev, Consumer<T> set) {
+        if(current != null) current.close();
+        current = this;
         this.factory = factory;
         this.set = set;
         this.settingsList = settings(prev != null ? prev : defaultEvents());
@@ -222,7 +225,7 @@ public class SettingsScreen<T extends Events> {
         } else throw new IllegalStateException();
     }
 
-    public static void main(String[] args) {
-        new SettingsScreen<>(StandardEvents::new, null, events -> {}).show();
+    public void set() {
+        set.accept(events());
     }
 }

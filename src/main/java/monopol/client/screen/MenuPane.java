@@ -28,10 +28,10 @@ public class MenuPane extends JLayeredPane {
 
         add(JUtils.addButton("Spiel erstellen", 90, 325, 800, 200, 100, Monopoly.INSTANCE.serverEnabled(), actionEvent -> {
             int input;
-            input = JOptionPane.showConfirmDialog(null, "Dürfen sich die Mitspieler gegenseitig kicken?", "Spiel erstellen", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+            input = JOptionPane.showConfirmDialog(PrototypeMenu.parentComponent, "Dürfen sich die Mitspieler gegenseitig kicken?", "Spiel erstellen", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
             if(input == JOptionPane.CLOSED_OPTION) return;
             boolean canKick = input == JOptionPane.YES_OPTION;
-            //input = JOptionPane.showConfirmDialog(null, "Dürfen die Mitspieler Einstellungen ändern?", "Spiel erstellen", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+            //input = JOptionPane.showConfirmDialog(PrototypeMenu.parentComponent, "Dürfen die Mitspieler Einstellungen ändern?", "Spiel erstellen", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
             //if(input == JOptionPane.CLOSED_OPTION) return;
             boolean canSet = false; //input == JOptionPane.YES_OPTION;
             try {
@@ -43,7 +43,7 @@ public class MenuPane extends JLayeredPane {
                 prepareLobby.accept(client);
             } catch (Exception e) {
                 e.printStackTrace(System.err);
-                JOptionPane.showMessageDialog(null, "Server konnte nicht gestartet werden. Laufen andere Server auf deinem PC?", "Spiel erstellen", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(PrototypeMenu.parentComponent, "Server konnte nicht gestartet werden. Laufen andere Server auf deinem PC?", "Spiel erstellen", JOptionPane.WARNING_MESSAGE);
             }
         }), JLayeredPane.MODAL_LAYER);
         add(JUtils.addButton("Spiel beitreten", 90, 600, 800, 200, 100, true, actionEvent -> {
@@ -52,7 +52,7 @@ public class MenuPane extends JLayeredPane {
                 try {
                     clipboard = (String) Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null).getTransferData(DataFlavor.stringFlavor);
                 } catch (Exception ignored) {}
-                ip = (String) JOptionPane.showInputDialog(null, "IP-Adresse eingeben:", "Spiel beitreten", JOptionPane.QUESTION_MESSAGE, null, null, clipboard);
+                ip = (String) JOptionPane.showInputDialog(PrototypeMenu.parentComponent, "IP-Adresse eingeben:", "Spiel beitreten", JOptionPane.QUESTION_MESSAGE, null, null, clipboard);
                 if(ip == null) return;
             } while(ip.isEmpty());
             try {
@@ -61,7 +61,7 @@ public class MenuPane extends JLayeredPane {
                 reset();
                 prepareLobby.accept(client);
             } catch (Exception e) {
-                JOptionPane.showMessageDialog(null, "Server nicht gefunden. Ist die IP-Adresse korrekt?", "Spiel beitreten", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(PrototypeMenu.parentComponent, "Server nicht gefunden. Ist die IP-Adresse korrekt?", "Spiel beitreten", JOptionPane.WARNING_MESSAGE);
             }
         }), JLayeredPane.MODAL_LAYER);
         add(JUtils.addButton("Schließen", 90, 900, 400, 100, 50, true, actionEvent -> {

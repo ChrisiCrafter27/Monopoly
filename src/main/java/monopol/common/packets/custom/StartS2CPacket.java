@@ -2,6 +2,7 @@ package monopol.common.packets.custom;
 
 import monopol.client.Client;
 import monopol.client.screen.RootPane;
+import monopol.client.screen.SettingsScreen;
 import monopol.common.core.GameState;
 import monopol.common.core.Monopoly;
 import monopol.common.data.DataReader;
@@ -22,6 +23,7 @@ public class StartS2CPacket extends S2CPacket<StartS2CPacket> {
 
     @Override
     public void handleOnClient(Client client, RootPane display) {
+        if(SettingsScreen.current != null) SettingsScreen.current.close();
         display.start();
     }
 }

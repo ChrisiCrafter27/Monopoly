@@ -54,6 +54,18 @@ public class BusCard {
             return true;
         } else return false;
     }
+    public static boolean onSide(int position, int target) {
+        if(position >= 39) {
+            return target <= 52 && target > position || target == 0;
+        } else if(position >= 26) {
+            return target <= 39 && target > position;
+        } else if(position >= 13) {
+            return target <= 26 && target > position;
+        } else if(position >= 0) {
+            return target <= 13 && target > position;
+        }
+        return false;
+    }
 
     public final boolean expiration;
 

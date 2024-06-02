@@ -241,7 +241,7 @@ public class CardDecksPane extends JLayeredPane {
         eventCardButtons.removeAll();
         for(int i = 0; i < buttons.size(); i++) {
             String button = buttons.get(i);
-            eventCardButtons.add(JUtils.addButton(button, distance+i*((eventWidth-distance)/buttons.size()), eventHeight-distance-height, (eventHeight-distance)/buttons.size()-distance, height, true,
+            eventCardButtons.add(JUtils.addButton(button, distance+i*((eventWidth-distance)/buttons.size()), eventHeight-distance-height, (eventWidth-distance)/buttons.size()-distance, height, true,
                     actionEvent -> PacketManager.sendC2S(new EventCardC2SPacket(clientSup.get().player().getName(), button), clientSup.get(), Throwable::printStackTrace)), DEFAULT_LAYER);
         }
     }

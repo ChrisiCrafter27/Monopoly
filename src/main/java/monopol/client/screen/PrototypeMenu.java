@@ -17,6 +17,8 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 
 public class PrototypeMenu {
+    public static Component parentComponent = null;
+
     public final JFrame frame = new JFrame("Monopoly");
     private final ArrayList<Client> clients = new ArrayList<>();
     public Client client;
@@ -26,6 +28,7 @@ public class PrototypeMenu {
 
     public PrototypeMenu() {
         if((int) JUtils.SCREEN_WIDTH / (int) JUtils.SCREEN_HEIGHT != 16 / 9) System.err.println("[WARN]: Deine Bildschirmauflösung ist nicht 16/9. Dadurch werden einige Dinge nicht richtig angezeigt. Es ist allerdings trotzdem möglich, so zu spielen.");
+        parentComponent = display;
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setFocusable(true);
         frame.setSize(new Dimension((int) JUtils.SCREEN_WIDTH, (int) JUtils.SCREEN_HEIGHT));
@@ -58,7 +61,7 @@ public class PrototypeMenu {
 
     private void opacityThread() {
         new Thread(() -> {
-            while (!Thread.interrupted() && frame.getOpacity() <= 0.999f) {
+            while (!Thread.interrupted() && frame.getOpacity() <= 0.997f) {
                 frame.setOpacity(frame.getOpacity() + 0.003f);
                 try {
                     Thread.sleep(1);

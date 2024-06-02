@@ -1,11 +1,14 @@
 package monopol.client.screen;
 
+import monopol.common.message.DisconnectReason;
+import monopol.common.utils.GitHubIssueReporter;
 import monopol.common.utils.JUtils;
 import monopol.common.utils.KeyHandler;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
+import java.rmi.RemoteException;
 
 public class PingPane extends JLayeredPane {
     private boolean keyDown = false;
@@ -36,7 +39,12 @@ public class PingPane extends JLayeredPane {
         setVisible(keyHandler.isKeyDown(KeyEvent.VK_TAB));
 
         if (keyDown && !keyHandler.isKeyDown(KeyEvent.VK_ESCAPE)) {
-            if(JOptionPane.showConfirmDialog(root, "Möchtest du den Server wirklich verlassen?", "Server verlassen", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) kick.run();
+            int result = JOptionPane.showOptionDialog(root, "Wähle eine Aktion:", "ESC", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, new Object[]{"Abbrechen", "Verlassen", "Fehler Melden"}, null);
+            if(result == 1) {
+                kick.run();
+            } else if(result == 2) {
+                GitHubIssueReporter.report();
+            }
         }
         keyDown = keyHandler.isKeyDown(KeyEvent.VK_ESCAPE);
     }

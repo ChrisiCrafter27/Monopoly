@@ -20,9 +20,12 @@ public class EventCard {
                 int pos = player.getPosition();
                 do {
                     pos++;
+                    if(pos >= 52) pos -= 52;
                 } while (!(Field.get(pos) instanceof TrainStation trainStation));
+                int oldPos = player.getPosition();
                 trainStation.setSpecialRent(true);
                 player.setPosition(pos);
+                if(player.getPosition() < oldPos) server.events().onPassedLos();
                 server.events().onArrivedAtField();
             })),
             new EventCard(List.of("", "", "Gehe 3 Felder zurück."), Map.of("Bewegen", (server, player) -> {
@@ -71,6 +74,7 @@ public class EventCard {
                 int pos = player.getPosition();
                 do {
                     pos++;
+                    if(pos >= 52) pos -= 52;
                 } while (!(Field.get(pos) instanceof TrainStation trainStation));
                 int oldPos = player.getPosition();
                 trainStation.setSpecialRent(true);
@@ -82,6 +86,7 @@ public class EventCard {
                 int pos = player.getPosition();
                 do {
                     pos++;
+                    if(pos >= 52) pos -= 52;
                 } while (!(Field.get(pos) instanceof Plant plant));
                 int oldPos = player.getPosition();
                 plant.setSpecialRent(true);

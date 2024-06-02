@@ -51,17 +51,15 @@ public class Player implements Serializable {
         Monopoly.INSTANCE.server().updatePlayerData();
     }
     public boolean enoughMoney() {
-        return money >= 0;
+        return money > 0;
     }
     public void addPrisonCard() {
         prisonCards++;
+        Monopoly.INSTANCE.server().updatePlayerData();
     }
-    public boolean usePrisonCards() {
-        if(prisonCards > 0) {
-            prisonCards--;
-            return true;
-        }
-        return false;
+    public void removePrisonCard() {
+        prisonCards--;
+        Monopoly.INSTANCE.server().updatePlayerData();
     }
     public void addBusCard() {
         busCards++;
@@ -95,7 +93,7 @@ public class Player implements Serializable {
         if(inPrison) setPosition(Field.fields().indexOf(Corner.GEFAENGNIS));
         else {
             prisonRounds = 0;
-            Monopoly.INSTANCE.server().updatePosition(true);
+            Monopoly.INSTANCE.server().updatePosition(false);
         }
     }
     public void prisonRound() {

@@ -49,7 +49,7 @@ public class RejoinPane extends JLayeredPane {
                 if(clientSup.get() != null && clientSup.get().player().isHost) {
                     options = new Object[]{"Abbrechen", "Beitreten", "Entfernen"};
                 } else options = new Object[]{"Abbrechen", "Beitreten"};
-                int result = JOptionPane.showOptionDialog(null, "Als " + name + " erneut beitreten?", "Erneut beitreten", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, null);
+                int result = JOptionPane.showOptionDialog(PrototypeMenu.parentComponent, "Als " + name + " erneut beitreten?", "Erneut beitreten", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, null);
                 if(result == 1) {
                     try {
                         Client client = new Client(clientSup.get().serverMethod().getIp(), 25565, false, display, name);

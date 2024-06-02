@@ -1,5 +1,6 @@
 package monopol.server;
 
+import monopol.client.screen.SettingsScreen;
 import monopol.common.data.*;
 import monopol.common.log.ServerLogger;
 import monopol.common.message.IServer;
@@ -40,20 +41,20 @@ public class Server extends UnicastRemoteObject implements IServer {
         COLORS.putAll(Map.of(Color.GRAY, "<html><font color=#808080>■</font>", Color.DARK_GRAY, "<html><font color=#404040>■</font>", Color.BLACK, "<html><font color=#000000>■</font>"));
     }
 
-    public ServerSocket server;
+    private ServerSocket server;
     private ServerState serverState = ServerState.CLOSED;
     private boolean pause = true;
     private final List<Player> waitForRejoin = new ArrayList<>();
     private String ip;
-    public final HashMap<Integer, Socket> clients = new HashMap<>();
-    public final HashMap<Socket, Boolean> pingCheck = new HashMap<>();
+    private final HashMap<Integer, Socket> clients = new HashMap<>();
+    private final HashMap<Socket, Boolean> pingCheck = new HashMap<>();
     private final HashMap<Player, Socket> players = new HashMap<>();
-    public final ServerLogger logger = ServerLogger.INSTANCE;
+    private final ServerLogger logger = ServerLogger.INSTANCE;
     private boolean acceptNewClients = false;
-    public ServerSettings serverSettings;
+    private ServerSettings serverSettings;
     private String host;
     private boolean hostJoined = false;
-    private Events.Factory<?> eventsType = StandardEvents::new;
+    private Events.Factory<?> eventsType = MegaEditionEvents::new;
     private Events events = eventsType.create(false, 16, true, true, true, true, 2500, 200, true, true, true, false, false, BuildRule.ANYWHERE, OwnedCardsOfColorGroup.ALL_BUT_ONE, OwnedCardsOfColorGroup.ALL_BUT_ONE, OwnedCardsOfColorGroup.ALL_BUT_ONE, OwnedCardsOfColorGroup.ALL_BUT_ONE, OwnedCardsOfColorGroup.ALL_BUT_ONE, OwnedCardsOfColorGroup.ALL);
     private GameData gameData = new GameData();
     
@@ -371,6 +372,12 @@ public class Server extends UnicastRemoteObject implements IServer {
         return list;
     }
 
+    public ArrayList<Socket> getSocketsServerSide() {
+        ArrayList<Socket> list = new ArrayList<>(clients.values());
+        list.removeIf(Objects::isNull);
+        return list;
+    }
+
     @Override
     public ArrayList<Player> getPlayers() throws RemoteException {
         ArrayList<Player> list = new ArrayList<>(players.keySet());
@@ -494,6 +501,11 @@ public class Server extends UnicastRemoteObject implements IServer {
         return pause;
     }
 
+    @Override
+    public boolean enoughPlayers() throws RemoteException {
+        return players.size() >= events().minPlayers();
+    }
+
     public Socket socket(Player player) {
         return players.get(player);
     }
@@ -543,9 +555,15 @@ public class Server extends UnicastRemoteObject implements IServer {
     }
 
     public void setEvents(Events events) {
-        if(serverState == ServerState.LOBBY) this.events = events;
+        if(serverState == ServerState.LOBBY) {
+            this.events = events;
+            PacketManager.sendS2C(new UpdatePlayerDataS2CPacket(), PacketManager.all(), Throwable::printStackTrace);
+        }
     }
-    public void setEventsType(Events.Factory<?> eventsType) {
-        if(serverState == ServerState.LOBBY) this.eventsType = eventsType;
+    public <T extends Events> void setEventsType(Events.Factory<T> eventsType) {
+        if(serverState == ServerState.LOBBY) {
+            this.eventsType = eventsType;
+            new SettingsScreen<T>(eventsType, events, this::setEvents).set();
+        }
     }
 }

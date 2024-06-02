@@ -37,7 +37,7 @@ public class PlayerSelectPane extends JLayeredPane {
             for(int i = 0; i < clients.size(); i++) {
                 int step = 1920 / clients.size();
                 final int value = i;
-                JButton button = addButton(clients.get(i).player().getName(), i * step, 0, step, 60, true, (client == clients.get(value)), actionEvent -> {
+                JButton button = JUtils.addButton(clients.get(i).player().getName(), i * step, 0, step, 60, true, (client == clients.get(value)), actionEvent -> {
                     client = clients.get(value);
                     update(client, clients, true);
                 });
@@ -63,25 +63,5 @@ public class PlayerSelectPane extends JLayeredPane {
 
     public Client getClient() {
         return client;
-    }
-
-    private JButton addButton(String display, int x, int y, int width, int height, boolean enabled, boolean selected, ActionListener actionEvent) {
-        JButton button = new JButton(display);
-        width = JUtils.getX(width);
-        height = JUtils.getY(height);
-        button.addActionListener(actionEvent);
-        button.setBounds(JUtils.getX(x), JUtils.getY(y), width, height);
-        button.setEnabled(enabled);
-        button.setSelected(selected);
-        button.setOpaque(false);
-        button.setContentAreaFilled(false);
-        button.setBorderPainted(false);
-        button.setFocusPainted(false);
-        if(width < 1) width = 1;
-        if(height < 1) height = 1;
-        button.setIcon(new ImageIcon(JUtils.imageIcon("images/DO_NOT_CHANGE/plain_button_2.png").getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH)));
-        button.setHorizontalTextPosition(SwingConstants.CENTER);
-        button.setVerticalTextPosition(SwingConstants.CENTER);
-        return button;
     }
 }

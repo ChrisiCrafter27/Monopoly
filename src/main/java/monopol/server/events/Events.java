@@ -90,11 +90,12 @@ public abstract class Events {
     public abstract void onDiceRoll(String name);
     public abstract void onGetBusCard();
     public abstract void onTakeBusCard(String name);
+    public abstract void onBusDrive(String name, int target);
     public abstract void onArrivedAtField();
     public abstract void onPayRent(String name);
     public abstract void onEventCardAction(String player, String action);
     public abstract void onCommunityCardAction(String player, String action);
-    public abstract void onPaySurety(String name);
+    public abstract void onPaySurety(String name, boolean hasTo);
     public abstract void onMortgage(String name, IPurchasable purchasable);
     public abstract void onUpgrade(String name, IPurchasable purchasable);
     public abstract void onDowngrade(String name, IPurchasable purchasable);
@@ -114,7 +115,7 @@ public abstract class Events {
     public abstract void onPassedLos();
     public abstract void onOfferTrade();
     public abstract void onAcceptTrade();
-    public abstract void onGoBankrupt(String name);
+    public abstract void onGoBankrupt();
 
     @FunctionalInterface
     public interface Factory<T extends Events> {

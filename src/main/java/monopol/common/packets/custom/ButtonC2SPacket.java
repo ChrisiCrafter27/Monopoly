@@ -13,16 +13,22 @@ public class ButtonC2SPacket extends C2SPacket<ButtonC2SPacket> {
     private final String name;
     private final String selectedCard;
     private final Button button;
+    private final int busTarget;
 
     public ButtonC2SPacket(String name, String selectedCard, Button button) {
+        this(name, selectedCard,  button, 0);
+    }
+
+    public ButtonC2SPacket(String name, String selectedCard, Button button, int busTarget) {
         this.name = name;
         this.selectedCard = selectedCard;
         this.button = button;
+        this.busTarget =  busTarget;
     }
 
     @SuppressWarnings("unused")
     public static ButtonC2SPacket deserialize(DataReader reader) {
-        return new ButtonC2SPacket(reader.readString(), reader.readString(), reader.readEnum(Button.class));
+        return new ButtonC2SPacket(reader.readString(), reader.readString(), reader.readEnum(Button.class), reader.readInt());
     }
 
     @Override
@@ -30,6 +36,7 @@ public class ButtonC2SPacket extends C2SPacket<ButtonC2SPacket> {
         writer.writeString(name);
         writer.writeString(selectedCard);
         writer.writeEnum(button);
+        writer.writeInt(busTarget);
     }
 
     @Override
@@ -41,9 +48,9 @@ public class ButtonC2SPacket extends C2SPacket<ButtonC2SPacket> {
                 else server.events().onDiceRoll(name);
             }
             case ACTION_2 -> {
-                if(server.getPlayerServerSide(name).inPrison()) server.events().onPaySurety(name);
+                if(server.getPlayerServerSide(name).inPrison()) server.events().onPaySurety(name, false);
                 else if(server.events().diceRolled()) server.events().onPayRent(name);
-                //else server.events().onBusDrive();
+                else server.events().onBusDrive(name, busTarget);
             }
             case PURCHASE -> server.events().onPurchaseCard(name, selected);
             case UPGRADE -> server.events().onUpgrade(name, selected);

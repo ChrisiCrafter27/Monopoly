@@ -1,17 +1,14 @@
 - HousePane
-- Bankrott gehen
-- Spiel Ende
-- Busfahren
 - Regeln wirksam
 
-- Report button
+- Namen der Images ändern
 - Mr. Monopoly Würfel
 - Dreier-Pasch
-
-- Versteigerung
-- Handeln
 
 - Hypotheken schränken Bauen ein (Regel)
 - Verkauf mit Upgrades (Regel)
 - Hypotheken mit Upgrades (Regel)
 - Mr. Monopoly Würfel (Regel)
+
+- Versteigerung
+- Handeln

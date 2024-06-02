@@ -23,6 +23,7 @@ public class ButtonsPane extends JLayeredPane {
     private boolean inPrison;
     private boolean ready;
     private List<IPurchasable> purchasables;
+    private BusStatus busStatus = BusStatus.IMPOSSIBLE;
 
     private final JLayeredPane bottom = new JLayeredPane();
 
@@ -32,7 +33,12 @@ public class ButtonsPane extends JLayeredPane {
     });
     private final JLabel action2L = JUtils.addText("Zug beenden",1484, 460,400,40,true);
     private final JButton action2B = JUtils.addButton(null,"images/Main_pictures/3d_button.png", 1484,450,400,80,true,false,actionevent ->  {
-        PacketManager.sendC2S(new ButtonC2SPacket(clientSup.get().player().getName(), displaySup.get().selectedCardPane.getSelected().getName(), ButtonC2SPacket.Button.ACTION_2), clientSup.get(), Throwable::printStackTrace);
+        switch (busStatus) {
+            case IMPOSSIBLE -> PacketManager.sendC2S(new ButtonC2SPacket(clientSup.get().player().getName(), displaySup.get().selectedCardPane.getSelected().getName(), ButtonC2SPacket.Button.ACTION_2), clientSup.get(), Throwable::printStackTrace);
+            case SELECTED -> busStatus = BusStatus.SELECTABLE;
+            case SELECTABLE -> busStatus  = BusStatus.SELECTED;
+        }
+        update(activePlayer, diceRolled, hasToPayRent, inPrison, ready, purchasables);
     });
     private final JLabel purchasableL = JUtils.addText("Kaufen",1060,450+90+13,400,40,true);
     private final JButton purchasableB = JUtils.addButton(null,"images/Main_pictures/3d_button.png", 1060,450+90,400,80,true,false, actionevent ->  {
@@ -133,9 +139,9 @@ public class ButtonsPane extends JLayeredPane {
             try {
                 Player player = clientSup.get().serverMethod().getPlayer(clientSup.get().player().getName());
                 if(player == null) return;
-                if(player.getMoney() <= 0) enableGiveUp();
                 IPurchasable purchasable = displaySup.get().selectedCardPane.getSelected();
                 if(diceRolled) {
+                    busStatus = BusStatus.IMPOSSIBLE;
                     setIcon(action1B, ready);
                     setIcon(action2B, hasToPayRent);
                     mortgageL.setText(purchasable.isMortgaged() ? "Zurückkaufen" : "Verpfänden");
@@ -144,14 +150,18 @@ public class ButtonsPane extends JLayeredPane {
                     setIcon(downgradeB, purchasables.stream().map(IPurchasable::getName).anyMatch(purchasable.getName()::equals) && purchasable.getOwner().equals(player.getName()) && purchasable.getLevel() > 0);
                     setIcon(mortgageB, purchasable.getOwner().equals(player.getName()));
                     setIcon(tradeB, false);
+                    if(player.getMoney() <= 0) enableGiveUp();
                 } else {
+                    if(inPrison || player.getBusCards() <= 0) busStatus = BusStatus.IMPOSSIBLE;
+                    if(busStatus == BusStatus.IMPOSSIBLE && !inPrison && player.getBusCards() > 0) busStatus = BusStatus.SELECTABLE;
                     setIcon(action1B, true);
-                    setIcon(action2B, player.getBusCards() > 0 || inPrison);
+                    setIcon(action2B, (inPrison && (player.getMoney() >= 50 || player.getPrisonCards() > 0)) || (busStatus == BusStatus.SELECTABLE || busStatus == BusStatus.SELECTED));
                 }
             } catch (RemoteException e) {
                 clientSup.get().close();
             }
         } else {
+            busStatus = BusStatus.IMPOSSIBLE;
             setIcon(action1B, false);
             setIcon(action2B, false);
             setIcon(purchasableB, false);
@@ -160,10 +170,21 @@ public class ButtonsPane extends JLayeredPane {
             setIcon(mortgageB, false);
             setIcon(tradeB, false);
         }
+        action2B.setSelected(busStatus == BusStatus.SELECTED);
+    }
+
+    public boolean busDrive(int target) {
+        if(busStatus == BusStatus.SELECTED) {
+            PacketManager.sendC2S(new ButtonC2SPacket(clientSup.get().player().getName(), displaySup.get().selectedCardPane.getSelected().getName(), ButtonC2SPacket.Button.ACTION_2, target), clientSup.get(), Throwable::printStackTrace);
+            return true;
+        }
+        return false;
     }
 
     private void enableGiveUp() {
         action1B.setDisabledIcon(new ImageIcon(JUtils.imageIcon("images/Main_pictures/3d_button_red.png").getImage().getScaledInstance(JUtils.getX(400), JUtils.getY(80), Image.SCALE_SMOOTH)));
+        action1B.setDisabledSelectedIcon(new ImageIcon(JUtils.imageIcon("images/Main_pictures/3d_button_red.png").getImage().getScaledInstance(JUtils.getX(400), JUtils.getY(80), Image.SCALE_SMOOTH)));
+        action1B.setSelectedIcon(new ImageIcon(JUtils.imageIcon("images/Main_pictures/3d_button_pressed_red.png").getImage().getScaledInstance(JUtils.getX(400), JUtils.getY(80), Image.SCALE_SMOOTH)));
         action1B.setPressedIcon(new ImageIcon(JUtils.imageIcon("images/Main_pictures/3d_button_pressed_red.png").getImage().getScaledInstance(JUtils.getX(400), JUtils.getY(80), Image.SCALE_SMOOTH)));
         action1B.setIcon(new ImageIcon(JUtils.imageIcon("images/Main_pictures/3d_button_hell_red.png").getImage().getScaledInstance(JUtils.getX(400), JUtils.getY(80), Image.SCALE_SMOOTH)));
         action1B.setEnabled(true);
@@ -172,6 +193,8 @@ public class ButtonsPane extends JLayeredPane {
 
     private void setIcon(JButton button, boolean active) {
         button.setDisabledIcon(new ImageIcon(JUtils.imageIcon("images/Main_pictures/3d_button.png").getImage().getScaledInstance(JUtils.getX(400), JUtils.getY(80), Image.SCALE_SMOOTH)));
+        button.setDisabledSelectedIcon(new ImageIcon(JUtils.imageIcon("images/Main_pictures/3d_button.png").getImage().getScaledInstance(JUtils.getX(400), JUtils.getY(80), Image.SCALE_SMOOTH)));
+        button.setSelectedIcon(new ImageIcon(JUtils.imageIcon("images/Main_pictures/3d_button_pressed.png").getImage().getScaledInstance(JUtils.getX(400), JUtils.getY(80), Image.SCALE_SMOOTH)));
         button.setPressedIcon(new ImageIcon(JUtils.imageIcon("images/Main_pictures/3d_button_pressed.png").getImage().getScaledInstance(JUtils.getX(400), JUtils.getY(80), Image.SCALE_SMOOTH)));
         if(active) {
             button.setIcon(new ImageIcon(JUtils.imageIcon("images/Main_pictures/3d_button_hell.png").getImage().getScaledInstance(JUtils.getX(400), JUtils.getY(80), Image.SCALE_SMOOTH)));
@@ -199,5 +222,11 @@ public class ButtonsPane extends JLayeredPane {
         bottom.add(tradeL, JLayeredPane.PALETTE_LAYER);
         bottom.add(leaveB, JLayeredPane.DEFAULT_LAYER);
         bottom.add(leaveL, JLayeredPane.PALETTE_LAYER);
+    }
+
+    private enum BusStatus {
+        IMPOSSIBLE,
+        SELECTED,
+        SELECTABLE;
     }
 }

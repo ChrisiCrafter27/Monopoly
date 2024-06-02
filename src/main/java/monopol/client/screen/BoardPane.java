@@ -29,8 +29,7 @@ public class BoardPane extends JLayeredPane {
     }
 
     private void buttonPressed(IField field) {
-        //TODO: bus card
-        if(field instanceof IPurchasable purchasable) displaySup.get().selectedCardPane.select(purchasable);
+        if(!displaySup.get().buttonsPane.busDrive(Field.fields().indexOf(field)) && field instanceof IPurchasable purchasable) displaySup.get().selectedCardPane.select(purchasable);
     }
     
     public void addButtons() {
@@ -87,10 +86,10 @@ public class BoardPane extends JLayeredPane {
         addStreetButton(Street.HAUPSTRASSE, 790, 990, Direction.UP);
         addStreetButton(Street.RATHAUSPLATZ, 860, 990, Direction.UP);
         //CORNERS
-        add(JUtils.addImage("images/felder/gefaengnis.png", 0, 60), JLayeredPane.PALETTE_LAYER);
-        add(JUtils.addImage("images/felder/los.png", 0, 990), JLayeredPane.PALETTE_LAYER);
-        add(JUtils.addImage("images/felder/freiparken.png", 930, 60), JLayeredPane.PALETTE_LAYER);
-        add(JUtils.addImage("images/felder/ins_gefaengnis.png", 930, 990), JLayeredPane.PALETTE_LAYER);
+        add(JUtils.addButton("", "images/felder/gefaengnis.png", 0, 60, 90, 90, true, false, actionEvent -> buttonPressed(Corner.GEFAENGNIS)), JLayeredPane.PALETTE_LAYER);
+        add(JUtils.addButton("", "images/felder/los.png", 0, 990, 90, 90, true, false, actionEvent -> buttonPressed(Corner.LOS)), JLayeredPane.PALETTE_LAYER);
+        add(JUtils.addButton("", "images/felder/freiparken.png", 930, 60, 90, 90, true, false, actionEvent -> buttonPressed(Corner.FREIPARKEN)), JLayeredPane.PALETTE_LAYER);
+        add(JUtils.addButton("", "images/felder/ins_gefaengnis.png", 930, 990, 90, 90, true, false, actionEvent -> buttonPressed(Corner.INSGEFAENGNIS)), JLayeredPane.PALETTE_LAYER);
     }
 
     private void addStreetButton(Street street, int x, int y, Direction direction) {

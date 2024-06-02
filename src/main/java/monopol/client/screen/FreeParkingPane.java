@@ -35,8 +35,8 @@ public class  FreeParkingPane extends JLayeredPane {
     }
 
     private void addFreeParkingMoney() {
-        int y = 420+20;
-        int x = 476+90+60-50;
+        int y = 1020 / 2 + 60 + 110; //420+20;
+        int x = 1020 / 2 - 75; //476+90+60-50;
         int rotation = 90;
 
         int noteWidth = 50;

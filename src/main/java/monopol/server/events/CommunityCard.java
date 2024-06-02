@@ -66,6 +66,7 @@ public class CommunityCard {
                 int pos = player.getPosition();
                 do {
                     pos++;
+                    if(pos >= 52) pos -= 52;
                 } while (!(Field.get(pos) instanceof TrainStation trainStation));
                 int oldPos = player.getPosition();
                 trainStation.setSpecialRent(true);

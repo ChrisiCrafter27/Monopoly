@@ -99,28 +99,19 @@ public class PlayerDisplayPane extends JLayeredPane {
             removeAll();
             int i = 0;
             for(String name : names) {
-                Color color = switch (i) {
-                    case 0 -> Color.YELLOW;
-                    case 1 -> Color.RED;
-                    case 2 -> Color.BLUE;
-                    case 3 -> Color.GREEN;
-                    case 4 -> Color.ORANGE;
-                    case 5 -> Color.MAGENTA;
-                    default -> Color.WHITE;
-                };
-                players.put(name, new Triplet<>(playerButton(color, name), 0, 0));
+                players.put(name, new Triplet<>(playerButton(name), 0, 0));
                 setPos(name, 0, Color.WHITE);
                 i++;
             }
         }
     }
 
-    private JButton playerButton(Color color, String name) {
+    private JButton playerButton(String name) {
         JButton button = JUtils.addButton("", 0, 0, 0, 0, true, actionEvent ->  {
             displaySup.get().playerInfoPane.setCurrentAndUpdate(name);
             displaySup.get().buttonsPane.setCurrentAndUpdate(name);
         });
-        button.setBackground(color);
+        button.setBackground(Color.WHITE);
         button.setOpaque(true);
         button.setBorderPainted(true);
         button.setIcon(null);
