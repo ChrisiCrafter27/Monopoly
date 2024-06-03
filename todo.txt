@@ -1,7 +1,5 @@
 - HousePane
-- Regeln wirksam
 
-- Namen der Images ändern
 - Mr. Monopoly Würfel
 - Dreier-Pasch
 
@@ -10,5 +8,6 @@
 - Hypotheken mit Upgrades (Regel)
 - Mr. Monopoly Würfel (Regel)
 
+- Namen der Images ändern
 - Versteigerung
 - Handeln

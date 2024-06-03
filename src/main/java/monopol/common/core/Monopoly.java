@@ -18,6 +18,7 @@ public class Monopoly {
     private Server server;
     private boolean serverEnabled;
     private GameState state;
+    public Component parentComponent;
 
     private Monopoly() {}
 

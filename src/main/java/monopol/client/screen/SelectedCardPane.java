@@ -139,7 +139,7 @@ public class SelectedCardPane extends JLayeredPane {
             if (component.getForeground() == getColor()) component.setForeground(Color.BLACK);
         }
         if (purchasable instanceof Street street) {
-            if(street.getOwner().isEmpty()) {
+            if(street.getOwner() == null) {
                 textKey0.setForeground(getColor());
                 textValue0.setForeground(getColor());
             } else {
@@ -175,7 +175,7 @@ public class SelectedCardPane extends JLayeredPane {
                 }
             }
         } else if (purchasable instanceof TrainStation trainStation) {
-            if(trainStation.getOwner().isEmpty()) {
+            if(trainStation.getOwner() == null) {
                 textKey1.setForeground(getColor());
                 textValue1.setForeground(getColor());
             } else {
@@ -218,11 +218,11 @@ public class SelectedCardPane extends JLayeredPane {
                 }
             }
         } else if (purchasable instanceof Plant plant) {
-            if(plant.getOwner().isEmpty()) {
+            if(plant.getOwner() == null) {
                 textKey1.setForeground(getColor());
                 textValue1.setForeground(getColor());
             } else {
-                switch (plant.getRent(new Triplet<>(0, 0, 0), false)) {
+                switch (plant.getRent(new Triplet<>(1, 0, 0), false)) {
                     case 4 -> {
                         textKey3.setForeground(getColor());
                         textValue3.setForeground(getColor());

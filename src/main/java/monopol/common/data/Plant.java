@@ -20,7 +20,7 @@ public enum Plant implements IPurchasable {
 
     @Override
     public String getOwner() {
-        return owner == null ? "" : owner;
+        return owner;
     }
 
     @Override
@@ -98,7 +98,7 @@ public enum Plant implements IPurchasable {
         if(considerSpecialRent && specialRent) return diceResult.getLeft() * 10;
         int i = 0;
         for (Plant plant : values()) {
-            if (plant.getOwner().equals(getOwner()) && !plant.isMortgaged()) i++;
+            if (plant.getOwnerNotNull().equals(getOwner()) && !plant.isMortgaged()) i++;
         }
         int toReturn = switch (i) {
             case 1 -> 4;
@@ -121,7 +121,7 @@ public enum Plant implements IPurchasable {
             case 12 -> "Die Miete ergibt sich aus der";
             case 13 -> "Würfelzahl der Person, die auf";
             case 14 -> "das Feld gekommen ist.";
-            case 18 -> getOwner().isEmpty() ? "Zu Verkaufen" : "Besitzer: " + getOwner();
+            case 18 -> getOwner() == null ? "Zu Verkaufen" : "Besitzer: " + getOwner();
             default -> "";
         };
     }

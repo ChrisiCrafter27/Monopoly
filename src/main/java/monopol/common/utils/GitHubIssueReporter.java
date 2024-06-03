@@ -1,5 +1,6 @@
 package monopol.common.utils;
 
+import monopol.common.core.Monopoly;
 import org.kohsuke.github.*;
 
 import javax.swing.*;
@@ -17,9 +18,9 @@ public class GitHubIssueReporter implements Thread.UncaughtExceptionHandler {
         System.err.print("Exception in thread \""
                 + t.getName() + "\" ");
         e.printStackTrace(System.err);
-        int result = JOptionPane.showOptionDialog(null, "Ein unerwarteter Fehler ist aufgetreten:\n" + e.getMessage() + "\nEs kann sein, dass das Spiel nun nicht mehr\nwie erwartet funktioniert.", "Fehler", JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE, null, new String[]{"Melden und schließen", "Melden und ignorieren", "Informationen hinzufügen"}, null);
+        int result = JOptionPane.showOptionDialog(Monopoly.INSTANCE.parentComponent, "Ein unerwarteter Fehler ist aufgetreten:\n" + e.getMessage() + "\nEs kann sein, dass das Spiel nun nicht mehr\nwie erwartet funktioniert.", "Fehler", JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE, null, new String[]{"Melden und schließen", "Melden und ignorieren", "Informationen hinzufügen"}, null);
         if(result == 2) {
-            new Thread(() -> report(e, JOptionPane.showInputDialog(null, "Fasse kurz zusammen, wie/wann\nder Fehler aufgetreten ist:", "Fehler", JOptionPane.QUESTION_MESSAGE))).start();
+            new Thread(() -> report(e, JOptionPane.showInputDialog(Monopoly.INSTANCE.parentComponent, "Fasse kurz zusammen, wie/wann\nder Fehler aufgetreten ist:", "Fehler", JOptionPane.QUESTION_MESSAGE))).start();
         } else if(result == 1) {
             report(e);
         } else if(result == 0) System.exit(1);
@@ -41,7 +42,7 @@ public class GitHubIssueReporter implements Thread.UncaughtExceptionHandler {
     }
 
     public static void report() {
-        new Thread(() -> report(JOptionPane.showInputDialog(null, "Fasse kurz zusammen, wie/wann\nder Fehler aufgetreten ist:", "Fehler", JOptionPane.QUESTION_MESSAGE))).start();
+        new Thread(() -> report(JOptionPane.showInputDialog(Monopoly.INSTANCE.parentComponent, "Fasse kurz zusammen, wie/wann\nder Fehler aufgetreten ist:", "Fehler", JOptionPane.QUESTION_MESSAGE))).start();
     }
 
     public static void report(String userInfo) {
@@ -52,16 +53,16 @@ public class GitHubIssueReporter implements Thread.UncaughtExceptionHandler {
         try {
             if(!GitUtils.connected()) GitUtils.connect(new StartupProgressBar("", 0, 0));
             if(!GitUtils.connected()) {
-                JOptionPane.showMessageDialog(null, "Ein GitHub-Issue konnte nicht erstellt werden:\nKeine Verbindung möglich.", "Fehler melden", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(Monopoly.INSTANCE.parentComponent, "Ein GitHub-Issue konnte nicht erstellt werden:\nKeine Verbindung möglich.", "Fehler melden", JOptionPane.WARNING_MESSAGE);
                 return;
             }
             GHRepository repository = GitUtils.monopolyRepository();
             GHIssue issue = repository.createIssue(title)
                     .body(body)
                     .create();
-            JOptionPane.showMessageDialog(null, "Ein neuer GitHub-Issue wurde erstellt:\n" + issue.getHtmlUrl(), "Fehler melden", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(Monopoly.INSTANCE.parentComponent, "Ein neuer GitHub-Issue wurde erstellt:\n" + issue.getHtmlUrl(), "Fehler melden", JOptionPane.INFORMATION_MESSAGE);
         } catch (IOException ioe) {
-            JOptionPane.showMessageDialog(null, "Ein GitHub-Issue konnte nicht erstellt werden:\n" + ioe.getMessage(), "Fehler melden", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(Monopoly.INSTANCE.parentComponent, "Ein GitHub-Issue konnte nicht erstellt werden:\n" + ioe.getMessage(), "Fehler melden", JOptionPane.WARNING_MESSAGE);
             ioe.printStackTrace(System.err);
         }
     }

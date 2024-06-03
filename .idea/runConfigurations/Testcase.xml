@@ -1,9 +1,0 @@
-<component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Testcase" type="Application" factoryName="Application">
-    <option name="MAIN_CLASS_NAME" value="monopol.client.screen.PrototypeMenu" />
-    <module name="Monopoly" />
-    <method v="2">
-      <option name="Make" enabled="true" />
-    </method>
-  </configuration>
-</component>

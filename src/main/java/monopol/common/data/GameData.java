@@ -11,6 +11,7 @@ public class GameData {
     private final HashMap<String, Integer> deadPlayers = new HashMap<>();
 
     public void addFreeParking(int amount) {
+        if(!Monopoly.INSTANCE.server().events().freeParking) return;
         freeParkingAmount += amount;
         Monopoly.INSTANCE.server().updateFreeParking();
     }

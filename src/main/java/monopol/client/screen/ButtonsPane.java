@@ -145,10 +145,10 @@ public class ButtonsPane extends JLayeredPane {
                     setIcon(action1B, ready);
                     setIcon(action2B, hasToPayRent);
                     mortgageL.setText(purchasable.isMortgaged() ? "Zurückkaufen" : "Verpfänden");
-                    setIcon(purchasableB, purchasables.stream().map(IPurchasable::getName).anyMatch(purchasable.getName()::equals) && player.getPosition() == Field.fields().indexOf(purchasable) && purchasable.getOwner().isEmpty() && player.getMoney() >= purchasable.getPrice());
-                    setIcon(upgradeB, purchasables.stream().map(IPurchasable::getName).anyMatch(purchasable.getName()::equals) && purchasable.getOwner().equals(player.getName()) && player.getMoney() >= purchasable.getUpgradeCost() && purchasable.getMaxLevel() > purchasable.getLevel());
-                    setIcon(downgradeB, purchasables.stream().map(IPurchasable::getName).anyMatch(purchasable.getName()::equals) && purchasable.getOwner().equals(player.getName()) && purchasable.getLevel() > 0);
-                    setIcon(mortgageB, purchasable.getOwner().equals(player.getName()));
+                    setIcon(purchasableB, purchasables.stream().map(IPurchasable::getName).anyMatch(purchasable.getName()::equals) && player.getPosition() == Field.fields().indexOf(purchasable) && purchasable.getOwner() == null && player.getMoney() >= purchasable.getPrice());
+                    setIcon(upgradeB, purchasables.stream().map(IPurchasable::getName).anyMatch(purchasable.getName()::equals) && purchasable.getOwnerNotNull().equals(player.getName()) && player.getMoney() >= purchasable.getUpgradeCost() && purchasable.getMaxLevel() > purchasable.getLevel());
+                    setIcon(downgradeB, purchasables.stream().map(IPurchasable::getName).anyMatch(purchasable.getName()::equals) && purchasable.getOwnerNotNull().equals(player.getName()) && purchasable.getLevel() > 0);
+                    setIcon(mortgageB, purchasable.getOwnerNotNull().equals(player.getName()));
                     setIcon(tradeB, false);
                     if(player.getMoney() <= 0) enableGiveUp();
                 } else {

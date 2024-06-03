@@ -17,8 +17,6 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 
 public class PrototypeMenu {
-    public static Component parentComponent = null;
-
     public final JFrame frame = new JFrame("Monopoly");
     private final ArrayList<Client> clients = new ArrayList<>();
     public Client client;
@@ -28,7 +26,7 @@ public class PrototypeMenu {
 
     public PrototypeMenu() {
         if((int) JUtils.SCREEN_WIDTH / (int) JUtils.SCREEN_HEIGHT != 16 / 9) System.err.println("[WARN]: Deine Bildschirmauflösung ist nicht 16/9. Dadurch werden einige Dinge nicht richtig angezeigt. Es ist allerdings trotzdem möglich, so zu spielen.");
-        parentComponent = display;
+        Monopoly.INSTANCE.parentComponent = display;
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setFocusable(true);
         frame.setSize(new Dimension((int) JUtils.SCREEN_WIDTH, (int) JUtils.SCREEN_HEIGHT));
@@ -199,7 +197,7 @@ public class PrototypeMenu {
         display.playerDisplayPane.init(() -> client, () -> display);
         display.infoBoxPane.init(() -> client);
         display.freeParkingPane.init();
-        display.playerInfoPane.init(() -> client);
+        display.playerInfoPane.init(() -> client, () -> display);
         display.buttonsPane.init(() -> client, () -> display);
         display.dicePane.showWithoutAnim(6, 6, 6);
         display.selectedCardPane.init(() -> display);
@@ -244,12 +242,5 @@ public class PrototypeMenu {
                 }
             }
         }).start();
-    }
-
-    public static void main(String[] args) {
-        for(Street street : Street.values()) street.setOwner("Spieler 1");
-        for(TrainStation trainStation : TrainStation.values()) trainStation.setOwner("Spieler 2");
-        for(Plant plant : Plant.values()) plant.setOwner("Spieler 2");
-        Monopoly.main(args);
     }
 }

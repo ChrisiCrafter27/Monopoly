@@ -11,10 +11,10 @@ import java.util.List;
 public abstract class Events {
     public final boolean limitBusTickets;
     public final int maxBusTickets;
-    public final boolean limitBuildings;
+    public final boolean limitBuildings; //noch nicht implementiert
     public final boolean tempoDice;
     public final boolean megaBuildings;
-    public final boolean tripleTeleport;
+    public final boolean tripleTeleport; //noch nicht implementiert
     public final int startMoney;
     public final int losMoney;
     public final boolean doubleLosMoney;
@@ -23,12 +23,7 @@ public abstract class Events {
     public final boolean buildEquable;
     public final boolean reRollEventCardsAfterUse;
     public final BuildRule buildRule;
-    public final OwnedCardsOfColorGroup cardsRequiredForOneHouse;
-    public final OwnedCardsOfColorGroup cardsRequiredForTwoHouses;
-    public final OwnedCardsOfColorGroup cardsRequiredForThreeHouses;
-    public final OwnedCardsOfColorGroup cardsRequiredForFourHouses;
-    public final OwnedCardsOfColorGroup cardsRequiredForHotel;
-    public final OwnedCardsOfColorGroup cardsRequiredForSkyscraper;
+    public final RequiredCardsOfColorGroup requiredCards;
 
     protected final List<String> players = new ArrayList<>();
     protected int currentPlayer;
@@ -42,7 +37,7 @@ public abstract class Events {
     protected Events(boolean limitBusTickets, int maxBusTickets, boolean limitBuildings, boolean tempoDice, boolean megaBuildings, boolean tripleTeleport, int startMoney, int losMoney, boolean doubleLosMoney, boolean freeParking, boolean rentInPrison, boolean buildEquable, boolean reRollEventCardsAfterUse, BuildRule buildRule, OwnedCardsOfColorGroup cardsRequiredForOneHouse, OwnedCardsOfColorGroup cardsRequiredForTwoHouses, OwnedCardsOfColorGroup cardsRequiredForThreeHouses, OwnedCardsOfColorGroup cardsRequiredForFourHouses, OwnedCardsOfColorGroup cardsRequiredForHotel, OwnedCardsOfColorGroup cardsRequiredForSkyscraper) {
         this.limitBusTickets = limitBusTickets;
         this.maxBusTickets = maxBusTickets;
-        this.limitBuildings = limitBuildings;
+        this.limitBuildings = true;
         this.tempoDice = tempoDice;
         this.megaBuildings = megaBuildings;
         this.tripleTeleport = tripleTeleport;
@@ -54,12 +49,7 @@ public abstract class Events {
         this.buildEquable = buildEquable;
         this.reRollEventCardsAfterUse = reRollEventCardsAfterUse;
         this.buildRule = buildRule;
-        this.cardsRequiredForOneHouse = cardsRequiredForOneHouse;
-        this.cardsRequiredForTwoHouses = cardsRequiredForTwoHouses;
-        this.cardsRequiredForThreeHouses = cardsRequiredForThreeHouses;
-        this.cardsRequiredForFourHouses = cardsRequiredForFourHouses;
-        this.cardsRequiredForHotel = cardsRequiredForHotel;
-        this.cardsRequiredForSkyscraper = cardsRequiredForSkyscraper;
+        this.requiredCards = new RequiredCardsOfColorGroup(cardsRequiredForOneHouse, cardsRequiredForTwoHouses, cardsRequiredForThreeHouses, cardsRequiredForFourHouses, cardsRequiredForHotel, cardsRequiredForSkyscraper, buildEquable, megaBuildings);
     }
 
     protected Player player() {
@@ -120,5 +110,8 @@ public abstract class Events {
     @FunctionalInterface
     public interface Factory<T extends Events> {
         T create(boolean limitBusTickets, int maxBusTickets, boolean limitBuildings, boolean tempoDice, boolean megaBuildings, boolean tripleTeleport, int startMoney, int losMoney, boolean doubleLosMoney, boolean freeParking, boolean gainRentInPrison, boolean buildEquable, boolean reRollEventCardsAfterUse, BuildRule buildRule, OwnedCardsOfColorGroup cardsRequiredForOneHouse, OwnedCardsOfColorGroup cardsRequiredForTwoHouses, OwnedCardsOfColorGroup cardsRequiredForThreeHouses, OwnedCardsOfColorGroup cardsRequiredForFourHouses, OwnedCardsOfColorGroup cardsRequiredForHotel, OwnedCardsOfColorGroup cardsRequiredForSkyscraper);
+        default T copyOf(Events events) {
+            return create(events.limitBusTickets, events.maxBusTickets, events.limitBuildings, events.tempoDice, events.megaBuildings, events.tripleTeleport, events.startMoney, events.losMoney, events.doubleLosMoney, events.freeParking, events.rentInPrison, events.buildEquable, events.reRollEventCardsAfterUse, events.buildRule, events.requiredCards.cardsRequiredForOneHouse(), events.requiredCards.cardsRequiredForTwoHouses(), events.requiredCards.cardsRequiredForThreeHouses(), events.requiredCards.cardsRequiredForFourHouses(), events.requiredCards.cardsRequiredForHotel(), events.requiredCards.cardsRequiredForSkyscraper());
+        }
     }
 }

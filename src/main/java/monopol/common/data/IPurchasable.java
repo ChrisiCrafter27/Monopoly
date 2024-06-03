@@ -25,6 +25,9 @@ public interface IPurchasable extends IField, Serializable {
     String keyText(int line);
     String valueText(int line);
 
+    default String getOwnerNotNull() {
+        return getOwner() == null ? "" : getOwner();
+    }
     default void copyOf(IPurchasable other) {
         setOwner(other.getOwner());
         setSpecialRent(other.getSpecialRent());

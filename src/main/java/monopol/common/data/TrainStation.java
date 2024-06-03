@@ -41,7 +41,7 @@ public enum TrainStation implements IPurchasable {
 
     @Override
     public String getOwner() {
-        return owner == null ? "" : owner;
+        return owner;
     }
 
     @Override
@@ -108,7 +108,7 @@ public enum TrainStation implements IPurchasable {
     public int getRent(Triplet<Integer, Integer, Integer> diceResult, boolean considerSpecialRent) {
         int i = 0;
         for (TrainStation station : values()) {
-            if (station.getOwner().equals(getOwner()) && !station.mortgaged()) i++;
+            if (station.getOwnerNotNull().equals(getOwner()) && !station.mortgaged()) i++;
         }
         int toReturn = 25;
         while (i > 1) {
@@ -133,7 +133,7 @@ public enum TrainStation implements IPurchasable {
             case 13 -> "Ein Zugdepot verdoppelt";
             case 14 -> "die Miete.";
             case 17 -> "Aufwertungskosten";
-            case 18 -> getOwner().isEmpty() ? "Zu Verkaufen" : "Besitzer: " + getOwner();
+            case 18 -> getOwner() == null ? "Zu Verkaufen" : "Besitzer: " + getOwner();
             default -> "";
         };
     }

@@ -1,6 +1,6 @@
 package monopol.server;
 
-import monopol.client.screen.SettingsScreen;
+import monopol.common.core.Monopoly;
 import monopol.common.data.*;
 import monopol.common.log.ServerLogger;
 import monopol.common.message.IServer;
@@ -81,7 +81,7 @@ public class Server extends UnicastRemoteObject implements IServer {
                                         clients.put(clients.size() + 1, newClient);
                                         players.put(player, newClient);
                                         PacketManager.sendS2C(new NameS2CPacket(player.getName()), newClient, Throwable::printStackTrace);
-                                        PacketManager.sendS2C(new StartS2CPacket(), newClient, Throwable::printStackTrace);
+                                        PacketManager.sendS2C(new StartS2CPacket(events().tempoDice), newClient, Throwable::printStackTrace);
                                         logger.log().info("[Server]: New Client rejoined (" + player.getName() + ")");
                                         //TODO: send necessary information
                                         PacketManager.sendS2C(new UpdatePurchasablesS2CPacket(), PacketManager.all(), Throwable::printStackTrace);
@@ -95,7 +95,7 @@ public class Server extends UnicastRemoteObject implements IServer {
                                 throw new IllegalStateException();
                             } catch (Exception e) {
                                 PacketManager.sendS2C(new DisconnectS2CPacket(DisconnectReason.SERVER_FULL), PacketManager.all(), Throwable::printStackTrace);
-                                e.printStackTrace();
+                                e.printStackTrace(System.err);
                             }
                         }).start();
                     } else if (acceptNewClients && clients.size() < 6 && serverState == ServerState.LOBBY) {
@@ -147,8 +147,7 @@ public class Server extends UnicastRemoteObject implements IServer {
                 }
                 i++;
             } while (!okay);
-            Player player = new Player(name);
-            return player;
+            return new Player(name);
         }
     };
     private final Thread requestThread = new Thread(() -> {
@@ -255,9 +254,9 @@ public class Server extends UnicastRemoteObject implements IServer {
             }
         } catch (Exception e) {
             success.accept(false);
-            new Thread(() -> {
-                JOptionPane.showMessageDialog(null, "Der Server konnte nicht gestartet werden:\n" + e.getMessage() + "\nDu kannst daher nur anderen Servern beitreten.", "Error", JOptionPane.WARNING_MESSAGE);
-            }).start();
+            new Thread(() -> JOptionPane.showMessageDialog(Monopoly.INSTANCE.parentComponent,
+                    "Der Server konnte nicht gestartet werden:\n" + e.getMessage() + "\nDu kannst daher nur anderen Servern beitreten.", "Error", JOptionPane.WARNING_MESSAGE)
+            ).start();
             return;
         }
 
@@ -461,10 +460,10 @@ public class Server extends UnicastRemoteObject implements IServer {
     @Override
     public boolean trade(String player1, String player2, ArrayList<IPurchasable> offer1, ArrayList<IPurchasable> offer2, int money1, int money2) throws RemoteException {
         for (IPurchasable purchasable : offer1) {
-            if(!purchasable.getOwner().equals(player1)) return false;
+            if(!purchasable.getOwnerNotNull().equals(player1)) return false;
         }
         for (IPurchasable purchasable : offer2) {
-            if(!purchasable.getOwner().equals(player2)) return false;
+            if(!purchasable.getOwnerNotNull().equals(player2)) return false;
         }
         for (IPurchasable purchasable : offer1) {
             purchasable.setOwner(player2);
@@ -514,7 +513,7 @@ public class Server extends UnicastRemoteObject implements IServer {
         if(!pause && serverState == ServerState.LOBBY && (players.size() >= events().minPlayers())) {
             events.prepareGame();
             gameData = new GameData();
-            PacketManager.sendS2C(new StartS2CPacket(), PacketManager.all(), Throwable::printStackTrace);
+            PacketManager.sendS2C(new StartS2CPacket(events().tempoDice), PacketManager.all(), Throwable::printStackTrace);
             PacketManager.sendS2C(new UpdatePurchasablesS2CPacket(), PacketManager.all(), Throwable::printStackTrace);
             PacketManager.sendS2C(new UpdatePositionS2CPacket(false), PacketManager.all(), Throwable::printStackTrace);
             PacketManager.sendS2C(new UpdatePlayerDataS2CPacket(), PacketManager.all(), Throwable::printStackTrace);
@@ -560,10 +559,10 @@ public class Server extends UnicastRemoteObject implements IServer {
             PacketManager.sendS2C(new UpdatePlayerDataS2CPacket(), PacketManager.all(), Throwable::printStackTrace);
         }
     }
-    public <T extends Events> void setEventsType(Events.Factory<T> eventsType) {
+    public void setEventsType(Events.Factory<?> eventsType) {
         if(serverState == ServerState.LOBBY) {
             this.eventsType = eventsType;
-            new SettingsScreen<T>(eventsType, events, this::setEvents).set();
+            setEvents(eventsType.copyOf(events));
         }
     }
 }

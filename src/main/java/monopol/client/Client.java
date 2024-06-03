@@ -1,6 +1,7 @@
 package monopol.client;
 
 import monopol.client.screen.RootPane;
+import monopol.common.core.Monopoly;
 import monopol.common.packets.ClientSide;
 import monopol.common.packets.PacketManager;
 import monopol.common.packets.custom.DisconnectC2SPacket;
@@ -90,7 +91,7 @@ public class Client {
             Registry registry = LocateRegistry.getRegistry(ip, 1199);
             serverInterface = (IServer) registry.lookup("Server");
             if(serverMethod().stopped() || !serverInterface.acceptsNewClient()) {
-                JOptionPane.showMessageDialog(null, "Beitreten nicht möglich", "Spiel beitreten", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(Monopoly.INSTANCE.parentComponent, "Beitreten nicht möglich", "Spiel beitreten", JOptionPane.WARNING_MESSAGE);
                 client.close();
                 return;
             }

@@ -8,7 +8,7 @@ import java.util.Objects;
 
 public class Player implements Serializable {
     private String name;
-    private int money = 1000;
+    private int money = 0;
     private int prisonCards = 0;
     private int busCards = 0;
     private int position = 0;

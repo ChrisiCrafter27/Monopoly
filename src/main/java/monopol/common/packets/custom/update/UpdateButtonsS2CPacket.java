@@ -5,6 +5,7 @@ import monopol.client.screen.RootPane;
 import monopol.common.data.*;
 import monopol.common.packets.S2CPacket;
 import monopol.server.events.BuildRule;
+import monopol.server.events.RequiredCardsOfColorGroup;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,8 +15,8 @@ public class UpdateButtonsS2CPacket extends S2CPacket<UpdateButtonsS2CPacket> {
     private final boolean diceRolled, hasToPayRent, inPrison, ready;
     private final List<IPurchasable> purchasables;
 
-    public UpdateButtonsS2CPacket(String currentPlayer, boolean diceRolled, boolean hasToPayRent, boolean inPrison, boolean ready, BuildRule buildRule, Player player) {
-        this(currentPlayer, diceRolled, hasToPayRent, inPrison, ready, buildRule.apply(player));
+    public UpdateButtonsS2CPacket(String currentPlayer, boolean diceRolled, boolean hasToPayRent, boolean inPrison, boolean ready, BuildRule buildRule, RequiredCardsOfColorGroup requiredCards, Player player) {
+        this(currentPlayer, diceRolled, hasToPayRent, inPrison, ready, buildRule.apply(player).stream().filter(p -> !(p instanceof TrainStation) || requiredCards.megaBuildings()).filter(p -> !(p instanceof Street street) || p.getOwner() == null || (requiredCards.valid(player, street) && (!requiredCards.buildEquable() || BuildRule.buildingEquable(street) != BuildRule.EqualBuildingResult.OKAY))).toList());
     }
 
     public UpdateButtonsS2CPacket(String currentPlayer, boolean diceRolled, boolean hasToPayRent, boolean inPrison, boolean ready, List<IPurchasable> purchasables) {

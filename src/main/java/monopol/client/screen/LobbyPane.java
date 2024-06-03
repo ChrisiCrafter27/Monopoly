@@ -55,13 +55,13 @@ public class LobbyPane extends JLayeredPane {
         }
     });
     private final JButton addBot = JUtils.addButton("+ Bot", new Font(null, Font.PLAIN, 40), Color.BLACK, 450, 785, 270, 105, false, actionEvent -> {
-        if(client.player().isHost) JOptionPane.showMessageDialog(PrototypeMenu.parentComponent, "Diese Aktion ist noch nicht implementiert", "Bot hinzufügen", JOptionPane.INFORMATION_MESSAGE);
+        if(client.player().isHost) JOptionPane.showMessageDialog(Monopoly.INSTANCE.parentComponent, "Diese Aktion ist noch nicht implementiert", "Bot hinzufügen", JOptionPane.INFORMATION_MESSAGE);
     });
     private final JButton changeMode = JUtils.addButton("Modus", new Font(null, Font.PLAIN, 40), Color.BLACK, 790, 680, 270, 105, false, actionEvent -> {
         if(client.player().isHost) {
             HashMap<String, Events.Factory<?>> modes = new HashMap<>(Map.of("Mega-Edition", MegaEditionEvents::new, "Mega-Edition (2 Spieler)", MegaEdition2PlayersEvents::new));
             List<String> names = modes.keySet().stream().toList();
-            int selection = JOptionPane.showOptionDialog(PrototypeMenu.parentComponent, "Modus wählen:", "Einstellungen", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, names.toArray(), null);
+            int selection = JOptionPane.showOptionDialog(Monopoly.INSTANCE.parentComponent, "Modus wählen:", "Einstellungen", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, names.toArray(), null);
             if(selection != JOptionPane.CLOSED_OPTION) {
                 Monopoly.INSTANCE.server().setEventsType(modes.get(names.get(selection)));
             }
@@ -189,7 +189,7 @@ public class LobbyPane extends JLayeredPane {
         for (Player player : players) {
             playerList.add(JUtils.addText(player.getName() + (client.serverMethod().isHost(player.getName()) ? " (Host)" : ""), 200, y, 500, 25, SwingConstants.LEFT, Color.BLACK));
             if(!player.getName().equals(client.player().getName())) {
-                playerList.add(JUtils.addButton("Kick", 750, y, 150, 25, ableToKick && !client.serverMethod().isHost(player.getName()), actionEvent -> {
+                playerList.add(JUtils.addButton("Entfernen", 750, y, 150, 25, ableToKick && !client.serverMethod().isHost(player.getName()), actionEvent -> {
                     try {
                         client.serverMethod().kick(player.getName(), DisconnectReason.KICKED);
                     } catch (Exception e) {
@@ -198,12 +198,12 @@ public class LobbyPane extends JLayeredPane {
                 }));
             } else {
                 playerList.add(JUtils.addButton("Namen ändern", 750, y, 150, 25, true, actionEvent -> {
-                    String name = JOptionPane.showInputDialog(PrototypeMenu.parentComponent, "Neuer Name:", "Namen ändern", JOptionPane.QUESTION_MESSAGE);
+                    String name = JOptionPane.showInputDialog(Monopoly.INSTANCE.parentComponent, "Neuer Name:", "Namen ändern", JOptionPane.QUESTION_MESSAGE);
                     if(name != null) try {
                         if(client.serverMethod().changeName(client.player().getName(), name)) {
                             client.player().setName(name);
                             mustUpdate = true;
-                        } else JOptionPane.showMessageDialog(PrototypeMenu.parentComponent, "Dieser Name wird schon verwendet oder ist zu lang!", "Namen ändern", JOptionPane.WARNING_MESSAGE);
+                        } else JOptionPane.showMessageDialog(Monopoly.INSTANCE.parentComponent, "Dieser Name wird schon verwendet oder ist zu lang!", "Namen ändern", JOptionPane.WARNING_MESSAGE);
                     } catch (Exception e) {
                         e.printStackTrace(System.err);
                     }
@@ -223,12 +223,12 @@ public class LobbyPane extends JLayeredPane {
                     throw new RuntimeException(e);
                 }
             }).toList();
-            int result = JOptionPane.showOptionDialog(PrototypeMenu.parentComponent, "Wähle eine neue Farbe aus oder drücke ESC", "Farbe wählen", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, colors.stream().map(COLORS::get).toArray(), null);
+            int result = JOptionPane.showOptionDialog(Monopoly.INSTANCE.parentComponent, "Wähle eine neue Farbe aus oder drücke ESC", "Farbe wählen", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, colors.stream().map(COLORS::get).toArray(), null);
             if(result != JOptionPane.CLOSED_OPTION) {
                 try {
-                    if(!client.serverMethod().changeColor(name, colors.get(result))) JOptionPane.showMessageDialog(PrototypeMenu.parentComponent, "Farbe konnte nicht geändert werden.", "Farbe wählen", JOptionPane.WARNING_MESSAGE);
+                    if(!client.serverMethod().changeColor(name, colors.get(result))) JOptionPane.showMessageDialog(Monopoly.INSTANCE.parentComponent, "Farbe konnte nicht geändert werden.", "Farbe wählen", JOptionPane.WARNING_MESSAGE);
                 } catch (RemoteException e) {
-                    JOptionPane.showMessageDialog(PrototypeMenu.parentComponent, "Farbe konnte nicht geändert werden.", "Farbe wählen", JOptionPane.WARNING_MESSAGE);
+                    JOptionPane.showMessageDialog(Monopoly.INSTANCE.parentComponent, "Farbe konnte nicht geändert werden.", "Farbe wählen", JOptionPane.WARNING_MESSAGE);
                 }
             }
         });

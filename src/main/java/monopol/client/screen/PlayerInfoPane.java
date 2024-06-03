@@ -22,8 +22,9 @@ public class PlayerInfoPane extends JLayeredPane {
         PURCHASABLES.addAll(List.of(TrainStation.values()));
         PURCHASABLES.addAll(List.of(Plant.values()));
     }
-
+    
     private Supplier<Client> clientSup = () -> {throw new IllegalStateException("init() was not called");};
+    private Supplier<RootPane> displaySup = () -> {throw new IllegalStateException("init() was not called");};
     private String currentPlayer = null;
 
     private final JLayeredPane topLeft = new JLayeredPane();
@@ -99,9 +100,10 @@ public class PlayerInfoPane extends JLayeredPane {
         thread.interrupt();
     }
 
-    public void init(Supplier<Client> clientSup) {
+    public void init(Supplier<Client> clientSup, Supplier<RootPane> displaySup) {
         try {
             this.clientSup = clientSup;
+            this.displaySup = displaySup;
             currentPlayer = clientSup.get().serverMethod().getPlayers().get(0).getName();
             thread.interrupt();
             thread = new Thread(task);
@@ -155,13 +157,13 @@ public class PlayerInfoPane extends JLayeredPane {
     private void updateImages() {
         for(int i = 1; i <= PURCHASABLES.size(); i++) {
             IPurchasable card = PURCHASABLES.get(i-1);
-            if(purchasableThis.getComponent(i-1) instanceof JLabel label) {
-                ImageIcon icon = JUtils.imageIcon(card.getOwner().equals(clientSup.get().player().getName()) ? "images/kleine_karten/" + getColor(i) + "_filled.png" : "images/kleine_karten/" + getColor(i) + ".png");
-                label.setIcon(new ImageIcon(icon.getImage().getScaledInstance(JUtils.getX(icon.getIconWidth()), JUtils.getY(icon.getIconHeight()), Image.SCALE_DEFAULT)));
+            if(purchasableThis.getComponent(i-1) instanceof JButton button) {
+                ImageIcon icon = JUtils.imageIcon(card.getOwnerNotNull().equals(clientSup.get().player().getName()) ? "images/kleine_karten/" + getColor(i) + "_filled.png" : "images/kleine_karten/" + getColor(i) + ".png");
+                button.setIcon(new ImageIcon(icon.getImage().getScaledInstance(JUtils.getX(icon.getIconWidth()), JUtils.getY(icon.getIconHeight()), Image.SCALE_DEFAULT)));
             }
-            if(purchasableOther.getComponent(i-1) instanceof JLabel label) {
-                ImageIcon icon = JUtils.imageIcon(card.getOwner().equals(currentPlayer) ? "images/kleine_karten/" + getColor(i) + "_filled.png" : "images/kleine_karten/" + getColor(i) + ".png");
-                label.setIcon(new ImageIcon(icon.getImage().getScaledInstance(JUtils.getX(icon.getIconWidth()), JUtils.getY(icon.getIconHeight()), Image.SCALE_DEFAULT)));
+            if(purchasableOther.getComponent(i-1) instanceof JButton button) {
+                ImageIcon icon = JUtils.imageIcon(card.getOwnerNotNull().equals(currentPlayer) ? "images/kleine_karten/" + getColor(i) + "_filled.png" : "images/kleine_karten/" + getColor(i) + ".png");
+                button.setIcon(new ImageIcon(icon.getImage().getScaledInstance(JUtils.getX(icon.getIconWidth()), JUtils.getY(icon.getIconHeight()), Image.SCALE_DEFAULT)));
             }
         }
     }
@@ -196,13 +198,15 @@ public class PlayerInfoPane extends JLayeredPane {
 
     private void addPurchasableThis() {
         for(int i = 1; i <= PURCHASABLES.size(); i++) {
-            purchasableThis.add(JUtils.addImage("images/kleine_karten/disabled.png", 1075 + getX(i), 148 + getY(i)), i-1);
+            IPurchasable purchasable = PURCHASABLES.get(i-1);
+            purchasableThis.add(JUtils.addButton("", "images/kleine_karten/disabled.png", 1075 + getX(i), 148 + getY(i), 20, 40, true, false, actionEvent -> displaySup.get().selectedCardPane.select(purchasable)), i-1);
         }
     }
 
     private void addPurchasableOther() {
         for(int i = 1; i <= PURCHASABLES.size(); i++) {
-            purchasableOther.add(JUtils.addImage("images/kleine_karten/disabled.png", 1494 + getX(i), 148 + getY(i)), i-1);
+            IPurchasable purchasable = PURCHASABLES.get(i-1);
+            purchasableOther.add(JUtils.addButton("", "images/kleine_karten/disabled.png", 1494 + getX(i), 148 + getY(i), 20, 40, true, false, actionEvent -> displaySup.get().selectedCardPane.select(purchasable)), i-1);
         }
     }
 

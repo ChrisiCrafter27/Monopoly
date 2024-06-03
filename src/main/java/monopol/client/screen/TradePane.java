@@ -180,13 +180,13 @@ public class TradePane extends JLayeredPane {
     }
 
     private boolean isOwner(IPurchasable card) {
-        return card.getOwner().equals(player1);
+        return card.getOwnerNotNull().equals(player1);
     }
     private boolean selected(IPurchasable card) {
         return selected1.get().contains(card);
     }
     private boolean otherIsOwner(IPurchasable card) {
-        return card.getOwner().equals(player2);
+        return card.getOwnerNotNull().equals(player2);
     }
     private boolean otherSelected(IPurchasable card) {
         return selected2.get().contains(card);

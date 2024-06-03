@@ -156,7 +156,7 @@ public class SettingsScreen<T extends Events> {
                 new IntSetting("Anzahl an Busfahrkarten", 0, 100, defaultValues.maxBusTickets),
                 new BooleanSetting("Gebäude limitieren", defaultValues.limitBuildings),
                 new BooleanSetting("Tempowürfel", "Teil der Monopoly Mega-Edition", defaultValues.tempoDice),
-                new BooleanSetting("Wolkenkratzer", "Teil der Monopoly Mega-Edition", defaultValues.megaBuildings),
+                new BooleanSetting("Wolkenkratzer und Zugdepots", "Teil der Monopoly Mega-Edition", defaultValues.megaBuildings),
                 new BooleanSetting("Teleport bei Dreierpasch", "Wenn du einen Dreierpasch würfelst, kannst du dich auf ein beliebiges Feld bewegen. Teil der Monopoly Mega-Edition", defaultValues.tripleTeleport),
                 new IntSetting("Start-Geld", 0, 10000, defaultValues.startMoney),
                 new IntSetting("Los-Geld", 0, 10000, defaultValues.losMoney),
@@ -166,12 +166,12 @@ public class SettingsScreen<T extends Events> {
                 new BooleanSetting("Gleichmäßiges Bauen", "In einer Farbgruppe müssen alle Straßen auf dem gleichen Level (Anzahl Häuser/Hotel/Wolkenkratzer) sein. Es darf nur eine Abweichung von einem Level nach oben geben.", defaultValues.buildEquable),
                 new BooleanSetting("Karten nach Ziehen mischen", "Wenn eine Ereignis-/Gemeinschaftskarte gezogen wird, wird diese sofort wieder untergemischt", defaultValues.reRollEventCardsAfterUse),
                 new EnumSetting<>("Bauregel", "Legt fest, wo du Gebäude (Häuser/Hotels/Wolkenkratzer) bauen und abreißen kannst, wenn du am Zug bist", BuildRule.values(), defaultValues.buildRule),
-                new EnumSetting<>("Karten für ein Haus", "Legt fest, wie viele Karten du von der jeweiligen Farbgruppe brauchst", OwnedCardsOfColorGroup.values(), defaultValues.cardsRequiredForOneHouse),
-                new EnumSetting<>("Karten für zwei Häuser", "Legt fest, wie viele Karten du von der jeweiligen Farbgruppe brauchst", OwnedCardsOfColorGroup.values(), defaultValues.cardsRequiredForTwoHouses),
-                new EnumSetting<>("Karten für drei Häuser", "Legt fest, wie viele Karten du von der jeweiligen Farbgruppe brauchst", OwnedCardsOfColorGroup.values(), defaultValues.cardsRequiredForThreeHouses),
-                new EnumSetting<>("Karten für vier Häuser", "Legt fest, wie viele Karten du von der jeweiligen Farbgruppe brauchst", OwnedCardsOfColorGroup.values(), defaultValues.cardsRequiredForFourHouses),
-                new EnumSetting<>("Karten für ein Hotel", "Legt fest, wie viele Karten du von der jeweiligen Farbgruppe brauchst", OwnedCardsOfColorGroup.values(), defaultValues.cardsRequiredForHotel),
-                new EnumSetting<>("Karten für einen Wolkenkratzer", "Legt fest, wie viele Karten du von der jeweiligen Farbgruppe brauchst", OwnedCardsOfColorGroup.values(), defaultValues.cardsRequiredForSkyscraper)
+                new EnumSetting<>("Karten für ein Haus", "Legt fest, wie viele Karten du von der jeweiligen Farbgruppe brauchst", OwnedCardsOfColorGroup.values(), defaultValues.requiredCards.cardsRequiredForOneHouse()),
+                new EnumSetting<>("Karten für zwei Häuser", "Legt fest, wie viele Karten du von der jeweiligen Farbgruppe brauchst", OwnedCardsOfColorGroup.values(), defaultValues.requiredCards.cardsRequiredForTwoHouses()),
+                new EnumSetting<>("Karten für drei Häuser", "Legt fest, wie viele Karten du von der jeweiligen Farbgruppe brauchst", OwnedCardsOfColorGroup.values(), defaultValues.requiredCards.cardsRequiredForThreeHouses()),
+                new EnumSetting<>("Karten für vier Häuser", "Legt fest, wie viele Karten du von der jeweiligen Farbgruppe brauchst", OwnedCardsOfColorGroup.values(), defaultValues.requiredCards.cardsRequiredForFourHouses()),
+                new EnumSetting<>("Karten für ein Hotel", "Legt fest, wie viele Karten du von der jeweiligen Farbgruppe brauchst", OwnedCardsOfColorGroup.values(), defaultValues.requiredCards.cardsRequiredForHotel()),
+                new EnumSetting<>("Karten für einen Wolkenkratzer", "Legt fest, wie viele Karten du von der jeweiligen Farbgruppe brauchst", OwnedCardsOfColorGroup.values(), defaultValues.requiredCards.cardsRequiredForSkyscraper())
         );
     }
 
@@ -223,9 +223,5 @@ public class SettingsScreen<T extends Events> {
         if(settingsList.get(i-1) instanceof IntSetting setting) {
             return setting.getValue();
         } else throw new IllegalStateException();
-    }
-
-    public void set() {
-        set.accept(events());
     }
 }

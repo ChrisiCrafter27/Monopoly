@@ -1,6 +1,7 @@
 package monopol.common.utils;
 
 import com.sun.tools.javac.Main;
+import monopol.common.core.Monopoly;
 import org.apache.commons.io.IOUtils;
 import org.kohsuke.github.GHRepository;
 
@@ -15,10 +16,10 @@ public class VersionChecker {
         try {
             GHRepository repository = GitUtils.jarRepository();
             if(inIdea()) {
-                if(hasToUpdate(repository)) JOptionPane.showMessageDialog(null, "Du bist in einer Entwicklungsumgebung.\nAutomatische Updates sind daher deaktiviert.", "Version-Checker", JOptionPane.INFORMATION_MESSAGE);
+                if(hasToUpdate(repository)) JOptionPane.showMessageDialog(Monopoly.INSTANCE.parentComponent, "Du bist in einer Entwicklungsumgebung.\nAutomatische Updates sind daher deaktiviert.", "Version-Checker", JOptionPane.INFORMATION_MESSAGE);
             } else  {
                 if(hasToUpdate(repository)) {
-                    if(JOptionPane.showConfirmDialog(null, "Eine neue Version von Monopoly ist verfügbar.\nMöchtest du sie herunterladen?\nDeine Version: " + version() + "\nNeueste Version: " + remoteVersion(repository), "Version-Checker", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
+                    if(JOptionPane.showConfirmDialog(Monopoly.INSTANCE.parentComponent, "Eine neue Version von Monopoly ist verfügbar.\nMöchtest du sie herunterladen?\nDeine Version: " + version() + "\nNeueste Version: " + remoteVersion(repository), "Version-Checker", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
                         File destFile = new File("Monopoly-" + remoteVersion(repository) + ".jar");
                         try {
                             update(repository, bar);
@@ -33,7 +34,7 @@ public class VersionChecker {
                                 Runtime.getRuntime().exec(new String[]{"java", "-jar", "Monopoly-" + remoteVersion(repository) + ".jar", "-rename", System.getProperty("java.class.path")});
                             return true;
                         } else {
-                            JOptionPane.showMessageDialog(null, "Update nicht erfolgreich", "Version-Checker", JOptionPane.WARNING_MESSAGE);
+                            JOptionPane.showMessageDialog(Monopoly.INSTANCE.parentComponent, "Update nicht erfolgreich", "Version-Checker", JOptionPane.WARNING_MESSAGE);
                         }
                     }
                 }

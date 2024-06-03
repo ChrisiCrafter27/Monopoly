@@ -38,6 +38,7 @@ public class Message {
 
     public void send(Socket target) throws IOException {
         try {
+            if(target.isClosed()) return;
             DataOutputStream output = new DataOutputStream(target.getOutputStream());
             output.writeUTF(Json.toString(this, false));
         } catch (NullPointerException e) {

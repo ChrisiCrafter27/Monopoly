@@ -23,8 +23,7 @@ public class DicePane extends JLayeredPane {
     private int breakTime2 = 10;
     private int breakTime3 = 10;
 
-
-    public DicePane(){
+    public DicePane() {
         super();
         setBounds(0, 0, (int) JUtils.SCREEN_WIDTH, (int) JUtils.SCREEN_HEIGHT);
         setVisible(false);
@@ -32,13 +31,19 @@ public class DicePane extends JLayeredPane {
         add(NW2, JLayeredPane.DEFAULT_LAYER);
         add(SW1, JLayeredPane.DEFAULT_LAYER);
     }
+
     public void reset() {
         setVisible(false);
         thread1.interrupt();
         thread2.interrupt();
         thread3.interrupt();
     }
-    public void showWithoutAnim(int Dice1, int Dice2,int Dice3) {
+
+    public void setSWVisibility(boolean visible) {
+        SW1.setVisible(visible);
+    }
+
+    public void showWithoutAnim(int Dice1, int Dice2, int Dice3) {
         setVisible(true);
         NW1.setIcon(new ImageIcon(JUtils.imageIcon("images/Würfel/NW_"+Dice1+".png").getImage().getScaledInstance(66,66, Image.SCALE_SMOOTH)));
         NW2.setIcon(new ImageIcon(JUtils.imageIcon("images/Würfel/NW_"+Dice2+".png").getImage().getScaledInstance(66,66,Image.SCALE_SMOOTH)));
@@ -52,8 +57,8 @@ public class DicePane extends JLayeredPane {
             SW1.setIcon(new ImageIcon(JUtils.imageIcon("images/Würfel/SW_Monop.png").getImage().getScaledInstance(70,70,Image.SCALE_SMOOTH)));
         }
     }
-    public synchronized void show(int Dice1, int Dice2,int Dice3){
 
+    public synchronized void show(int Dice1, int Dice2, int Dice3) {
         thread1.interrupt();
         thread2.interrupt();
         thread3.interrupt();
@@ -71,7 +76,6 @@ public class DicePane extends JLayeredPane {
         breakTime1 = 10;
         breakTime2 = 15;
         breakTime3 = 20;
-
 
         animationTime1 = new Thread(() -> {
             try {
@@ -108,7 +112,6 @@ public class DicePane extends JLayeredPane {
             }
             animationTime2.interrupt();
         });
-
 
         thread1 = new Thread(() -> {
             int ran = Dice1 -1;
@@ -158,8 +161,8 @@ public class DicePane extends JLayeredPane {
         });
         thread2.start();
 
-
         thread3 = new Thread(() -> {
+            if(Dice3 == -1) return;
             int ran = Dice3 -1;
             if(ran == 0){ran = 6;}
             while (!thread3.isInterrupted()){
@@ -201,6 +204,5 @@ public class DicePane extends JLayeredPane {
         animationTime1.start();
         animationTime3.start();
         animationTime2.start();
-
     }
 }
