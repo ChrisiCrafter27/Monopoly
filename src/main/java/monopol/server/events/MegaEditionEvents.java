@@ -15,10 +15,13 @@ import java.util.List;
 import java.util.Random;
 
 public class MegaEditionEvents extends Events {
-    private boolean running = false;
+    protected boolean running = false;
+    protected boolean requestTeleport = false;
 
-    public MegaEditionEvents(boolean limitBusTickets, int maxBusTickets, boolean limitBuildings, boolean tempoDice, boolean megaBuildings, boolean tripleTeleport, int startMoney, int losMoney, boolean doubleLosMoney, boolean freeParking, boolean gainRentInPrison, boolean buildEquable, boolean reRollEventCardsAfterUse, BuildRule buildRule, OwnedCardsOfColorGroup cardsRequiredForOneHouse, OwnedCardsOfColorGroup cardsRequiredForTwoHouses, OwnedCardsOfColorGroup cardsRequiredForThreeHouses, OwnedCardsOfColorGroup cardsRequiredForFourHouses, OwnedCardsOfColorGroup cardsRequiredForHotel, OwnedCardsOfColorGroup cardsRequiredForSkyscraper) {
-        super(limitBusTickets, maxBusTickets, limitBuildings, tempoDice, megaBuildings, tripleTeleport, startMoney, losMoney, doubleLosMoney, freeParking, gainRentInPrison, buildEquable, reRollEventCardsAfterUse, buildRule, cardsRequiredForOneHouse, cardsRequiredForTwoHouses, cardsRequiredForThreeHouses, cardsRequiredForFourHouses, cardsRequiredForHotel, cardsRequiredForSkyscraper);
+    public MegaEditionEvents(boolean limitBusTickets, int maxBusTickets, boolean limitBuildings, boolean tempoDice, boolean mrMonopoly, boolean megaBuildings, boolean tripleTeleport, int startMoney, int losMoney, boolean doubleLosMoney, boolean freeParking, boolean gainRentInPrison, boolean buildEquable, boolean reRollEventCardsAfterUse, BuildRule buildRule, OwnedCardsOfColorGroup cardsRequiredForOneHouse, OwnedCardsOfColorGroup cardsRequiredForTwoHouses, OwnedCardsOfColorGroup cardsRequiredForThreeHouses, OwnedCardsOfColorGroup cardsRequiredForFourHouses, OwnedCardsOfColorGroup cardsRequiredForHotel, OwnedCardsOfColorGroup cardsRequiredForSkyscraper) {
+        super(limitBusTickets, maxBusTickets, true, tempoDice, mrMonopoly, false, tripleTeleport, startMoney, losMoney, doubleLosMoney, freeParking, gainRentInPrison, buildEquable, reRollEventCardsAfterUse, buildRule, cardsRequiredForOneHouse, cardsRequiredForTwoHouses, cardsRequiredForThreeHouses, cardsRequiredForFourHouses, cardsRequiredForHotel, cardsRequiredForSkyscraper);
+        if(!limitBuildings) System.err.println("Setting limitBuildings cannot be false!");
+        if(megaBuildings) System.err.println("Setting megaBuildings cannot be true!");
     }
 
     @Override
@@ -89,12 +92,13 @@ public class MegaEditionEvents extends Events {
     public void onNextRound() {
         currentPlayer++;
         diceRolled = false;
+        requestTeleport = false;
         hasToPayRent = false;
         Arrays.stream(TrainStation.values()).forEach(trainStation -> trainStation.setSpecialRent(false));
         Arrays.stream(Plant.values()).forEach(plant -> plant.setSpecialRent(false));
         if(player().inPrison()) onPrisonerRound();
-        PacketManager.sendS2C(new InfoS2CPacket(player().getName() +  " ist am Zug"), PacketManager.all(), Throwable::printStackTrace);
-        PacketManager.sendS2C(new UpdateButtonsS2CPacket(player().getName(), diceRolled, hasToPayRent, player().inPrison(), mayDoNextRound(), buildRule, requiredCards, player()), PacketManager.all(), Throwable::printStackTrace);
+        PacketManager.sendS2C(new InfoS2CPacket(player().getName() +  " ist am Zug."), PacketManager.all(), Throwable::printStackTrace);
+        PacketManager.sendS2C(new UpdateButtonsS2CPacket(player().getName(), diceRolled, hasToPayRent, player().inPrison(), mayDoNextRound(), requestTeleport, buildRule, requiredCards, player()), PacketManager.all(), Throwable::printStackTrace);
     }
 
     @Override
@@ -106,7 +110,7 @@ public class MegaEditionEvents extends Events {
     public void onDiceRoll(String name) {
         if(!name.equals(player().getName()) || diceRolled) return;
         diceRolled = true;
-        PacketManager.sendS2C(new UpdateButtonsS2CPacket("", true, hasToPayRent, player().inPrison(), mayDoNextRound(), buildRule, requiredCards, player()), PacketManager.all(), Throwable::printStackTrace);
+        PacketManager.sendS2C(new UpdateButtonsS2CPacket("", true, hasToPayRent, player().inPrison(), mayDoNextRound(), requestTeleport, buildRule, requiredCards, player()), PacketManager.all(), Throwable::printStackTrace);
 
         Random random = new Random();
 
@@ -119,6 +123,22 @@ public class MegaEditionEvents extends Events {
             case 1 -> intResult += 1;
             case 2 -> intResult += 2;
             case 3 -> intResult += 3;
+            case 4,5 -> {
+                if(mrMonopoly) {
+                    int distToMaxRent = 0;
+                    int maxRent = 0;
+                    int dist = 0;
+                    while ((!(Field.get(player().getPosition() + intResult + dist) instanceof IPurchasable purchasable) || purchasable.getOwner() != null) && dist < 52) {
+                        dist++;
+                        if(Field.get(player().getPosition() + intResult + dist) instanceof IPurchasable purchasable && purchasable.getRent(diceResult, false) > maxRent) {
+                            distToMaxRent = dist;
+                            maxRent = purchasable.getRent(diceResult, false);
+                        }
+                    }
+                    if(dist < 52) intResult += dist;
+                    else intResult += distToMaxRent;
+                }
+            }
             default -> {}
         }
         final int finalResult = intResult;
@@ -137,17 +157,22 @@ public class MegaEditionEvents extends Events {
                 if(dice1 == dice2) {
                     player().setInPrison(false);
                     player().move(finalResult);
-                    PacketManager.sendS2C(new InfoS2CPacket(player().getName() +  " ist ausgebrochen"), PacketManager.all(), Throwable::printStackTrace);
+                    PacketManager.sendS2C(new InfoS2CPacket(player().getName() +  " ist ausgebrochen."), PacketManager.all(), Throwable::printStackTrace);
                 } else if (player().prisonRounds() >= 3) {
                     onPaySurety(player().getName(), true);
                 }
+            } else if(tripleTeleport && dice1 == dice2 && dice1 == dice3 && dice1 < 4) {
+                PacketManager.sendS2C(new InfoS2CPacket("Klicke auf das Feld, auf das du möchtest."), PacketManager.named(player().getName()), Throwable::printStackTrace);
+                player().setDoubles(0);
+                requestTeleport = true;
+                return;
             } else if(player().getDoubles() >= 3) {
                 player().setDoubles(0);
                 player().setInPrison(true);
-                PacketManager.sendS2C(new InfoS2CPacket(player().getName() +  " muss ins Gefängnis"), PacketManager.all(), Throwable::printStackTrace);
+                PacketManager.sendS2C(new InfoS2CPacket(player().getName() +  " muss ins Gefängnis."), PacketManager.all(), Throwable::printStackTrace);
             } else {
                 player().move(finalResult);
-                PacketManager.sendS2C(new InfoS2CPacket(player().getName() +  " bewegt sich"), PacketManager.all(), Throwable::printStackTrace);
+                PacketManager.sendS2C(new InfoS2CPacket(player().getName() +  " bewegt sich."), PacketManager.all(), Throwable::printStackTrace);
             }
 
             try {
@@ -176,18 +201,18 @@ public class MegaEditionEvents extends Events {
         else if(field == Corner.INSGEFAENGNIS) onArrivedAtGoToPrisonField();
         else if(field == Field.EINKOMMENSSTEUER) onArrivedAtTaxField();
         else if(field == Field.ZUSATZSTEUER) onArrivedAtAdditionalTaxField();
-        PacketManager.sendS2C(new UpdateButtonsS2CPacket(player().getName(), diceRolled, hasToPayRent, player().inPrison(), mayDoNextRound(), buildRule, requiredCards, player()), PacketManager.all(), Throwable::printStackTrace);
+        PacketManager.sendS2C(new UpdateButtonsS2CPacket(player().getName(), diceRolled, hasToPayRent, player().inPrison(), mayDoNextRound(), requestTeleport, buildRule, requiredCards, player()), PacketManager.all(), Throwable::printStackTrace);
     }
 
     @Override
     public void onPayRent(String name) {
-        if(name.equals(player().getName()) && hasToPayRent && diceRolled) {
+        if(name.equals(player().getName()) && hasToPayRent && !requestTeleport && diceRolled) {
             IPurchasable purchasable = (IPurchasable) Field.fields().get(player().getPosition());
             Monopoly.INSTANCE.server().getPlayerServerSide(purchasable.getOwner()).addMoney(purchasable.getRent(diceResult, true));
             player().contractMoney(purchasable.getRent(diceResult, true));
             purchasable.setSpecialRent(false);
             hasToPayRent = false;
-            PacketManager.sendS2C(new UpdateButtonsS2CPacket(player().getName(), diceRolled, hasToPayRent, player().inPrison(), mayDoNextRound(), buildRule, requiredCards, player()), PacketManager.all(), Throwable::printStackTrace);
+            PacketManager.sendS2C(new UpdateButtonsS2CPacket(player().getName(), diceRolled, hasToPayRent, player().inPrison(), mayDoNextRound(), requestTeleport, buildRule, requiredCards, player()), PacketManager.all(), Throwable::printStackTrace);
         }
     }
 
@@ -199,7 +224,7 @@ public class MegaEditionEvents extends Events {
             EventCard.setCurrent(null);
             if(reRollEventCardsAfterUse) EventCard.resetUnused();
             PacketManager.sendS2C(new EventCardS2CPacket(null, new ArrayList<>(), new ArrayList<>(), EventCard.unusedSize()), PacketManager.all(), Throwable::printStackTrace);
-            PacketManager.sendS2C(new UpdateButtonsS2CPacket(player().getName(), diceRolled, hasToPayRent, player().inPrison(), mayDoNextRound(), buildRule, requiredCards, player()), PacketManager.all(), Throwable::printStackTrace);
+            PacketManager.sendS2C(new UpdateButtonsS2CPacket(player().getName(), diceRolled, hasToPayRent, player().inPrison(), mayDoNextRound(), requestTeleport, buildRule, requiredCards, player()), PacketManager.all(), Throwable::printStackTrace);
         }
     }
 
@@ -211,7 +236,7 @@ public class MegaEditionEvents extends Events {
             CommunityCard.setCurrent(null);
             if(reRollEventCardsAfterUse) CommunityCard.resetUnused();
             PacketManager.sendS2C(new CommunityCardS2CPacket(null, new ArrayList<>(), new ArrayList<>(), CommunityCard.unusedSize()), PacketManager.all(), Throwable::printStackTrace);
-            PacketManager.sendS2C(new UpdateButtonsS2CPacket(player().getName(), diceRolled, hasToPayRent, player().inPrison(), mayDoNextRound(), buildRule, requiredCards, player()), PacketManager.all(), Throwable::printStackTrace);
+            PacketManager.sendS2C(new UpdateButtonsS2CPacket(player().getName(), diceRolled, hasToPayRent, player().inPrison(), mayDoNextRound(), requestTeleport, buildRule, requiredCards, player()), PacketManager.all(), Throwable::printStackTrace);
         }
     }
 
@@ -225,25 +250,25 @@ public class MegaEditionEvents extends Events {
             }
             else return;
             player().setInPrison(false);
-            PacketManager.sendS2C(new InfoS2CPacket(player().getName() +  " ist wieder frei"), PacketManager.all(), Throwable::printStackTrace);
-            if(!hasTo) PacketManager.sendS2C(new UpdateButtonsS2CPacket(player().getName(), diceRolled, hasToPayRent, player().inPrison(), mayDoNextRound(), buildRule, requiredCards, player()), PacketManager.all(), Throwable::printStackTrace);
+            PacketManager.sendS2C(new InfoS2CPacket(player().getName() +  " ist wieder frei."), PacketManager.all(), Throwable::printStackTrace);
+            if(!hasTo) PacketManager.sendS2C(new UpdateButtonsS2CPacket(player().getName(), diceRolled, hasToPayRent, player().inPrison(), mayDoNextRound(), requestTeleport, buildRule, requiredCards, player()), PacketManager.all(), Throwable::printStackTrace);
         }
     }
 
     @Override
     public void onMortgage(String name, IPurchasable purchasable) {
-        if(name.equals(player().getName()) && diceRolled) {
+        if(name.equals(player().getName()) && !requestTeleport && diceRolled) {
             if(purchasable.isMortgaged()) {
-                PacketManager.sendS2C(new InfoS2CPacket(player().getName() + " kauft " + purchasable.getName() + " zurück"), PacketManager.all(), Throwable::printStackTrace);
+                PacketManager.sendS2C(new InfoS2CPacket(player().getName() + " kauft " + purchasable.getName() + " zurück."), PacketManager.all(), Throwable::printStackTrace);
                 player().contractMoney(purchasable.getMortgage());
                 purchasable.unmortgage();
             } else {
-                PacketManager.sendS2C(new InfoS2CPacket(player().getName() + " verkauft " + purchasable.getName() + " an die Bank"), PacketManager.all(), Throwable::printStackTrace);
+                PacketManager.sendS2C(new InfoS2CPacket(player().getName() + " verkauft " + purchasable.getName() + " an die Bank."), PacketManager.all(), Throwable::printStackTrace);
                 player().addMoney(purchasable.getMortgage());
                 purchasable.mortgage();
             }
             PacketManager.sendS2C(new UpdatePurchasablesS2CPacket(), PacketManager.all(), Throwable::printStackTrace);
-            PacketManager.sendS2C(new UpdateButtonsS2CPacket(player().getName(), diceRolled, hasToPayRent, player().inPrison(), mayDoNextRound(), buildRule, requiredCards, player()), PacketManager.all(), Throwable::printStackTrace);
+            PacketManager.sendS2C(new UpdateButtonsS2CPacket(player().getName(), diceRolled, hasToPayRent, player().inPrison(), mayDoNextRound(), requestTeleport, buildRule, requiredCards, player()), PacketManager.all(), Throwable::printStackTrace);
         }
     }
 
@@ -253,7 +278,7 @@ public class MegaEditionEvents extends Events {
         if(BusCard.getCurrent() != null) {
             BusCard.enqueue();
         } else {
-            PacketManager.sendS2C(new InfoS2CPacket(player().getName() + " zieht eine Busfahrkarte"), PacketManager.all(), Throwable::printStackTrace);
+            PacketManager.sendS2C(new InfoS2CPacket(player().getName() + " zieht eine Busfahrkarte."), PacketManager.all(), Throwable::printStackTrace);
             BusCard card = BusCard.getUnused();
             if(card != null) {
                 if(BusCard.unusedSize() == 0 && !limitBusTickets) BusCard.resetUnused();
@@ -266,28 +291,28 @@ public class MegaEditionEvents extends Events {
     @Override
     public void onTakeBusCard(String name) {
         if(name.equals(player().getName()) && BusCard.getCurrent() != null) {
-            PacketManager.sendS2C(new InfoS2CPacket(player().getName() + " nimmt eine Busfahrkarte"), PacketManager.all(), Throwable::printStackTrace);
+            PacketManager.sendS2C(new InfoS2CPacket(player().getName() + " nimmt eine Busfahrkarte."), PacketManager.all(), Throwable::printStackTrace);
             if(BusCard.getCurrent().expiration) {
-                PacketManager.sendS2C(new InfoS2CPacket("Alle anderen Busfahrkarten verfallen"), PacketManager.all(), Throwable::printStackTrace);
+                PacketManager.sendS2C(new InfoS2CPacket("Alle anderen Busfahrkarten verfallen."), PacketManager.all(), Throwable::printStackTrace);
                 Monopoly.INSTANCE.server().getPlayersServerSide().forEach(Player::removeBusCards);
             }
             BusCard.setCurrent(null);
             Monopoly.INSTANCE.server().getPlayerServerSide(name).addBusCard();
             if(BusCard.deQueue()) onGetBusCard();
             else PacketManager.sendS2C(new BusCardS2CPacket(null, false, BusCard.unusedSize()), PacketManager.all(), Throwable::printStackTrace);
-            PacketManager.sendS2C(new UpdateButtonsS2CPacket(player().getName(), diceRolled, hasToPayRent, player().inPrison(), mayDoNextRound(), buildRule, requiredCards, player()), PacketManager.all(), Throwable::printStackTrace);
+            PacketManager.sendS2C(new UpdateButtonsS2CPacket(player().getName(), diceRolled, hasToPayRent, player().inPrison(), mayDoNextRound(), requestTeleport, buildRule, requiredCards, player()), PacketManager.all(), Throwable::printStackTrace);
         }
     }
 
     @Override
     public void onBusDrive(String name, int target) {
-        if(!diceRolled && name.equals(player().getName()) && player().getBusCards() > 0 && BusCard.onSide(player().getPosition(), target)) {
+        if(!requestTeleport && !diceRolled && name.equals(player().getName()) && player().getBusCards() > 0 && BusCard.onSide(player().getPosition(), target)) {
             diceRolled = true;
-            PacketManager.sendS2C(new UpdateButtonsS2CPacket("", true, hasToPayRent, player().inPrison(), mayDoNextRound(), buildRule, requiredCards, player()), PacketManager.all(), Throwable::printStackTrace);
+            PacketManager.sendS2C(new UpdateButtonsS2CPacket("", true, hasToPayRent, player().inPrison(), mayDoNextRound(), requestTeleport, buildRule, requiredCards, player()), PacketManager.all(), Throwable::printStackTrace);
             int oldPos = player().getPosition();
             player().useBusCard();
             player().move(target == 0 ? target - oldPos + 52 : target - oldPos);
-            PacketManager.sendS2C(new InfoS2CPacket(player().getName() +  " bewegt sich"), PacketManager.all(), Throwable::printStackTrace);
+            PacketManager.sendS2C(new InfoS2CPacket(player().getName() +  " bewegt sich."), PacketManager.all(), Throwable::printStackTrace);
             if(oldPos > player().getPosition() && !player().inPrison()) onPassedLos();
             new Thread(()  ->  {
                 try {
@@ -300,52 +325,63 @@ public class MegaEditionEvents extends Events {
     }
 
     @Override
+    public void onTeleport(String name, int target) {
+        if(diceRolled && name.equals(player().getName()) && requestTeleport) {
+            int oldPos = player().getPosition();
+            player().setPosition(target);
+            PacketManager.sendS2C(new InfoS2CPacket(player().getName() +  " bewegt sich."), PacketManager.all(), Throwable::printStackTrace);
+            if(oldPos > player().getPosition() && !player().inPrison()) onPassedLos();
+            onArrivedAtField();
+        }
+    }
+
+    @Override
     public void onUpgrade(String name, IPurchasable purchasable) {
-        if(name.equals(player().getName()) && buildRule.valid(player(), purchasable) && diceRolled) {
+        if(name.equals(player().getName()) && buildRule.valid(player(), purchasable) && !requestTeleport && diceRolled) {
             if(purchasable instanceof Street street && (!requiredCards.valid(player(), street) || (buildEquable && BuildRule.buildingEquable(street) == BuildRule.EqualBuildingResult.OKAY))) return;
             if(purchasable instanceof TrainStation && !megaBuildings) return;
             if(purchasable.upgrade()) {
-                PacketManager.sendS2C(new InfoS2CPacket(player().getName() +  " wertet " + purchasable.getName() + " auf"), PacketManager.all(), Throwable::printStackTrace);
+                PacketManager.sendS2C(new InfoS2CPacket(player().getName() +  " wertet " + purchasable.getName() + " auf."), PacketManager.all(), Throwable::printStackTrace);
                 player().contractMoney(purchasable.getUpgradeCost());
             }
             PacketManager.sendS2C(new UpdatePurchasablesS2CPacket(), PacketManager.all(), Throwable::printStackTrace);
-            PacketManager.sendS2C(new UpdateButtonsS2CPacket(player().getName(), diceRolled, hasToPayRent, player().inPrison(), mayDoNextRound(), buildRule, requiredCards, player()), PacketManager.all(), Throwable::printStackTrace);
+            PacketManager.sendS2C(new UpdateButtonsS2CPacket(player().getName(), diceRolled, hasToPayRent, player().inPrison(), mayDoNextRound(), requestTeleport, buildRule, requiredCards, player()), PacketManager.all(), Throwable::printStackTrace);
         }
     }
 
     @Override
     public void onDowngrade(String name, IPurchasable purchasable) {
-        if(name.equals(player().getName()) && buildRule.valid(player(), purchasable) && diceRolled) {
+        if(name.equals(player().getName()) && buildRule.valid(player(), purchasable) && !requestTeleport && diceRolled) {
             if(purchasable instanceof Street street && buildEquable && BuildRule.buildingEquable(street) == BuildRule.EqualBuildingResult.OKAY) return;
             if(purchasable.downgrade()) {
-                PacketManager.sendS2C(new InfoS2CPacket(player().getName() +  " wertet " + purchasable.getName() + " ab"), PacketManager.all(), Throwable::printStackTrace);
+                PacketManager.sendS2C(new InfoS2CPacket(player().getName() +  " wertet " + purchasable.getName() + " ab."), PacketManager.all(), Throwable::printStackTrace);
                 player().addMoney(purchasable.getUpgradeCost() / 2);
             }
             PacketManager.sendS2C(new UpdatePurchasablesS2CPacket(), PacketManager.all(), Throwable::printStackTrace);
-            PacketManager.sendS2C(new UpdateButtonsS2CPacket(player().getName(), diceRolled, hasToPayRent, player().inPrison(), mayDoNextRound(), buildRule, requiredCards, player()), PacketManager.all(), Throwable::printStackTrace);
+            PacketManager.sendS2C(new UpdateButtonsS2CPacket(player().getName(), diceRolled, hasToPayRent, player().inPrison(), mayDoNextRound(), requestTeleport, buildRule, requiredCards, player()), PacketManager.all(), Throwable::printStackTrace);
         }
     }
 
     @Override
     public void onPurchaseCard(String name, IPurchasable purchasable) {
-        if(name.equals(player().getName()) && purchasable.getOwner() == null && diceRolled) {
-            PacketManager.sendS2C(new InfoS2CPacket(player().getName() +  " kauft " + purchasable.getName()), PacketManager.all(), Throwable::printStackTrace);
+        if(name.equals(player().getName()) && purchasable.getOwner() == null && !requestTeleport && diceRolled) {
+            PacketManager.sendS2C(new InfoS2CPacket(player().getName() +  " kauft " + purchasable.getName() + "."), PacketManager.all(), Throwable::printStackTrace);
             purchasable.setOwner(name);
             player().contractMoney(purchasable.getPrice());
             PacketManager.sendS2C(new UpdatePurchasablesS2CPacket(), PacketManager.all(), Throwable::printStackTrace);
-            PacketManager.sendS2C(new UpdateButtonsS2CPacket(player().getName(), diceRolled, hasToPayRent, player().inPrison(), mayDoNextRound(), buildRule, requiredCards, player()), PacketManager.all(), Throwable::printStackTrace);
+            PacketManager.sendS2C(new UpdateButtonsS2CPacket(player().getName(), diceRolled, hasToPayRent, player().inPrison(), mayDoNextRound(), requestTeleport, buildRule, requiredCards, player()), PacketManager.all(), Throwable::printStackTrace);
         }
     }
 
     @Override
     public void onArrivedAtLos() {
-        PacketManager.sendS2C(new InfoS2CPacket(player().getName() +  " kommt auf Los"), PacketManager.all(), Throwable::printStackTrace);
+        PacketManager.sendS2C(new InfoS2CPacket(player().getName() +  " kommt auf Los."), PacketManager.all(), Throwable::printStackTrace);
         player().addMoney(doubleLosMoney ? losMoney * 2 : losMoney);
     }
 
     @Override
     public void onArrivedAtAuction() {
-        PacketManager.sendS2C(new InfoS2CPacket("Das Auktionshaus ist geschlossen"), PacketManager.all(), Throwable::printStackTrace);
+        PacketManager.sendS2C(new InfoS2CPacket("Das Auktionshaus ist geschlossen."), PacketManager.all(), Throwable::printStackTrace);
     }
 
     @Override
@@ -355,7 +391,7 @@ public class MegaEditionEvents extends Events {
 
     @Override
     public void onArrivedAtBirthday() {
-        PacketManager.sendS2C(new InfoS2CPacket(player().getName() + " hat Geburtstag und erhält 100€"), PacketManager.all(), Throwable::printStackTrace);
+        PacketManager.sendS2C(new InfoS2CPacket(player().getName() + " hat Geburtstag und erhält 100€."), PacketManager.all(), Throwable::printStackTrace);
         player().addMoney(100);
     }
 
@@ -366,7 +402,7 @@ public class MegaEditionEvents extends Events {
 
     @Override
     public void onArrivedAtEventField() {
-        PacketManager.sendS2C(new InfoS2CPacket(player().getName() + " zieht eine Ereigniskarte"), PacketManager.all(), Throwable::printStackTrace);
+        PacketManager.sendS2C(new InfoS2CPacket(player().getName() + " zieht eine Ereigniskarte."), PacketManager.all(), Throwable::printStackTrace);
         EventCard card = EventCard.getUnused();
         EventCard.setCurrent(card);
         card.activate(player());
@@ -374,7 +410,7 @@ public class MegaEditionEvents extends Events {
 
     @Override
     public void onArrivedAtCommunityField() {
-        PacketManager.sendS2C(new InfoS2CPacket(player().getName() + " zieht eine Gemeinschaftskarte"), PacketManager.all(), Throwable::printStackTrace);
+        PacketManager.sendS2C(new InfoS2CPacket(player().getName() + " zieht eine Gemeinschaftskarte."), PacketManager.all(), Throwable::printStackTrace);
         CommunityCard card = CommunityCard.getUnused();
         CommunityCard.setCurrent(card);
         card.activate(player());
@@ -382,19 +418,19 @@ public class MegaEditionEvents extends Events {
 
     @Override
     public void onArrivedAtFreeParking() {
-        PacketManager.sendS2C(new InfoS2CPacket(player().getName() +  " parkt frei"), PacketManager.all(), Throwable::printStackTrace);
+        PacketManager.sendS2C(new InfoS2CPacket(player().getName() +  " parkt frei."), PacketManager.all(), Throwable::printStackTrace);
         player().addMoney(Monopoly.INSTANCE.server().gameData().parkForFree());
     }
 
     @Override
     public void onArrivedAtGoToPrisonField() {
-        PacketManager.sendS2C(new InfoS2CPacket(player().getName() +  " muss ins Gefängnis"), PacketManager.all(), Throwable::printStackTrace);
+        PacketManager.sendS2C(new InfoS2CPacket(player().getName() +  " muss ins Gefängnis."), PacketManager.all(), Throwable::printStackTrace);
         player().setInPrison(true);
     }
 
     @Override
     public void onArrivedAtTaxField() {
-        PacketManager.sendS2C(new InfoS2CPacket(player().getName() +  " zahlt Steuern"), PacketManager.all(), Throwable::printStackTrace);
+        PacketManager.sendS2C(new InfoS2CPacket(player().getName() +  " zahlt Steuern."), PacketManager.all(), Throwable::printStackTrace);
         int money = (int) (Math.min(player().getMoney() / 10d, 200d) + 0.5d);
         player().contractMoney(money);
         Monopoly.INSTANCE.server().gameData().addFreeParking(money);
@@ -402,36 +438,26 @@ public class MegaEditionEvents extends Events {
 
     @Override
     public void onArrivedAtAdditionalTaxField() {
-        PacketManager.sendS2C(new InfoS2CPacket(player().getName() +  " zahlt Steuern"), PacketManager.all(), Throwable::printStackTrace);
+        PacketManager.sendS2C(new InfoS2CPacket(player().getName() +  " zahlt Steuern."), PacketManager.all(), Throwable::printStackTrace);
         player().contractMoney(75);
         Monopoly.INSTANCE.server().gameData().addFreeParking(75);
     }
 
     @Override
     public void onArrivedAtPrisonField() {
-        if(!player().inPrison()) PacketManager.sendS2C(new InfoS2CPacket(player().getName() +  " ist nur zu Besuch"), PacketManager.all(), Throwable::printStackTrace);
+        if(!player().inPrison()) PacketManager.sendS2C(new InfoS2CPacket(player().getName() +  " ist nur zu Besuch."), PacketManager.all(), Throwable::printStackTrace);
     }
 
     @Override
     public void onPassedLos() {
         if(player().getPosition() == Field.fields().indexOf(Corner.LOS)) return;
-        PacketManager.sendS2C(new InfoS2CPacket(player().getName() +  " kommt über Los"), PacketManager.all(), Throwable::printStackTrace);
+        PacketManager.sendS2C(new InfoS2CPacket(player().getName() +  " kommt über Los."), PacketManager.all(), Throwable::printStackTrace);
         player().addMoney(losMoney);
     }
 
     @Override
-    public void onOfferTrade() {
-        //not implemented
-    }
-
-    @Override
-    public void onAcceptTrade() {
-        //not implemented
-    }
-
-    @Override
     public void onGoBankrupt() {
-        PacketManager.sendS2C(new InfoS2CPacket(player().getName() +  " ist bankrott"), PacketManager.all(), Throwable::printStackTrace);
+        PacketManager.sendS2C(new InfoS2CPacket(player().getName() +  " ist bankrott."), PacketManager.all(), Throwable::printStackTrace);
         new Thread(() -> {
             Monopoly.INSTANCE.server().gameData().saveBankruptPlayer(player());
             Field.purchasables().stream().filter(p -> player().getName().equals(p.getOwner())).forEach(p -> {

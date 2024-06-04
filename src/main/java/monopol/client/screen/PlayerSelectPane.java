@@ -26,35 +26,40 @@ public class PlayerSelectPane extends JLayeredPane {
 
     public void update(Client currentClient, ArrayList<Client> clients, boolean forceUpdate) {
         if(!clients.equals(shownClients) || !currentClient.equals(client) || forceUpdate || requestUpdate) {
-
             requestUpdate = false;
 
-            removeAll();
             client = currentClient;
             shownClients.clear();
             shownClients.addAll(clients);
 
-            for(int i = 0; i < clients.size(); i++) {
-                int step = 1920 / clients.size();
-                final int value = i;
-                JButton button = JUtils.addButton(clients.get(i).player().getName(), i * step, 0, step, 60, true, (client == clients.get(value)), actionEvent -> {
-                    client = clients.get(value);
-                    update(client, clients, true);
-                });
-                step = Math.max(step, 1);
-                button.setIcon(new ImageIcon(JUtils.imageIcon("images/playerselect/playerselect_" + clients.size() + ".png").getImage().getScaledInstance(step, 60, Image.SCALE_SMOOTH)));
-                button.setSelectedIcon(new ImageIcon(JUtils.imageIcon("images/playerselect/playerselect_" + clients.size() + "_selected.png").getImage().getScaledInstance(step, 60, Image.SCALE_SMOOTH)));
-                add(button, JLayeredPane.DEFAULT_LAYER);
-            }
-        }
+            SwingUtilities.invokeLater(() -> {
+                removeAll();
+                repaint();
 
+                for(int i = 0; i < clients.size(); i++) {
+                    int step = 1920 / clients.size();
+                    final int value = i;
+                    JButton button = JUtils.addButton(clients.get(i).player().getName(), i * step, 0, step, 60, true, (client == clients.get(value)), actionEvent -> {
+                        client = clients.get(value);
+                        update(client, clients, true);
+                    });
+                    step = Math.max(step, 1);
+                    button.setIcon(new ImageIcon(JUtils.imageIcon("images/playerselect/playerselect_" + clients.size() + ".png").getImage().getScaledInstance(step, 60, Image.SCALE_SMOOTH)));
+                    button.setSelectedIcon(new ImageIcon(JUtils.imageIcon("images/playerselect/playerselect_" + clients.size() + "_selected.png").getImage().getScaledInstance(step, 60, Image.SCALE_SMOOTH)));
+                    add(button, JLayeredPane.DEFAULT_LAYER);
+                }
+            });
+        }
     }
 
     public void reset() {
         client = null;
         shownClients = new ArrayList<>();
-        removeAll();
-        setVisible(false);
+        SwingUtilities.invokeLater(() -> {
+            removeAll();
+            repaint();
+            setVisible(false);
+        });
     }
 
     public void init() {

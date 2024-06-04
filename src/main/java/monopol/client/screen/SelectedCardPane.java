@@ -101,143 +101,145 @@ public class SelectedCardPane extends JLayeredPane {
     }
 
     public void update() {
-        if(purchasable == null) throw new IllegalStateException("init() was not called");
-        if(purchasable instanceof Street street) color.setIcon(new ImageIcon(JUtils.imageIcon("images/felder/" + street.colorGroup.image + "_cardcolor.png").getImage().getScaledInstance(334, 60, Image.SCALE_SMOOTH)));
-        else color.setIcon(new ImageIcon(""));
-        if(purchasable instanceof Street street && street.colorGroup == ColorGroup.BLUE) name.setForeground(Color.LIGHT_GRAY);
-        else name.setForeground(Color.BLACK);
-        name.setText(purchasable.getName().toUpperCase());
-        textKey0.setText(purchasable.keyText(0));
-        textKey1.setText(purchasable.keyText(1));
-        textKey2.setText(purchasable.keyText(2));
-        textKey3.setText(purchasable.keyText(3));
-        textKey4.setText(purchasable.keyText(4));
-        textKey5.setText(purchasable.keyText(5));
-        textKey6.setText(purchasable.keyText(6));
-        textKey7.setText(purchasable.keyText(7));
-        textKey8.setText(purchasable.keyText(8));
-        textKey9.setText(purchasable.keyText(9));
-        textKey10.setText(purchasable.keyText(10));
-        textKey11.setText(purchasable.keyText(11));
-        textKey12.setText(purchasable.keyText(12));
-        textKey13.setText(purchasable.keyText(13));
-        textKey14.setText(purchasable.keyText(14));
-        textKey15.setText(purchasable.keyText(15));
-        textKey16.setText(purchasable.keyText(16));
-        textKey17.setText(purchasable.keyText(17));
-        textKey18.setText(purchasable.keyText(18));
-        textValue0.setText(purchasable.valueText(0));
-        textValue1.setText(purchasable.valueText(1));
-        textValue2.setText(purchasable.valueText(2));
-        textValue3.setText(purchasable.valueText(3));
-        textValue4.setText(purchasable.valueText(4));
-        textValue5.setText(purchasable.valueText(5));
-        textValue6.setText(purchasable.valueText(6));
-        textValue7.setText(purchasable.valueText(7));
-        textValue17.setText(purchasable.valueText(17));
-        for (Component component : getComponents()) {
-            if (component.getForeground() == getColor()) component.setForeground(Color.BLACK);
-        }
-        if (purchasable instanceof Street street) {
-            if(street.getOwner() == null) {
-                textKey0.setForeground(getColor());
-                textValue0.setForeground(getColor());
-            } else {
-                switch (street.getLevel()) {
-                    case 0 -> {
-                        textKey1.setForeground(getColor());
-                        textValue1.setForeground(getColor());
-                    }
-                    case 1 -> {
-                        textKey2.setForeground(getColor());
-                        textValue2.setForeground(getColor());
-                    }
-                    case 2 -> {
-                        textKey3.setForeground(getColor());
-                        textValue3.setForeground(getColor());
-                    }
-                    case 3 -> {
-                        textKey4.setForeground(getColor());
-                        textValue4.setForeground(getColor());
-                    }
-                    case 4 -> {
-                        textKey5.setForeground(getColor());
-                        textValue5.setForeground(getColor());
-                    }
-                    case 5 -> {
-                        textKey6.setForeground(getColor());
-                        textValue6.setForeground(getColor());
-                    }
-                    case 6 -> {
-                        textKey7.setForeground(getColor());
-                        textValue7.setForeground(getColor());
-                    }
-                }
+        SwingUtilities.invokeLater(() -> {
+            if(purchasable == null) throw new IllegalStateException("init() was not called");
+            if(purchasable instanceof Street street) color.setIcon(new ImageIcon(JUtils.imageIcon("images/felder/" + street.colorGroup.image + "_cardcolor.png").getImage().getScaledInstance(334, 60, Image.SCALE_SMOOTH)));
+            else color.setIcon(new ImageIcon(""));
+            if(purchasable instanceof Street street && street.colorGroup == ColorGroup.BLUE) name.setForeground(Color.LIGHT_GRAY);
+            else name.setForeground(Color.BLACK);
+            name.setText(purchasable.getName().toUpperCase());
+            textKey0.setText(purchasable.keyText(0));
+            textKey1.setText(purchasable.keyText(1));
+            textKey2.setText(purchasable.keyText(2));
+            textKey3.setText(purchasable.keyText(3));
+            textKey4.setText(purchasable.keyText(4));
+            textKey5.setText(purchasable.keyText(5));
+            textKey6.setText(purchasable.keyText(6));
+            textKey7.setText(purchasable.keyText(7));
+            textKey8.setText(purchasable.keyText(8));
+            textKey9.setText(purchasable.keyText(9));
+            textKey10.setText(purchasable.keyText(10));
+            textKey11.setText(purchasable.keyText(11));
+            textKey12.setText(purchasable.keyText(12));
+            textKey13.setText(purchasable.keyText(13));
+            textKey14.setText(purchasable.keyText(14));
+            textKey15.setText(purchasable.keyText(15));
+            textKey16.setText(purchasable.keyText(16));
+            textKey17.setText(purchasable.keyText(17));
+            textKey18.setText(purchasable.keyText(18));
+            textValue0.setText(purchasable.valueText(0));
+            textValue1.setText(purchasable.valueText(1));
+            textValue2.setText(purchasable.valueText(2));
+            textValue3.setText(purchasable.valueText(3));
+            textValue4.setText(purchasable.valueText(4));
+            textValue5.setText(purchasable.valueText(5));
+            textValue6.setText(purchasable.valueText(6));
+            textValue7.setText(purchasable.valueText(7));
+            textValue17.setText(purchasable.valueText(17));
+            for (Component component : getComponents()) {
+                if (component.getForeground() == getColor()) component.setForeground(Color.BLACK);
             }
-        } else if (purchasable instanceof TrainStation trainStation) {
-            if(trainStation.getOwner() == null) {
-                textKey1.setForeground(getColor());
-                textValue1.setForeground(getColor());
-            } else {
-                switch (trainStation.getRent(new Triplet<>(0, 0, 0), false)) {
-                    case 25 -> {
-                        textKey3.setForeground(getColor());
-                        textValue3.setForeground(getColor());
-                    }
-                    case 50 -> {
-                        if (trainStation.getLevel() == 1) {
+            if (purchasable instanceof Street street) {
+                if(street.getOwner() == null) {
+                    textKey0.setForeground(getColor());
+                    textValue0.setForeground(getColor());
+                } else {
+                    switch (street.getLevel()) {
+                        case 0 -> {
+                            textKey1.setForeground(getColor());
+                            textValue1.setForeground(getColor());
+                        }
+                        case 1 -> {
+                            textKey2.setForeground(getColor());
+                            textValue2.setForeground(getColor());
+                        }
+                        case 2 -> {
                             textKey3.setForeground(getColor());
                             textValue3.setForeground(getColor());
-                        } else {
+                        }
+                        case 3 -> {
                             textKey4.setForeground(getColor());
                             textValue4.setForeground(getColor());
                         }
-                    }
-                    case 100 -> {
-                        if (trainStation.getLevel() == 1) {
-                            textKey4.setForeground(getColor());
-                            textValue4.setForeground(getColor());
-                        } else {
+                        case 4 -> {
                             textKey5.setForeground(getColor());
                             textValue5.setForeground(getColor());
                         }
+                        case 5 -> {
+                            textKey6.setForeground(getColor());
+                            textValue6.setForeground(getColor());
+                        }
+                        case 6 -> {
+                            textKey7.setForeground(getColor());
+                            textValue7.setForeground(getColor());
+                        }
                     }
-                    case 200 -> {
-                        if (trainStation.getLevel() == 1) {
-                            textKey5.setForeground(getColor());
-                            textValue5.setForeground(getColor());
-                        } else {
+                }
+            } else if (purchasable instanceof TrainStation trainStation) {
+                if(trainStation.getOwner() == null) {
+                    textKey1.setForeground(getColor());
+                    textValue1.setForeground(getColor());
+                } else {
+                    switch (trainStation.getRent(new Triplet<>(0, 0, 0), false)) {
+                        case 25 -> {
+                            textKey3.setForeground(getColor());
+                            textValue3.setForeground(getColor());
+                        }
+                        case 50 -> {
+                            if (trainStation.getLevel() == 1) {
+                                textKey3.setForeground(getColor());
+                                textValue3.setForeground(getColor());
+                            } else {
+                                textKey4.setForeground(getColor());
+                                textValue4.setForeground(getColor());
+                            }
+                        }
+                        case 100 -> {
+                            if (trainStation.getLevel() == 1) {
+                                textKey4.setForeground(getColor());
+                                textValue4.setForeground(getColor());
+                            } else {
+                                textKey5.setForeground(getColor());
+                                textValue5.setForeground(getColor());
+                            }
+                        }
+                        case 200 -> {
+                            if (trainStation.getLevel() == 1) {
+                                textKey5.setForeground(getColor());
+                                textValue5.setForeground(getColor());
+                            } else {
+                                textKey6.setForeground(getColor());
+                                textValue6.setForeground(getColor());
+                            }
+                        }
+                        case 400 -> {
                             textKey6.setForeground(getColor());
                             textValue6.setForeground(getColor());
                         }
                     }
-                    case 400 -> {
-                        textKey6.setForeground(getColor());
-                        textValue6.setForeground(getColor());
+                }
+            } else if (purchasable instanceof Plant plant) {
+                if(plant.getOwner() == null) {
+                    textKey1.setForeground(getColor());
+                    textValue1.setForeground(getColor());
+                } else {
+                    switch (plant.getRent(new Triplet<>(1, 0, 0), false)) {
+                        case 4 -> {
+                            textKey3.setForeground(getColor());
+                            textValue3.setForeground(getColor());
+                        }
+                        case 10 -> {
+                            textKey4.setForeground(getColor());
+                            textValue4.setForeground(getColor());
+                        }
+                        case 20 -> {
+                            textKey5.setForeground(getColor());
+                            textValue5.setForeground(getColor());
+                        }
                     }
                 }
             }
-        } else if (purchasable instanceof Plant plant) {
-            if(plant.getOwner() == null) {
-                textKey1.setForeground(getColor());
-                textValue1.setForeground(getColor());
-            } else {
-                switch (plant.getRent(new Triplet<>(1, 0, 0), false)) {
-                    case 4 -> {
-                        textKey3.setForeground(getColor());
-                        textValue3.setForeground(getColor());
-                    }
-                    case 10 -> {
-                        textKey4.setForeground(getColor());
-                        textValue4.setForeground(getColor());
-                    }
-                    case 20 -> {
-                        textKey5.setForeground(getColor());
-                        textValue5.setForeground(getColor());
-                    }
-                }
-            }
-        }
+        });
     }
 
     private Color getColor() {

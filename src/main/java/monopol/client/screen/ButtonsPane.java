@@ -36,7 +36,11 @@ public class ButtonsPane extends JLayeredPane {
         switch (busStatus) {
             case IMPOSSIBLE -> PacketManager.sendC2S(new ButtonC2SPacket(clientSup.get().player().getName(), displaySup.get().selectedCardPane.getSelected().getName(), ButtonC2SPacket.Button.ACTION_2), clientSup.get(), Throwable::printStackTrace);
             case SELECTED -> busStatus = BusStatus.SELECTABLE;
-            case SELECTABLE -> busStatus  = BusStatus.SELECTED;
+            case SELECTABLE -> {
+                busStatus  = BusStatus.SELECTED;
+                displaySup.get().infoBoxPane.show(clientSup.get(), "Klicke auf das Feld, auf das du fahren möchtest.");
+                displaySup.get().infoBoxPane.show(clientSup.get(), "Es muss auf deiner Seite sein und vor dir liegen.");
+            }
         }
         update(activePlayer, diceRolled, hasToPayRent, inPrison, ready, purchasables);
     });
@@ -179,6 +183,10 @@ public class ButtonsPane extends JLayeredPane {
             return true;
         }
         return false;
+    }
+
+    public void teleport(int target) {
+        PacketManager.sendC2S(new ButtonC2SPacket(clientSup.get().player().getName(), displaySup.get().selectedCardPane.getSelected().getName(), ButtonC2SPacket.Button.TELEPORT, target), clientSup.get(), Throwable::printStackTrace);
     }
 
     private void enableGiveUp() {

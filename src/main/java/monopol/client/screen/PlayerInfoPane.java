@@ -137,17 +137,21 @@ public class PlayerInfoPane extends JLayeredPane {
         try {
             Player playerL = clientSup.get().serverMethod().getPlayer(clientSup.get().player().getName());
             if(playerL != null) {
-                nameL.setText(playerL.getName());
-                moneyL.setText(playerL.getMoney() + " €");
-                busL.setText("" + playerL.getBusCards());
-                freiL.setText("" + playerL.getPrisonCards());
+                SwingUtilities.invokeLater(() -> {
+                    nameL.setText(playerL.getName());
+                    moneyL.setText(playerL.getMoney() + " €");
+                    busL.setText("" + playerL.getBusCards());
+                    freiL.setText("" + playerL.getPrisonCards());
+                });
             }
             Player playerR = clientSup.get().serverMethod().getPlayer(currentPlayer);
             if(playerR != null) {
-                nameR.setText(playerR.getName());
-                moneyR.setText(playerR.getMoney() + " €");
-                busR.setText("" + playerR.getBusCards());
-                freiR.setText("" + playerR.getPrisonCards());
+                SwingUtilities.invokeLater(() -> {
+                    nameR.setText(playerR.getName());
+                    moneyR.setText(playerR.getMoney() + " €");
+                    busR.setText("" + playerR.getBusCards());
+                    freiR.setText("" + playerR.getPrisonCards());
+                });
             }
         } catch (RemoteException e) {
             clientSup.get().close();
@@ -159,11 +163,11 @@ public class PlayerInfoPane extends JLayeredPane {
             IPurchasable card = PURCHASABLES.get(i-1);
             if(purchasableThis.getComponent(i-1) instanceof JButton button) {
                 ImageIcon icon = JUtils.imageIcon(card.getOwnerNotNull().equals(clientSup.get().player().getName()) ? "images/kleine_karten/" + getColor(i) + "_filled.png" : "images/kleine_karten/" + getColor(i) + ".png");
-                button.setIcon(new ImageIcon(icon.getImage().getScaledInstance(JUtils.getX(icon.getIconWidth()), JUtils.getY(icon.getIconHeight()), Image.SCALE_DEFAULT)));
+                SwingUtilities.invokeLater(() -> button.setIcon(new ImageIcon(icon.getImage().getScaledInstance(JUtils.getX(icon.getIconWidth()), JUtils.getY(icon.getIconHeight()), Image.SCALE_DEFAULT))));
             }
             if(purchasableOther.getComponent(i-1) instanceof JButton button) {
                 ImageIcon icon = JUtils.imageIcon(card.getOwnerNotNull().equals(currentPlayer) ? "images/kleine_karten/" + getColor(i) + "_filled.png" : "images/kleine_karten/" + getColor(i) + ".png");
-                button.setIcon(new ImageIcon(icon.getImage().getScaledInstance(JUtils.getX(icon.getIconWidth()), JUtils.getY(icon.getIconHeight()), Image.SCALE_DEFAULT)));
+                SwingUtilities.invokeLater(() -> button.setIcon(new ImageIcon(icon.getImage().getScaledInstance(JUtils.getX(icon.getIconWidth()), JUtils.getY(icon.getIconHeight()), Image.SCALE_DEFAULT))));
             }
         }
     }

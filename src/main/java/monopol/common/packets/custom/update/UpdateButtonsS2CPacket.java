@@ -12,19 +12,20 @@ import java.util.List;
 
 public class UpdateButtonsS2CPacket extends S2CPacket<UpdateButtonsS2CPacket> {
     private final String currentPlayer;
-    private final boolean diceRolled, hasToPayRent, inPrison, ready;
+    private final boolean diceRolled, hasToPayRent, inPrison, ready, requestTeleport;
     private final List<IPurchasable> purchasables;
 
-    public UpdateButtonsS2CPacket(String currentPlayer, boolean diceRolled, boolean hasToPayRent, boolean inPrison, boolean ready, BuildRule buildRule, RequiredCardsOfColorGroup requiredCards, Player player) {
-        this(currentPlayer, diceRolled, hasToPayRent, inPrison, ready, buildRule.apply(player).stream().filter(p -> !(p instanceof TrainStation) || requiredCards.megaBuildings()).filter(p -> !(p instanceof Street street) || p.getOwner() == null || (requiredCards.valid(player, street) && (!requiredCards.buildEquable() || BuildRule.buildingEquable(street) != BuildRule.EqualBuildingResult.OKAY))).toList());
+    public UpdateButtonsS2CPacket(String currentPlayer, boolean diceRolled, boolean hasToPayRent, boolean inPrison, boolean ready, boolean requestTeleport, BuildRule buildRule, RequiredCardsOfColorGroup requiredCards, Player player) {
+        this(currentPlayer, diceRolled, hasToPayRent, inPrison, ready, requestTeleport, buildRule.apply(player).stream().filter(p -> !(p instanceof TrainStation) || requiredCards.megaBuildings()).filter(p -> !(p instanceof Street street) || p.getOwner() == null || (requiredCards.valid(player, street) && (!requiredCards.buildEquable() || BuildRule.buildingEquable(street) != BuildRule.EqualBuildingResult.OKAY))).toList());
     }
 
-    public UpdateButtonsS2CPacket(String currentPlayer, boolean diceRolled, boolean hasToPayRent, boolean inPrison, boolean ready, List<IPurchasable> purchasables) {
+    public UpdateButtonsS2CPacket(String currentPlayer, boolean diceRolled, boolean hasToPayRent, boolean inPrison, boolean ready, boolean requestTeleport, List<IPurchasable> purchasables) {
         this.currentPlayer = currentPlayer;
         this.diceRolled = diceRolled;
         this.hasToPayRent = hasToPayRent;
         this.inPrison = inPrison;
         this.ready = ready;
+        this.requestTeleport  = requestTeleport;
         this.purchasables = purchasables;
     }
 
@@ -33,7 +34,7 @@ public class UpdateButtonsS2CPacket extends S2CPacket<UpdateButtonsS2CPacket> {
         list.addAll(reader.readList(ArrayList::new, r -> r.readEnum(Street.class)));
         list.addAll(reader.readList(ArrayList::new, r -> r.readEnum(TrainStation.class)));
         list.addAll(reader.readList(ArrayList::new, r -> r.readEnum(Plant.class)));
-        return new UpdateButtonsS2CPacket(reader.readString(), reader.readBool(), reader.readBool(), reader.readBool(), reader.readBool(), list);
+        return new UpdateButtonsS2CPacket(reader.readString(), reader.readBool(), reader.readBool(), reader.readBool(), reader.readBool(), reader.readBool(), list);
     }
 
     @Override
@@ -46,10 +47,12 @@ public class UpdateButtonsS2CPacket extends S2CPacket<UpdateButtonsS2CPacket> {
         writer.writeBool(hasToPayRent);
         writer.writeBool(inPrison);
         writer.writeBool(ready);
+        writer.writeBool(requestTeleport);
     }
 
     @Override
     public void handleOnClient(Client client, RootPane display) {
         display.buttonsPane.update(currentPlayer, diceRolled, hasToPayRent, inPrison, ready, purchasables);
+        display.boardPane.setTeleportRequested(requestTeleport);
     }
 }

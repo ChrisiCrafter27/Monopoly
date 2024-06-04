@@ -18,7 +18,7 @@ public class CommunityCard {
                 player.contractMoney(10);
                 server.gameData().addFreeParking(10);
             }, "Ziehen", (server, player) -> {
-                PacketManager.sendS2C(new InfoS2CPacket(player.getName() + " zog eine Ereigniskarte"), PacketManager.all(), Throwable::printStackTrace);
+                PacketManager.sendS2C(new InfoS2CPacket(player.getName() + " zieht eine Ereigniskarte."), PacketManager.all(), Throwable::printStackTrace);
                 EventCard card = EventCard.getUnused();
                 EventCard.setCurrent(card);
                 card.activate(player);

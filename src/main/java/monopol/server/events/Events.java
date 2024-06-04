@@ -13,6 +13,7 @@ public abstract class Events {
     public final int maxBusTickets;
     public final boolean limitBuildings; //noch nicht implementiert
     public final boolean tempoDice;
+    public final boolean mrMonopoly;
     public final boolean megaBuildings;
     public final boolean tripleTeleport; //noch nicht implementiert
     public final int startMoney;
@@ -34,11 +35,12 @@ public abstract class Events {
     protected int dice3;
     protected boolean hasToPayRent;
 
-    protected Events(boolean limitBusTickets, int maxBusTickets, boolean limitBuildings, boolean tempoDice, boolean megaBuildings, boolean tripleTeleport, int startMoney, int losMoney, boolean doubleLosMoney, boolean freeParking, boolean rentInPrison, boolean buildEquable, boolean reRollEventCardsAfterUse, BuildRule buildRule, OwnedCardsOfColorGroup cardsRequiredForOneHouse, OwnedCardsOfColorGroup cardsRequiredForTwoHouses, OwnedCardsOfColorGroup cardsRequiredForThreeHouses, OwnedCardsOfColorGroup cardsRequiredForFourHouses, OwnedCardsOfColorGroup cardsRequiredForHotel, OwnedCardsOfColorGroup cardsRequiredForSkyscraper) {
+    protected Events(boolean limitBusTickets, int maxBusTickets, boolean limitBuildings, boolean tempoDice, boolean mrMonopoly, boolean megaBuildings, boolean tripleTeleport, int startMoney, int losMoney, boolean doubleLosMoney, boolean freeParking, boolean rentInPrison, boolean buildEquable, boolean reRollEventCardsAfterUse, BuildRule buildRule, OwnedCardsOfColorGroup cardsRequiredForOneHouse, OwnedCardsOfColorGroup cardsRequiredForTwoHouses, OwnedCardsOfColorGroup cardsRequiredForThreeHouses, OwnedCardsOfColorGroup cardsRequiredForFourHouses, OwnedCardsOfColorGroup cardsRequiredForHotel, OwnedCardsOfColorGroup cardsRequiredForSkyscraper) {
         this.limitBusTickets = limitBusTickets;
         this.maxBusTickets = maxBusTickets;
-        this.limitBuildings = true;
+        this.limitBuildings = limitBuildings;
         this.tempoDice = tempoDice;
+        this.mrMonopoly = mrMonopoly;
         this.megaBuildings = megaBuildings;
         this.tripleTeleport = tripleTeleport;
         this.startMoney = startMoney;
@@ -81,6 +83,7 @@ public abstract class Events {
     public abstract void onGetBusCard();
     public abstract void onTakeBusCard(String name);
     public abstract void onBusDrive(String name, int target);
+    public abstract void onTeleport(String name, int target);
     public abstract void onArrivedAtField();
     public abstract void onPayRent(String name);
     public abstract void onEventCardAction(String player, String action);
@@ -103,15 +106,13 @@ public abstract class Events {
     public abstract void onArrivedAtAdditionalTaxField();
     public abstract void onArrivedAtPrisonField();
     public abstract void onPassedLos();
-    public abstract void onOfferTrade();
-    public abstract void onAcceptTrade();
     public abstract void onGoBankrupt();
 
     @FunctionalInterface
     public interface Factory<T extends Events> {
-        T create(boolean limitBusTickets, int maxBusTickets, boolean limitBuildings, boolean tempoDice, boolean megaBuildings, boolean tripleTeleport, int startMoney, int losMoney, boolean doubleLosMoney, boolean freeParking, boolean gainRentInPrison, boolean buildEquable, boolean reRollEventCardsAfterUse, BuildRule buildRule, OwnedCardsOfColorGroup cardsRequiredForOneHouse, OwnedCardsOfColorGroup cardsRequiredForTwoHouses, OwnedCardsOfColorGroup cardsRequiredForThreeHouses, OwnedCardsOfColorGroup cardsRequiredForFourHouses, OwnedCardsOfColorGroup cardsRequiredForHotel, OwnedCardsOfColorGroup cardsRequiredForSkyscraper);
+        T create(boolean limitBusTickets, int maxBusTickets, boolean limitBuildings, boolean tempoDice, boolean mrMonopoly, boolean megaBuildings, boolean tripleTeleport, int startMoney, int losMoney, boolean doubleLosMoney, boolean freeParking, boolean gainRentInPrison, boolean buildEquable, boolean reRollEventCardsAfterUse, BuildRule buildRule, OwnedCardsOfColorGroup cardsRequiredForOneHouse, OwnedCardsOfColorGroup cardsRequiredForTwoHouses, OwnedCardsOfColorGroup cardsRequiredForThreeHouses, OwnedCardsOfColorGroup cardsRequiredForFourHouses, OwnedCardsOfColorGroup cardsRequiredForHotel, OwnedCardsOfColorGroup cardsRequiredForSkyscraper);
         default T copyOf(Events events) {
-            return create(events.limitBusTickets, events.maxBusTickets, events.limitBuildings, events.tempoDice, events.megaBuildings, events.tripleTeleport, events.startMoney, events.losMoney, events.doubleLosMoney, events.freeParking, events.rentInPrison, events.buildEquable, events.reRollEventCardsAfterUse, events.buildRule, events.requiredCards.cardsRequiredForOneHouse(), events.requiredCards.cardsRequiredForTwoHouses(), events.requiredCards.cardsRequiredForThreeHouses(), events.requiredCards.cardsRequiredForFourHouses(), events.requiredCards.cardsRequiredForHotel(), events.requiredCards.cardsRequiredForSkyscraper());
+            return create(events.limitBusTickets, events.maxBusTickets, events.limitBuildings, events.tempoDice, events.mrMonopoly, events.megaBuildings, events.tripleTeleport, events.startMoney, events.losMoney, events.doubleLosMoney, events.freeParking, events.rentInPrison, events.buildEquable, events.reRollEventCardsAfterUse, events.buildRule, events.requiredCards.cardsRequiredForOneHouse(), events.requiredCards.cardsRequiredForTwoHouses(), events.requiredCards.cardsRequiredForThreeHouses(), events.requiredCards.cardsRequiredForFourHouses(), events.requiredCards.cardsRequiredForHotel(), events.requiredCards.cardsRequiredForSkyscraper());
         }
     }
 }

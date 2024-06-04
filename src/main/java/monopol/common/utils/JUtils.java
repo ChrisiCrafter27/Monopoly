@@ -8,6 +8,7 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Objects;
 
 public class JUtils {
     public static final double SCREEN_WIDTH = Toolkit.getDefaultToolkit().getScreenSize().width;
@@ -179,9 +180,9 @@ public class JUtils {
     public static ImageIcon imageIcon(String path) {
         if(path == null || path.isEmpty()) return new ImageIcon("");
         try {
-            return new ImageIcon(ImageIO.read(Main.class.getClassLoader().getResourceAsStream("assets/" + path)));
+            return new ImageIcon(ImageIO.read(Objects.requireNonNull(Main.class.getClassLoader().getResourceAsStream("assets/" + path))));
         } catch (IOException | NullPointerException e) {
-            throw new IllegalStateException(new FileNotFoundException("Unknown image: " + path));
+            return new ImageIcon();
         }
     }
 }

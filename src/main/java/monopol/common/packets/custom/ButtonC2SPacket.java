@@ -13,17 +13,17 @@ public class ButtonC2SPacket extends C2SPacket<ButtonC2SPacket> {
     private final String name;
     private final String selectedCard;
     private final Button button;
-    private final int busTarget;
+    private final int target;
 
     public ButtonC2SPacket(String name, String selectedCard, Button button) {
         this(name, selectedCard,  button, 0);
     }
 
-    public ButtonC2SPacket(String name, String selectedCard, Button button, int busTarget) {
+    public ButtonC2SPacket(String name, String selectedCard, Button button, int target) {
         this.name = name;
         this.selectedCard = selectedCard;
         this.button = button;
-        this.busTarget =  busTarget;
+        this.target = target;
     }
 
     @SuppressWarnings("unused")
@@ -36,7 +36,7 @@ public class ButtonC2SPacket extends C2SPacket<ButtonC2SPacket> {
         writer.writeString(name);
         writer.writeString(selectedCard);
         writer.writeEnum(button);
-        writer.writeInt(busTarget);
+        writer.writeInt(target);
     }
 
     @Override
@@ -50,12 +50,13 @@ public class ButtonC2SPacket extends C2SPacket<ButtonC2SPacket> {
             case ACTION_2 -> {
                 if(server.getPlayerServerSide(name).inPrison()) server.events().onPaySurety(name, false);
                 else if(server.events().diceRolled()) server.events().onPayRent(name);
-                else server.events().onBusDrive(name, busTarget);
+                else server.events().onBusDrive(name, target);
             }
             case PURCHASE -> server.events().onPurchaseCard(name, selected);
             case UPGRADE -> server.events().onUpgrade(name, selected);
             case DOWNGRADE -> server.events().onDowngrade(name, selected);
             case MORTGAGE -> server.events().onMortgage(name, selected);
+            case TELEPORT -> server.events().onTeleport(name, target);
         }
     }
 
@@ -65,6 +66,7 @@ public class ButtonC2SPacket extends C2SPacket<ButtonC2SPacket> {
         PURCHASE,
         UPGRADE,
         DOWNGRADE,
-        MORTGAGE
+        MORTGAGE,
+        TELEPORT
     }
 }

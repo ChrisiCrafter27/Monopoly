@@ -33,8 +33,8 @@ import java.util.List;
 import java.util.function.Consumer;
 
 public class Server extends UnicastRemoteObject implements IServer {
-    public static final int CLIENT_TIMEOUT = 5000;
-    public static final Map<Color, String> COLORS = new HashMap<>();
+    private static final int CLIENT_TIMEOUT = 5000;
+    private static final Map<Color, String> COLORS = new HashMap<>();
     static {
         COLORS.putAll(Map.of(Color.YELLOW, "<html><font color=#ffff00>■</font>", Color.ORANGE, "<html><font color=#ffc800>■</font>", Color.RED, "<html><font color=#ff0000>■</font>", Color.MAGENTA, "<html><font color=#ff00ff>■</font>", Color.PINK, "<html><font color=#ffafaf>■</font>"));
         COLORS.putAll(Map.of(Color.CYAN, "<html><font color=#00ffff>■</font>", Color.BLUE, "<html><font color=#0000ff>■</font>", Color.GREEN, "<html><font color=#00ff00>■</font>", Color.WHITE, "<html><font color=#ffffff>■</font>", Color.LIGHT_GRAY, "<html><font color=#c0c0c0>■</font>"));
@@ -55,10 +55,10 @@ public class Server extends UnicastRemoteObject implements IServer {
     private String host;
     private boolean hostJoined = false;
     private Events.Factory<?> eventsType = MegaEditionEvents::new;
-    private Events events = eventsType.create(false, 16, true, true, true, true, 2500, 200, true, true, true, false, false, BuildRule.ANYWHERE, OwnedCardsOfColorGroup.ALL_BUT_ONE, OwnedCardsOfColorGroup.ALL_BUT_ONE, OwnedCardsOfColorGroup.ALL_BUT_ONE, OwnedCardsOfColorGroup.ALL_BUT_ONE, OwnedCardsOfColorGroup.ALL_BUT_ONE, OwnedCardsOfColorGroup.ALL);
+    private Events events = eventsType.create(false, 16, true, true, false, false, true, 2500, 200, true, true, true, false, false, BuildRule.ANYWHERE, OwnedCardsOfColorGroup.ALL_BUT_ONE, OwnedCardsOfColorGroup.ALL_BUT_ONE, OwnedCardsOfColorGroup.ALL_BUT_ONE, OwnedCardsOfColorGroup.ALL_BUT_ONE, OwnedCardsOfColorGroup.ALL_BUT_ONE, OwnedCardsOfColorGroup.ALL);
     private GameData gameData = new GameData();
-    
-    private final Thread connectionThread = new Thread() {
+
+    public final Thread connectionThread = new Thread() {
         @Override
         public void run() {
             while(!isInterrupted()) {
@@ -75,9 +75,8 @@ public class Server extends UnicastRemoteObject implements IServer {
                                     String data = input.readUTF();
                                     p = PacketManager.packet(Json.toObject(data, Message.class));
                                 } while (!(p instanceof RequestRejoinC2SPacket));
-                                RequestRejoinC2SPacket packet = (RequestRejoinC2SPacket) p;
                                 for (Player player : waitForRejoin) {
-                                    if (player.getName().equals(packet.name())) {
+                                    if (player.getName().equals(((RequestRejoinC2SPacket) p).name())) {
                                         clients.put(clients.size() + 1, newClient);
                                         players.put(player, newClient);
                                         PacketManager.sendS2C(new NameS2CPacket(player.getName()), newClient, Throwable::printStackTrace);
@@ -150,7 +149,8 @@ public class Server extends UnicastRemoteObject implements IServer {
             return new Player(name);
         }
     };
-    private final Thread requestThread = new Thread(() -> {
+
+    public final Thread requestThread = new Thread(() -> {
         HashMap<Socket, Thread> threadMap = new HashMap<>();
         while(!Thread.interrupted()) {
             if(!pause) {
@@ -204,7 +204,7 @@ public class Server extends UnicastRemoteObject implements IServer {
         }
     });
 
-    private final Thread pingThread = new Thread(() -> {
+    public final Thread pingThread = new Thread(() -> {
         while(!Thread.interrupted()) {
             if (!pause) {
                 List<Socket> kick = new ArrayList<>();

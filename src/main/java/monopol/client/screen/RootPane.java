@@ -39,14 +39,14 @@ public class RootPane extends JLayeredPane {
         add(boardPane, JLayeredPane.DEFAULT_LAYER);
         //add(tradePane, JLayeredPane.MODAL_LAYER);
         add(selectedCardPane, JLayeredPane.PALETTE_LAYER);
-        add(playerDisplayPane, JLayeredPane.PALETTE_LAYER);
+        add(playerDisplayPane, JLayeredPane.MODAL_LAYER);
         add(infoBoxPane, JLayeredPane.PALETTE_LAYER);
         add(rejoinPane, JLayeredPane.DRAG_LAYER);
         add(freeParkingPane, JLayeredPane.PALETTE_LAYER);
         add(playerInfoPane, JLayeredPane.PALETTE_LAYER);
         add(buttonsPane, JLayeredPane.PALETTE_LAYER);
         add(dicePane, JLayeredPane.PALETTE_LAYER);
-        add(housePane, JLayeredPane.MODAL_LAYER);
+        add(housePane, JLayeredPane.PALETTE_LAYER);
         add(cardDecksPane, JLayeredPane.PALETTE_LAYER);
     }
 

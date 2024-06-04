@@ -7,6 +7,7 @@ import monopol.common.settings.Setting;
 import monopol.common.utils.JUtils;
 import monopol.server.events.BuildRule;
 import monopol.server.events.Events;
+import monopol.server.events.MegaEditionEvents;
 import monopol.server.events.OwnedCardsOfColorGroup;
 
 import javax.swing.*;
@@ -16,6 +17,7 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,7 +29,7 @@ public class SettingsScreen<T extends Events> {
     private final JFrame frame = new JFrame("Einstellungen");
     private final Events.Factory<T> factory;
     private final Consumer<T> set;
-    private final List<Setting<?, ?>> settingsList;
+    private List<Setting<?, ?>> settingsList;
     private int i;
 
     public SettingsScreen(Events.Factory<T> factory, Events prev, Consumer<T> set) {
@@ -39,85 +41,183 @@ public class SettingsScreen<T extends Events> {
     }
 
     public void show() {
-        ToolTipManager.sharedInstance().setDismissDelay(10000);
-        ToolTipManager.sharedInstance().setInitialDelay(100);
-        ToolTipManager.sharedInstance().setReshowDelay(100);
+        SwingUtilities.invokeLater(() -> {
+            frame.getContentPane().removeAll();
+            frame.repaint();
 
-        JPanel panel = new JPanel(new GridLayout(0, 2, 10, 10));
-        panel.setBorder(new EmptyBorder(10, 10, 10, 10));
+            ToolTipManager.sharedInstance().setDismissDelay(30000);
+            ToolTipManager.sharedInstance().setInitialDelay(100);
+            ToolTipManager.sharedInstance().setReshowDelay(100);
 
-        Map<String, JComponent> componentMap = new HashMap<>();
+            JPanel panel = new JPanel();
+            panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+            panel.setBorder(new EmptyBorder(10, 10, 10, 10));
 
-        for (Setting<?, ?> setting : settingsList) {
-            JLabel label = new JLabel(setting.name() + ": ");
-            if(setting.tooltip() != null) label.setToolTipText(setting.tooltip());
-            JComponent component = null;
-            String name = setting.name();
+            JPanel panel1 = new JPanel(new GridLayout(0, 2, 10, 10));
+            JPanel panel2 = new JPanel(new GridLayout(0, 1, 10, 10));
+            JPanel panel3 = new JPanel(new GridLayout(0, 2, 10, 10));
 
-            if(setting instanceof IntSetting intSetting) {
-                label.setText(label.getText() + " [" + intSetting.min() + "; " + intSetting.max() + "]");
-                JTextField textField = new JTextField(String.valueOf(intSetting.defaultValue()));
-                textField.addKeyListener(new KeyAdapter() {
-                    @Override
-                    public void keyTyped(KeyEvent e) {
-                        char c = e.getKeyChar();
-                        if (!(Character.isDigit(c) || c == KeyEvent.VK_MINUS)) {
-                            e.consume();
+            Map<String, JComponent> componentMap = new HashMap<>();
+
+            for (Setting<?, ?> setting : settingsList) {
+                JLabel label = new JLabel(setting.name() + ": ");
+                if(setting.tooltip() != null) label.setToolTipText(setting.tooltip());
+                JComponent component = null;
+                String name = setting.name();
+
+                if(setting instanceof IntSetting intSetting) {
+                    label.setText(label.getText() + " [" + intSetting.min() + "; " + intSetting.max() + "]");
+                    JTextField textField = new JTextField(String.valueOf(intSetting.defaultValue()));
+                    textField.addKeyListener(new KeyAdapter() {
+                        @Override
+                        public void keyTyped(KeyEvent e) {
+                            char c = e.getKeyChar();
+                            if (!(Character.isDigit(c) || c == KeyEvent.VK_MINUS)) {
+                                e.consume();
+                            }
                         }
-                    }
-                });
-                textField.addFocusListener(new FocusListener() {
-                    @Override
-                    public void focusGained(FocusEvent e) {}
-                    @Override
-                    public void focusLost(FocusEvent e) {
-                        try {
-                            int value = Integer.parseInt(((JTextField) e.getComponent()).getText());
-                            if(value > intSetting.max() || value < intSetting.min()) throw new NumberFormatException();
-                        } catch (NumberFormatException ignored) {
-                            ((JTextField) componentMap.get(intSetting.name())).setText(String.valueOf(intSetting.defaultValue()));
+                    });
+                    textField.addFocusListener(new FocusListener() {
+                        @Override
+                        public void focusGained(FocusEvent e) {}
+                        @Override
+                        public void focusLost(FocusEvent e) {
+                            try {
+                                int value = Integer.parseInt(((JTextField) e.getComponent()).getText());
+                                if(value > intSetting.max() || value < intSetting.min()) throw new NumberFormatException();
+                            } catch (NumberFormatException ignored) {
+                                ((JTextField) componentMap.get(intSetting.name())).setText(String.valueOf(intSetting.defaultValue()));
+                            }
                         }
-                    }
-                });
-                intSetting.setComponent(textField);
-                component = textField;
-            } else if(setting instanceof EnumSetting<?> enumSetting) {
-                Enum<?>[] enumConstants = enumSetting.values();
-                JComboBox comboBox = new JComboBox<>(enumConstants);
-                comboBox.setSelectedItem(enumSetting.defaultValue());
-                enumSetting.setComponent(comboBox);
-                component = comboBox;
-            } else if(setting instanceof BooleanSetting booleanSetting) {
-                JCheckBox checkBox = new JCheckBox();
-                checkBox.setSelected(booleanSetting.defaultValue());
-                booleanSetting.setComponent(checkBox);
-                component = checkBox;
+                    });
+                    intSetting.setComponent(textField);
+                    component = textField;
+                } else if(setting instanceof EnumSetting<?> enumSetting) {
+                    Enum<?>[] enumConstants = enumSetting.values();
+                    JComboBox comboBox = new JComboBox<>(enumConstants);
+                    comboBox.setSelectedItem(enumSetting.defaultValue());
+                    enumSetting.setComponent(comboBox);
+                    component = comboBox;
+                } else if(setting instanceof BooleanSetting booleanSetting) {
+                    JCheckBox checkBox = new JCheckBox();
+                    checkBox.setSelected(booleanSetting.defaultValue());
+                    booleanSetting.setComponent(checkBox);
+                    component = checkBox;
+                }
+
+                panel1.add(label);
+                panel1.add(component);
+
+                componentMap.put(name, component);
             }
 
-            panel.add(label);
-            panel.add(component);
+            JButton presetButton = new JButton("Voreinstellungen");
+            presetButton.addActionListener(e -> {
+                Map<String, Events> presets = Map.of(
+                        "Basisspiel", new MegaEditionEvents(
+                                false,
+                                16,
+                                true,
+                                false,
+                                false,
+                                false,
+                                false,
+                                2500,
+                                200,
+                                true,
+                                true,
+                                true,
+                                false,
+                                false,
+                                BuildRule.ANYWHERE,
+                                OwnedCardsOfColorGroup.ALL_BUT_ONE,
+                                OwnedCardsOfColorGroup.ALL_BUT_ONE,
+                                OwnedCardsOfColorGroup.ALL_BUT_ONE,
+                                OwnedCardsOfColorGroup.ALL_BUT_ONE,
+                                OwnedCardsOfColorGroup.ALL_BUT_ONE,
+                                OwnedCardsOfColorGroup.ALL
+                        ),
+                        "Mega-Edition", new MegaEditionEvents(
+                                false,
+                                16,
+                                true,
+                                true,
+                                true,
+                                true,
+                                true,
+                                2500,
+                                200,
+                                true,
+                                true,
+                                true,
+                                false,
+                                false,
+                                BuildRule.ANYWHERE,
+                                OwnedCardsOfColorGroup.ALL_BUT_ONE,
+                                OwnedCardsOfColorGroup.ALL_BUT_ONE,
+                                OwnedCardsOfColorGroup.ALL_BUT_ONE,
+                                OwnedCardsOfColorGroup.ALL_BUT_ONE,
+                                OwnedCardsOfColorGroup.ALL_BUT_ONE,
+                                OwnedCardsOfColorGroup.ALL
+                        ),
+                        "Schnelles Spiel", new MegaEditionEvents(
+                                false,
+                                16,
+                                true,
+                                true,
+                                false,
+                                true,
+                                true,
+                                2500,
+                                200,
+                                true,
+                                true,
+                                true,
+                                false,
+                                false,
+                                BuildRule.ANYWHERE,
+                                OwnedCardsOfColorGroup.ONE,
+                                OwnedCardsOfColorGroup.ONE,
+                                OwnedCardsOfColorGroup.ONE,
+                                OwnedCardsOfColorGroup.ONE,
+                                OwnedCardsOfColorGroup.TWO,
+                                OwnedCardsOfColorGroup.TWO
+                        )
+                );
+                List<String> options = new ArrayList<>(presets.keySet());
+                int result = JOptionPane.showOptionDialog(frame, "Wähle eine Vorlage:", "Vorlage wählen", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options.toArray(), null);
+                if(result != JOptionPane.CLOSED_OPTION) {
+                    settingsList = settings(presets.get(options.get(result)));
+                    show();
+                }
+            });
 
-            componentMap.put(name, component);
-        }
+            JButton abortButton = new JButton("Abbrechen");
+            abortButton.addActionListener(e -> close());
 
-        JButton abortButton = new JButton("Abbrechen");
-        abortButton.addActionListener(e -> close());
+            JButton saveButton = new JButton("Speichern");
+            saveButton.addActionListener(e -> {
+                set.accept(events());
+                close();
+            });
 
-        JButton saveButton = new JButton("Speichern");
-        saveButton.addActionListener(e -> {
-            set.accept(events());
-            close();
+            panel2.add(presetButton);
+            panel3.add(abortButton);
+            panel3.add(saveButton);
+
+            panel.add(panel1);
+            panel.add(Box.createVerticalStrut(10));
+            panel.add(panel2);
+            panel.add(Box.createVerticalStrut(10));
+            panel.add(panel3);
+
+            frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            frame.setLocationRelativeTo(null);
+            frame.add(panel);
+            frame.pack();
+            frame.setLocation((int) (JUtils.SCREEN_WIDTH / 2d - frame.getWidth() / 2d), (int) (JUtils.SCREEN_HEIGHT / 2d - frame.getHeight() / 2d));
+            frame.setVisible(true);
         });
-
-        panel.add(abortButton);
-        panel.add(saveButton);
-
-        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        frame.setLocationRelativeTo(null);
-        frame.add(panel);
-        frame.pack();
-        frame.setLocation((int) (JUtils.SCREEN_WIDTH / 2d - frame.getWidth() / 2d), (int) (JUtils.SCREEN_HEIGHT / 2d - frame.getHeight() / 2d));
-        frame.setVisible(true);
     }
 
     public void close() {
@@ -131,7 +231,8 @@ public class SettingsScreen<T extends Events> {
                 16,
                 true,
                 true,
-                true,
+                false,
+                false,
                 true,
                 2500,
                 200,
@@ -156,6 +257,7 @@ public class SettingsScreen<T extends Events> {
                 new IntSetting("Anzahl an Busfahrkarten", 0, 100, defaultValues.maxBusTickets),
                 new BooleanSetting("Gebäude limitieren", defaultValues.limitBuildings),
                 new BooleanSetting("Tempowürfel", "Teil der Monopoly Mega-Edition", defaultValues.tempoDice),
+                new BooleanSetting("Mr. Monopoly", "Wird Mr. Monopoly gewürfelt, bewegst du dich nach dem Wurf auf das nächste zu verkaufende Feld oder, falls es keins mehr gibt, dass mit der höchsten Miete", defaultValues.mrMonopoly),
                 new BooleanSetting("Wolkenkratzer und Zugdepots", "Teil der Monopoly Mega-Edition", defaultValues.megaBuildings),
                 new BooleanSetting("Teleport bei Dreierpasch", "Wenn du einen Dreierpasch würfelst, kannst du dich auf ein beliebiges Feld bewegen. Teil der Monopoly Mega-Edition", defaultValues.tripleTeleport),
                 new IntSetting("Start-Geld", 0, 10000, defaultValues.startMoney),
@@ -180,6 +282,7 @@ public class SettingsScreen<T extends Events> {
         return factory.create(
                 getBoolean(),
                 getInt(),
+                getBoolean(),
                 getBoolean(),
                 getBoolean(),
                 getBoolean(),

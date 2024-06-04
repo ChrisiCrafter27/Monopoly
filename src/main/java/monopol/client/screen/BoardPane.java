@@ -9,6 +9,7 @@ import java.util.function.Supplier;
 
 public class BoardPane extends JLayeredPane {
     Supplier<RootPane> displaySup = () -> {throw new IllegalStateException("init() was not called");};
+    private boolean requestTeleport;
 
     public BoardPane() {
         super();
@@ -29,7 +30,8 @@ public class BoardPane extends JLayeredPane {
     }
 
     private void buttonPressed(IField field) {
-        if(!displaySup.get().buttonsPane.busDrive(Field.fields().indexOf(field)) && field instanceof IPurchasable purchasable) displaySup.get().selectedCardPane.select(purchasable);
+        if(requestTeleport) displaySup.get().buttonsPane.teleport(Field.fields().indexOf(field));
+        else if(!displaySup.get().buttonsPane.busDrive(Field.fields().indexOf(field)) && field instanceof IPurchasable purchasable) displaySup.get().selectedCardPane.select(purchasable);
     }
     
     public void addButtons() {
@@ -397,5 +399,9 @@ public class BoardPane extends JLayeredPane {
         }
         pane.add(button, 3);
         add(pane, JLayeredPane.PALETTE_LAYER);
+    }
+
+    public void setTeleportRequested(boolean requestTeleport) {
+        this.requestTeleport = requestTeleport;
     }
 }

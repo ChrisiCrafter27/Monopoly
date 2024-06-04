@@ -256,9 +256,16 @@ public class LobbyPane extends JLayeredPane {
             requestUpdate = false;
             client = currentClient;
             this.ip = ip;
-            updateList(players);
-            updateButtons(clients, root, players.size());
-            updateIp();
+            SwingUtilities.invokeLater(() -> {
+                try {
+                    updateList(players);
+                    updateButtons(clients, root, players.size());
+                    updateIp();
+                } catch (RemoteException e) {
+                    e.printStackTrace(System.err);
+                    client.close();
+                }
+            });
         }
         if(keyHandler.isKeyDown(KeyEvent.VK_SPACE) != spaceDown) {
             spaceDown = keyHandler.isKeyDown(KeyEvent.VK_SPACE);

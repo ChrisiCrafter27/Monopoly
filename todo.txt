@@ -1,12 +1,6 @@
 - HousePane
-
-- Mr. Monopoly Würfel
 - Dreier-Pasch
-
-- Hypotheken schränken Bauen ein (Regel)
-- Verkauf mit Upgrades (Regel)
-- Hypotheken mit Upgrades (Regel)
-- Mr. Monopoly Würfel (Regel)
+- Busfahren Nachricht
 
 - Namen der Images ändern
 - Versteigerung

@@ -9,10 +9,6 @@ import monopol.common.packets.S2CPacket;
 import monopol.common.data.Field;
 
 import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class UpdatePurchasablesS2CPacket extends S2CPacket<UpdatePurchasablesS2CPacket> {
     public UpdatePurchasablesS2CPacket() {}
