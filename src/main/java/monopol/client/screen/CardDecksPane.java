@@ -2,9 +2,9 @@ package monopol.client.screen;
 
 import monopol.client.Client;
 import monopol.common.packets.PacketManager;
-import monopol.common.packets.custom.BusCardC2SPacket;
-import monopol.common.packets.custom.CommunityCardC2SPacket;
-import monopol.common.packets.custom.EventCardC2SPacket;
+import monopol.common.packets.customs.BusCardC2SPacket;
+import monopol.common.packets.customs.CommunityCardC2SPacket;
+import monopol.common.packets.customs.EventCardC2SPacket;
 import monopol.common.utils.JUtils;
 
 import javax.swing.*;
