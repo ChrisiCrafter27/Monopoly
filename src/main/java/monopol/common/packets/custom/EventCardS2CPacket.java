@@ -1,21 +1,21 @@
-package monopol.common.packets.customs;
+package monopol.common.packets.custom;
 
+import monopol.client.Client;
 import monopol.client.screen.RootPane;
 import monopol.common.data.DataReader;
 import monopol.common.data.DataWriter;
 import monopol.common.packets.S2CPacket;
-import monopol.client.Client;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class CommunityCardS2CPacket extends S2CPacket<CommunityCardS2CPacket> {
+public class EventCardS2CPacket extends S2CPacket<EventCardS2CPacket> {
     private final String player;
     private final List<String> descriptions;
     private final List<String> buttons;
     private final int size;
 
-    public CommunityCardS2CPacket(String player, List<String> descriptions, List<String> buttons, int size) {
+    public EventCardS2CPacket(String player, List<String> descriptions, List<String> buttons, int size) {
         this.player = player;
         this.descriptions = descriptions;
         this.buttons = buttons;
@@ -30,12 +30,12 @@ public class CommunityCardS2CPacket extends S2CPacket<CommunityCardS2CPacket> {
         writer.writeInt(size);
     }
 
-    public static CommunityCardS2CPacket deserialize(DataReader reader) {
-        return new CommunityCardS2CPacket(reader.readString(), reader.readList(ArrayList::new, DataReader::readString), reader.readList(ArrayList::new, DataReader::readString), reader.readInt());
+    public static EventCardS2CPacket deserialize(DataReader reader) {
+        return new EventCardS2CPacket(reader.readString(), reader.readList(ArrayList::new, DataReader::readString), reader.readList(ArrayList::new, DataReader::readString), reader.readInt());
     }
 
     @Override
     public void handleOnClient(Client client, RootPane display) {
-        display.cardDecksPane.updateCommunityCards(player, descriptions, buttons, size);
+        display.cardDecksPane.updateEventCards(player, descriptions, buttons, size);
     }
 }

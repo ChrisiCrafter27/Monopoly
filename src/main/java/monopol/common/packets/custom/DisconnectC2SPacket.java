@@ -1,4 +1,4 @@
-package monopol.common.packets.customs;
+package monopol.common.packets.custom;
 
 import monopol.common.data.DataReader;
 import monopol.common.data.DataWriter;

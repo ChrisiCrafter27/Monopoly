@@ -1,4 +1,4 @@
-package monopol.common.packets.customs;
+package monopol.common.packets.custom;
 
 import monopol.client.Client;
 import monopol.client.screen.RootPane;

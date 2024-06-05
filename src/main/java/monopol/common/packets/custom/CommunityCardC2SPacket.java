@@ -1,4 +1,4 @@
-package monopol.common.packets.customs;
+package monopol.common.packets.custom;
 
 import monopol.common.data.DataReader;
 import monopol.common.data.DataWriter;
@@ -7,10 +7,10 @@ import monopol.server.Server;
 
 import java.net.Socket;
 
-public class EventCardC2SPacket extends C2SPacket<EventCardC2SPacket> {
+public class CommunityCardC2SPacket extends C2SPacket<CommunityCardC2SPacket> {
     private final String player, button;
 
-    public EventCardC2SPacket(String player, String button) {
+    public CommunityCardC2SPacket(String player, String button) {
         this.player = player;
         this.button = button;
     }
@@ -21,12 +21,12 @@ public class EventCardC2SPacket extends C2SPacket<EventCardC2SPacket> {
         writer.writeString(button);
     }
 
-    public static EventCardC2SPacket deserialize(DataReader reader) {
-        return new EventCardC2SPacket(reader.readString(), reader.readString());
+    public static CommunityCardC2SPacket deserialize(DataReader reader) {
+        return new CommunityCardC2SPacket(reader.readString(), reader.readString());
     }
 
     @Override
     public void handleOnServer(Server server, Socket source) {
-        server.events().onEventCardAction(player, button);
+        server.events().onCommunityCardAction(player, button);
     }
 }

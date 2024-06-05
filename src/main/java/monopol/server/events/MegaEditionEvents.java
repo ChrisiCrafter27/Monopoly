@@ -3,9 +3,9 @@ package monopol.server.events;
 import monopol.common.core.Monopoly;
 import monopol.common.data.*;
 import monopol.common.packets.PacketManager;
-import monopol.common.packets.customs.*;
-import monopol.common.packets.customs.update.UpdateButtonsS2CPacket;
-import monopol.common.packets.customs.update.UpdatePurchasablesS2CPacket;
+import monopol.common.packets.custom.*;
+import monopol.common.packets.custom.update.UpdateButtonsS2CPacket;
+import monopol.common.packets.custom.update.UpdatePurchasablesS2CPacket;
 import monopol.common.utils.Triplet;
 
 import javax.swing.*;

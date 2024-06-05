@@ -4,7 +4,7 @@ import monopol.client.Client;
 import monopol.common.data.*;
 import monopol.common.message.DisconnectReason;
 import monopol.common.packets.PacketManager;
-import monopol.common.packets.customs.ButtonC2SPacket;
+import monopol.common.packets.custom.ButtonC2SPacket;
 import monopol.common.utils.JUtils;
 
 import javax.swing.*;

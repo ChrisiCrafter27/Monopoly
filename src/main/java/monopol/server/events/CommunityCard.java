@@ -2,8 +2,8 @@ package monopol.server.events;
 
 import monopol.common.data.*;
 import monopol.common.packets.PacketManager;
-import monopol.common.packets.customs.CommunityCardS2CPacket;
-import monopol.common.packets.customs.InfoS2CPacket;
+import monopol.common.packets.custom.CommunityCardS2CPacket;
+import monopol.common.packets.custom.InfoS2CPacket;
 import monopol.server.Server;
 
 import java.util.*;
