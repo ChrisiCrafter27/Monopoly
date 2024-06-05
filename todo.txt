@@ -1,6 +1,4 @@
 - HousePane
-- Dreier-Pasch
-- Busfahren Nachricht
 
 - Namen der Images ändern
 - Versteigerung
