@@ -22,7 +22,6 @@ public class StartS2CPacket extends S2CPacket<StartS2CPacket> {
         writer.writeBool(tempoDice);
     }
 
-    @SuppressWarnings("unused")
     public static StartS2CPacket deserialize(DataReader reader) {
         return new StartS2CPacket(reader.readBool());
     }

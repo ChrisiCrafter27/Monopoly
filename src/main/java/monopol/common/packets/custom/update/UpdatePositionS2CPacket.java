@@ -23,8 +23,7 @@ public class UpdatePositionS2CPacket extends S2CPacket<UpdatePositionS2CPacket> 
         writer.writeBool(anim);
     }
 
-    @SuppressWarnings("unused")
-    public static UpdatePositionS2CPacket deserialize(DataReader reader) {
+        public static UpdatePositionS2CPacket deserialize(DataReader reader) {
         return new UpdatePositionS2CPacket(reader.readBool());
     }
 

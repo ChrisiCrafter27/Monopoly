@@ -10,8 +10,7 @@ public class UpdatePlayerDataS2CPacket extends S2CPacket<UpdatePlayerDataS2CPack
     @Override
     public void serialize(DataWriter writer) {}
 
-    @SuppressWarnings("unused")
-    public static UpdatePlayerDataS2CPacket deserialize(DataReader reader) {
+        public static UpdatePlayerDataS2CPacket deserialize(DataReader reader) {
         return new UpdatePlayerDataS2CPacket();
     }
 

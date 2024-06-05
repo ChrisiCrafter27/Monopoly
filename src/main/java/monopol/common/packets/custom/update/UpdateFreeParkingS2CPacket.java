@@ -18,8 +18,7 @@ public class UpdateFreeParkingS2CPacket extends S2CPacket<UpdateFreeParkingS2CPa
         writer.writeInt(money);
     }
 
-    @SuppressWarnings("unused")
-    public static UpdateFreeParkingS2CPacket deserialize(DataReader reader) {
+        public static UpdateFreeParkingS2CPacket deserialize(DataReader reader) {
         return new UpdateFreeParkingS2CPacket(reader.readInt());
     }
 

@@ -16,7 +16,6 @@ public class RejoinStatusS2CPacket extends S2CPacket<RejoinStatusS2CPacket> {
         this.names = names;
     }
 
-    @SuppressWarnings("unused")
     public static RejoinStatusS2CPacket deserialize(DataReader reader) {
         return new RejoinStatusS2CPacket(reader.readList(ArrayList::new, DataReader::readString));
     }

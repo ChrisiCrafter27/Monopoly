@@ -21,7 +21,6 @@ public class EventCardC2SPacket extends C2SPacket<EventCardC2SPacket> {
         writer.writeString(button);
     }
 
-    @SuppressWarnings("unused")
     public static EventCardC2SPacket deserialize(DataReader reader) {
         return new EventCardC2SPacket(reader.readString(), reader.readString());
     }

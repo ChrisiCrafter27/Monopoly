@@ -21,7 +21,6 @@ public class CommunityCardC2SPacket extends C2SPacket<CommunityCardC2SPacket> {
         writer.writeString(button);
     }
 
-    @SuppressWarnings("unused")
     public static CommunityCardC2SPacket deserialize(DataReader reader) {
         return new CommunityCardC2SPacket(reader.readString(), reader.readString());
     }

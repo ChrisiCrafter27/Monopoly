@@ -18,7 +18,6 @@ public class AskRejoinS2CPacket extends S2CPacket<AskRejoinS2CPacket> {
         this.names = names;
     }
 
-    @SuppressWarnings("unused")
     public static AskRejoinS2CPacket deserialize(DataReader reader) {
         return new AskRejoinS2CPacket(reader.readList(ArrayList::new, DataReader::readString));
     }

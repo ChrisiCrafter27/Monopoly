@@ -28,7 +28,6 @@ public class PingC2SPacket extends C2SPacket<PingC2SPacket> {
         writer.writeBool(back);
     }
 
-    @SuppressWarnings("unused")
     public static PingC2SPacket deserialize(DataReader reader) {
         return new PingC2SPacket(reader.readLong(), reader.readBool());
     }

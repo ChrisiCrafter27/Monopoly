@@ -18,7 +18,6 @@ public class TradeS2CPacket extends S2CPacket<TradeS2CPacket> {
     @Override
     public void serialize(DataWriter writer) {}
 
-    @SuppressWarnings("unused")
     public static TradeS2CPacket deserialize(DataReader reader) {
         return new TradeS2CPacket();
     }

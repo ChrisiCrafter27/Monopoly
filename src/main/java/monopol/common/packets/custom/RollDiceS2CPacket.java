@@ -15,7 +15,6 @@ public class RollDiceS2CPacket extends S2CPacket<RollDiceS2CPacket> {
         this.tempoDice = tempoDice;
     }
 
-    @SuppressWarnings("unused")
     public static RollDiceS2CPacket deserialize(DataReader reader) {
         return new RollDiceS2CPacket(reader.readInt(), reader.readInt(), reader.readInt());
     }
