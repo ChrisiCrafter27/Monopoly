@@ -14,7 +14,6 @@ public class RequestRejoinC2SPacket extends C2SPacket<RequestRejoinC2SPacket> {
         this.name = name;
     }
 
-    @SuppressWarnings("unused")
     public static RequestRejoinC2SPacket deserialize(DataReader reader) {
         return new RequestRejoinC2SPacket(reader.readString());
     }

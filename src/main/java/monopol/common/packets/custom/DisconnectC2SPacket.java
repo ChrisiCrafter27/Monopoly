@@ -20,7 +20,6 @@ public class DisconnectC2SPacket extends C2SPacket<DisconnectC2SPacket> {
         writer.writeEnum(reason);
     }
 
-    @SuppressWarnings("unused")
     public static DisconnectC2SPacket deserialize(DataReader reader) {
         return new DisconnectC2SPacket(reader.readEnum(DisconnectReason.class));
     }

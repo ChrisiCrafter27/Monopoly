@@ -13,7 +13,6 @@ public class InfoS2CPacket extends S2CPacket<InfoS2CPacket> {
         this.text = text;
     }
 
-    @SuppressWarnings("unused")
     public static InfoS2CPacket deserialize(DataReader reader) {
         return new InfoS2CPacket(reader.readString());
     }

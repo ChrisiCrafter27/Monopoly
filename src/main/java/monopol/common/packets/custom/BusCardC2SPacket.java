@@ -19,7 +19,6 @@ public class BusCardC2SPacket extends C2SPacket<BusCardC2SPacket> {
         writer.writeString(player);
     }
 
-    @SuppressWarnings("unused")
     public static BusCardC2SPacket deserialize(DataReader reader) {
         return new BusCardC2SPacket(reader.readString());
     }

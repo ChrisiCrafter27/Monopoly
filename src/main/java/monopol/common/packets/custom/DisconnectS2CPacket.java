@@ -22,7 +22,6 @@ public class DisconnectS2CPacket extends S2CPacket<DisconnectS2CPacket> {
         writer.writeEnum(reason);
     }
 
-    @SuppressWarnings("unused")
     public static DisconnectS2CPacket deserialize(DataReader reader) {
         return new DisconnectS2CPacket(reader.readEnum(DisconnectReason.class));
     }

@@ -26,7 +26,6 @@ public class ButtonC2SPacket extends C2SPacket<ButtonC2SPacket> {
         this.target = target;
     }
 
-    @SuppressWarnings("unused")
     public static ButtonC2SPacket deserialize(DataReader reader) {
         return new ButtonC2SPacket(reader.readString(), reader.readString(), reader.readEnum(Button.class), reader.readInt());
     }

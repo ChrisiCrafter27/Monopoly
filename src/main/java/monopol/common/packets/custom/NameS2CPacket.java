@@ -19,7 +19,6 @@ public class NameS2CPacket extends S2CPacket<NameS2CPacket> {
         writer.writeString(name);
     }
 
-    @SuppressWarnings("unused")
     public static NameS2CPacket deserialize(DataReader reader) {
         return new NameS2CPacket(reader.readString());
     }

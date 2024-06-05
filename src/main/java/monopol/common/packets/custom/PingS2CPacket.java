@@ -30,7 +30,6 @@ public class PingS2CPacket extends S2CPacket<PingS2CPacket> {
         writer.writeBool(back);
     }
 
-    @SuppressWarnings("unused")
     public static PingS2CPacket deserialize(DataReader reader) {
         return new PingS2CPacket(reader.readLong(), reader.readBool());
     }
