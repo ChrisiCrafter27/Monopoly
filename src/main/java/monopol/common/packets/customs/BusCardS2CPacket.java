@@ -1,13 +1,10 @@
-package monopol.common.packets.custom;
+package monopol.common.packets.customs;
 
 import monopol.client.Client;
 import monopol.client.screen.RootPane;
 import monopol.common.data.DataReader;
 import monopol.common.data.DataWriter;
 import monopol.common.packets.S2CPacket;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class BusCardS2CPacket extends S2CPacket<BusCardS2CPacket> {
     private final String player;

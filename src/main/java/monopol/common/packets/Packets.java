@@ -1,8 +1,8 @@
 package monopol.common.packets;
 
 import monopol.common.data.DataReader;
-import monopol.common.packets.custom.*;
-import monopol.common.packets.custom.update.*;
+import monopol.common.packets.customs.*;
+import monopol.common.packets.customs.update.*;
 
 import java.util.HashMap;
 import java.util.Map;

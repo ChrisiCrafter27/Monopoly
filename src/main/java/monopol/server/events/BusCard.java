@@ -2,7 +2,7 @@ package monopol.server.events;
 
 import monopol.common.data.Player;
 import monopol.common.packets.PacketManager;
-import monopol.common.packets.custom.BusCardS2CPacket;
+import monopol.common.packets.customs.BusCardS2CPacket;
 
 import java.util.ArrayList;
 import java.util.List;

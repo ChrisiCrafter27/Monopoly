@@ -4,13 +4,12 @@ import monopol.client.Client;
 import monopol.common.data.*;
 import monopol.common.message.DisconnectReason;
 import monopol.common.packets.PacketManager;
-import monopol.common.packets.custom.ButtonC2SPacket;
+import monopol.common.packets.customs.ButtonC2SPacket;
 import monopol.common.utils.JUtils;
 
 import javax.swing.*;
 import java.awt.*;
 import java.rmi.RemoteException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 

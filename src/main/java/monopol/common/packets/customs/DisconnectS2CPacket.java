@@ -1,4 +1,4 @@
-package monopol.common.packets.custom;
+package monopol.common.packets.customs;
 
 import monopol.client.Client;
 import monopol.client.screen.RootPane;
@@ -8,7 +8,6 @@ import monopol.common.message.DisconnectReason;
 import monopol.common.packets.S2CPacket;
 
 import javax.swing.*;
-import java.util.List;
 
 public class DisconnectS2CPacket extends S2CPacket<DisconnectS2CPacket> {
     private final DisconnectReason reason;
