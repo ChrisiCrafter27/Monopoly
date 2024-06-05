@@ -10,7 +10,6 @@ import monopol.common.utils.JUtils;
 import javax.swing.*;
 import java.awt.*;
 import java.rmi.RemoteException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 

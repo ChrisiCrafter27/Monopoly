@@ -4,11 +4,8 @@ import monopol.client.Client;
 import monopol.client.screen.RootPane;
 import monopol.common.data.DataReader;
 import monopol.common.data.DataWriter;
-import monopol.common.message.DisconnectReason;
 import monopol.common.packets.PacketManager;
 import monopol.common.packets.S2CPacket;
-
-import javax.swing.*;
 
 public class PingS2CPacket extends S2CPacket<PingS2CPacket> {
     private final long time;

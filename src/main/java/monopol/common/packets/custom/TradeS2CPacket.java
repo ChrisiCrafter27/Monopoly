@@ -4,10 +4,7 @@ import monopol.client.Client;
 import monopol.client.screen.RootPane;
 import monopol.common.data.DataReader;
 import monopol.common.data.DataWriter;
-import monopol.common.message.DisconnectReason;
 import monopol.common.packets.S2CPacket;
-
-import javax.swing.*;
 
 public class TradeS2CPacket extends S2CPacket<TradeS2CPacket> {
 

@@ -2,7 +2,6 @@ package monopol.server.events;
 
 import monopol.common.data.*;
 import monopol.common.packets.PacketManager;
-import monopol.common.packets.custom.CommunityCardS2CPacket;
 import monopol.common.packets.custom.EventCardS2CPacket;
 import monopol.server.Server;
 

@@ -8,7 +8,6 @@ import monopol.common.message.DisconnectReason;
 import monopol.common.packets.S2CPacket;
 
 import javax.swing.*;
-import java.util.List;
 
 public class DisconnectS2CPacket extends S2CPacket<DisconnectS2CPacket> {
     private final DisconnectReason reason;

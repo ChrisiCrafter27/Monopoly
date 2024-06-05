@@ -6,9 +6,6 @@ import monopol.common.data.DataReader;
 import monopol.common.data.DataWriter;
 import monopol.common.packets.S2CPacket;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class BusCardS2CPacket extends S2CPacket<BusCardS2CPacket> {
     private final String player;
     private final boolean expiration;
