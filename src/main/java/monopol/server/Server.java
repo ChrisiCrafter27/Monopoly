@@ -14,7 +14,6 @@ import monopol.common.packets.custom.update.UpdatePurchasablesS2CPacket;
 import monopol.common.packets.custom.update.UpdatePlayerDataS2CPacket;
 import monopol.common.packets.custom.update.UpdatePositionS2CPacket;
 import monopol.common.utils.Json;
-import monopol.common.utils.MapUtils;
 import monopol.common.message.DisconnectReason;
 import monopol.common.utils.ServerSettings;
 import monopol.common.data.Player;
@@ -46,7 +45,7 @@ public class Server extends UnicastRemoteObject implements IServer {
     private boolean pause = true;
     private final List<Player> waitForRejoin = new ArrayList<>();
     private String ip;
-    private final HashMap<Integer, Socket> clients = new HashMap<>();
+    private final List<Socket> clients = new ArrayList<>();
     private final HashMap<Socket, Boolean> pingCheck = new HashMap<>();
     private final HashMap<Player, Socket> players = new HashMap<>();
     private final ServerLogger logger = ServerLogger.INSTANCE;
@@ -64,7 +63,7 @@ public class Server extends UnicastRemoteObject implements IServer {
             while(!isInterrupted()) {
                 try {
                     Socket newClient = server.accept();
-                    if (clients.containsValue(newClient)) continue;
+                    if (clients.contains(newClient)) continue;
                     if (!waitForRejoin.isEmpty()) {
                         new Thread(() -> {
                             PacketManager.sendS2C(new AskRejoinS2CPacket(waitForRejoin.stream().map(Player::getName).toList()), newClient, Throwable::printStackTrace);
@@ -77,7 +76,7 @@ public class Server extends UnicastRemoteObject implements IServer {
                                 } while (!(p instanceof RequestRejoinC2SPacket));
                                 for (Player player : waitForRejoin) {
                                     if (player.getName().equals(((RequestRejoinC2SPacket) p).name())) {
-                                        clients.put(clients.size() + 1, newClient);
+                                        clients.add(newClient);
                                         players.put(player, newClient);
                                         PacketManager.sendS2C(new NameS2CPacket(player.getName()), newClient, Throwable::printStackTrace);
                                         PacketManager.sendS2C(new StartS2CPacket(events().tempoDice), newClient, Throwable::printStackTrace);
@@ -98,7 +97,7 @@ public class Server extends UnicastRemoteObject implements IServer {
                             }
                         }).start();
                     } else if (acceptNewClients && clients.size() < 6 && serverState == ServerState.LOBBY) {
-                        clients.put(clients.size() + 1, newClient);
+                        clients.add(newClient);
                         Player player = newServerPlayer();
                         players.put(player, newClient);
                         List<Color> colors = COLORS.keySet().stream().filter(color -> players.keySet().stream().map(Player::getColor).noneMatch(color::equals)).toList();
@@ -154,7 +153,7 @@ public class Server extends UnicastRemoteObject implements IServer {
         HashMap<Socket, Thread> threadMap = new HashMap<>();
         while(!Thread.interrupted()) {
             if(!pause) {
-                clients.values().forEach(socket -> {
+                clients.forEach(socket -> {
                     if (!threadMap.containsKey(socket)) threadMap.put(socket, new Thread(() -> {
                         while (!Thread.interrupted()) {
                             try {
@@ -164,7 +163,7 @@ public class Server extends UnicastRemoteObject implements IServer {
                                 logger.log().fine("[Server]: Message received");
                                 messageReceived(data, socket);
                             } catch (IOException e) {
-                                if(clients.containsValue(socket)) e.printStackTrace(System.err);
+                                if(clients.contains(socket)) e.printStackTrace(System.err);
                             }
                             try {
                                 Thread.sleep(1);
@@ -176,7 +175,7 @@ public class Server extends UnicastRemoteObject implements IServer {
                 });
                 List<Socket> toRemove = new ArrayList<>();
                 threadMap.keySet().forEach(socket -> {
-                    if (!clients.containsValue(socket)) {
+                    if (!clients.contains(socket)) {
                         threadMap.get(socket).interrupt();
                         toRemove.add(socket);
                     }
@@ -208,7 +207,7 @@ public class Server extends UnicastRemoteObject implements IServer {
         while(!Thread.interrupted()) {
             if (!pause) {
                 List<Socket> kick = new ArrayList<>();
-                clients.forEach((id, client) -> {
+                clients.forEach(client -> {
                     if (!pingCheck.containsKey(client)) pingCheck.put(client, true);
                     if (!pingCheck.get(client)) kick.add(client);
                     pingCheck.replace(client, false);
@@ -292,9 +291,7 @@ public class Server extends UnicastRemoteObject implements IServer {
         acceptNewClients = false;
         hostJoined = false;
         host = null;
-        List<Socket> list = new ArrayList<>();
-        clients.forEach((id, client) -> list.add(client));
-        for (Socket client : list) {
+        for (Socket client : new ArrayList<>(clients)) {
             kick(client, DisconnectReason.SERVER_CLOSED);
         }
         pause = true;
@@ -312,13 +309,9 @@ public class Server extends UnicastRemoteObject implements IServer {
     }
 
     public synchronized void kick(Socket client, DisconnectReason reason) {
-        if(!clients.containsValue(client)) return;
-        int id = MapUtils.key(clients, client).orElseThrow();
+        if(!clients.contains(client)) return;
         PacketManager.sendS2C(new DisconnectS2CPacket(reason), client, Throwable::printStackTrace);
-        for(int i = id; i < clients.size(); i++) {
-            clients.replace(i, clients.get(i + 1));
-        }
-        clients.remove(clients.size());
+        clients.remove(client);
         for(Map.Entry<Player, Socket> entry : players.entrySet()) {
             if(entry.getValue() == client) {
                 players.replace(entry.getKey(), null);
@@ -372,7 +365,7 @@ public class Server extends UnicastRemoteObject implements IServer {
     }
 
     public ArrayList<Socket> getSocketsServerSide() {
-        ArrayList<Socket> list = new ArrayList<>(clients.values());
+        ArrayList<Socket> list = new ArrayList<>(clients);
         list.removeIf(Objects::isNull);
         return list;
     }

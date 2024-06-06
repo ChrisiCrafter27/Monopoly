@@ -56,9 +56,7 @@ public class Monopoly {
     }
 
     public static void main(String[] args) {
-        for (int i = 0; i < args.length;) {
-            i += arg(i, args);
-        }
+        if(preStarting()) System.exit(1);
 
         System.out.println("Starting Monopoly...");
         bar = new StartupProgressBar(VersionChecker.title(), 5, 0);
@@ -95,32 +93,45 @@ public class Monopoly {
         } else System.exit(1);
     }
 
-    private static int arg(int pos, String[] args) {
-        return switch (args[pos]) {
-            case "-delete" -> {
-                File file = new File(args[pos+1]);
-                if(file.exists())
-                    //noinspection ResultOfMethodCallIgnored
-                    file.delete();
-                yield 2;
-            }
-            case "-rename" -> {
+    private static boolean preStarting() {
+        File delFile = new File(".delete.txt");
+        if(delFile.exists()) {
+            try {
+                BufferedReader reader = new BufferedReader(new FileReader(delFile));
+                File file = new File(reader.readLine());
+                reader.close();
+                if(!delFile.delete()) JOptionPane.showMessageDialog(null, "Du kannst " + delFile + " jetzt löschen.", "Monopoly Pre-Starting", JOptionPane.INFORMATION_MESSAGE);
+                if(file.exists() && !file.delete()) JOptionPane.showMessageDialog(null, "Du kannst " + file.getName() + " jetzt löschen.", "Monopoly Pre-Starting", JOptionPane.INFORMATION_MESSAGE);
+                return false;
+            } catch (IOException ignored) {}
+        }
+
+        File nameFile = new File(".rename.txt");
+        if(nameFile.exists()) {
+            try {
                 String source = System.getProperty("java.class.path");
-                String dest = args[pos+1];
-                try {
-                    File file = new File(dest);
-                    int i = 0;
-                    while (file.exists() && i < 100 && !file.delete()) {
-                        Thread.sleep(10);
-                        i++;
-                    }
-                    Files.copy(Path.of(source), Path.of(dest));
-                    Runtime.getRuntime().exec(new String[]{"java", "-jar", dest, "-delete", source});
-                    System.exit(1);
-                } catch (IOException | InterruptedException ignored) {}
-                yield 2;
-            }
-            default -> 1;
-        };
+                BufferedReader reader = new BufferedReader(new FileReader(nameFile));
+                String dest = reader.readLine();
+                reader.close();
+                if(!nameFile.delete()) JOptionPane.showMessageDialog(null, "Du kannst " + nameFile + " jetzt löschen.", "Monopoly Pre-Starting", JOptionPane.INFORMATION_MESSAGE);
+                File file = new File(dest);
+                int i = 0;
+                while (file.exists() && i < 100 && !file.delete()) {
+                    Thread.sleep(10);
+                    i++;
+                }
+                Files.copy(Path.of(source), Path.of(dest));
+                File file1 = new File(".delete.txt");
+                if(file1.createNewFile()) {
+                    FileWriter writer = new FileWriter(file1);
+                    writer.write(source);
+                    writer.close();
+                }
+                JOptionPane.showMessageDialog(null, "Du kannst " + dest + " jetzt starten.", "Monopoly Pre-Starting", JOptionPane.INFORMATION_MESSAGE);
+                return true;
+            } catch (IOException | InterruptedException ignored) {}
+        }
+
+        return false;
     }
 }

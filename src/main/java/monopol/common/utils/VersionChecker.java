@@ -28,10 +28,23 @@ public class VersionChecker {
                             if(destFile.exists()) destFile.delete();
                         }
                         if(destFile.exists()) {
-                            if(System.getProperty("java.class.path").endsWith("Monopoly-" + version() + ".jar"))
-                                Runtime.getRuntime().exec(new String[]{"java", "-jar", "Monopoly-" + remoteVersion(repository) + ".jar", "-delete", System.getProperty("java.class.path")});
-                            else
-                                Runtime.getRuntime().exec(new String[]{"java", "-jar", "Monopoly-" + remoteVersion(repository) + ".jar", "-rename", System.getProperty("java.class.path")});
+                            if(System.getProperty("java.class.path").endsWith("Monopoly-" + version() + ".jar")) {
+                                File file1 = new File(".delete.txt");
+                                if(file1.createNewFile()) {
+                                    FileWriter writer = new FileWriter(file1);
+                                    writer.write(System.getProperty("java.class.path"));
+                                    writer.close();
+                                }
+                                JOptionPane.showMessageDialog(null, "Du kannst " + destFile.getName() + " jetzt starten.", "Monopoly Pre-Starting", JOptionPane.INFORMATION_MESSAGE);
+                            } else {
+                                File file1 = new File(".rename.txt");
+                                if(file1.createNewFile()) {
+                                    FileWriter writer = new FileWriter(file1);
+                                    writer.write(System.getProperty("java.class.path"));
+                                    writer.close();
+                                }
+                                JOptionPane.showMessageDialog(null, "Du kannst " + destFile.getName() + " jetzt starten.", "Monopoly Pre-Starting", JOptionPane.INFORMATION_MESSAGE);
+                            }
                             return true;
                         } else {
                             JOptionPane.showMessageDialog(Monopoly.INSTANCE.parentComponent, "Update nicht erfolgreich", "Version-Checker", JOptionPane.WARNING_MESSAGE);
