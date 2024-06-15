@@ -1,5 +1,0 @@
-- HousePane
-
-- Namen der Images ändern
-- Versteigerung
-- Handeln

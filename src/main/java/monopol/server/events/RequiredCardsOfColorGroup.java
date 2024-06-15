@@ -11,7 +11,7 @@ public record RequiredCardsOfColorGroup(OwnedCardsOfColorGroup cardsRequiredForO
             case 2 -> cardsRequiredForThreeHouses.get(street.colorGroup) <= ownedCardsOfColorGroup(street.colorGroup, player);
             case 3 -> cardsRequiredForFourHouses.get(street.colorGroup) <= ownedCardsOfColorGroup(street.colorGroup, player);
             case 4 -> cardsRequiredForHotel.get(street.colorGroup) <= ownedCardsOfColorGroup(street.colorGroup, player);
-            case 5 -> !megaBuildings && cardsRequiredForSkyscraper.get(street.colorGroup) <= ownedCardsOfColorGroup(street.colorGroup, player);
+            case 5 -> megaBuildings && cardsRequiredForSkyscraper.get(street.colorGroup) <= ownedCardsOfColorGroup(street.colorGroup, player);
             default -> false;
         };
     }

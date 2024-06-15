@@ -1,6 +1,7 @@
 package monopol.client.screen;
 
 import monopol.common.data.*;
+import monopol.common.utils.Direction;
 import monopol.common.utils.JUtils;
 
 import javax.swing.*;

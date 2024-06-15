@@ -7,7 +7,7 @@ public class ServerLogger extends CustomLogger {
 
     private ServerLogger() {
         super("logs/server_log.txt");
-        log().setLevel(Level.FINE);
+        get().setLevel(Level.FINE);
     }
 
     @Override

@@ -54,7 +54,7 @@ public class Server extends UnicastRemoteObject implements IServer {
     private String host;
     private boolean hostJoined = false;
     private Events.Factory<?> eventsType = MegaEditionEvents::new;
-    private Events events = eventsType.create(false, 16, true, true, false, false, true, 2500, 200, true, true, true, false, false, BuildRule.ANYWHERE, OwnedCardsOfColorGroup.ALL_BUT_ONE, OwnedCardsOfColorGroup.ALL_BUT_ONE, OwnedCardsOfColorGroup.ALL_BUT_ONE, OwnedCardsOfColorGroup.ALL_BUT_ONE, OwnedCardsOfColorGroup.ALL_BUT_ONE, OwnedCardsOfColorGroup.ALL);
+    private Events events = eventsType.create(false, 16, true, true, false, true, true, 2500, 200, true, true, true, false, false, BuildRule.ANYWHERE, OwnedCardsOfColorGroup.ALL_BUT_ONE, OwnedCardsOfColorGroup.ALL_BUT_ONE, OwnedCardsOfColorGroup.ALL_BUT_ONE, OwnedCardsOfColorGroup.ALL_BUT_ONE, OwnedCardsOfColorGroup.ALL_BUT_ONE, OwnedCardsOfColorGroup.ALL);
     private GameData gameData = new GameData();
 
     public final Thread connectionThread = new Thread() {
@@ -80,7 +80,7 @@ public class Server extends UnicastRemoteObject implements IServer {
                                         players.put(player, newClient);
                                         PacketManager.sendS2C(new NameS2CPacket(player.getName()), newClient, Throwable::printStackTrace);
                                         PacketManager.sendS2C(new StartS2CPacket(events().tempoDice), newClient, Throwable::printStackTrace);
-                                        logger.log().info("[Server]: New Client rejoined (" + player.getName() + ")");
+                                        logger.get().info("[Server]: New Client rejoined (" + player.getName() + ")");
                                         //TODO: send necessary information
                                         PacketManager.sendS2C(new UpdatePurchasablesS2CPacket(), PacketManager.all(), Throwable::printStackTrace);
                                         PacketManager.sendS2C(new UpdatePositionS2CPacket(false), PacketManager.all(), Throwable::printStackTrace);
@@ -104,9 +104,9 @@ public class Server extends UnicastRemoteObject implements IServer {
                         player.setColor(colors.get(new Random().nextInt(colors.size())));
                         PacketManager.sendS2C(new NameS2CPacket(player.getName()), newClient, Throwable::printStackTrace);
                         PacketManager.sendS2C(new UpdatePlayerDataS2CPacket(), PacketManager.all(), Throwable::printStackTrace);
-                        logger.log().info("[Server]: New Client accepted (" + player.getName() + ")");
+                        logger.get().info("[Server]: New Client accepted (" + player.getName() + ")");
                     } else {
-                        logger.log().info("[Server]: New Client declined");
+                        logger.get().info("[Server]: New Client declined");
                         if (pause)
                             PacketManager.sendS2C(new DisconnectS2CPacket(DisconnectReason.SERVER_CLOSED), PacketManager.all(), Throwable::printStackTrace);
                         else if (serverState == ServerState.GAME)
@@ -117,7 +117,7 @@ public class Server extends UnicastRemoteObject implements IServer {
                     }
                 } catch (Exception e) {
                     e.printStackTrace(System.err);
-                    logger.log().severe("[Server]: Server crashed due to an Exception:\r\n" + e.getMessage());
+                    logger.get().severe("[Server]: Server crashed due to an Exception:\r\n" + e.getMessage());
                     close();
                     return;
                 }
@@ -160,7 +160,7 @@ public class Server extends UnicastRemoteObject implements IServer {
                                 DataInputStream input = new DataInputStream(socket.getInputStream());
                                 String data = input.readUTF();
                                 if(Thread.interrupted()) return;
-                                logger.log().fine("[Server]: Message received");
+                                logger.get().fine("[Server]: Message received");
                                 messageReceived(data, socket);
                             } catch (IOException e) {
                                 if(clients.contains(socket)) e.printStackTrace(System.err);
@@ -218,7 +218,7 @@ public class Server extends UnicastRemoteObject implements IServer {
                     for(Map.Entry<Player, Socket> entry : players.entrySet()) {
                         if(entry.getValue() == client) name = entry.getKey().getName();
                     }
-                    logger.log().warning("[Server]: Client lost connection: timed out (" + name + ")");
+                    logger.get().warning("[Server]: Client lost connection: timed out (" + name + ")");
                     kick(client, DisconnectReason.CONNECTION_LOST);
                 }
             }
@@ -231,7 +231,7 @@ public class Server extends UnicastRemoteObject implements IServer {
     });
 
     public Server(int port, Consumer<Boolean> success) throws IOException{
-        logger.log().info("[Server]: Initialing server...");
+        logger.get().info("[Server]: Initialing server...");
 
         serverSettings = new ServerSettings(false, false);
 
@@ -246,7 +246,7 @@ public class Server extends UnicastRemoteObject implements IServer {
                     registry = LocateRegistry.createRegistry(1199);
                     registry.rebind("Server", this);
                 } catch(Exception e) {
-                    logger.log().warning("[Server]: Failed to start server\r\n" + e.getMessage());
+                    logger.get().warning("[Server]: Failed to start server\r\n" + e.getMessage());
                     close();
                     throw new RuntimeException(e);
                 }
@@ -268,13 +268,13 @@ public class Server extends UnicastRemoteObject implements IServer {
 
     public void open(ServerSettings serverSettings) {
         serverState = ServerState.LOBBY;
-        logger.log().info("[Server]: Starting server...");
+        logger.get().info("[Server]: Starting server...");
         try {
-            logger.log().info("[Server]: IP-Address: " + InetAddress.getLocalHost().getHostAddress());
+            logger.get().info("[Server]: IP-Address: " + InetAddress.getLocalHost().getHostAddress());
             ip = InetAddress.getLocalHost().getHostAddress();
         } catch (UnknownHostException e) {
             e.printStackTrace(System.err);
-            logger.log().severe("[Server]: Server crashed due to an Exception:\r\n" + e.getMessage());
+            logger.get().severe("[Server]: Server crashed due to an Exception:\r\n" + e.getMessage());
             close();
             throw new RuntimeException();
         }
@@ -282,7 +282,7 @@ public class Server extends UnicastRemoteObject implements IServer {
         pause = false;
         serverState = ServerState.LOBBY;
         acceptNewClients = true;
-        logger.log().info("[Server]: Listening for new clients...");
+        logger.get().info("[Server]: Listening for new clients...");
     }
 
     public void close() {
@@ -296,7 +296,7 @@ public class Server extends UnicastRemoteObject implements IServer {
         }
         pause = true;
         serverState = ServerState.CLOSED;
-        logger.log().warning("[Server]: Server closed...");
+        logger.get().warning("[Server]: Server closed...");
     }
 
     public void remove(String name) {
@@ -319,7 +319,7 @@ public class Server extends UnicastRemoteObject implements IServer {
                 break;
             }
         }
-        logger.log().warning("[Server]: Kicked client");
+        logger.get().warning("[Server]: Kicked client");
         PacketManager.sendS2C(new UpdatePositionS2CPacket(false), PacketManager.all(), Throwable::printStackTrace);
         PacketManager.sendS2C(new UpdatePlayerDataS2CPacket(), PacketManager.all(), Throwable::printStackTrace);
         PacketManager.sendS2C(new UpdateFreeParkingS2CPacket(gameData.getFreeParkingAmount()), PacketManager.all(), Throwable::printStackTrace);
@@ -333,7 +333,7 @@ public class Server extends UnicastRemoteObject implements IServer {
             PacketManager.handle(message, new ServerSide(this, client));
         } catch (Exception e) {
             e.printStackTrace(System.err);
-            logger.log().severe("[Server]: Server crashed due to an Exception:\r\n" + e.getMessage());
+            logger.get().severe("[Server]: Server crashed due to an Exception:\r\n" + e.getMessage());
             close();
             throw new RuntimeException(e);
         }
@@ -345,8 +345,8 @@ public class Server extends UnicastRemoteObject implements IServer {
         for(Map.Entry<Player, Socket> entry : players.entrySet()) {
             if(entry.getValue() == source) name = entry.getKey().getName();
         }
-        if(delay < 2500) logger.log().fine("[Server]: Ping to " + name + " is " + delay + "ms");
-        else logger.log().warning("[Server]: Ping to " + name + " is " + delay + "ms");
+        if(delay < 2500) logger.get().fine("[Server]: Ping to " + name + " is " + delay + "ms");
+        else logger.get().warning("[Server]: Ping to " + name + " is " + delay + "ms");
     }
 
     public void setHost(String host) {
@@ -422,7 +422,7 @@ public class Server extends UnicastRemoteObject implements IServer {
             if(entry.getKey().getName().equals(oldName)) {
                 entry.getKey().setName(newName);
                 if(oldName.equals(host)) host = newName;
-                logger.log().info("[Server]: Changed name from " + oldName + " to " + newName);
+                logger.get().info("[Server]: Changed name from " + oldName + " to " + newName);
                 return true;
             }
         }

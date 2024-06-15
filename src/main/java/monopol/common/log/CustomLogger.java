@@ -58,7 +58,7 @@ public abstract class CustomLogger {
         logger.addHandler(fileHandler);
     }
 
-    public Logger log() {
+    public Logger get() {
         return logger;
     }
 

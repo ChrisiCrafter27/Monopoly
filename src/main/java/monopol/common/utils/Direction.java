@@ -1,4 +1,4 @@
-package monopol.client.screen;
+package monopol.common.utils;
 
 public enum Direction {
     LEFT,

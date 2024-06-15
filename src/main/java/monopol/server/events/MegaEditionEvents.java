@@ -19,9 +19,8 @@ public class MegaEditionEvents extends Events {
     protected boolean requestTeleport = false;
 
     public MegaEditionEvents(boolean limitBusTickets, int maxBusTickets, boolean limitBuildings, boolean tempoDice, boolean mrMonopoly, boolean megaBuildings, boolean tripleTeleport, int startMoney, int losMoney, boolean doubleLosMoney, boolean freeParking, boolean gainRentInPrison, boolean buildEquable, boolean reRollEventCardsAfterUse, BuildRule buildRule, OwnedCardsOfColorGroup cardsRequiredForOneHouse, OwnedCardsOfColorGroup cardsRequiredForTwoHouses, OwnedCardsOfColorGroup cardsRequiredForThreeHouses, OwnedCardsOfColorGroup cardsRequiredForFourHouses, OwnedCardsOfColorGroup cardsRequiredForHotel, OwnedCardsOfColorGroup cardsRequiredForSkyscraper) {
-        super(limitBusTickets, maxBusTickets, true, tempoDice, mrMonopoly, false, tripleTeleport, startMoney, losMoney, doubleLosMoney, freeParking, gainRentInPrison, buildEquable, reRollEventCardsAfterUse, buildRule, cardsRequiredForOneHouse, cardsRequiredForTwoHouses, cardsRequiredForThreeHouses, cardsRequiredForFourHouses, cardsRequiredForHotel, cardsRequiredForSkyscraper);
+        super(limitBusTickets, maxBusTickets, true, tempoDice, mrMonopoly, megaBuildings, tripleTeleport, startMoney, losMoney, doubleLosMoney, freeParking, gainRentInPrison, buildEquable, reRollEventCardsAfterUse, buildRule, cardsRequiredForOneHouse, cardsRequiredForTwoHouses, cardsRequiredForThreeHouses, cardsRequiredForFourHouses, cardsRequiredForHotel, cardsRequiredForSkyscraper);
         if(!limitBuildings) System.err.println("Setting limitBuildings cannot be false!");
-        if(megaBuildings) System.err.println("Setting megaBuildings cannot be true!");
     }
 
     @Override
@@ -114,9 +113,9 @@ public class MegaEditionEvents extends Events {
 
         Random random = new Random();
 
-        dice1 = random.nextInt(6) + 1;
-        dice2 = random.nextInt(6) + 1;
-        dice3 = tempoDice ? random.nextInt(6) + 1 : -1;
+        int dice1 = random.nextInt(6) + 1;
+        int dice2 = random.nextInt(6) + 1;
+        int dice3 = tempoDice ? random.nextInt(6) + 1 : -1;
         diceResult = new Triplet<>(dice1, dice2, dice3);
         int intResult = dice1 + dice2;
         switch (dice3) {
@@ -338,7 +337,7 @@ public class MegaEditionEvents extends Events {
     @Override
     public void onUpgrade(String name, IPurchasable purchasable) {
         if(name.equals(player().getName()) && buildRule.valid(player(), purchasable) && !requestTeleport && diceRolled) {
-            if(purchasable instanceof Street street && (!requiredCards.valid(player(), street) || (buildEquable && BuildRule.buildingEquable(street) == BuildRule.EqualBuildingResult.OKAY))) return;
+            if(purchasable instanceof Street street && (!requiredCards.valid(player(), street) || (buildEquable && BuildRule.buildingEquable(street) == BuildRule.EqualBuildingResult.OKAY) || (street.getLevel() == street.getMaxLevel() - 1 && !megaBuildings))) return;
             if(purchasable instanceof TrainStation && !megaBuildings) return;
             if(purchasable.upgrade()) {
                 PacketManager.sendS2C(new InfoS2CPacket(player().getName() +  " wertet " + purchasable.getName() + " auf."), PacketManager.all(), Throwable::printStackTrace);

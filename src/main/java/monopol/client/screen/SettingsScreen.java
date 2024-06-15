@@ -232,7 +232,7 @@ public class SettingsScreen<T extends Events> {
                 true,
                 true,
                 false,
-                false,
+                true,
                 true,
                 2500,
                 200,
@@ -255,7 +255,7 @@ public class SettingsScreen<T extends Events> {
         return List.of(
                 new BooleanSetting("Busfahrkarten limitieren", defaultValues.limitBusTickets),
                 new IntSetting("Anzahl an Busfahrkarten", 0, 100, defaultValues.maxBusTickets),
-                new BooleanSetting("Gebäude limitieren", defaultValues.limitBuildings),
+                //new BooleanSetting("Gebäude limitieren", defaultValues.limitBuildings),
                 new BooleanSetting("Tempowürfel", "Teil der Monopoly Mega-Edition", defaultValues.tempoDice),
                 new BooleanSetting("Mr. Monopoly", "Wird Mr. Monopoly gewürfelt, bewegst du dich nach dem Wurf auf das nächste zu verkaufende Feld oder, falls es keins mehr gibt, dass mit der höchsten Miete", defaultValues.mrMonopoly),
                 new BooleanSetting("Wolkenkratzer und Zugdepots", "Teil der Monopoly Mega-Edition", defaultValues.megaBuildings),
@@ -282,7 +282,7 @@ public class SettingsScreen<T extends Events> {
         return factory.create(
                 getBoolean(),
                 getInt(),
-                getBoolean(),
+                true,
                 getBoolean(),
                 getBoolean(),
                 getBoolean(),

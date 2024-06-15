@@ -30,7 +30,6 @@ public class Packets {
         register(RequestRejoinC2SPacket.class, RequestRejoinC2SPacket::deserialize);
         register(RollDiceS2CPacket.class, RollDiceS2CPacket::deserialize);
         register(StartS2CPacket.class, StartS2CPacket::deserialize);
-        register(TradeS2CPacket.class, TradeS2CPacket::deserialize);
         register(BusCardS2CPacket.class, BusCardS2CPacket::deserialize);
         register(BusCardC2SPacket.class, BusCardC2SPacket::deserialize);
         register(EventCardS2CPacket.class, EventCardS2CPacket::deserialize);
