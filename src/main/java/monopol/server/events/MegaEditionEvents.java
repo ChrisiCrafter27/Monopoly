@@ -68,10 +68,12 @@ public class MegaEditionEvents extends Events {
         else PacketManager.sendS2C(new EventCardS2CPacket(null, new ArrayList<>(), new ArrayList<>(), EventCard.unusedSize()), PacketManager.all(), Throwable::printStackTrace);
         if(BusCard.getCurrent() != null) BusCard.getCurrent().activate(player());
         else PacketManager.sendS2C(new BusCardS2CPacket(null, false, BusCard.unusedSize()), PacketManager.all(), Throwable::printStackTrace);
+        if(requestTeleport) PacketManager.sendS2C(new InfoS2CPacket("Klicke auf das Feld, auf das du möchtest."), PacketManager.named(player().getName()), Throwable::printStackTrace);
+        PacketManager.sendS2C(new UpdateButtonsS2CPacket(player().getName(), diceRolled, hasToPayRent, player().inPrison(), mayDoNextRound(), requestTeleport, buildRule, requiredCards, player()), PacketManager.all(), Throwable::printStackTrace);
     }
 
     private boolean mayDoNextRound() {
-        return CommunityCard.getCurrent() == null && BusCard.getCurrent() == null && EventCard.getCurrent() == null && (!buildEquable || BuildRule.buildingEquable(player())) && !hasToPayRent && diceRolled;
+        return CommunityCard.getCurrent() == null && BusCard.getCurrent() == null && EventCard.getCurrent() == null && (!buildEquable || BuildRule.buildingEquable(player())) && !requestTeleport && !hasToPayRent && diceRolled;
     }
 
     @Override
@@ -161,9 +163,10 @@ public class MegaEditionEvents extends Events {
                     onPaySurety(player().getName(), true);
                 }
             } else if(tripleTeleport && dice1 == dice2 && dice1 == dice3 && dice1 < 4) {
-                PacketManager.sendS2C(new InfoS2CPacket("Klicke auf das Feld, auf das du möchtest."), PacketManager.named(player().getName()), Throwable::printStackTrace);
                 player().setDoubles(0);
                 requestTeleport = true;
+                PacketManager.sendS2C(new InfoS2CPacket("Klicke auf das Feld, auf das du möchtest."), PacketManager.named(player().getName()), Throwable::printStackTrace);
+                PacketManager.sendS2C(new UpdateButtonsS2CPacket("", true, hasToPayRent, player().inPrison(), mayDoNextRound(), requestTeleport, buildRule, requiredCards, player()), PacketManager.all(), Throwable::printStackTrace);
                 return;
             } else if(player().getDoubles() >= 3) {
                 player().setDoubles(0);
@@ -326,8 +329,10 @@ public class MegaEditionEvents extends Events {
     @Override
     public void onTeleport(String name, int target) {
         if(diceRolled && name.equals(player().getName()) && requestTeleport) {
+            requestTeleport = false;
             int oldPos = player().getPosition();
             player().setPosition(target);
+            PacketManager.sendS2C(new UpdateButtonsS2CPacket(player().getName(), diceRolled, hasToPayRent, player().inPrison(), mayDoNextRound(), requestTeleport, buildRule, requiredCards, player()), PacketManager.all(), Throwable::printStackTrace);
             PacketManager.sendS2C(new InfoS2CPacket(player().getName() +  " bewegt sich."), PacketManager.all(), Throwable::printStackTrace);
             if(oldPos > player().getPosition() && !player().inPrison()) onPassedLos();
             onArrivedAtField();

@@ -34,7 +34,7 @@ public class GitHubIssueReporter implements Thread.UncaughtExceptionHandler {
     }
 
     public static void report(Throwable exception) {
-        report("Fehlerbericht: " + exception.getMessage(), "Ein unbehandelter Fehler ist aufgetreten:\n" + getStackTrace(exception) + "\n- keine Nutzerinformationen -");
+        report("Fehlerbericht: " + exception.getMessage(), "Ein unbehandelter Fehler ist aufgetreten:\n" + getStackTrace(exception));
     }
 
     public static void report(Throwable exception, String userInfo) {
@@ -46,7 +46,7 @@ public class GitHubIssueReporter implements Thread.UncaughtExceptionHandler {
     }
 
     public static void report(String userInfo) {
-        report("Fehlerbericht: Gemeldeter Fehler", "Ein unbehandelter Fehler ist aufgetreten:\n- Von Nutzer gemeldet -" + "\nNutzerinformationen:\n" + userInfo);
+        report("Fehlerbericht: Von nutzer gemeldet", userInfo);
     }
 
     public static void report(String title, String body) {

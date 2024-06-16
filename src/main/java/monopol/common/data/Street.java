@@ -180,7 +180,7 @@ public enum Street implements IPurchasable {
             case 4 -> "Miete 3 Häuser";
             case 5 -> "Miete 4 Häuser";
             case 6 -> "Miete Hotel";
-            case 7 -> "Miete Wolkenkratzer"; //TODO disable when game rule is false
+            case 7 -> "Miete Wolkenkratzer";
             case 9 -> "Verdoppelung der Miete, wenn die Straße";
             case 10 -> "nicht bebaut ist und du alle bis auf";
             case 11 -> "eine Straße der Farbgruppe besitzt.";
@@ -203,7 +203,7 @@ public enum Street implements IPurchasable {
             case 4 -> rentThreeHouses + "€";
             case 5 -> rentFourHouses + "€";
             case 6 -> rentHotel + "€";
-            case 7 -> rentSkyscraper + "€"; //TODO disable when game rule is false
+            case 7 -> rentSkyscraper + "€";
             case 17 -> colorGroup.upgradeCost + "€";
             default -> "";
         };

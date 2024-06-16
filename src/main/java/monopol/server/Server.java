@@ -81,7 +81,6 @@ public class Server extends UnicastRemoteObject implements IServer {
                                         PacketManager.sendS2C(new NameS2CPacket(player.getName()), newClient, Throwable::printStackTrace);
                                         PacketManager.sendS2C(new StartS2CPacket(events().tempoDice), newClient, Throwable::printStackTrace);
                                         logger.get().info("[Server]: New Client rejoined (" + player.getName() + ")");
-                                        //TODO: send necessary information
                                         PacketManager.sendS2C(new UpdatePurchasablesS2CPacket(), PacketManager.all(), Throwable::printStackTrace);
                                         PacketManager.sendS2C(new UpdatePositionS2CPacket(false), PacketManager.all(), Throwable::printStackTrace);
                                         PacketManager.sendS2C(new UpdatePlayerDataS2CPacket(), PacketManager.all(), Throwable::printStackTrace);
@@ -111,7 +110,7 @@ public class Server extends UnicastRemoteObject implements IServer {
                             PacketManager.sendS2C(new DisconnectS2CPacket(DisconnectReason.SERVER_CLOSED), PacketManager.all(), Throwable::printStackTrace);
                         else if (serverState == ServerState.GAME)
                             PacketManager.sendS2C(new DisconnectS2CPacket(DisconnectReason.GAME_RUNNING), PacketManager.all(), Throwable::printStackTrace);
-                        else if (clients.size() >= 10)
+                        else if (clients.size() >= 6)
                             PacketManager.sendS2C(new DisconnectS2CPacket(DisconnectReason.SERVER_FULL), PacketManager.all(), Throwable::printStackTrace);
                         else PacketManager.sendS2C(new DisconnectS2CPacket(DisconnectReason.UNKNOWN), PacketManager.all(), Throwable::printStackTrace);
                     }
