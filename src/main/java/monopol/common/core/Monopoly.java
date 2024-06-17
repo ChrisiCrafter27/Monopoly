@@ -8,13 +8,17 @@ import monopol.server.Server;
 import javax.swing.*;
 import java.awt.*;
 import java.io.*;
+import java.net.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collections;
+import java.util.Enumeration;
 
 public class Monopoly {
     public static final Monopoly INSTANCE = new Monopoly();
     private static StartupProgressBar bar;
 
+    private final ServerProperties serverProperties = new ServerProperties();
     private Server server;
     private boolean serverEnabled;
     private GameState state;
@@ -22,10 +26,10 @@ public class Monopoly {
 
     private Monopoly() {}
 
-    private void startServer() {
+    public void startServer() {
         if(server == null) {
             try {
-                server = new Server(25565, success -> serverEnabled = success);
+                server = new Server(serverProperties, success -> serverEnabled = success);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -38,11 +42,14 @@ public class Monopoly {
     public GameState getState() {
         return state;
     }
-    public void openServer(ServerSettings settings) {
-        server.open(settings);
+    public void openServer() {
+        server.open();
     }
     public void setHost(String name) {
         server.setHost(name);
+    }
+    public ServerProperties serverProperties() {
+        return serverProperties;
     }
     public Server server() {
         return server;
@@ -78,9 +85,8 @@ public class Monopoly {
         if(!updated) {
             bar.setTop("Starte Server...", 3);
             bar.bottomBar.setVisible(false);
-            System.out.println("Starting server...");
+            System.out.println("Preparing server...");
             Packets.register();
-            INSTANCE.startServer();
 
             bar.setTop("Erstelle GUI...", 4);
             System.out.println("Creating GUI...");

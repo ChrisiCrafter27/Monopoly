@@ -3,16 +3,15 @@ package monopol.client.screen;
 import monopol.common.utils.JUtils;
 import monopol.client.Client;
 import monopol.common.core.Monopoly;
-import monopol.common.utils.ServerSettings;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
+import java.net.Inet4Address;
 import java.util.ArrayList;
 import java.util.function.Consumer;
 
 public class MenuPane extends JLayeredPane {
-    private String ip;
     private Client client;
 
     public MenuPane() {
@@ -26,18 +25,11 @@ public class MenuPane extends JLayeredPane {
             reset();
             setVisible(true);
 
-            add(JUtils.addButton("Spiel erstellen", 90, 325, 800, 200, 100, Monopoly.INSTANCE.serverEnabled(), actionEvent -> {
-                //int input;
-                //input = JOptionPane.showConfirmDialog(Monopoly.INSTANCE.parentComponent, "Dürfen sich die Mitspieler gegenseitig kicken?", "Spiel erstellen", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-                //if(input == JOptionPane.CLOSED_OPTION) return;
-                boolean canKick = true; //input == JOptionPane.YES_OPTION;
-                //input = JOptionPane.showConfirmDialog(Monopoly.INSTANCE.parentComponent, "Dürfen die Mitspieler Einstellungen ändern?", "Spiel erstellen", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-                //if(input == JOptionPane.CLOSED_OPTION) return;
-                boolean canSet = false; //input == JOptionPane.YES_OPTION;
+            add(JUtils.addButton("Spiel erstellen", 90, 325, 800, 200, 100, true, actionEvent -> {
                 try {
-                    ip = "localhost";
-                    Monopoly.INSTANCE.openServer(new ServerSettings(canKick, canSet));
-                    client = new Client(ip, 25565, true, root);
+                    Monopoly.INSTANCE.startServer();
+                    Monopoly.INSTANCE.openServer();
+                    client = new Client(Monopoly.INSTANCE.serverProperties().ip, Monopoly.INSTANCE.serverProperties(), true, root);
                     clients.add(client);
                     reset();
                     prepareLobby.accept(client);
@@ -46,7 +38,8 @@ public class MenuPane extends JLayeredPane {
                     JOptionPane.showMessageDialog(Monopoly.INSTANCE.parentComponent, "Server konnte nicht gestartet werden. Laufen andere Server auf deinem PC?", "Spiel erstellen", JOptionPane.WARNING_MESSAGE);
                 }
             }), JLayeredPane.MODAL_LAYER);
-            add(JUtils.addButton("Spiel beitreten", 90, 600, 800, 200, 100, true, actionEvent -> {
+            add(JUtils.addButton("Spiel beitreten", 90, 550, 800, 200, 100, true, actionEvent -> {
+                String ip;
                 do {
                     String clipboard = "";
                     try {
@@ -56,7 +49,7 @@ public class MenuPane extends JLayeredPane {
                     if(ip == null) return;
                 } while(ip.isEmpty());
                 try {
-                    client = new Client(ip, 25565, (ip.equals("localhost")), root);
+                    client = new Client((Inet4Address) Inet4Address.getByName(ip), Monopoly.INSTANCE.serverProperties(), false, root);
                     clients.add(client);
                     reset();
                     prepareLobby.accept(client);
@@ -64,7 +57,8 @@ public class MenuPane extends JLayeredPane {
                     JOptionPane.showMessageDialog(Monopoly.INSTANCE.parentComponent, "Server nicht gefunden. Ist die IP-Adresse korrekt?", "Spiel beitreten", JOptionPane.WARNING_MESSAGE);
                 }
             }), JLayeredPane.MODAL_LAYER);
-            add(JUtils.addButton("Schließen", 90, 900, 400, 100, 50, true, actionEvent -> System.exit(0)), JLayeredPane.MODAL_LAYER);
+            add(JUtils.addButton("Netzwerk", 90, 800, 400, 100, 50, true, actionEvent -> new ServerScreen(Monopoly.INSTANCE.serverProperties()).show()), JLayeredPane.MODAL_LAYER);
+            add(JUtils.addButton("Schließen", 90, 950, 400, 100, 50, true, actionEvent -> System.exit(0)), JLayeredPane.MODAL_LAYER);
             add(JUtils.addImage("images/Monopoly_client1.png", 0, 0, 1920, 1080), JLayeredPane.DEFAULT_LAYER);
         });
     }

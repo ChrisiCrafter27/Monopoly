@@ -15,9 +15,7 @@ public class VersionChecker {
         if(!GitUtils.connected()) return false;
         try {
             GHRepository repository = GitUtils.jarRepository();
-            if(inIdea()) {
-                if(hasToUpdate(repository)) JOptionPane.showMessageDialog(Monopoly.INSTANCE.parentComponent, "Du bist in einer Entwicklungsumgebung.\nAutomatische Updates sind daher deaktiviert.", "Version-Checker", JOptionPane.INFORMATION_MESSAGE);
-            } else  {
+            if(!inIdea())  {
                 if(hasToUpdate(repository)) {
                     if(JOptionPane.showConfirmDialog(Monopoly.INSTANCE.parentComponent, "Eine neue Version von Monopoly ist verfügbar.\nMöchtest du sie herunterladen?\nDeine Version: " + version() + "\nNeueste Version: " + remoteVersion(repository), "Version-Checker", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
                         File destFile = new File("Monopoly-" + remoteVersion(repository) + ".jar");

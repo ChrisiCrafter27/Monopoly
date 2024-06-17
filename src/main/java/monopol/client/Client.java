@@ -10,10 +10,13 @@ import monopol.common.utils.Json;
 import monopol.common.message.DisconnectReason;
 import monopol.common.message.IServer;
 import monopol.common.message.Message;
+import monopol.common.utils.ServerProperties;
 
 import javax.swing.*;
 import java.io.DataInputStream;
 import java.io.IOException;
+import java.net.Inet4Address;
+import java.net.InetAddress;
 import java.net.Socket;
 import java.rmi.NotBoundException;
 import java.rmi.registry.LocateRegistry;
@@ -78,17 +81,17 @@ public class Client {
         }
     });
 
-    public Client(String ip, int port, boolean isHost, RootPane root) throws NotBoundException {
-        this(ip, port, isHost, root, null);
+    public Client(Inet4Address ip, ServerProperties serverProperties, boolean isHost, RootPane root) throws NotBoundException {
+        this(ip, serverProperties, isHost, root, null);
     }
 
-    public Client(String ip, int port, boolean isHost, RootPane root, String requestRejoin) throws NotBoundException {
+    public Client(Inet4Address ip, ServerProperties serverProperties, boolean isHost, RootPane root, String requestRejoin) throws NotBoundException {
         try {
             this.root = root;
             this.player = new ClientPlayer(isHost);
             this.requestRejoin = requestRejoin;
-            client = new Socket(ip, port);
-            Registry registry = LocateRegistry.getRegistry(ip, 1199);
+            client = new Socket(ip, serverProperties.port1);
+            Registry registry = LocateRegistry.getRegistry(ip.getHostAddress(), serverProperties.port2);
             serverInterface = (IServer) registry.lookup("Server");
             if(serverMethod().stopped() || !serverInterface.acceptsNewClient()) {
                 JOptionPane.showMessageDialog(Monopoly.INSTANCE.parentComponent, "Beitreten nicht möglich", "Spiel beitreten", JOptionPane.WARNING_MESSAGE);

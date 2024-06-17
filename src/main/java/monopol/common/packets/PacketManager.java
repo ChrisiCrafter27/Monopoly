@@ -8,11 +8,8 @@ import monopol.server.Server;
 import monopol.common.data.Player;
 
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.net.Socket;
 import java.util.Arrays;
-import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -53,7 +50,7 @@ public class PacketManager {
     }
 
     public static Packet<?> packet(Message message) throws ClassNotFoundException, InvocationTargetException, IllegalAccessException {
-        return (Packet<?>) Packets.deserialize(message.getClazz(), new DataReader(message.getContent()));
+        return Packets.deserialize(message.getClazz(), new DataReader(message.getContent()));
     }
 
     public static Function<Player, Boolean> all() {

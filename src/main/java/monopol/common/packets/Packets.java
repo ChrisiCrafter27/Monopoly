@@ -9,9 +9,9 @@ import java.util.Map;
 import java.util.function.Function;
 
 public class Packets {
-    private static final Map<Class<?>, Function<DataReader, ?>> PACKETS = new HashMap<>();
+    private static final Map<Class<? extends Packet<?>>, Function<DataReader, ? extends Packet<?>>> PACKETS = new HashMap<>();
 
-    private static <T> void register(Class<T> clazz, Function<DataReader, T> function) {
+    private static <T extends Packet<?>> void register(Class<T> clazz, Function<DataReader, T> function) {
         PACKETS.put(clazz, function);
     }
     
@@ -43,8 +43,8 @@ public class Packets {
         register(UpdatePurchasablesS2CPacket.class, UpdatePurchasablesS2CPacket::deserialize);
     }
 
-    public static <T> T deserialize(Class<T> clazz, DataReader reader) {
-        Function<DataReader, T> packet = (Function<DataReader, T>) PACKETS.get(clazz);
+    public static Packet<?> deserialize(Class<?> clazz, DataReader reader) {
+        Function<DataReader, ? extends Packet<?>> packet = PACKETS.get(clazz);
         if(packet == null) return null;
         else return packet.apply(reader);
     }

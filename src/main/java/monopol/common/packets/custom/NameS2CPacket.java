@@ -5,6 +5,7 @@ import monopol.client.screen.RootPane;
 import monopol.common.core.Monopoly;
 import monopol.common.data.DataReader;
 import monopol.common.data.DataWriter;
+import monopol.common.packets.Packet;
 import monopol.common.packets.S2CPacket;
 
 public class NameS2CPacket extends S2CPacket<NameS2CPacket> {

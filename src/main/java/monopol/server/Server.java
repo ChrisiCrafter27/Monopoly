@@ -15,6 +15,7 @@ import monopol.common.packets.custom.update.UpdatePlayerDataS2CPacket;
 import monopol.common.packets.custom.update.UpdatePositionS2CPacket;
 import monopol.common.utils.Json;
 import monopol.common.message.DisconnectReason;
+import monopol.common.utils.ServerProperties;
 import monopol.common.utils.ServerSettings;
 import monopol.common.data.Player;
 import monopol.server.events.*;
@@ -44,13 +45,11 @@ public class Server extends UnicastRemoteObject implements IServer {
     private ServerState serverState = ServerState.CLOSED;
     private boolean pause = true;
     private final List<Player> waitForRejoin = new ArrayList<>();
-    private String ip;
     private final List<Socket> clients = new ArrayList<>();
     private final HashMap<Socket, Boolean> pingCheck = new HashMap<>();
     private final HashMap<Player, Socket> players = new HashMap<>();
     private final ServerLogger logger = ServerLogger.INSTANCE;
     private boolean acceptNewClients = false;
-    private ServerSettings serverSettings;
     private String host;
     private boolean hostJoined = false;
     private Events.Factory<?> eventsType = MegaEditionEvents::new;
@@ -229,26 +228,18 @@ public class Server extends UnicastRemoteObject implements IServer {
         }
     });
 
-    public Server(int port, Consumer<Boolean> success) throws IOException{
+    public Server(ServerProperties serverProperties, Consumer<Boolean> success) throws IOException{
         logger.get().info("[Server]: Initialing server...");
 
-        serverSettings = new ServerSettings(false, false);
-
         try {
-            server = new ServerSocket(port);
+            server = new ServerSocket(serverProperties.port1, 50, serverProperties.ip);
             Registry registry;
             try {
-                registry = LocateRegistry.createRegistry(1199);
+                registry = LocateRegistry.createRegistry(serverProperties.port2);
                 registry.rebind("Server", this);
             } catch(Exception ignored) {
-                try {
-                    registry = LocateRegistry.createRegistry(1199);
-                    registry.rebind("Server", this);
-                } catch(Exception e) {
-                    logger.get().warning("[Server]: Failed to start server\r\n" + e.getMessage());
-                    close();
-                    throw new RuntimeException(e);
-                }
+                registry = LocateRegistry.createRegistry(serverProperties.port2);
+                registry.rebind("Server", this);
             }
         } catch (Exception e) {
             success.accept(false);
@@ -265,19 +256,17 @@ public class Server extends UnicastRemoteObject implements IServer {
         pingThread.start();
     }
 
-    public void open(ServerSettings serverSettings) {
+    public void open() {
         serverState = ServerState.LOBBY;
         logger.get().info("[Server]: Starting server...");
         try {
             logger.get().info("[Server]: IP-Address: " + InetAddress.getLocalHost().getHostAddress());
-            ip = InetAddress.getLocalHost().getHostAddress();
-        } catch (UnknownHostException e) {
+        } catch (IOException e) {
             e.printStackTrace(System.err);
             logger.get().severe("[Server]: Server crashed due to an Exception:\r\n" + e.getMessage());
             close();
             throw new RuntimeException();
         }
-        this.serverSettings = serverSettings;
         pause = false;
         serverState = ServerState.LOBBY;
         acceptNewClients = true;
@@ -354,7 +343,7 @@ public class Server extends UnicastRemoteObject implements IServer {
 
     @Override
     public ServerSettings getServerSettings() throws RemoteException {
-        return serverSettings;
+        return Monopoly.INSTANCE.serverProperties().serverSettings;
     }
 
     public ArrayList<Player> getPlayersServerSide() {
@@ -397,7 +386,7 @@ public class Server extends UnicastRemoteObject implements IServer {
 
     @Override
     public String getIp() throws RemoteException {
-        return ip;
+        return server.getInetAddress().getHostAddress().replace("0.0.0.0", "localhost");
     }
 
     @Override

@@ -17,6 +17,7 @@ import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.net.Inet4Address;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -47,7 +48,7 @@ public class LobbyPane extends JLayeredPane {
     private final JButton addPlayer = JUtils.addButton("+ Spieler", new Font(null, Font.PLAIN, 40), Color.BLACK, 450, 680, 270, 105, false, actionEvent -> {
         try {
             if(client.serverMethod().acceptsNewClient()) {
-                client = new Client(ip, 25565, false, root);
+                client = new Client((Inet4Address) Inet4Address.getByName(ip), Monopoly.INSTANCE.serverProperties(), false, root);
                 clients.add(clients.size(), client);
             }
         } catch (Exception e) {

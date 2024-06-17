@@ -5,6 +5,8 @@ import monopol.common.core.Monopoly;
 import monopol.common.utils.JUtils;
 
 import javax.swing.*;
+import java.net.Inet4Address;
+import java.net.UnknownHostException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.util.List;
@@ -52,9 +54,9 @@ public class RejoinPane extends JLayeredPane {
                 int result = JOptionPane.showOptionDialog(Monopoly.INSTANCE.parentComponent, "Als " + name + " erneut beitreten?", "Erneut beitreten", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, null);
                 if(result == 1) {
                     try {
-                        Client client = new Client(clientSup.get().serverMethod().getIp(), 25565, false, display, name);
+                        Client client = new Client((Inet4Address) Inet4Address.getByName(clientSup.get().serverMethod().getIp()), Monopoly.INSTANCE.serverProperties(), false, display, name);
                         rejoin.accept(client);
-                    } catch (NotBoundException | RemoteException e) {
+                    } catch (NotBoundException | RemoteException | UnknownHostException e) {
                         throw new RuntimeException(e);
                     }
                 }
