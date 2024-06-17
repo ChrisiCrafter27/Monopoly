@@ -28,16 +28,19 @@ public interface IPurchasable extends IField, Serializable {
     default String getOwnerNotNull() {
         return getOwner() == null ? "" : getOwner();
     }
-    default void copyOf(IPurchasable other) {
-        setOwner(other.getOwner());
-        setSpecialRent(other.getSpecialRent());
-        if(other.isMortgaged()) mortgage();
+    default void write(DataWriter writer) {
+        writer.writeString(getOwner());
+        writer.writeBool(getSpecialRent());
+        writer.writeBool(isMortgaged());
+        writer.writeInt(getLevel());
+    }
+    default void read(DataReader reader) {
+        setOwner(reader.readString());
+        setSpecialRent(reader.readBool());
+        if(reader.readBool()) mortgage();
         else unmortgage();
-        while (getLevel() < other.getLevel()) upgrade();
-        while (getLevel() > other.getLevel()) downgrade();
-        System.out.println("copying");
-        System.out.println(this);
-        System.out.println(getOwner());
-        System.out.println("-------");
+        int level = reader.readInt();
+        while (getLevel() < level) upgrade();
+        while (getLevel() > level) downgrade();
     }
 }

@@ -8,30 +8,31 @@ import monopol.common.packets.S2CPacket;
 import java.rmi.RemoteException;
 
 public class UpdatePurchasablesS2CPacket extends S2CPacket<UpdatePurchasablesS2CPacket> {
-    public UpdatePurchasablesS2CPacket() {}
+    private final DataReader dataReader;
+
+    public UpdatePurchasablesS2CPacket() {
+        dataReader = null;
+    }
+
+    private UpdatePurchasablesS2CPacket(DataReader dataReader) {
+        this.dataReader = dataReader;
+    }
 
     @Override
-    public void serialize(DataWriter writer) {}
+    public void serialize(DataWriter writer) {
+        Field.purchasables().forEach(purchasable -> purchasable.write(writer));
+    }
 
     public static UpdatePurchasablesS2CPacket deserialize(DataReader reader) {
-        return new UpdatePurchasablesS2CPacket();
+        return new UpdatePurchasablesS2CPacket(reader);
     }
 
     @Override
     public void handleOnClient(Client client, RootPane display) {
-        System.out.println(Street.BADSTRASSE.getOwner());
-        System.out.println(Field.purchasables().get(0).getOwner());
-        try {
-            for(IPurchasable purchasable : client.serverMethod().getPurchasables()) {
-                String name = purchasable.getName();
-                Field.purchasables().stream().filter(p -> p.getName().equals(name)).findFirst().orElseThrow().copyOf(purchasable);
-            }
+        if(dataReader != null) {
+            Field.purchasables().forEach(purchasable -> purchasable.read(dataReader));
             display.selectedCardPane.update();
             display.housePane.update();
-        } catch (RemoteException e) {
-            client.close();
         }
-        System.out.println(Street.BADSTRASSE.getOwner());
-        System.out.println(Field.purchasables().get(0).getOwner());
     }
 }
