@@ -35,5 +35,9 @@ public interface IPurchasable extends IField, Serializable {
         else unmortgage();
         while (getLevel() < other.getLevel()) upgrade();
         while (getLevel() > other.getLevel()) downgrade();
+        System.out.println("copying");
+        System.out.println(this);
+        System.out.println(getOwner());
+        System.out.println("-------");
     }
 }

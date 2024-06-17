@@ -2,11 +2,8 @@ package monopol.common.packets.custom.update;
 
 import monopol.client.Client;
 import monopol.client.screen.RootPane;
-import monopol.common.data.DataReader;
-import monopol.common.data.DataWriter;
-import monopol.common.data.IPurchasable;
+import monopol.common.data.*;
 import monopol.common.packets.S2CPacket;
-import monopol.common.data.Field;
 
 import java.rmi.RemoteException;
 
@@ -22,6 +19,8 @@ public class UpdatePurchasablesS2CPacket extends S2CPacket<UpdatePurchasablesS2C
 
     @Override
     public void handleOnClient(Client client, RootPane display) {
+        System.out.println(Street.BADSTRASSE.getOwner());
+        System.out.println(Field.purchasables().get(0).getOwner());
         try {
             for(IPurchasable purchasable : client.serverMethod().getPurchasables()) {
                 String name = purchasable.getName();
@@ -32,5 +31,7 @@ public class UpdatePurchasablesS2CPacket extends S2CPacket<UpdatePurchasablesS2C
         } catch (RemoteException e) {
             client.close();
         }
+        System.out.println(Street.BADSTRASSE.getOwner());
+        System.out.println(Field.purchasables().get(0).getOwner());
     }
 }
