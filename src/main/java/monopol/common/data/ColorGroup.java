@@ -2,7 +2,9 @@ package monopol.common.data;
 
 import monopol.common.utils.Direction;
 
-public enum ColorGroup {
+import java.io.Serializable;
+
+public enum ColorGroup implements Serializable {
     BROWN (1, 50, "brown", Direction.LEFT),
     CYAN (2, 50, "cyan", Direction.LEFT),
     PINK (3, 100, "pink", Direction.UP),
