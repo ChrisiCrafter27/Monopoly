@@ -250,8 +250,7 @@ public class MegaEditionEvents extends Events {
             else if(player().getMoney() > 50 || hasTo) {
                 player().contractMoney(50);
                 Monopoly.INSTANCE.server().gameData().addFreeParking(50);
-            }
-            else return;
+            } else return;
             player().setInPrison(false);
             PacketManager.sendS2C(new InfoS2CPacket(player().getName() +  " ist wieder frei."), PacketManager.all(), Throwable::printStackTrace);
             if(!hasTo) PacketManager.sendS2C(new UpdateButtonsS2CPacket(player().getName(), diceRolled, hasToPayRent, player().inPrison(), mayDoNextRound(), requestTeleport, buildRule, requiredCards, player()), PacketManager.all(), Throwable::printStackTrace);
