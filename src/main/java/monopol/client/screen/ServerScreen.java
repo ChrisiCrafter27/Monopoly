@@ -16,13 +16,15 @@ import java.util.Map;
 import java.util.Optional;
 
 public class ServerScreen {
-    //TODO close
+    public static ServerScreen current;
 
     private final JFrame frame = new JFrame("Server Optionen");
     private ServerProperties serverProperties;
     private Map<String, NetworkInterface> networkInterfaces = ServerProperties.networkInterfaces();
 
     public ServerScreen(ServerProperties serverProperties) {
+        if(current != null) current.close();
+        current = this;
         this.serverProperties = serverProperties;
     }
 

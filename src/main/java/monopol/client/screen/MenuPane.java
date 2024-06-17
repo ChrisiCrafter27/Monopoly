@@ -57,8 +57,12 @@ public class MenuPane extends JLayeredPane {
                     JOptionPane.showMessageDialog(Monopoly.INSTANCE.parentComponent, "Server nicht gefunden. Ist die IP-Adresse korrekt?", "Spiel beitreten", JOptionPane.WARNING_MESSAGE);
                 }
             }), JLayeredPane.MODAL_LAYER);
-            add(JUtils.addButton("Netzwerk", 90, 800, 400, 100, 50, true, actionEvent -> new ServerScreen(Monopoly.INSTANCE.serverProperties()).show()), JLayeredPane.MODAL_LAYER);
-            add(JUtils.addButton("Schließen", 90, 950, 400, 100, 50, true, actionEvent -> System.exit(0)), JLayeredPane.MODAL_LAYER);
+            if(Monopoly.INSTANCE.serverEnabled()) {
+                add(JUtils.addButton("Schließen", 90, 900, 400, 100, 50, true, actionEvent -> System.exit(0)), JLayeredPane.MODAL_LAYER);
+            } else {
+                add(JUtils.addButton("Netzwerk", 90, 800, 400, 100, 50, true, actionEvent -> new ServerScreen(Monopoly.INSTANCE.serverProperties()).show()), JLayeredPane.MODAL_LAYER);
+                add(JUtils.addButton("Schließen", 90, 950, 400, 100, 50, true, actionEvent -> System.exit(0)), JLayeredPane.MODAL_LAYER);
+            }
             add(JUtils.addImage("images/Monopoly_client1.png", 0, 0, 1920, 1080), JLayeredPane.DEFAULT_LAYER);
         });
     }

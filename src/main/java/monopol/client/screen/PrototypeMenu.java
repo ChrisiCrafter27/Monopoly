@@ -96,6 +96,7 @@ public class PrototypeMenu {
     }
 
     public void prepareLobby(Client currentClient) {
+        if(ServerScreen.current != null) ServerScreen.current.close();
         Monopoly.INSTANCE.setState(GameState.LOBBY);
 
         client = currentClient;
@@ -184,6 +185,7 @@ public class PrototypeMenu {
     }
 
     public void prepareGame() {
+        if(SettingsScreen.current != null) SettingsScreen.current.close();
         Monopoly.INSTANCE.setState(GameState.RUNNING);
 
         //Reset lobby pane
