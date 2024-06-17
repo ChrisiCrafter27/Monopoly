@@ -13,8 +13,8 @@ import java.util.HashMap;
 public class HousePane extends JLayeredPane {
     private static final int HOUSES_COUNT = 32;
     private static final int HOTELS_COUNT = 12;
-    private static final int SKYSCRAPERS_COUNT = 8;
-    private static final int DEPOTS_COUNT = 4;
+    private static final int SKYSCRAPERS_COUNT = 0;
+    private static final int DEPOTS_COUNT = 0;
 
     public HashMap<JLabel, Pair<Street, Integer>> houses = new HashMap<>();
     public HashMap<JLabel, Pair<Street, Integer>> hotels = new HashMap<>();
@@ -51,10 +51,6 @@ public class HousePane extends JLayeredPane {
     }
 
     public synchronized void update() {
-        while (((IPurchasable) Field.get(Field.fields().indexOf(Street.BADSTRASSE))).upgrade());
-        while (((IPurchasable) Field.get(Field.fields().indexOf(Street.SEESTRASSE))).upgrade());
-        while (((IPurchasable) Field.get(Field.fields().indexOf(Street.OPERNPLATZ))).upgrade());
-        while (((IPurchasable) Field.get(Field.fields().indexOf(Street.BAHNHOFSTRASSE))).upgrade());
         for(IPurchasable purchasable : Field.purchasables()) {
             if(purchasable instanceof Street street) {
                 int level = street.getLevel();
