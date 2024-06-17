@@ -434,11 +434,6 @@ public class Server extends UnicastRemoteObject implements IServer {
     }
 
     @Override
-    public List<IPurchasable> getPurchasables() throws RemoteException {
-        return Field.purchasables();
-    }
-
-    @Override
     public boolean trade(String player1, String player2, ArrayList<IPurchasable> offer1, ArrayList<IPurchasable> offer2, int money1, int money2) throws RemoteException {
         for (IPurchasable purchasable : offer1) {
             if(!purchasable.getOwnerNotNull().equals(player1)) return false;

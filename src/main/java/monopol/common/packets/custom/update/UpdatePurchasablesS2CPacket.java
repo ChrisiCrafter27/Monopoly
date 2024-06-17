@@ -2,6 +2,7 @@ package monopol.common.packets.custom.update;
 
 import monopol.client.Client;
 import monopol.client.screen.RootPane;
+import monopol.common.core.Monopoly;
 import monopol.common.data.*;
 import monopol.common.packets.S2CPacket;
 
@@ -29,6 +30,7 @@ public class UpdatePurchasablesS2CPacket extends S2CPacket<UpdatePurchasablesS2C
 
     @Override
     public void handleOnClient(Client client, RootPane display) {
+        if(Monopoly.INSTANCE.serverEnabled()) return;
         if(dataReader != null) {
             Field.purchasables().forEach(purchasable -> purchasable.read(dataReader));
             display.selectedCardPane.update();

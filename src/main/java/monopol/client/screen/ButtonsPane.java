@@ -148,12 +148,7 @@ public class ButtonsPane extends JLayeredPane {
                     setIcon(action1B, ready);
                     setIcon(action2B, hasToPayRent);
                     mortgageL.setText(purchasable.isMortgaged() ? "Zurückkaufen" : "Verpfänden");
-                    System.out.println(purchasable.getName());
-                    System.out.println(player.getPosition());
-                    System.out.println(purchasable.getOwner());
-                    System.out.println(player.getMoney());
-                    System.out.println(purchasable.getPrice());
-                    setIcon(purchasableB, purchasables.stream().map(IPurchasable::getName).anyMatch(purchasable.getName()::equals) && player.getPosition() == Field.fields().indexOf(purchasable) && purchasable.getOwner() == null && player.getMoney() >= purchasable.getPrice());
+                    setIcon(purchasableB, player.getPosition() == Field.fields().indexOf(purchasable) && purchasable.getOwner() == null && player.getMoney() >= purchasable.getPrice());
                     setIcon(upgradeB, purchasables.stream().map(IPurchasable::getName).anyMatch(purchasable.getName()::equals) && purchasable.getOwnerNotNull().equals(player.getName()) && player.getMoney() >= purchasable.getUpgradeCost() && purchasable.getMaxLevel() > purchasable.getLevel());
                     setIcon(downgradeB, purchasables.stream().map(IPurchasable::getName).anyMatch(purchasable.getName()::equals) && purchasable.getOwnerNotNull().equals(player.getName()) && purchasable.getLevel() > 0);
                     setIcon(mortgageB, purchasable.getOwnerNotNull().equals(player.getName()));

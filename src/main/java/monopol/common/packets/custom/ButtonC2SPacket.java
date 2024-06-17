@@ -1,13 +1,18 @@
 package monopol.common.packets.custom;
 
+import monopol.common.core.Monopoly;
 import monopol.common.data.DataReader;
 import monopol.common.data.DataWriter;
 import monopol.common.data.Field;
 import monopol.common.data.IPurchasable;
 import monopol.common.packets.C2SPacket;
 import monopol.server.Server;
+import monopol.server.events.Events;
 
 import java.net.Socket;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.function.Consumer;
 
 public class ButtonC2SPacket extends C2SPacket<ButtonC2SPacket> {
     private final String name;
@@ -41,21 +46,24 @@ public class ButtonC2SPacket extends C2SPacket<ButtonC2SPacket> {
     @Override
     public void handleOnServer(Server server, Socket source) {
         IPurchasable selected = Field.purchasables().stream().filter(p -> p.getName().equals(selectedCard)).findFirst().orElse(null);
-        switch (button) {
-            case ACTION_1 -> {
-                if(server.events().diceRolled()) server.events().onTryNextRound(name);
-                else server.events().onDiceRoll(name);
+        Events events = server.events();
+        synchronized (events) {
+            switch (button) {
+                case ACTION_1 -> {
+                    if(events.diceRolled()) server.events().onTryNextRound(name);
+                    else events.onDiceRoll(name);
+                }
+                case ACTION_2 -> {
+                    if(server.getPlayerServerSide(name).inPrison()) events.onPaySurety(name, false);
+                    else if(events.diceRolled()) events.onPayRent(name);
+                    else events.onBusDrive(name, target);
+                }
+                case PURCHASE -> events.onPurchaseCard(name, selected);
+                case UPGRADE -> events.onUpgrade(name, selected);
+                case DOWNGRADE -> events.onDowngrade(name, selected);
+                case MORTGAGE -> events.onMortgage(name, selected);
+                case TELEPORT -> events.onTeleport(name, target);
             }
-            case ACTION_2 -> {
-                if(server.getPlayerServerSide(name).inPrison()) server.events().onPaySurety(name, false);
-                else if(server.events().diceRolled()) server.events().onPayRent(name);
-                else server.events().onBusDrive(name, target);
-            }
-            case PURCHASE -> server.events().onPurchaseCard(name, selected);
-            case UPGRADE -> server.events().onUpgrade(name, selected);
-            case DOWNGRADE -> server.events().onDowngrade(name, selected);
-            case MORTGAGE -> server.events().onMortgage(name, selected);
-            case TELEPORT -> server.events().onTeleport(name, target);
         }
     }
 

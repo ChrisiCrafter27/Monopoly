@@ -1,8 +1,6 @@
 package monopol.common.utils;
 
-import java.io.Serializable;
-
-public enum Direction implements Serializable {
+public enum Direction {
     LEFT,
     UP,
     RIGHT,

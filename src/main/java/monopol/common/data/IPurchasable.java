@@ -4,7 +4,7 @@ import monopol.common.utils.Triplet;
 
 import java.io.Serializable;
 
-public interface IPurchasable extends IField, Serializable {
+public interface IPurchasable extends IField {
     void setOwner(String owner);
     String getOwner();
     String getName();

@@ -116,9 +116,9 @@ public class MegaEditionEvents extends Events {
 
         Random random = new Random();
 
-        int dice1 = random.nextInt(6) + 1;
-        int dice2 = random.nextInt(6) + 1;
-        int dice3 = tempoDice ? random.nextInt(6) + 1 : -1;
+        int dice1 = 4;//random.nextInt(6) + 1;
+        int dice2 = 1;//random.nextInt(6) + 1;
+        int dice3 = 1;//tempoDice ? random.nextInt(6) + 1 : -1;
         diceResult = new Triplet<>(dice1, dice2, dice3);
         int intResult = dice1 + dice2;
         switch (dice3) {
@@ -341,13 +341,16 @@ public class MegaEditionEvents extends Events {
 
     @Override
     public void onUpgrade(String name, IPurchasable purchasable) {
-        if(name.equals(player().getName()) && buildRule.valid(player(), purchasable) && !requestTeleport && diceRolled) {
+        if(name.equals(player().getName()) && buildRule.valid(player(), purchasable) && player().getMoney() >= purchasable.getUpgradeCost() && !requestTeleport && diceRolled) {
             if(purchasable instanceof Street street && (!requiredCards.valid(player(), street) || (buildEquable && BuildRule.buildingEquable(street) == BuildRule.EqualBuildingResult.OKAY) || (street.getLevel() == street.getMaxLevel() - 1 && !megaBuildings))) return;
             if(purchasable instanceof TrainStation && !megaBuildings) return;
+            System.out.println(1);
             if(purchasable.upgrade()) {
                 PacketManager.sendS2C(new InfoS2CPacket(player().getName() +  " wertet " + purchasable.getName() + " auf."), PacketManager.all(), Throwable::printStackTrace);
+                System.out.println("new level: " + purchasable.getLevel());
                 player().contractMoney(purchasable.getUpgradeCost());
             }
+            System.out.println(2);
             PacketManager.sendS2C(new UpdatePurchasablesS2CPacket(), PacketManager.all(), Throwable::printStackTrace);
             PacketManager.sendS2C(new UpdateButtonsS2CPacket(player().getName(), diceRolled, hasToPayRent, player().inPrison(), mayDoNextRound(), requestTeleport, buildRule, requiredCards, player()), PacketManager.all(), Throwable::printStackTrace);
         }
@@ -355,7 +358,7 @@ public class MegaEditionEvents extends Events {
 
     @Override
     public void onDowngrade(String name, IPurchasable purchasable) {
-        if(name.equals(player().getName()) && buildRule.valid(player(), purchasable) && !requestTeleport && diceRolled) {
+        if(name.equals(player().getName()) && buildRule.valid(player(), purchasable) && player().getMoney() >= purchasable.getUpgradeCost() && !requestTeleport && diceRolled) {
             if(purchasable instanceof Street street && buildEquable && BuildRule.buildingEquable(street) == BuildRule.EqualBuildingResult.OKAY) return;
             if(purchasable.downgrade()) {
                 PacketManager.sendS2C(new InfoS2CPacket(player().getName() +  " wertet " + purchasable.getName() + " ab."), PacketManager.all(), Throwable::printStackTrace);
@@ -368,7 +371,7 @@ public class MegaEditionEvents extends Events {
 
     @Override
     public void onPurchaseCard(String name, IPurchasable purchasable) {
-        if(name.equals(player().getName()) && purchasable.getOwner() == null && !requestTeleport && diceRolled) {
+        if(name.equals(player().getName()) && purchasable.getOwner() == null && player().getMoney() >= purchasable.getPrice()  && !requestTeleport && diceRolled) {
             PacketManager.sendS2C(new InfoS2CPacket(player().getName() +  " kauft " + purchasable.getName() + "."), PacketManager.all(), Throwable::printStackTrace);
             purchasable.setOwner(name);
             player().contractMoney(purchasable.getPrice());
