@@ -476,6 +476,10 @@ public class Server extends UnicastRemoteObject implements IServer {
         return pause;
     }
 
+    public boolean pause() {
+        return pause;
+    }
+
     @Override
     public boolean enoughPlayers() throws RemoteException {
         return players.size() >= events().minPlayers();

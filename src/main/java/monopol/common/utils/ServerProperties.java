@@ -54,7 +54,7 @@ public class ServerProperties {
     public static NetworkInterface defaultNetworkInterface() {
         try {
             List<NetworkInterface> networkInterfaces = networkInterfaces().values().stream().toList();
-            return networkInterfaces.size() == 1 ? networkInterfaces.get(0) : NetworkInterface.getByInetAddress(InetAddress.getByName("localhost"));
+            return networkInterfaces.size() > 0 ? networkInterfaces.get(0) : NetworkInterface.getByInetAddress(InetAddress.getByName("localhost"));
         } catch (SocketException | UnknownHostException ignored) {
             return null;
         }

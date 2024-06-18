@@ -31,7 +31,7 @@ public class UpdatePurchasablesS2CPacket extends S2CPacket<UpdatePurchasablesS2C
     @Override
     public void handleOnClient(Client client, RootPane display) {
         if(dataReader != null) {
-            if(!Monopoly.INSTANCE.serverEnabled()) Field.purchasables().forEach(purchasable -> purchasable.read(dataReader));
+            if(Monopoly.INSTANCE.server().pause()) Field.purchasables().forEach(purchasable -> purchasable.read(dataReader));
             display.selectedCardPane.update();
             display.housePane.update();
         }

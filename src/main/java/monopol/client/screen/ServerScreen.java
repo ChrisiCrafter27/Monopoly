@@ -67,16 +67,19 @@ public class ServerScreen {
                 @Override
                 public void focusGained(FocusEvent e) {
                     try {
+                        if(mainPort.getText().length() > 5) throw new NumberFormatException();
                         value = Integer.parseInt(mainPort.getText());
+                        if(value < 1) throw new NumberFormatException();
                     } catch (NumberFormatException ignored) {
-                        value = 0;
+                        value = 25565;
                     }
                 }
                 @Override
                 public void focusLost(FocusEvent e) {
                     try {
-                        if(mainPort.getText().length() != 5) throw new NumberFormatException();
-                        Integer.parseInt(mainPort.getText());
+                        if(mainPort.getText().length() > 5) throw new NumberFormatException();
+                        int value = Integer.parseInt(mainPort.getText());
+                        if(value < 1) throw new NumberFormatException();
                     } catch (NumberFormatException ignored) {
                         mainPort.setText("" + value);
                     }
@@ -100,16 +103,19 @@ public class ServerScreen {
                 @Override
                 public void focusGained(FocusEvent e) {
                     try {
-                        if(unicastPort.getText().length() != 5) throw new NumberFormatException();
+                        if(unicastPort.getText().length() > 5) throw new NumberFormatException();
                         value = Integer.parseInt(unicastPort.getText());
+                        if(value < 1) throw new NumberFormatException();
                     } catch (NumberFormatException ignored) {
-                        value = 0;
+                        value = 1199;
                     }
                 }
                 @Override
                 public void focusLost(FocusEvent e) {
                     try {
-                        Integer.parseInt(unicastPort.getText());
+                        if(unicastPort.getText().length() > 5) throw new NumberFormatException();
+                        int value = Integer.parseInt(unicastPort.getText());
+                        if(value < 1) throw new NumberFormatException();
                     } catch (NumberFormatException ignored) {
                         unicastPort.setText("" + value);
                     }
@@ -148,6 +154,7 @@ public class ServerScreen {
                 close();
             });
 
+            panel2.add(new JLabel(" "));
             panel2.add(resetButton);
             panel3.add(abortButton);
             panel3.add(saveButton);
