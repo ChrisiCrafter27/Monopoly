@@ -29,7 +29,7 @@ public class MenuPane extends JLayeredPane {
                 try {
                     Monopoly.INSTANCE.startServer();
                     Monopoly.INSTANCE.openServer();
-                    client = new Client(Monopoly.INSTANCE.serverProperties().ip, Monopoly.INSTANCE.serverProperties(), true, root);
+                    client = new Client(Monopoly.INSTANCE.serverProperties().getLocalIp(), Monopoly.INSTANCE.serverProperties(), true, root);
                     clients.add(client);
                     reset();
                     prepareLobby.accept(client);

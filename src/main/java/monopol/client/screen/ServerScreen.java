@@ -45,14 +45,14 @@ public class ServerScreen {
 
             panel1.add(new JLabel("Jeder darf kicken:"));
             JCheckBox everyoneCanKick = new JCheckBox();
-            everyoneCanKick.setSelected(serverProperties.serverSettings.allPlayersCanKick);
+            everyoneCanKick.setSelected(serverProperties.getServerSettings().allPlayersCanKick);
             panel1.add(everyoneCanKick);
 
             panel1.add(new JLabel(" "));
             panel1.add(new JLabel(" "));
 
             panel1.add(new JLabel("Main Port:"));
-            JTextField mainPort = new JTextField("" + serverProperties.port1);
+            JTextField mainPort = new JTextField("" + serverProperties.getMainPort());
             mainPort.addKeyListener(new KeyAdapter() {
                 @Override
                 public void keyTyped(KeyEvent e) {
@@ -88,7 +88,7 @@ public class ServerScreen {
             panel1.add(mainPort);
 
             panel1.add(new JLabel("Unicast Port:"));
-            JTextField unicastPort = new JTextField("" + serverProperties.port2);
+            JTextField unicastPort = new JTextField("" + serverProperties.getUnicastPort());
             unicastPort.addKeyListener(new KeyAdapter() {
                 @Override
                 public void keyTyped(KeyEvent e) {
@@ -128,16 +128,16 @@ public class ServerScreen {
 
             panel1.add(new JLabel("Adapter:"));
             JComboBox<String> adapterNames = new JComboBox<>(networkInterfaces.keySet().toArray(String[]::new));
-            adapterNames.setSelectedItem(ServerProperties.defaultNetworkInterface());
+            adapterNames.setSelectedItem(serverProperties.currentAdapterName());
             panel1.add(adapterNames);
 
             JButton resetButton = new JButton("Reset");
             resetButton.addActionListener(e -> {
                 serverProperties = new ServerProperties();
                 networkInterfaces = ServerProperties.networkInterfaces();
-                everyoneCanKick.setSelected(serverProperties.serverSettings.allPlayersCanKick);
-                mainPort.setText("" + serverProperties.port1);
-                unicastPort.setText("" + serverProperties.port2);
+                everyoneCanKick.setSelected(serverProperties.getServerSettings().allPlayersCanKick);
+                mainPort.setText("" + serverProperties.getMainPort());
+                unicastPort.setText("" + serverProperties.getUnicastPort());
                 adapterNames.removeAllItems();
                 networkInterfaces.keySet().forEach(adapterNames::addItem);
             });
@@ -147,10 +147,8 @@ public class ServerScreen {
 
             JButton saveButton = new JButton("Speichern");
             saveButton.addActionListener(e -> {
-                serverProperties.serverSettings.allPlayersCanKick = everyoneCanKick.isSelected();
-                serverProperties.port1 = tryParse(mainPort.getText()).orElse(25565);
-                serverProperties.port2 = tryParse(unicastPort.getText()).orElse(1199);
-                serverProperties.ip = ServerProperties.ip(networkInterfaces.get(adapterNames.getItemAt(adapterNames.getSelectedIndex())));
+                serverProperties.getServerSettings().allPlayersCanKick = everyoneCanKick.isSelected();
+                serverProperties.set(serverProperties.getServerSettings(), tryParse(mainPort.getText()).orElse(25565), tryParse(unicastPort.getText()).orElse(1199), adapterNames.getItemAt(adapterNames.getSelectedIndex()));
                 close();
             });
 

@@ -235,9 +235,8 @@ public class Server extends UnicastRemoteObject implements IServer {
         logger.get().info("[Server]: Initialing server...");
 
         try {
-            server = new ServerSocket(serverProperties.port1, 50, serverProperties.ip);
-            System.setProperty("java.rmi.server.hostname", serverProperties.ip.getHostName());
-            Registry registry = LocateRegistry.createRegistry(serverProperties.port2, Socket::new, port -> new ServerSocket(port, 50, serverProperties.ip));
+            server = new ServerSocket(serverProperties.getMainPort(), 50, serverProperties.getLocalIp());
+            Registry registry = LocateRegistry.createRegistry(serverProperties.getUnicastPort(), Socket::new, port -> new ServerSocket(port, 50, serverProperties.getLocalIp()));
             registry.rebind("Server", this);
         } catch (Exception e) {
             success.accept(false);
@@ -341,7 +340,7 @@ public class Server extends UnicastRemoteObject implements IServer {
 
     @Override
     public ServerSettings getServerSettings() throws RemoteException {
-        return Monopoly.INSTANCE.serverProperties().serverSettings;
+        return Monopoly.INSTANCE.serverProperties().getServerSettings();
     }
 
     public ArrayList<Player> getPlayersServerSide() {

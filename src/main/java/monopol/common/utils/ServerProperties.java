@@ -4,20 +4,52 @@ import java.net.*;
 import java.util.*;
 
 public class ServerProperties {
-    public ServerSettings serverSettings;
-    public int port1;
-    public int port2;
-    public Inet4Address ip;
+    private ServerSettings serverSettings;
+    private int port1;
+    private int port2;
+    private Inet4Address ip;
+
+    public ServerProperties() {
+        this(new ServerSettings(true, false), 25565, 1199, ip(Objects.requireNonNull(defaultNetworkInterface())));
+    }
 
     public ServerProperties(ServerSettings serverSettings, int port1, int port2, Inet4Address ip) {
         this.serverSettings = serverSettings;
         this.port1 = port1;
         this.port2 = port2;
         this.ip = ip;
+        System.setProperty("java.rmi.server.hostname", this.ip.getHostName());
     }
 
-    public ServerProperties() {
-        this(new ServerSettings(true, false), 25565, 1199, ip(Objects.requireNonNull(defaultNetworkInterface())));
+    public ServerSettings getServerSettings() {
+        return serverSettings;
+    }
+
+    public int getMainPort() {
+        return port1;
+    }
+
+    public int getUnicastPort() {
+        return port2;
+    }
+
+    public Inet4Address getLocalIp() {
+        return ip;
+    }
+
+    public void set(ServerSettings serverSettings, int port1, int port2, String ip) {
+        this.serverSettings = serverSettings;
+        this.port1 = port1;
+        this.port2 = port2;
+        this.ip = Optional.ofNullable(ip(networkInterfaces().get(ip))).orElse(this.ip);
+        System.setProperty("java.rmi.server.hostname", this.ip.getHostName());
+    }
+
+    public String currentAdapterName() {
+        for(Map.Entry<String, NetworkInterface> entry : networkInterfaces().entrySet()) {
+            if(ip.equals(ip(entry.getValue()))) return entry.getKey();
+        }
+        return null;
     }
 
     public static Inet4Address ip(NetworkInterface networkInterface) {
