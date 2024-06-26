@@ -233,14 +233,8 @@ public class Server extends UnicastRemoteObject implements IServer {
 
         try {
             server = new ServerSocket(serverProperties.port1, 50, serverProperties.ip);
-            Registry registry;
-            try {
-                registry = LocateRegistry.createRegistry(serverProperties.port2);
-                registry.rebind("Server", this);
-            } catch(Exception ignored) {
-                registry = LocateRegistry.createRegistry(serverProperties.port2);
-                registry.rebind("Server", this);
-            }
+            Registry registry = LocateRegistry.createRegistry(serverProperties.port2, (host1, port) -> null, port -> new ServerSocket(port, 50, serverProperties.ip));
+            registry.rebind("Server", this);
         } catch (Exception e) {
             success.accept(false);
             new Thread(() -> JOptionPane.showMessageDialog(Monopoly.INSTANCE.parentComponent,
