@@ -54,6 +54,7 @@ public class MenuPane extends JLayeredPane {
                     reset();
                     prepareLobby.accept(client);
                 } catch (Exception e) {
+                    e.printStackTrace();
                     JOptionPane.showMessageDialog(Monopoly.INSTANCE.parentComponent, "Server nicht gefunden. Ist die IP-Adresse korrekt?", "Spiel beitreten", JOptionPane.WARNING_MESSAGE);
                 }
             }), JLayeredPane.MODAL_LAYER);

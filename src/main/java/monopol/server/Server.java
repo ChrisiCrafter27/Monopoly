@@ -233,6 +233,7 @@ public class Server extends UnicastRemoteObject implements IServer {
 
         try {
             server = new ServerSocket(serverProperties.port1, 50, serverProperties.ip);
+            System.setProperty("java.rmi.server.hostname", serverProperties.ip.getHostAddress());
             Registry registry = LocateRegistry.createRegistry(serverProperties.port2, Socket::new, port -> new ServerSocket(port, 50, serverProperties.ip));
             registry.rebind("Server", this);
         } catch (Exception e) {

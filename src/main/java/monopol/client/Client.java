@@ -86,13 +86,15 @@ public class Client {
 
     public Client(Inet4Address ip, ServerProperties serverProperties, boolean isHost, RootPane root, String requestRejoin) throws NotBoundException {
         try {
+            System.out.println(ip.getHostAddress());
             this.root = root;
             this.player = new ClientPlayer(isHost);
             this.requestRejoin = requestRejoin;
             client = new Socket(ip, serverProperties.port1);
+            System.setProperty("java.rmi.server.hostname", ip.getHostAddress());
             Registry registry = LocateRegistry.getRegistry(ip.getHostAddress(), serverProperties.port2);
             serverInterface = (IServer) registry.lookup("Server");
-            if(serverMethod().stopped() || !serverInterface.acceptsNewClient()) {
+            if(serverMethod().stopped() || !serverMethod().acceptsNewClient()) {
                 JOptionPane.showMessageDialog(Monopoly.INSTANCE.parentComponent, "Beitreten nicht möglich", "Spiel beitreten", JOptionPane.WARNING_MESSAGE);
                 client.close();
                 return;
