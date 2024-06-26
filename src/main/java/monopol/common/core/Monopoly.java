@@ -24,7 +24,10 @@ public class Monopoly {
     private GameState state;
     public Component parentComponent;
 
-    private Monopoly() {}
+    private Monopoly() {
+        System.setProperty("java.rmi,server.hostname", "25.34.190.187");
+        System.setProperty("java.rmi.server.hostname", "25.34.190.187");
+    }
 
     public void startServer() {
         if(server == null) {

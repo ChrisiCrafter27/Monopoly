@@ -90,7 +90,6 @@ public class Client {
             this.player = new ClientPlayer(isHost);
             this.requestRejoin = requestRejoin;
             client = new Socket(ip, serverProperties.port1);
-            System.setProperty("java.rmi.server.hostname", ip.getHostAddress());
             Registry registry = LocateRegistry.getRegistry(ip.getHostAddress(), serverProperties.port2);
             serverInterface = (IServer) registry.lookup("Server");
             if(serverMethod().stopped() || !serverMethod().acceptsNewClient()) {
