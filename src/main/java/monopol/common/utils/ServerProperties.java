@@ -18,7 +18,7 @@ public class ServerProperties {
         this.port1 = port1;
         this.port2 = port2;
         this.ip = ip;
-        System.setProperty("java.rmi.server.hostname", this.ip.getHostName());
+        System.setProperty("java.rmi.server.hostname", this.ip.getHostAddress());
     }
 
     public ServerSettings getServerSettings() {
