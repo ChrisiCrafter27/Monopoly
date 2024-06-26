@@ -92,7 +92,11 @@ public class Client {
             this.requestRejoin = requestRejoin;
             client = new Socket(ip, serverProperties.port1);
             System.setProperty("java.rmi.server.hostname", ip.getHostAddress());
-            Registry registry = LocateRegistry.getRegistry(ip.getHostAddress(), serverProperties.port2);
+            Registry registry = LocateRegistry.getRegistry(ip.getHostAddress(), serverProperties.port2, (host, port) -> {
+                System.out.println(host);
+                System.out.println(port);
+                return new Socket(host, port);
+            });
             serverInterface = (IServer) registry.lookup("Server");
             if(serverMethod().stopped() || !serverMethod().acceptsNewClient()) {
                 JOptionPane.showMessageDialog(Monopoly.INSTANCE.parentComponent, "Beitreten nicht möglich", "Spiel beitreten", JOptionPane.WARNING_MESSAGE);
