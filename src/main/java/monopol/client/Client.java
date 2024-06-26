@@ -86,7 +86,6 @@ public class Client {
 
     public Client(Inet4Address ip, ServerProperties serverProperties, boolean isHost, RootPane root, String requestRejoin) throws NotBoundException {
         try {
-            System.out.println(ip.getHostAddress());
             this.root = root;
             this.player = new ClientPlayer(isHost);
             this.requestRejoin = requestRejoin;
