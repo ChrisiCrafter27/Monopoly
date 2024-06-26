@@ -161,7 +161,10 @@ public class Server extends UnicastRemoteObject implements IServer {
                                 logger.get().fine("[Server]: Message received");
                                 messageReceived(data, socket);
                             } catch (IOException e) {
-                                if(clients.contains(socket)) e.printStackTrace(System.err);
+                                if(clients.contains(socket)) {
+                                    e.printStackTrace(System.err);
+                                    kick(socket, DisconnectReason.UNKNOWN);
+                                }
                             }
                             try {
                                 Thread.sleep(1);
