@@ -5,6 +5,7 @@ import monopol.common.data.*;
 import monopol.common.message.DisconnectReason;
 import monopol.common.packets.PacketManager;
 import monopol.common.packets.custom.ButtonC2SPacket;
+import monopol.common.packets.custom.TradeRequestC2SPacket;
 import monopol.common.utils.JUtils;
 
 import javax.swing.*;
@@ -61,9 +62,11 @@ public class ButtonsPane extends JLayeredPane {
     });
     private final JLabel tradeL = JUtils.addText("Handeln", 1060, 450+90*5+13,400,40,true);
     private final JButton tradeB = JUtils.addButton(null, "images/Main_pictures/3d_button.png", 1060, 450+90*5, 400, 80, true,false, actionEvent -> {
-        JOptionPane.showMessageDialog(this, "Not available. Still in development.", "Trade", JOptionPane.WARNING_MESSAGE);
-        //clientSup.get().tradeData.tradeState = TradeState.CHOOSE_PLAYER;
-        //ClientTrade.trade(clientSup, displaySup.get().tradePane);
+        String s = JOptionPane.showInputDialog("Wie viel bietest du für " + displaySup.get().selectedCardPane.getSelected().getName() + "?");
+        try {
+            int money = Integer.parseInt(s);
+            PacketManager.sendC2S(new TradeRequestC2SPacket(displaySup.get().selectedCardPane.getSelected(), money), clientSup.get(), Throwable::printStackTrace);
+        } catch (Exception ignored) {}
     });
     private final JLabel leaveL = JUtils.addText("Verlassen",1060,450+90*6+13,400,40,true);
     private final JButton leaveB = JUtils.addButton(null,"images/Main_pictures/3d_button.png", 1060,450+90*6,400,80,true,false, actionevent ->  {

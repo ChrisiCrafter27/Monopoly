@@ -381,6 +381,15 @@ public class Server extends UnicastRemoteObject implements IServer {
         return null;
     }
 
+    public Player getPlayer(Socket socket) {
+        for (Map.Entry<Player, Socket> entry : players.entrySet()) {
+            if(entry.getValue().equals(socket)) {
+                return entry.getKey();
+            }
+        }
+        return null;
+    }
+
     @Override
     public String getIp() throws RemoteException {
         return server.getInetAddress().getHostAddress().replace("0.0.0.0", "localhost");
