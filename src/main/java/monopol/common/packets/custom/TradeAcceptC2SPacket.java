@@ -4,6 +4,9 @@ import monopol.common.core.Monopoly;
 import monopol.common.data.*;
 import monopol.common.packets.C2SPacket;
 import monopol.common.packets.PacketManager;
+import monopol.common.packets.custom.update.UpdateButtonsS2CPacket;
+import monopol.common.packets.custom.update.UpdatePlayerDataS2CPacket;
+import monopol.common.packets.custom.update.UpdatePurchasablesS2CPacket;
 import monopol.server.Server;
 
 import java.net.Socket;
@@ -35,13 +38,6 @@ public class TradeAcceptC2SPacket extends C2SPacket<TradeAcceptC2SPacket> {
 
     @Override
     public void handleOnServer(Server server, Socket socket) {
-        if(purchasable.getOwnerNotNull().equals(target)) {
-            Player targetPlayer = server.getPlayerServerSide(target);
-            Player sourcePlayer = server.getPlayerServerSide(source);
-            purchasable.setOwner(source);
-            sourcePlayer.contractMoney(money);
-            targetPlayer.addMoney(money);
-            PacketManager.sendS2C(new InfoS2CPacket(target + " hat " + source + " " + purchasable.getName() + " für " + money + "€ gegeben"), PacketManager.all(), Throwable::printStackTrace);
-        }
+        server.events().performTrade(purchasable, money, source, target);
     }
 }

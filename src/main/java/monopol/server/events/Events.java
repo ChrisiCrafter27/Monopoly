@@ -104,6 +104,7 @@ public abstract class Events {
     public abstract void onArrivedAtPrisonField();
     public abstract void onPassedLos();
     public abstract void onGoBankrupt();
+    public abstract void performTrade(IPurchasable purchasable, int money, String source, String target);
 
     @FunctionalInterface
     public interface Factory<T extends Events> {

@@ -5,6 +5,7 @@ import monopol.common.data.*;
 import monopol.common.packets.PacketManager;
 import monopol.common.packets.custom.*;
 import monopol.common.packets.custom.update.UpdateButtonsS2CPacket;
+import monopol.common.packets.custom.update.UpdatePlayerDataS2CPacket;
 import monopol.common.packets.custom.update.UpdatePurchasablesS2CPacket;
 import monopol.common.utils.Triplet;
 
@@ -477,5 +478,19 @@ public class MegaEditionEvents extends Events {
                 onNextRound();
             }
         }).start();
+    }
+
+    @Override
+    public void performTrade(IPurchasable purchasable, int money, String source, String target) {
+        if(purchasable.getOwnerNotNull().equals(target)) {
+            Player targetPlayer = Monopoly.INSTANCE.server().getPlayerServerSide(target);
+            Player sourcePlayer = Monopoly.INSTANCE.server().getPlayerServerSide(source);
+            purchasable.setOwner(source);
+            sourcePlayer.contractMoney(money);
+            targetPlayer.addMoney(money);
+            PacketManager.sendS2C(new UpdatePurchasablesS2CPacket(), PacketManager.all(), Throwable::printStackTrace);
+            PacketManager.sendS2C(new UpdateButtonsS2CPacket(player().getName(), diceRolled, hasToPayRent, player().inPrison(), mayDoNextRound(), requestTeleport, buildRule, requiredCards, player()), PacketManager.all(), Throwable::printStackTrace);
+            PacketManager.sendS2C(new InfoS2CPacket(target + " hat " + source + " " + purchasable.getName() + " für " + money + "€ gegeben"), PacketManager.all(), Throwable::printStackTrace);
+        }
     }
 }
