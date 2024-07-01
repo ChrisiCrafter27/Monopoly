@@ -155,7 +155,7 @@ public class ButtonsPane extends JLayeredPane {
                     setIcon(upgradeB, purchasables.stream().map(IPurchasable::getName).anyMatch(purchasable.getName()::equals) && purchasable.getOwnerNotNull().equals(player.getName()) && player.getMoney() >= purchasable.getUpgradeCost() && purchasable.getMaxLevel() > purchasable.getLevel());
                     setIcon(downgradeB, purchasables.stream().map(IPurchasable::getName).anyMatch(purchasable.getName()::equals) && purchasable.getOwnerNotNull().equals(player.getName()) && purchasable.getLevel() > 0);
                     setIcon(mortgageB, purchasable.getOwnerNotNull().equals(player.getName()));
-                    setIcon(tradeB, false);
+                    setIcon(tradeB, true);
                     if(player.getMoney() <= 0) enableGiveUp();
                 } else {
                     if(inPrison || player.getBusCards() <= 0) busStatus = BusStatus.IMPOSSIBLE;
@@ -174,7 +174,7 @@ public class ButtonsPane extends JLayeredPane {
             setIcon(upgradeB, false);
             setIcon(downgradeB, false);
             setIcon(mortgageB, false);
-            setIcon(tradeB, false);
+            setIcon(tradeB, true);
         }
         action2B.setSelected(busStatus == BusStatus.SELECTED);
     }
