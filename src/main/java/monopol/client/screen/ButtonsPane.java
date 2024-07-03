@@ -62,11 +62,13 @@ public class ButtonsPane extends JLayeredPane {
     });
     private final JLabel tradeL = JUtils.addText("Handeln", 1060, 450+90*5+13,400,40,true);
     private final JButton tradeB = JUtils.addButton(null, "images/Main_pictures/3d_button.png", 1060, 450+90*5, 400, 80, true,false, actionEvent -> {
-        String s = JOptionPane.showInputDialog("Wie viel bietest du für " + displaySup.get().selectedCardPane.getSelected().getName() + "?");
-        try {
-            int money = Integer.parseInt(s);
-            PacketManager.sendC2S(new TradeRequestC2SPacket(displaySup.get().selectedCardPane.getSelected(), money), clientSup.get(), Throwable::printStackTrace);
-        } catch (Exception ignored) {}
+        if(displaySup.get().selectedCardPane.getSelected().getOwner() != null && !displaySup.get().selectedCardPane.getSelected().getOwner().equals(clientSup.get().player().getName())) {
+            String s = JOptionPane.showInputDialog("Wie viel bietest du für " + displaySup.get().selectedCardPane.getSelected().getName() + "?");
+            try {
+                int money = Integer.parseInt(s);
+                PacketManager.sendC2S(new TradeRequestC2SPacket(displaySup.get().selectedCardPane.getSelected(), money), clientSup.get(), Throwable::printStackTrace);
+            } catch (Exception ignored) {}
+        }
     });
     private final JLabel leaveL = JUtils.addText("Verlassen",1060,450+90*6+13,400,40,true);
     private final JButton leaveB = JUtils.addButton(null,"images/Main_pictures/3d_button.png", 1060,450+90*6,400,80,true,false, actionevent ->  {
